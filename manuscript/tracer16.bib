@@ -1,0 +1,150 @@
+%% This BibTeX bibliography file was created using BibDesk.
+%% http://bibdesk.sourceforge.net/
+
+
+%% Created for adru001 at 2016-09-26 14:37:25 +1300 
+
+
+%% Saved with string encoding Unicode (UTF-8) 
+
+
+
+@article{beerli2006comparison,
+	Abstract = {UNLABELLED: Comparison of the performance and accuracy of different inference methods, such as maximum likelihood (ML) and Bayesian inference, is difficult because the inference methods are implemented in different programs, often written by different authors. Both methods were implemented in the program MIGRATE, that estimates population genetic parameters, such as population sizes and migration rates, using coalescence theory. Both inference methods use the same Markov chain Monte Carlo algorithm and differ from each other in only two aspects: parameter proposal distribution and maximization of the likelihood function. Using simulated datasets, the Bayesian method generally fares better than the ML approach in accuracy and coverage, although for some values the two approaches are equal in performance.
+MOTIVATION: The Markov chain Monte Carlo-based ML framework can fail on sparse data and can deliver non-conservative support intervals. A Bayesian framework with appropriate prior distribution is able to remedy some of these problems.
+RESULTS: The program MIGRATE was extended to allow not only for ML(-) maximum likelihood estimation of population genetics parameters but also for using a Bayesian framework. Comparisons between the Bayesian approach and the ML approach are facilitated because both modes estimate the same parameters under the same population model and assumptions.},
+	Author = {Beerli, Peter},
+	Date-Added = {2016-09-26 01:37:10 +0000},
+	Date-Modified = {2016-09-26 01:37:25 +0000},
+	Doi = {10.1093/bioinformatics/bti803},
+	Journal = {Bioinformatics},
+	Journal-Full = {Bioinformatics (Oxford, England)},
+	Mesh = {Bayes Theorem; Biological Evolution; Chromosome Mapping; Computer Simulation; Genetics, Population; Likelihood Functions; Models, Genetic; Models, Statistical; Phylogeny; Software},
+	Month = {Feb},
+	Number = {3},
+	Pages = {341-5},
+	Pmid = {16317072},
+	Pst = {ppublish},
+	Title = {Comparison of Bayesian and maximum-likelihood inference of population genetic parameters},
+	Volume = {22},
+	Year = {2006},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/bioinformatics/bti803}}
+
+@article{kuhner2006lamarc,
+	Abstract = {UNLABELLED: We present a Markov chain Monte Carlo coalescent genealogy sampler, LAMARC 2.0, which estimates population genetic parameters from genetic data. LAMARC can co-estimate subpopulation Theta = 4N(e)mu, immigration rates, subpopulation exponential growth rates and overall recombination rate, or a user-specified subset of these parameters. It can perform either maximum-likelihood or Bayesian analysis, and accomodates nucleotide sequence, SNP, microsatellite or elecrophoretic data, with resolved or unresolved haplotypes. It is available as portable source code and executables for all three major platforms.
+AVAILABILITY: LAMARC 2.0 is freely available at http://evolution.gs.washington.edu/lamarc},
+	Author = {Kuhner, Mary K},
+	Date-Added = {2016-09-26 01:36:05 +0000},
+	Date-Modified = {2016-09-26 01:36:23 +0000},
+	Doi = {10.1093/bioinformatics/btk051},
+	Journal = {Bioinformatics},
+	Journal-Full = {Bioinformatics (Oxford, England)},
+	Mesh = {Bayes Theorem; Biological Evolution; Chromosome Mapping; Computer Simulation; DNA Mutational Analysis; Genetic Variation; Genetics, Population; Likelihood Functions; Models, Genetic; Models, Statistical; Software},
+	Month = {Mar},
+	Number = {6},
+	Pages = {768-70},
+	Pmid = {16410317},
+	Pst = {ppublish},
+	Title = {LAMARC 2.0: maximum likelihood and Bayesian estimation of population parameters},
+	Volume = {22},
+	Year = {2006},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/bioinformatics/btk051}}
+
+@article{ronquist2012mrbayes,
+	Abstract = {Since its introduction in 2001, MrBayes has grown in popularity as a software package for Bayesian phylogenetic inference using Markov chain Monte Carlo (MCMC) methods. With this note, we announce the release of version 3.2, a major upgrade to the latest official release presented in 2003. The new version provides convergence diagnostics and allows multiple analyses to be run in parallel with convergence progress monitored on the fly. The introduction of new proposals and automatic optimization of tuning parameters has improved convergence for many problems. The new version also sports significantly faster likelihood calculations through streaming single-instruction-multiple-data extensions (SSE) and support of the BEAGLE library, allowing likelihood calculations to be delegated to graphics processing units (GPUs) on compatible hardware. Speedup factors range from around 2 with SSE code to more than 50 with BEAGLE for codon problems. Checkpointing across all models allows long runs to be completed even when an analysis is prematurely terminated. New models include relaxed clocks, dating, model averaging across time-reversible substitution models, and support for hard, negative, and partial (backbone) tree constraints. Inference of species trees from gene trees is supported by full incorporation of the Bayesian estimation of species trees (BEST) algorithms. Marginal model likelihoods for Bayes factor tests can be estimated accurately across the entire model space using the stepping stone method. The new version provides more output options than previously, including samples of ancestral states, site rates, site d(N)/d(S) rations, branch rates, and node dates. A wide range of statistics on tree parameters can also be output for visualization in FigTree and compatible software.},
+	Author = {Ronquist, Fredrik and Teslenko, Maxim and van der Mark, Paul and Ayres, Daniel L and Darling, Aaron and H{\"o}hna, Sebastian and Larget, Bret and Liu, Liang and Suchard, Marc A and Huelsenbeck, John P},
+	Date-Added = {2016-09-26 01:20:43 +0000},
+	Date-Modified = {2016-09-26 01:35:11 +0000},
+	Doi = {10.1093/sysbio/sys029},
+	Journal = {Syst Biol},
+	Journal-Full = {Systematic biology},
+	Mesh = {Algorithms; Classification; Markov Chains; Models, Biological; Monte Carlo Method; Phylogeny; Software},
+	Month = {May},
+	Number = {3},
+	Pages = {539-42},
+	Pmc = {PMC3329765},
+	Pmid = {22357727},
+	Pst = {ppublish},
+	Title = {{MrBayes} 3.2: efficient Bayesian phylogenetic inference and model choice across a large model space},
+	Volume = {61},
+	Year = {2012},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/sysbio/sys029}}
+
+@article{hohna2016revbayes,
+	Abstract = {Programs for Bayesian inference of phylogeny currently implement a unique and fixed suite of models. Consequently, users of these software packages are simultaneously forced to use a number of programs for a given study, while also lacking the freedom to explore models that have not been implemented by the developers of those programs. We developed a new open-source software package, RevBayes, to address these problems. RevBayes is entirely based on probabilistic graphical models, a powerful generic framework for specifying and analyzing statistical models. Phylogenetic-graphical models can be specified interactively in RevBayes, piece by piece, using a new succinct and intuitive language called Rev. Rev is similar to the R language and the BUGS model-specification language, and should be easy to learn for most users. The strength of RevBayes is the simplicity with which one can design, specify, and implement new and complex models. Fortunately, this tremendous flexibility does not come at the cost of slower computation; as we demonstrate, RevBayes outperforms competing software for several standard analyses. Compared with other programs, RevBayes has fewer black-box elements. Users need to explicitly specify each part of the model and analysis. Although this explicitness may initially be unfamiliar, we are convinced that this transparency will improve understanding of phylogenetic models in our field. Moreover, it will motivate the search for improvements to existing methods by brazenly exposing the model choices that we make to critical scrutiny. RevBayes is freely available at http://www.RevBayes.com [Bayesian inference; Graphical models; MCMC; statistical phylogenetics.].},
+	Author = {H{\"o}hna, Sebastian and Landis, Michael J and Heath, Tracy A and Boussau, Bastien and Lartillot, Nicolas and Moore, Brian R and Huelsenbeck, John P and Ronquist, Fredrik},
+	Date-Added = {2016-09-26 01:19:42 +0000},
+	Date-Modified = {2016-09-26 01:35:01 +0000},
+	Doi = {10.1093/sysbio/syw021},
+	Journal = {Syst Biol},
+	Journal-Full = {Systematic biology},
+	Month = {Jul},
+	Number = {4},
+	Pages = {726-36},
+	Pmc = {PMC4911942},
+	Pmid = {27235697},
+	Pst = {ppublish},
+	Title = {{RevBayes}: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language},
+	Volume = {65},
+	Year = {2016},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/sysbio/syw021}}
+
+@article{bouckaert2014beast2,
+	Abstract = {We present a new open source, extensible and flexible software platform for Bayesian evolutionary analysis called BEAST 2. This software platform is a re-design of the popular BEAST 1 platform to correct structural deficiencies that became evident as the BEAST 1 software evolved. Key among those deficiencies was the lack of post-deployment extensibility. BEAST 2 now has a fully developed package management system that allows third party developers to write additional functionality that can be directly installed to the BEAST 2 analysis platform via a package manager without requiring a new software release of the platform. This package architecture is showcased with a number of recently published new models encompassing birth-death-sampling tree priors, phylodynamics and model averaging for substitution models and site partitioning. A second major improvement is the ability to read/write the entire state of the MCMC chain to/from disk allowing it to be easily shared between multiple instances of the BEAST software. This facilitates checkpointing and better support for multi-processor and high-end computing extensions. Finally, the functionality in new packages can be easily added to the user interface (BEAUti 2) by a simple XML template-based mechanism because BEAST 2 has been re-designed to provide greater integration between the analysis engine and the user interface so that, for example BEAST and BEAUti use exactly the same XML file format.},
+	Author = {Bouckaert, Remco and Heled, Joseph and K{\"u}hnert, Denise and Vaughan, Tim and Wu, Chieh-Hsi and Xie, Dong and Suchard, Marc A and Rambaut, Andrew and Drummond, Alexei J},
+	Date-Added = {2016-09-26 01:19:14 +0000},
+	Date-Modified = {2016-09-26 01:35:23 +0000},
+	Doi = {10.1371/journal.pcbi.1003537},
+	Journal = {PLoS Comput Biol},
+	Journal-Full = {PLoS computational biology},
+	Mesh = {Bayes Theorem; Biological Evolution; Programming Languages; Software},
+	Month = {Apr},
+	Number = {4},
+	Pages = {e1003537},
+	Pmc = {PMC3985171},
+	Pmid = {24722319},
+	Pst = {epublish},
+	Title = {{BEAST 2}: a software platform for Bayesian evolutionary analysis},
+	Volume = {10},
+	Year = {2014},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1371/journal.pcbi.1003537}}
+
+@article{drummond2012bayesian,
+	Abstract = {Computational evolutionary biology, statistical phylogenetics and coalescent-based population genetics are becoming increasingly central to the analysis and understanding of molecular sequence data. We present the Bayesian Evolutionary Analysis by Sampling Trees (BEAST) software package version 1.7, which implements a family of Markov chain Monte Carlo (MCMC) algorithms for Bayesian phylogenetic inference, divergence time dating, coalescent analysis, phylogeography and related molecular evolutionary analyses. This package includes an enhanced graphical user interface program called Bayesian Evolutionary Analysis Utility (BEAUti) that enables access to advanced models for molecular sequence and phenotypic trait evolution that were previously available to developers only. The package also provides new tools for visualizing and summarizing multispecies coalescent and phylogeographic analyses. BEAUti and BEAST 1.7 are open source under the GNU lesser general public license and available at http://beast-mcmc.googlecode.com and http://beast.bio.ed.ac.uk.},
+	Author = {Drummond, Alexei J and Suchard, Marc A and Xie, Dong and Rambaut, Andrew},
+	Date-Added = {2016-09-26 01:18:41 +0000},
+	Date-Modified = {2016-09-26 01:35:34 +0000},
+	Doi = {10.1093/molbev/mss075},
+	Journal = {Mol Biol Evol},
+	Journal-Full = {Molecular biology and evolution},
+	Mesh = {Animals; Base Sequence; Bayes Theorem; Computational Biology; DNA, Mitochondrial; Finches; Molecular Sequence Data; Phenotype; Phylogeny; Software; User-Computer Interface},
+	Month = {Aug},
+	Number = {8},
+	Pages = {1969-73},
+	Pmc = {PMC3408070},
+	Pmid = {22367748},
+	Pst = {ppublish},
+	Title = {Bayesian phylogenetics with {BEAUti} and the {BEAST} 1.7},
+	Volume = {29},
+	Year = {2012},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/molbev/mss075}}
+
+@article{drummond2007beast,
+	Abstract = {BACKGROUND: The evolutionary analysis of molecular sequence variation is a statistical enterprise. This is reflected in the increased use of probabilistic models for phylogenetic inference, multiple sequence alignment, and molecular population genetics. Here we present BEAST: a fast, flexible software architecture for Bayesian analysis of molecular sequences related by an evolutionary tree. A large number of popular stochastic models of sequence evolution are provided and tree-based models suitable for both within- and between-species sequence data are implemented.
+RESULTS: BEAST version 1.4.6 consists of 81000 lines of Java source code, 779 classes and 81 packages. It provides models for DNA and protein sequence evolution, highly parametric coalescent analysis, relaxed clock phylogenetics, non-contemporaneous sequence data, statistical alignment and a wide range of options for prior distributions. BEAST source code is object-oriented, modular in design and freely available at http://beast-mcmc.googlecode.com/ under the GNU LGPL license.
+CONCLUSION: BEAST is a powerful and flexible evolutionary analysis package for molecular sequence variation. It also provides a resource for the further development of new models and statistical methods of evolutionary analysis.},
+	Author = {Drummond, Alexei J and Rambaut, Andrew},
+	Date-Added = {2016-09-26 01:18:40 +0000},
+	Date-Modified = {2016-09-26 01:35:16 +0000},
+	Doi = {10.1186/1471-2148-7-214},
+	Journal = {BMC Evol Biol},
+	Journal-Full = {BMC evolutionary biology},
+	Mesh = {Bayes Theorem; Computational Biology; Computer Simulation; Evolution, Molecular; Models, Genetic; Models, Statistical; Phylogeny; Sequence Analysis, DNA; Software},
+	Pages = {214},
+	Pmc = {PMC2247476},
+	Pmid = {17996036},
+	Pst = {epublish},
+	Title = {{BEAST}: Bayesian evolutionary analysis by sampling trees},
+	Volume = {7},
+	Year = {2007},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1186/1471-2148-7-214}}
