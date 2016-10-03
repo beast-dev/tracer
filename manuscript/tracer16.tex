@@ -76,7 +76,45 @@ New features:
 \item AICM
 \end{itemize}
 
-\subsubsection*{Graphical user-interface:} Blah blah 
+\subsubsection*{Graphical user-interface:}
+
+Tracer can analyse either a single MCMC log or combine the shared traces from multiple logs. Traces panel provides the list of the statistical summary from the sampling parameters' values at all states logged during a MCMC process. 
+
+There are 4 analysis tabs to choose from a selected parameter:
+
+%TODO
+Estimates - this shows the mean, stdev, confidence intervals and other statistics about the selected parameter. A frequency distribution will also be plotted.
+Density - this shows the Bayesian posterior density plot for the selected parameter.
+Joint-Marginal - this only appears if exactly 2 parameters are chosen (hold down shift to select multiple parameters). It then plots one against the other to look at their joint-marginal distribution.
+Trace - this shows the trace of the parameter against state or generation number. Use this to check mixing, choose a suitable burn-in and look for trends that might suggest problems with convergence.
+Multiple parameters can be selected by holding down the shift key. This will overlay the plots for the different parameters allowing comparisons to be made. You can also select multiple trace files as well to compare different runs. If multiple trace files have the same trace names then a "Combined" trace will automatically appear. This can be selected as well as the individual trace files.
+
+%TODO better figures
+
+\begin{figure}[H]
+\includegraphics[width=.5\textwidth]{../figures/gopher-log.png}  
+\caption{The }
+\label{fig:front:page}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=.5\textwidth]{../figures/estimates.pdf}  
+\caption{The estimates}
+\label{fig:estimates}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=.5\textwidth]{../figures/comp-95HPD.pdf}  
+\caption{The comparison of  95\% HPD intervals from multi-trace}
+\label{fig:comp95HPD}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=.5\textwidth]{../figures/trace.pdf}  
+\caption{The trace}
+\label{fig:trace}
+\end{figure}
+
 
 
 \subsubsection*{Diagnostics:} Blah blah 
@@ -84,6 +122,12 @@ New features:
 \subsubsection*{Demographic reconstruction:} 
 
 \subsubsection*{Model selection:}
+
+
+\subsubsection*{Conditional posterior distribution:}
+
+
+
 
 \section*{Example}
 
