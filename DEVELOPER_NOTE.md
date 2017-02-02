@@ -10,6 +10,8 @@
 
 1. Create "beast1" module in IntelliJ;
 
+![beast1 module](./figures/beast1module.png)
+
 2. Add it to "tracer" project;
 
 3. Setup your **Project Structure** with SDK to java 1.8 and language level to 8;
