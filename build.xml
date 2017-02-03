@@ -90,7 +90,7 @@
         <jar jarfile="${dist}/tracer.jar">
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
-                <attribute name="Main-Class" value="dr.app.tracer.application.TracerApp"/>
+                <attribute name="Main-Class" value="TracerApp"/>
             </manifest>
             <fileset dir="${build}">
                 <include name="dr/app/tracer/**/*.class"/>
@@ -215,7 +215,7 @@
         <!-- create a jar bundle for the mac -->
         <jarbundler dir="${Mac_package_dir}"
                         name="${name} v${version}"
-                        mainclass="dr.app.tracer.application.TracerApp"
+                        mainclass="TracerApp"
                         stubfile="${packaging_tools}/mac/universalJavaApplicationStub"
 						useJavaXKey="true"
                         icon="${Mac_dir}/icons/Tracer.icns"

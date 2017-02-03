@@ -6,6 +6,8 @@
 
 * [BEAST 1](https://github.com/beast-dev/beast-mcmc/)
 
+* [jam.jar](https://github.com/beast-dev/beast-mcmc/lib)
+
 ## How to setup dependency in IntelliJ
 
 1. Create "beast1" module in IntelliJ;
