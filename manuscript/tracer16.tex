@@ -45,7 +45,9 @@ Computational evolutionary biology, statistical phylogenetics and coalescent-bas
 \section{Results:}
 We describe here a software package, Tracer version 1.6, which ... 
 \section{Availability:}
-Tracer is open-source under the GNU lesser general public license and available at \url{http://beast-mcmc.googlecode.com}  and  \href{http://tree.ed.ac.uk/software/tracer}{\url{http://tree.ed.ac.uk}}.
+Tracer is open-source under the GNU lesser general public license and available at 
+\url{http://beast-mcmc.googlecode.com}  %TODO \url{http://github.com/beast-dev/tracer}
+and  \href{http://tree.ed.ac.uk/software/tracer}{\url{http://tree.ed.ac.uk}}.
 
 \section{Contact:} 
 \href{a.rambaut@ed.ac.uk}{\url{a.rambaut@ed.ac.uk}}, 
@@ -71,6 +73,7 @@ Blah blah
 
 New features:
 \begin{itemize}
+\item Three trace types: real, integer, string
 \item Kernel density estimates
 \item HME
 \item AICM
@@ -116,6 +119,13 @@ Multiple parameters can be selected by holding down the shift key. This will ove
 \end{figure}
 
 
+\begin{figure}[H]
+\includegraphics[width=.5\textwidth]{./figures/jointPrInt.png}  
+\caption{The Joint probability table of two integer traces}
+\label{fig:int:jointpr}
+\end{figure}
+
+
 
 \subsubsection*{Diagnostics:} Blah blah 
 
@@ -126,7 +136,9 @@ Multiple parameters can be selected by holding down the shift key. This will ove
 
 \subsubsection*{Conditional posterior distribution:}
 
+Fairly general solution to looking at conditional posterior distributions;
 
+Specifically, support for BSSVS forms of model averaging, in which some parameters are only in the likelihood when their submodel is "indicated" by some indicator function that is usually a discrete, integer or boolean variable. In that case the posterior of the parameter should not include the states when it was sampled only in the prior because the submodel it belonged to was "turned off". This is relevant for EBSP, Random Local Clocks model, microsatellite model averaging and relaxed clock model averaging methods all from my group in last couple of years. Also relevant for BSSVS in phylogeography as well depending on how the state is logged.
 
 
 \section*{Example}
