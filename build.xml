@@ -131,7 +131,7 @@
 
     <property name="version" value="1.6.1pre" />
     <property name="version_number" value="1.6.1" />
-    <property name="release_dir" value="release_tracer" />
+    <property name="release_dir" value="release" />
     <property name="name" value="Tracer" />
 
     <property name="packaging_tools" value="packaging_tools" />
