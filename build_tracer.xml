@@ -23,25 +23,19 @@
   ~ Boston, MA  02110-1301  USA
   -->
 
-<project name="Tracer_RELEASE" default="compile-all" basedir=".">
+<project name="Tracer_RELEASE" default="compile" basedir=".">
     <description>
         Build file for BEAST release versions
-        $Id: build_release.xml,v 1.6 2017/02/27 18:16:17 rambaut Exp $
+        $Id: build_release.xml,v 1.6 2017/02/28 18:16:17 rambaut Exp $
     </description>
-    <!-- set global properties for this build -->
-    <property name="src" location="src"/>
+    <!-- source & lib from beast1 but build in tracer -->
+    <property name="beast1" location="../beast1"/>
+    <property name="src" location="${beast1}/src"/>
+    <property name="lib" location="${beast1}/lib"/>
     <property name="build" location="build"/>
     <property name="dist" location="${build}/dist"/>
-    <property name="beast1" location="../beast1"/>
-    <property name="libb1" location="${beast1}/lib"/>
-    <property name="srcb1" location="${beast1}/src"/>
 
     <property environment="env"/>
-
-    <target name="all"
-            depends="compile-all,dist"
-            description="Build all run-time stuff and create jar">
-    </target>
 
     <target name="clean">
         <delete dir="${build}"/>
@@ -49,36 +43,32 @@
 
     <target name="init">
         <!-- Create the time stamp -->
-        <!--<tstamp/>-->
+        <tstamp/>
         <!-- Create the build directory structure used by compile -->
         <mkdir dir="${build}"/>
         <mkdir dir="${dist}"/>
     </target>
 
-
-    <!-- Libraries on which your code depends -->
-    <path id="classpath.base">
-        <fileset dir="${libb1}">
-            <include name="colt.jar" />
-            <include name="commons-math-2.2.jar" />
-            <include name="jebl.jar" />
-            <include name="jam.jar" />
-            <include name="itext-1.4.5.jar" />
-            <include name="jdom.jar" />
-            <include name="mtj.jar" />
-            <include name="JRI.jar" />
-            <include name="mpj.jar" />
-        </fileset>
-    </path>
-
-    <target name="compile-beast1" depends="init">
-        <!-- Compile the java code from ${beast1}/src into ${build} -->
-        <javac includeantruntime="false" source="1.6" target="1.6" srcdir="${srcb1}" destdir="${build}" >
-            <classpath refid="classpath.base" />
+    <target name="compile" depends="init">
+        <!-- Compile the java code from ${src} into ${build} -->
+        <javac source="1.6" target="1.6" srcdir="${src}" destdir="${build}"
+               classpath="${lib}/colt.jar:${lib}/commons-math-2.2.jar:${lib}/jebl.jar:${lib}/jam.jar:${lib}/itext-1.4.5.jar:${lib}/jdom.jar:${lib}/mtj.jar:${lib}/JRI.jar:${lib}/mpj.jar">
+            <include name="dr/app/tracer/**"/>
             <include name="dr/app/util/**"/>
             <include name="dr/app/gui/**"/>
+            <include name="dr/app/java16compat/**/"/>
+            <include name="dr/evolution/alignment/**"/>
             <include name="dr/evolution/coalescent/**"/>
+            <include name="dr/evolution/colouring/**"/>
+            <include name="dr/evolution/datatype/**"/>
+            <include name="dr/evolution/distance/**"/>
+            <include name="dr/evolution/io/**"/>
+            <include name="dr/evolution/parsimony/**"/>
+            <include name="dr/evolution/sequence/**"/>
+            <include name="dr/evolution/tree/**"/>
             <include name="dr/evolution/util/**"/>
+            <include name="dr/inference/tracer/**"/>
+            <include name="dr/gui/chart/**"/>
             <include name="dr/math/**"/>
             <include name="dr/matrix/**"/>
             <include name="dr/stats/**"/>
@@ -87,15 +77,7 @@
         </javac>
     </target>
 
-    <target name="compile-all" depends="init,compile-beast1">
-        <!-- Compile the java code from ${src} into ${build} -->
-        <javac source="1.6" target="1.6" srcdir="${src}" destdir="${build}">
-            <classpath refid="classpath.base" />
-            <include name="beast/tracer/**"/>
-        </javac>
-    </target>
-
-    <target name="dist" depends="compile-all"
+    <target name="dist" depends="compile"
             description="generate the distribution">
         <!-- Create the distribution directory -->
         <mkdir dir="${dist}"/>
@@ -107,19 +89,38 @@
                 <attribute name="Main-Class" value="TracerApp"/>
             </manifest>
             <fileset dir="${build}">
-                <include name="dr/**/*.class"/>
-                <include name="beast/tracer/**/*.class"/>
+                <include name="dr/app/tracer/**/*.class"/>
+                <include name="dr/app/gui/**/*.class"/>
+                <include name="dr/app/util/**/*.class"/>
+                <include name="dr/app/java16compat/**/*.class"/>
+                <include name="dr/evolution/alignment/**/*.class"/>
+                <include name="dr/evolution/coalescent/**/*.class"/>
+                <include name="dr/evolution/colouring/**/*.class"/>
+                <include name="dr/evolution/datatype/**/*.class"/>
+                <include name="dr/evolution/distance/**/*.class"/>
+                <include name="dr/evolution/io/**/*.class"/>
+                <include name="dr/evolution/parsimony/**/*.class"/>
+                <include name="dr/evolution/sequence/**/*.class"/>
+                <include name="dr/evolution/tree/**/*.class"/>
+                <include name="dr/evolution/util/**/*.class"/>
+                <include name="dr/gui/chart/**/*.class"/>
+                <include name="dr/inference/**/*.class"/>
+                <include name="dr/math/**/*.class"/>
+                <include name="dr/matrix/**/*.class"/>
+                <include name="dr/stats/**/*.class"/>
+                <include name="dr/util/**/*.class"/>
+                <include name="dr/xml/**/*.class"/>
             </fileset>
             <fileset dir="${src}">
-                <include name="beast/tracer/ui/images/**/*.png"/>
-                <include name="beast/tracer/ui/images/**/*.gif"/>
-                <include name="beast/tracer/ui/images/**/*.tiff"/>
+                <include name="dr/app/tracer/**/*.png"/>
+                <include name="dr/app/tracer/**/*.gif"/>
+                <include name="dr/app/tracer/**/*.tiff"/>
                 <include name="org/virion/jam/**/*.png"/>
             </fileset>
-            <zipgroupfileset dir="${libb1}" includes="jebl.jar"/>
-            <zipgroupfileset dir="${libb1}" includes="jam.jar"/>
-            <zipgroupfileset dir="${libb1}" includes="itext-1.4.5.jar"/>
-            <zipgroupfileset dir="${libb1}" includes="commons-math-2.2.jar"/>
+            <zipgroupfileset dir="${lib}" includes="jebl.jar"/>
+            <zipgroupfileset dir="${lib}" includes="jam.jar"/>
+            <zipgroupfileset dir="${lib}" includes="itext-1.4.5.jar"/>
+            <zipgroupfileset dir="${lib}" includes="commons-math-2.2.jar"/>
         </jar>
 
     </target>
@@ -142,36 +143,36 @@
 
     <!-- Need to either install Launch4j under {BEAST workspace}/${release}
                  or install it in the default directory and change the location of launch4j.dir -->
-    <!--<target name="windows" depends="dist" description="release Windows version of Tracer">-->
+    <target name="windows" depends="dist" description="release Windows version of Tracer">
 
-        <!--<delete dir="${Windows_package_dir}" />-->
-        <!--&lt;!&ndash; Create the release directory &ndash;&gt;-->
-        <!--<mkdir dir="${Windows_package_dir}" />-->
+        <delete dir="${Windows_package_dir}" />
+        <!-- Create the release directory -->
+        <mkdir dir="${Windows_package_dir}" />
 
-        <!--<property name="launch4j.dir" location="${Windows_dir}/launch4j" />-->
-        <!--<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"-->
-            <!--classpath="${launch4j.dir}/launch4j.jar :${launch4j.dir}/lib/xstream.jar" />-->
+        <property name="launch4j.dir" location="${Windows_dir}/launch4j" />
+        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"
+            classpath="${launch4j.dir}/launch4j.jar :${launch4j.dir}/lib/xstream.jar" />
 
-        <!--<copy file="${dist}/tracer.jar" todir="${Windows_package_dir}/lib"/>-->
-        <!--<copy todir="${Windows_package_dir}/lib">-->
-            <!--<fileset dir="${Windows_dir}/lib"/>-->
-        <!--</copy>-->
-        <!--<copy file="${common_dir}/README.txt" todir="${Windows_package_dir}"/>-->
+        <copy file="${dist}/tracer.jar" todir="${Windows_package_dir}/lib"/>
+        <copy todir="${Windows_package_dir}/lib">
+            <fileset dir="${Windows_dir}/lib"/>
+        </copy>
+        <copy file="${common_dir}/README.txt" todir="${Windows_package_dir}"/>
 
-        <!--<launch4j configFile="${Windows_dir}/tracer_launch4j.xml"-->
-                  <!--jar="${dist}/tracer.jar"-->
-                  <!--outfile="${Windows_package_dir}/${name} v${version}.exe"-->
-                  <!--fileVersion="${version_number}.0"-->
-                  <!--txtFileVersion="${version}"-->
-                  <!--productVersion="${version_number}.0"-->
-                  <!--txtProductVersion="${version}"/>-->
+        <launch4j configFile="${Windows_dir}/tracer_launch4j.xml"
+                  jar="${dist}/tracer.jar"
+                  outfile="${Windows_package_dir}/${name} v${version}.exe"
+                  fileVersion="${version_number}.0"
+                  txtFileVersion="${version}"
+                  productVersion="${version_number}.0"
+                  txtProductVersion="${version}"/>
 
-        <!--<zip destfile="${release_dir}/${name} v${version}.zip">-->
-            <!--<zipfileset dir="${Windows_package_dir}" prefix="${name} v${version}"/>-->
-        <!--</zip>-->
+        <zip destfile="${release_dir}/${name} v${version}.zip">
+            <zipfileset dir="${Windows_package_dir}" prefix="${name} v${version}"/>
+        </zip>
 
-        <!--<echo message="Windows version release is finished." />-->
-    <!--</target>-->
+        <echo message="Windows version release is finished." />
+    </target>
 
     <target name="linux" description="release Linux/Unix version of Tracer">
         <delete dir="${Linux_package_dir}" />

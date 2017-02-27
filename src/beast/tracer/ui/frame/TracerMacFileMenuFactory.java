@@ -34,7 +34,6 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 
-import dr.app.beauti.BeautiFrame;
 
 /**
  * @author rambaut
