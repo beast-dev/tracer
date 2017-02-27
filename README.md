@@ -1,6 +1,6 @@
 # Tracer
 
-In development
+The source is in https://github.com/beast-dev/beast-mcmc
 
 ## Citation
 
