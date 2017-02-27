@@ -23,7 +23,7 @@
  * Boston, MA  02110-1301  USA
  */
 
-package dr.app.tracer.analysis;
+package tracer.analysis;
 
 import dr.app.gui.chart.*;
 import dr.stats.Variate;

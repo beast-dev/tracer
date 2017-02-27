@@ -23,10 +23,10 @@
  * Boston, MA  02110-1301  USA
  */
 
-package dr.app.tracer.traces;
+package tracer.traces;
 
 import dr.app.gui.util.LongTask;
-import dr.app.tracer.application.TracerFrame;
+import tracer.application.TracerFrame;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

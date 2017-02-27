@@ -31,7 +31,7 @@
  * This package may be distributed under the
  * Lesser Gnu Public Licence (LGPL)
  */
-package dr.app.tracer.traces;
+package tracer.traces;
 
 import javax.swing.*;
 import javax.swing.plaf.BorderUIResource;

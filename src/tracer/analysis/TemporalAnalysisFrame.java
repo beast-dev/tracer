@@ -23,7 +23,7 @@
  * Boston, MA  02110-1301  USA
  */
 
-package dr.app.tracer.analysis;
+package tracer.analysis;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -31,7 +31,7 @@ import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
-import dr.app.tracer.application.TracerFileMenuHandler;
+import tracer.application.TracerFileMenuHandler;
 import dr.stats.Variate;
 import jam.framework.AuxilaryFrame;
 import jam.framework.DocumentFrame;

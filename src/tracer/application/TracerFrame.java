@@ -23,7 +23,7 @@
  * Boston, MA  02110-1301  USA
  */
 
-package dr.app.tracer.application;
+package tracer.application;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -35,11 +35,11 @@ import dr.app.gui.FileDrop;
 import dr.app.gui.chart.ChartRuntimeException;
 import dr.app.gui.table.TableEditorStopper;
 import dr.app.gui.util.LongTask;
-import dr.app.tracer.analysis.*;
-import dr.app.tracer.traces.CombinedTraces;
-import dr.app.tracer.traces.FilterDialog;
-import dr.app.tracer.traces.FilterListPanel;
-import dr.app.tracer.traces.TracePanel;
+import tracer.analysis.*;
+import tracer.traces.CombinedTraces;
+import tracer.traces.FilterDialog;
+import tracer.traces.FilterListPanel;
+import tracer.traces.TracePanel;
 import dr.inference.trace.*;
 import jam.framework.DocumentFrame;
 import jam.panels.ActionPanel;

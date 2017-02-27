@@ -23,7 +23,7 @@
  * Boston, MA  02110-1301  USA
  */
 
-package dr.app.tracer.application;
+package tracer.application;
 
 import dr.app.util.OSType;
 import dr.inference.trace.LogFileTraces;

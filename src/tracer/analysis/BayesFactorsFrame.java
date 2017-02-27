@@ -23,7 +23,7 @@
  * Boston, MA  02110-1301  USA
  */
 
-package dr.app.tracer.analysis;
+package tracer.analysis;
 
 import dr.inference.trace.MarginalLikelihoodAnalysis;
 import jam.framework.AuxilaryFrame;
