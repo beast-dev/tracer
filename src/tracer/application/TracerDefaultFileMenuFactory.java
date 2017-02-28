@@ -33,8 +33,6 @@ import jam.framework.MenuBarFactory;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
-import dr.app.beauti.BeautiFrame;
-
 /**
  * @author rambaut
  *         Date: Dec 26, 2004
