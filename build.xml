@@ -107,7 +107,7 @@
         <!-- Create the release directory -->
         <mkdir dir="${Windows_package_dir}" />
 
-        <property name="launch4j.dir" location="${Windows_dir}/launch4j" />
+        <property name="launch4j.dir" location="${packaging_tools}/windows/launch4j" />
         <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"
             classpath="${launch4j.dir}/launch4j.jar :${launch4j.dir}/lib/xstream.jar" />
 
