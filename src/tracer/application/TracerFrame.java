@@ -424,7 +424,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         getGMRFSkyrideAction().setEnabled(enabled);
         getSkyGridAction().setEnabled(enabled);
         getLineagesThroughTimeAction().setEnabled(enabled);
-        getBayesFactorsAction().setEnabled(enabled);
         getCreateTemporalAnalysisAction().setEnabled(enabled);
         getAddDemographicAction().setEnabled(enabled && temporalAnalysisFrame != null);
         getAddBayesianSkylineAction().setEnabled(enabled && temporalAnalysisFrame != null);
