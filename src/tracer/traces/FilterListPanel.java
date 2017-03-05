@@ -175,12 +175,11 @@ public class FilterListPanel extends JPanel {
                 FilterAbstractPanel panel;
                 if (trace.getTraceType() == TraceType.CATEGORICAL) {
                     panel = new FilterDiscretePanel(trace.getCategoricalValues(), sel);
-                    filterPanels.put(traceName, panel);
                 } else {// integer and double
-//                    panel = new FilterContinuousPanel(trace.getRange(), sel);
+                    panel = new FilterContinuousPanel(trace.getRange(), sel);
                 }
                 //            System.out.println("traceName = " + traceName + ";  i = " + i);
-
+                filterPanels.put(traceName, panel);
                 current += 1;
             }
 

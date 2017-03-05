@@ -35,48 +35,71 @@ import java.util.TreeSet;
 public class FilterContinuousPanel extends FilterAbstractPanel {
     JTextField minField;
     JTextField maxField;
+    double lower;
+    double upper;
 
-    FilterContinuousPanel(TreeSet<String> minMax, String[] bound) {
+    FilterContinuousPanel(double[] minMax, String[] bound) {
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-
-        if (bound == null) {
-            bound = new String[2];
-        }
-
-        minField = new JTextField(bound[0]);
-        minField.setColumns(20);
-
 //        c.weightx = 5;
 //        c.weighty = 10;
 //        c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets(20,10,0,10);
+        c.insets = new Insets(20, 10, 0, 10);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
-        add(new JLabel("Set Minimum for Selecting Values : "), c);
 
-        c.gridy = 1;
-        add(minField, c);
+        if (minMax[0] >= minMax[1]) {
+            // invalid limits in original log, such as incorrectly logged fixed parameter
+            add(new JLabel("Invalid values : "));
 
-        c.gridy = 2;
-        add(new JLabel("which should > " + minMax.first()), c);
+            c.gridy = 1;
+            add(new JLabel("Lower = " + minMax[0] + ", upper = " + minMax[0] + " !"));
 
-        maxField = new JTextField(bound[1]);
-        maxField.setColumns(20);
+        } else {
 
-        c.gridy = 3;
-        c.insets = new Insets(50,10,0,10);
-        add(new JLabel("Set Maximum for Selecting Values : "), c);
+            if (bound == null) {
+                bound = new String[2];
+            }
+            lower=minMax[0];
+            upper=minMax[1];
 
-        c.gridy = 4;
-        c.insets = new Insets(20,10,0,10);
-        add(maxField, c);
+            minField = new JTextField(bound[0]);
+            minField.setColumns(20);
 
-        c.gridy = 5;   
-        add(new JLabel("which should < " + minMax.last()), c);
+            //c.gridy = 0;
+            add(new JLabel("Lower to rescale parameter : "), c);
+
+            c.gridy = 1;
+            add(minField, c);
+
+            c.gridy = 2;
+            add(new JLabel("which should >= " + lower), c);
+
+            maxField = new JTextField(bound[1]);
+            maxField.setColumns(20);
+
+            c.gridy = 3;
+            c.insets = new Insets(50, 10, 0, 10);
+            add(new JLabel("Upper to rescale parameter : "), c);
+
+            c.gridy = 4;
+            c.insets = new Insets(20, 10, 0, 10);
+            add(maxField, c);
+
+            c.gridy = 5;
+            add(new JLabel("which should <= " + upper), c);
+        }
     }
 
+    // return null, if text fields are not created,
+    // or auto set min/max to lower/upper
     public String[] getSelectedValues() {
+        if (minField==null || maxField==null)
+            return null;
+        if (minField.getText().equals("") && !maxField.getText().equals(""))
+            minField.setText(Double.toString(lower));
+        if (!minField.getText().equals("") && maxField.getText().equals(""))
+            maxField.setText(Double.toString(upper));
         return new String[]{minField.getText(), maxField.getText()};
     }
 

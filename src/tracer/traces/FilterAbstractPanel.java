@@ -34,6 +34,7 @@ public abstract class FilterAbstractPanel extends JPanel {
 
     abstract String[] getSelectedValues();
 
+    // if true, cannot return getSelectedValues()
     boolean containsNullValue() {
         if (getSelectedValues() == null || getSelectedValues().length < 1) return true;
         for (String ob : getSelectedValues()) {
