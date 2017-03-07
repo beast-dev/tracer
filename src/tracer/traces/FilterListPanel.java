@@ -163,20 +163,13 @@ public class FilterListPanel extends JPanel {
                 String traceName = selectedTraceList.getTraceName(i);
                 Trace trace = selectedTraceList.getTrace(i);
                 //            TraceDistribution td = selectedTraceList.getDistributionStatistics(i);
-                Filter f = selectedTraceList.getFilter(i);
-
-                String[] sel;
-                if (f == null) {
-                    sel = null;
-                } else {
-                    sel = f.getIn();
-                }
+                Filter filter = trace.getFilter();
 
                 FilterAbstractPanel panel;
                 if (trace.getTraceType() == TraceType.CATEGORICAL) {
-                    panel = new FilterDiscretePanel(trace.getCategoricalValues(), sel);
+                    panel = new FilterDiscretePanel(trace.getCategoricalValues(), filter);
                 } else {// integer and double
-                    panel = new FilterContinuousPanel(trace.getRange(), sel);
+                    panel = new FilterNumericPanel(trace.getRange(), filter);
                 }
                 //            System.out.println("traceName = " + traceName + ";  i = " + i);
                 filterPanels.put(traceName, panel);
@@ -224,31 +217,16 @@ public class FilterListPanel extends JPanel {
 
             int traceIndex = selectedTraceList.getTraceIndex(traceName);
 //            System.out.println("traceName = " + traceName + ";  traceIndex = " + traceIndex);
-            if (fp.containsNullValue()) {
+            String[] selV = fp.getSelectedValues();
+            if (fp.containsNullValue(selV)) {
                 if (selectedTraceList.hasFilter(traceIndex))
                     selectedTraceList.removeFilter(traceIndex);
             } else {
-//                System.out.println("traceIndex = " + traceIndex + "; fp.getSelectedValues() " + fp.getSelectedValues().length);
-//                for (Object o : fp.getSelectedValues()) {
-//                    System.out.print("; " + o);
-//                }
-//                System.out.println();
-
-                Filter f;
-                String[] in = fp.getSelectedValues();
-//                if (selectedTraceList.getTrace(traceIndex).getTraceType() == TraceFactory.TraceType.INTEGER) {
-//                    // as Integer is stored as Double in Trace
-//                    Object[] inInt = new Object[in.length];
-//                    for (int i = 0; i < in.length; i++) {
-//                        inInt[i] = Double.valueOf(in[i]);
-//                    }
-//                    f = new Filter(inInt, selectedTraceList.getTrace(traceIndex).getValuesSize());
-//                } else {
-                    f = new Filter(in, selectedTraceList.getTrace(traceIndex).getTraceType());
-//                }
-                selectedTraceList.setFilter(traceIndex, f);
+                Filter filter = new Filter(selV, selectedTraceList.getTrace(traceIndex).getTraceType());
+                selectedTraceList.setFilter(traceIndex, filter);
             }
         }
+
     }
 
     public void removeAllFilters() {

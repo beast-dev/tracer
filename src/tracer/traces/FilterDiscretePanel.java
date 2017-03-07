@@ -25,6 +25,8 @@
 
 package tracer.traces;
 
+import dr.inference.trace.Filter;
+
 import javax.swing.*;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
@@ -41,7 +43,15 @@ public class FilterDiscretePanel extends FilterAbstractPanel {
     JList selectedValues;
 //        JButton selectButton;
 
-    FilterDiscretePanel(Set<String> allValuesSet, String[] selectedValuesArray) {
+    FilterDiscretePanel(Set<String> allValuesSet, Filter filter) {
+        super.filter = filter;
+
+        if (filter == null) {
+            selectedValues = new JList();
+        } else {
+            selectedValues = new JList(filter.getIn());
+        }
+
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         allValues = new JList(allValuesSet.toArray());
@@ -73,11 +83,6 @@ public class FilterDiscretePanel extends FilterAbstractPanel {
         });
         panel.add(selectButton);
 
-        if (selectedValuesArray == null) {
-            selectedValues = new JList();
-        } else {
-            selectedValues = new JList(selectedValuesArray);
-        }
         selectedValues.setVisibleRowCount(8);
         selectedValues.setFixedCellWidth(80);
         selectedValues.setFixedCellHeight(20);

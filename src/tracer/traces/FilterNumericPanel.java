@@ -25,6 +25,8 @@
 
 package tracer.traces;
 
+import dr.inference.trace.Filter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.TreeSet;
@@ -32,13 +34,15 @@ import java.util.TreeSet;
 /**
  * @author Walter Xie
  */
-public class FilterContinuousPanel extends FilterAbstractPanel {
+public class FilterNumericPanel extends FilterAbstractPanel {
     JTextField minField;
     JTextField maxField;
     double lower;
     double upper;
 
-    FilterContinuousPanel(double[] minMax, String[] bound) {
+    FilterNumericPanel(double[] minMax, Filter filter) {
+        super.filter = filter;
+
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 //        c.weightx = 5;
@@ -56,10 +60,11 @@ public class FilterContinuousPanel extends FilterAbstractPanel {
             add(new JLabel("Lower = " + minMax[0] + ", upper = " + minMax[0] + " !"));
 
         } else {
-
-            if (bound == null) {
-                bound = new String[2];
+            String[] bound = new String[2];
+            if (filter != null) {
+                bound = filter.getIn();
             }
+
             lower=minMax[0];
             upper=minMax[1];
 

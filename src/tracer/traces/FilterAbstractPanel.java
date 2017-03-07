@@ -25,19 +25,23 @@
 
 package tracer.traces;
 
+import dr.inference.trace.Filter;
+
 import javax.swing.*;
 
 /**
  * @author Walter Xie
  */
 public abstract class FilterAbstractPanel extends JPanel {
+    Filter filter;
 
     abstract String[] getSelectedValues();
 
-    // if true, cannot return getSelectedValues()
-    boolean containsNullValue() {
-        if (getSelectedValues() == null || getSelectedValues().length < 1) return true;
-        for (String ob : getSelectedValues()) {
+    // String[] selV = getSelectedValues();
+    // if true, getSelectedValues() returns null equivalent values
+    boolean containsNullValue(String[] selV) {
+        if (selV == null || selV.length < 1) return true;
+        for (String ob : selV) {
             if (ob == null || ob.equals("")) return true;
         }
         return false;
@@ -45,7 +49,7 @@ public abstract class FilterAbstractPanel extends JPanel {
 //
 //    FilterAbstractPanel getInstance(String[] a, String[] b, TraceFactory.TraceType traceType) {
 //        if (traceType == TraceFactory.TraceType.DOUBLE) {
-//            return new FilterContinuousPanel(a, b);
+//            return new FilterNumericPanel(a, b);
 //        } else {
 //            return new FilterDiscretePanel(a, b);
 //        }
