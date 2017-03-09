@@ -91,12 +91,28 @@ public class JTraceChart extends DiscreteJChart {
         this.isLinePlot = isLinePlot;
     }
 
-    public void addTrace(String name, long stateStart, long stateStep, List<Double> values, List<Double> burninValues, Paint paint) {
+    /**
+     *
+     * @param name
+     * @param stateStart
+     * @param stateStep
+     * @param values
+     * @param burninValues
+     * @param paint
+     * @return double[4] : minX, maxX, minY, maxY
+     */
+    public double[] addTrace(String name, long stateStart, long stateStep, List<Double> values, List<Double> burninValues, Paint paint) {
+        double[] minMax = new double[4];
 
         Variate.D yd = new Variate.D(values);
 
-        xAxis.addRange(0, stateStart + (values.size() * stateStep) - stateStep);
-        yAxis.addRange(yd.getMin(), yd.getMax());
+        // minX, maxX, minY, maxY
+        minMax[0] = 0;
+        minMax[1] = stateStart + (values.size() * stateStep) - stateStep;
+        minMax[2] = yd.getMin();
+        minMax[3] = yd.getMax();
+        xAxis.addRange(minMax[0], minMax[1]);
+        yAxis.addRange(minMax[2], minMax[3]);
 
         traces.add(new Trace(stateStart, stateStep, values));
         if (burninValues != null) {
@@ -112,6 +128,16 @@ public class JTraceChart extends DiscreteJChart {
         plot.setName(name);
         addPlot(plot);
 
+        recalibrate();
+        repaint();
+
+        return minMax;
+    }
+
+    // used to re-set range for multi-traces
+    public void setRange(double minX, double maxX, double minY, double maxY) {
+        xAxis.setRange(minX, maxX);
+        yAxis.setRange(minY, maxY);
         recalibrate();
         repaint();
     }
