@@ -44,8 +44,8 @@ public class JTraceChart extends DiscreteJChart {
     private static final int BURNIN_TRANSLUCENCY = 72;
 
     private class Trace {
-        int stateStart;
-        int stateStep;
+        long stateStart;
+        long stateStep;
 
         int sampleCount;
         int sampleStep;
@@ -53,7 +53,7 @@ public class JTraceChart extends DiscreteJChart {
         List<Double> states = new ArrayList<Double>();
         List<Double> values;
 
-        Trace(int stateStart, int stateStep, List<Double> values) {
+        Trace(long stateStart, long stateStep, List<Double> values) {
 
             this.stateStart = stateStart;
             this.stateStep = stateStep;
@@ -91,7 +91,7 @@ public class JTraceChart extends DiscreteJChart {
         this.isLinePlot = isLinePlot;
     }
 
-    public void addTrace(String name, int stateStart, int stateStep, List<Double> values, List<Double> burninValues, Paint paint) {
+    public void addTrace(String name, long stateStart, long stateStep, List<Double> values, List<Double> burninValues, Paint paint) {
 
         Variate.D yd = new Variate.D(values);
 

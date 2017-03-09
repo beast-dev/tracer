@@ -639,8 +639,8 @@ public class BayesianSkylineDialog {
 //                    importer = new NewickImporter(reader, false);
 //                }
 
-                int burnin = traceList.getBurnIn();
-                int skip = burnin / traceList.getStepSize();
+                long burnin = traceList.getBurnIn();
+                int skip = (int) (burnin / traceList.getStepSize());
                 int state = 0;
 
                 while (importer.hasTree() && state < skip) {

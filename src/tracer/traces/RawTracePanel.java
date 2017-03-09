@@ -315,8 +315,8 @@ public class RawTracePanel extends JPanel implements Exportable {
 
         int i = 0;
         for (TraceList tl : traceLists) {
-            int stateStart = tl.getBurnIn();
-            int stateStep = tl.getStepSize();
+            long stateStart = tl.getBurnIn();
+            long stateStep = tl.getStepSize();
 
             for (String traceName : traceNames) {
                 int traceIndex = tl.getTraceIndex(traceName);
