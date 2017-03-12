@@ -94,7 +94,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     private JButton realButton;
     private JButton ordinalButton;
-    private JButton binaryButton;
+//    private JButton binaryButton;
     private JButton categoricalButton;
 
 //    private final List<FilterListPanel> filterListPanelList = new ArrayList<FilterListPanel>();
@@ -243,12 +243,12 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         ordinalButton.setFont(UIManager.getFont("SmallSystemFont"));
         ordinalButton.setEnabled(false);
 
-        binaryButton = new JButton("(B)in");
-        binaryButton.setToolTipText(TraceType.BINARY.toString());
-        // Only affect Mac OS X - nicer GUI
-        binaryButton.putClientProperty("Quaqua.Button.style", "placard");
-        binaryButton.setFont(UIManager.getFont("SmallSystemFont"));
-        binaryButton.setEnabled(false);
+//        binaryButton = new JButton("(B)in");
+//        binaryButton.setToolTipText(TraceType.BINARY.toString());
+//        // Only affect Mac OS X - nicer GUI
+//        binaryButton.putClientProperty("Quaqua.Button.style", "placard");
+//        binaryButton.setFont(UIManager.getFont("SmallSystemFont"));
+//        binaryButton.setEnabled(false);
 
         categoricalButton = new JButton("(C)at");
         categoricalButton.setToolTipText(TraceType.CATEGORICAL.toString());
@@ -267,11 +267,11 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 changeTraceType(TraceType.ORDINAL);
             }
         });
-        binaryButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                changeTraceType(TraceType.BINARY);
-            }
-        });
+//        binaryButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                changeTraceType(TraceType.BINARY);
+//            }
+//        });
         categoricalButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeTraceType(TraceType.CATEGORICAL);
@@ -280,7 +280,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         changeTraceTypePanel.add(realButton);
         changeTraceTypePanel.add(ordinalButton);
-        changeTraceTypePanel.add(binaryButton);
+//        changeTraceTypePanel.add(binaryButton);
         changeTraceTypePanel.add(categoricalButton);
         changeTraceTypePanel.setToolTipText("<html> Change the data type of a selected parameter here. <br>" +
                 "Alternatively use key word real, ordinal, binary, categorical " +
@@ -777,7 +777,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         realButton.setEnabled(selRows.length > 0);
         ordinalButton.setEnabled(selRows.length > 0);
-        binaryButton.setEnabled(selRows.length > 0);
+//        binaryButton.setEnabled(selRows.length > 0);
         categoricalButton.setEnabled(selRows.length > 0);
     }
 

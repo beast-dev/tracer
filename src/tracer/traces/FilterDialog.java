@@ -56,7 +56,7 @@ public class FilterDialog extends JDialog {
                 options[0]);
         optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-        final JDialog dialog = optionPane.createDialog(frame, "Filter Editor");
+        final JDialog dialog = optionPane.createDialog(frame, "Conditional Posterior Distributions");
 //        dialog.setModal(true);
 //        dialog.setResizable(true);
         dialog.pack();

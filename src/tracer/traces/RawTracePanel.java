@@ -30,6 +30,7 @@ import dr.inference.trace.Trace;
 import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceType;
 import dr.inference.trace.TraceList;
+import dr.stats.Variate;
 import jam.framework.Exportable;
 
 import javax.sound.sampled.AudioFormat;
@@ -314,9 +315,11 @@ public class RawTracePanel extends JPanel implements Exportable {
         remove(messageLabel);
 
         int i = 0;
+        List valuesX = new ArrayList();
+        List valuesY = new ArrayList();
         for (TraceList tl : traceLists) {
-            int stateStart = tl.getBurnIn();
-            int stateStep = tl.getStepSize();
+            long stateStart = tl.getBurnIn();
+            long stateStep = tl.getStepSize();
 
             for (String traceName : traceNames) {
                 int traceIndex = tl.getTraceIndex(traceName);
@@ -336,6 +339,7 @@ public class RawTracePanel extends JPanel implements Exportable {
                     if (burninCheckBox.isSelected() && tl.getBurninStateCount() > 0) {
                         burninValues = tl.getBurninValues(traceIndex);
                     }
+                    double[] minMax;
                     if (trace.getTraceType().isNumber()) {
 
                         traceChart.setYAxis(trace.getTraceType().isOrdinal(), new HashMap<Integer, String>());
@@ -348,7 +352,7 @@ public class RawTracePanel extends JPanel implements Exportable {
                                 traceChart.getYAxis().setRange(0.0, 1.0);
                             }
                         }
-                        traceChart.addTrace(name, stateStart, stateStep, values, burninValues, paints[i]);
+                        minMax = traceChart.addTrace(name, stateStart, stateStep, values, burninValues, paints[i]);
 
                     } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
 
@@ -371,11 +375,15 @@ public class RawTracePanel extends JPanel implements Exportable {
                         }
 
                         traceChart.setYAxis(false, categoryDataMap);
-                        traceChart.addTrace(name, stateStart, stateStep, doubleData, doubleBurninData, paints[i]);
+                        minMax = traceChart.addTrace(name, stateStart, stateStep, doubleData, doubleBurninData, paints[i]);
 
                     } else {
                         throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
                     }
+                    valuesX.add(minMax[0]);
+                    valuesX.add(minMax[1]);
+                    valuesY.add(minMax[2]);
+                    valuesY.add(minMax[3]);
 
                     if (colourBy == COLOUR_BY_TRACE || colourBy == COLOUR_BY_ALL) {
                         i++;
@@ -389,6 +397,11 @@ public class RawTracePanel extends JPanel implements Exportable {
                 i = 0;
             }
             if (i == paints.length) i = 0;
+        }// for (TraceList tl : traceLists)
+        if (traceLists.length > 1 || traceNames.size() > 1) {
+            Variate.D xV = new Variate.D(valuesX);
+            Variate.D yV = new Variate.D(valuesY);
+            traceChart.setRange(xV.getMin(), xV.getMax(), yV.getMin(), yV.getMax());
         }
 
         chartPanel.setXAxisTitle("State");

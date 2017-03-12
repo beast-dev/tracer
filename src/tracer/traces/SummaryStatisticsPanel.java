@@ -90,12 +90,19 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
             public void mouseMoved(MouseEvent e){
                 Point p = e.getPoint();
                 int row = statisticsTable.rowAtPoint(p);
-                if (row == 6) {
-                    Object t = statisticsModel.getValueAt(9,1);
-                    if (!t.equals("-")) {
-                        statisticsTable.setToolTipText("Incredible set : " + t);
+
+                if (row > -1 && row < statisticsTable.getRowCount()) {
+                    try {
+                        Object n = statisticsModel.getValueAt(row,0);
+                        Object v = statisticsModel.getValueAt(row,1);
+                        if (!v.equals("-")) {
+                            statisticsTable.setToolTipText(n + " : " + v);
+                        }
+                    } catch (RuntimeException e1) {
+                        //catch null pointer exception if mouse is over an empty line
                     }
                 }
+
             }//end MouseMoved
         }); // end MouseMotionAdapter
 
@@ -206,7 +213,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
 
         String[] rowNamesNumbers = {MEAN_ROW, STDEV_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, MODE_ROW, GEOMETRIC_MEAN_ROW,
                 LOWER_UPPER_ROW, ACT_ROW, ESS_ROW};
-        String[] rowNamesCategorical = {MEAN_ROW, STDEV_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, MODE_ROW, CRED_SET_ROW,
+        String[] rowNamesCategorical = {MEAN_ROW, STDEV_ROW, STDEV, CRED_SET_ROW, INCRED_SET_ROW, MODE_ROW, FREQ_MODE_ROW,
                 LOWER_UPPER_ROW, ACT_ROW, ESS_ROW};
 
         public StatisticsModel() {
@@ -294,16 +301,17 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                         case 0:
                         case 1:
                         case 2:
-                        case 3:
-                        case 4:
-                        case 5:
                             return "n/a";
-                        case 6:
-                            if (!tc.hasGeometricMean()) return "n/a";
-                            value = tc.getGeometricMean();
-                            break;
-                        case 7:
+                        case 3:
                             return tc.printCredibleSet();
+                        case 4:
+                            return tc.printInCredibleSet();
+                        case 5:
+                            return tc.getMode();
+                        case 6:
+                            return tc.getFrequencyOfMode();
+                        case 7:
+                            return "n/a";
                         case 8:
                             value = tc.getACT();
                             break;
@@ -311,8 +319,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             value = tc.getESS();
                             break;
                         case 10:
-                            return tc.printInCredibleSet();
-
+                            return "-";
                     }
                 }
             } else {

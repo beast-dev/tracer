@@ -124,14 +124,14 @@ public class CombinedTraces extends FilteredTraceList { //implements TraceList {
         return false;
     }
 
-    public int getBurnIn() {
+    public long getBurnIn() {
         return 0;
     }
 
     /**
      * @return the size of the step between states
      */
-    public int getStepSize() {
+    public long getStepSize() {
         return traceLists[0].getStepSize();
     }
 
