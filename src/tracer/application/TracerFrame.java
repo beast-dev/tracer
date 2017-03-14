@@ -164,7 +164,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         traceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
-                traceTableSelectionChanged();
+                if(!evt.getValueIsAdjusting())
+                    traceTableSelectionChanged();
             }
         });
 
@@ -213,7 +214,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         statisticTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
-                statisticTableSelectionChanged();
+                if(!evt.getValueIsAdjusting())
+                    statisticTableSelectionChanged();
             }
         });
 
