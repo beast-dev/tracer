@@ -760,8 +760,11 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         java.util.List<String> selectedTraces = new ArrayList<String>();
         for (int selRow : selRows) {
-            selectedTraces.add(commonTraceNames.get(selRow));
+            if (selRow < commonTraceNames.size())
+                selectedTraces.add(commonTraceNames.get(selRow));
         }
+        if (selectedTraces.size() < 1)
+            selectedTraces.add(commonTraceNames.get(0));
 
         if (currentTraceLists.size() == 0 || isIncomplete) {
             tracePanel.setTraces(null, selectedTraces);
