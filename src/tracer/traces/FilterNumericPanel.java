@@ -29,7 +29,6 @@ import dr.inference.trace.Filter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.TreeSet;
 
 /**
  * @author Walter Xie
@@ -72,7 +71,7 @@ public class FilterNumericPanel extends FilterAbstractPanel {
             minField.setColumns(20);
 
             //c.gridy = 0;
-            add(new JLabel("Lower to rescale parameter : "), c);
+            add(new JLabel("Set new lower bound : "), c);
 
             c.gridy = 1;
             add(minField, c);
@@ -85,7 +84,7 @@ public class FilterNumericPanel extends FilterAbstractPanel {
 
             c.gridy = 3;
             c.insets = new Insets(50, 10, 0, 10);
-            add(new JLabel("Upper to rescale parameter : "), c);
+            add(new JLabel("Set new upper bound : "), c);
 
             c.gridy = 4;
             c.insets = new Insets(20, 10, 0, 10);

@@ -139,7 +139,7 @@ public class CombinedTraces extends FilteredTraceList { //implements TraceList {
      * @return the last state in the chain
      */
     public long getMaxState() {
-        return getStateCount() * getStepSize();
+        return getStateCount() * getStepSize() - traceLists.length * getStepSize();
     }
 
     public List getValues(int index, int fromIndex, int toIndex) {

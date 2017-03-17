@@ -493,19 +493,20 @@ public class DensityPanel extends JPanel implements Exportable {
                         }
 
                         densityChart.addPlot(plot);
-
-                        if (trace.getTraceType().isDiscrete()) {
-                            densityChart.setXAxis(new DiscreteAxis(true, true));
-                            //densityChart.getXAxis().setManualAxis(0, 1.0, 1.0, 0.0);
-
-                            if (trace.getTraceType().isBinary()) {
-                                densityChart.getXAxis().setManualRange(0.0, 1.0);
-                                densityChart.getXAxis().setRange(0.0, 1.0);
-                            }
-                        } else {
-                            densityChart.setXAxis(new LinearAxis());
-                        }
                     }
+                    // change x axis to DiscreteAxis or LinearAxis according TraceType
+                    if (trace.getTraceType().isDiscrete()) {
+                        densityChart.setXAxis(new DiscreteAxis(true, true));
+                        //densityChart.getXAxis().setManualAxis(0, 1.0, 1.0, 0.0);
+
+                        if (trace.getTraceType().isBinary()) {
+                            densityChart.getXAxis().setManualRange(0.0, 1.0);
+                            densityChart.getXAxis().setRange(0.0, 1.0);
+                        }
+                    } else {
+                        densityChart.setXAxis(new LinearAxis());
+                    }
+                    // colourBy
                     if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_ALL) {
                         i++;
                     }

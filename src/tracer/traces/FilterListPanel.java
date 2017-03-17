@@ -76,7 +76,8 @@ public class FilterListPanel extends JPanel {
 
         traceFilterTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
-                selectionChanged();
+                if(!evt.getValueIsAdjusting())
+                    selectionChanged();
             }
         });
 

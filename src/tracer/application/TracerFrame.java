@@ -164,7 +164,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         traceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
-                traceTableSelectionChanged();
+                if(!evt.getValueIsAdjusting())
+                    traceTableSelectionChanged();
             }
         });
 
@@ -213,7 +214,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         statisticTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
-                statisticTableSelectionChanged();
+                if(!evt.getValueIsAdjusting())
+                    statisticTableSelectionChanged();
             }
         });
 
@@ -758,8 +760,11 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         java.util.List<String> selectedTraces = new ArrayList<String>();
         for (int selRow : selRows) {
-            selectedTraces.add(commonTraceNames.get(selRow));
+            if (selRow < commonTraceNames.size())
+                selectedTraces.add(commonTraceNames.get(selRow));
         }
+        if (selectedTraces.size() < 1)
+            selectedTraces.add(commonTraceNames.get(0));
 
         if (currentTraceLists.size() == 0 || isIncomplete) {
             tracePanel.setTraces(null, selectedTraces);
@@ -1030,12 +1035,12 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 in.getProgressMonitor().setMillisToDecideToPopup(0);
                 in.getProgressMonitor().setMillisToPopup(0);
 
-                final Reader reader = new InputStreamReader(in);
+//                final Reader reader = new InputStreamReader(in);
 
                 Thread readThread = new Thread() {
                     public void run() {
                         try {
-                            traces.loadTraces(reader);
+                            traces.loadTraces(in);
 
                             EventQueue.invokeLater(
                                     new Runnable() {
@@ -1099,8 +1104,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 public void run() {
                     try {
                         for (final LogFileTraces traces : tracesArray) {
-                            final Reader reader = new FileReader(traces.getFile());
-                            traces.loadTraces(reader);
+//                            final Reader reader = new FileReader(traces.getFile());
+                            traces.loadTraces();
 
                             EventQueue.invokeLater(
                                     new Runnable() {

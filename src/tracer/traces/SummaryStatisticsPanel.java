@@ -28,7 +28,6 @@ package tracer.traces;
 import dr.inference.trace.TraceAnalysis;
 import dr.inference.trace.TraceCorrelation;
 import dr.inference.trace.TraceList;
-import dr.inference.trace.TraceType;
 import jam.framework.Exportable;
 import jam.table.TableRenderer;
 
@@ -305,7 +304,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                         case 3:
                             return tc.printCredibleSet();
                         case 4:
-                            return tc.printInCredibleSet();
+                            return tc.printIncredibleSet();
                         case 5:
                             return tc.getMode();
                         case 6:

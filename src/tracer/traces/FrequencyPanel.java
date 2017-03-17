@@ -208,7 +208,7 @@ public class FrequencyPanel extends JPanel implements Exportable {
                 }
 
 //                System.out.println(trace.getName() + "     " + trace.getTraceType());
-//                System.out.println(td.printCredibleSet() + "      " + td.printInCredibleSet() + "   " + td.getTraceType());
+//                System.out.println(td.printCredibleSet() + "      " + td.printIncredibleSet() + "   " + td.getTraceType());
 //                for (Integer i : new TreeSet<Integer>(categoryDataMap.keySet())) {
 //                    System.out.println("i = " + i + "; v = " + categoryDataMap.get(i));
 //                }
