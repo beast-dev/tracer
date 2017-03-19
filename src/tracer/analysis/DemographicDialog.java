@@ -44,8 +44,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -436,7 +434,7 @@ public class DemographicDialog {
 
             List heights = traceList.getValues(traceList.getTraceIndex(rootHeightTrace));
             TraceDistribution distribution = new TraceDistribution(heights,
-                    traceList.getTrace(traceList.getTraceIndex(rootHeightTrace)).getTraceType(), traceList.getStepSize());
+                    traceList.getTrace(traceList.getTraceIndex(rootHeightTrace)).getTraceType());
 
             double timeMean = distribution.getMean();
             double timeMedian = distribution.getMedian();

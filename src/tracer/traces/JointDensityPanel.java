@@ -26,6 +26,7 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
+import dr.inference.trace.TraceCorrelation;
 import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceType;
 import dr.inference.trace.TraceList;
@@ -214,8 +215,8 @@ public class JointDensityPanel extends JPanel implements Exportable {
             return;
         }
 
-        TraceDistribution td1 = tl1.getDistributionStatistics(traceIndex1);
-        TraceDistribution td2 = tl2.getDistributionStatistics(traceIndex2);
+        TraceCorrelation td1 = tl1.getCorrelationStatistics(traceIndex1);
+        TraceCorrelation td2 = tl2.getCorrelationStatistics(traceIndex2);
         if (td1 == null || td2 == null) {
 //            correlationChart.removeAllPlots();
             chartPanel.remove(tableScrollPane);
@@ -433,7 +434,7 @@ public class JointDensityPanel extends JPanel implements Exportable {
         return data;
     }
 
-    private void numericalPlot(TraceDistribution td1, TraceDistribution td2) {
+    private void numericalPlot(TraceCorrelation td1, TraceCorrelation td2) {
         int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
         int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
 
