@@ -114,12 +114,19 @@ public class JTraceChart extends DiscreteJChart {
         xAxis.addRange(minMax[0], minMax[1]);
         yAxis.addRange(minMax[2], minMax[3]);
 
-        traces.add(new Trace(stateStart, stateStep, values));
+        Trace trace = new Trace(stateStart, stateStep, values);
+        traces.add(trace);
         if (burninValues != null) {
             burninTraces.add(new Trace(0, stateStep, burninValues));
         }
 
-        Plot plot = new Plot.AbstractPlot() { // create a dummy plot to store paint styles
+        Variate.D xData = new Variate.D(trace.states);
+        Variate.D yData = new Variate.D(values);
+        // must setData(xData, yData), otherwise ChartSetupDialog will crash,
+        // because applySettings(JChart chart) need xData and yData to avoid
+        // to reset minData and maxData to INF.
+        Plot plot = new Plot.AbstractPlot(xData, yData) {
+            // create a dummy plot to store paint styles
             protected void paintData(Graphics2D g2, Variate.N xData, Variate.N yData) {
             }
         };
