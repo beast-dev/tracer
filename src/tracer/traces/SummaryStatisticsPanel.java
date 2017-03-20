@@ -259,9 +259,9 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
             double value = 0.0;
 
             if (tc != null) {
-                if (row != 0 && !tc.isValid()) return "n/a";
 
                 if (tc.getTraceType().isNumber()) {
+                    if (row != 0 && !tc.isValid()) return "n/a";
                     switch (row) {
                         case 0:
                             value = tc.getMean();
