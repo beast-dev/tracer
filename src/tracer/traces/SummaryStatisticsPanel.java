@@ -57,6 +57,8 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
     static final String ACT_ROW = "auto-correlation time (ACT)";
     static final String ESS_ROW = "effective sample size (ESS)";
     static final String SUM_ESS_ROW = "effective sample size (sum of ESS)";
+    static final String NUM_SAMPLES = "number of samples";
+    static final String UNIQUE_VALUES = "unique values";
 
     TraceList[] traceLists = null;
     java.util.List<String> traceNames = null;
@@ -211,9 +213,9 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
     class StatisticsModel extends AbstractTableModel {
 
         String[] rowNamesNumbers = {MEAN_ROW, STDEV_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, MODE_ROW, GEOMETRIC_MEAN_ROW,
-                LOWER_UPPER_ROW, ACT_ROW, ESS_ROW};
-        String[] rowNamesCategorical = {MEAN_ROW, STDEV_ROW, STDEV, CRED_SET_ROW, INCRED_SET_ROW, MODE_ROW, FREQ_MODE_ROW,
-                LOWER_UPPER_ROW, ACT_ROW, ESS_ROW};
+                LOWER_UPPER_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
+        String[] rowNamesCategorical = {MEAN_ROW, STDEV_ROW, STDEV, MODE_ROW, FREQ_MODE_ROW, UNIQUE_VALUES,
+                CRED_SET_ROW, INCRED_SET_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
 
         public StatisticsModel() {
         }
@@ -261,7 +263,6 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
             if (tc != null) {
 
                 if (tc.getTraceType().isNumber()) {
-                    if (row != 0 && !tc.isValid()) return "n/a";
                     switch (row) {
                         case 0:
                             value = tc.getMean();
@@ -285,6 +286,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             value = tc.getGeometricMean();
                             break;
                         case 7:
+                            if (!tc.isMultipleValues()) return "n/a";
                             return "[" + TraceAnalysis.formattedNumber(tc.getLowerHPD()) + ", " + TraceAnalysis.formattedNumber(tc.getUpperHPD()) + "]";
                         case 8:
                             value = tc.getACT();
@@ -293,31 +295,40 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             value = tc.getESS();
                             break;
                         case 10:
+                            value = tc.getSize();
+                            break;
+                        case 11:
                             return "-";
                     } // END switch
                 } else{
+                    // categorical
                     switch (row) {
                         case 0:
                         case 1:
                         case 2:
                             return "n/a";
                         case 3:
-                            return tc.printCredibleSet();
-                        case 4:
-                            return tc.printIncredibleSet();
-                        case 5:
                             return tc.getMode();
-                        case 6:
+                        case 4:
                             return tc.getFrequencyOfMode();
+                        case 5:
+                            return tc.frequencyCounter.uniqueValues();
+                        case 6:
+                            return tc.printCredibleSet();
                         case 7:
-                            return "n/a";
+                            return tc.printIncredibleSet();
                         case 8:
                             value = tc.getACT();
+                            if (Double.isNaN(value)) return "n/a";
                             break;
                         case 9:
                             value = tc.getESS();
+                            if (Double.isNaN(value)) return "n/a";
                             break;
                         case 10:
+                            value = tc.getSize();
+                            break;
+                        case 11:
                             return "-";
                     }
                 }

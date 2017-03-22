@@ -1566,10 +1566,11 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             boolean extremeWarning = false;
             switch (col) {
                 case 1:
+                    if (td.getTraceType().isCatorical()) return "n/a";
                     value = td.getMean();
                     break;
                 case 2:
-                    if (!td.isValid()) return "-";
+//                    if (!td.isMultipleValues()) return "-";
                     value = td.getESS();
                     if (Double.isNaN(value) || value < 1) {
                         // assume not applicable; should be tested in the computation
