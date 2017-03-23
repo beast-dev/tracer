@@ -59,6 +59,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
     static final String SUM_ESS_ROW = "effective sample size (sum of ESS)";
     static final String NUM_SAMPLES = "number of samples";
     static final String UNIQUE_VALUES = "unique values";
+    static final String MIN_MAX = "value range";
 
     TraceList[] traceLists = null;
     java.util.List<String> traceNames = null;
@@ -212,10 +213,10 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
 
     class StatisticsModel extends AbstractTableModel {
 
-        String[] rowNamesNumbers = {MEAN_ROW, STDEV_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, MODE_ROW, GEOMETRIC_MEAN_ROW,
-                LOWER_UPPER_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
-        String[] rowNamesCategorical = {MEAN_ROW, STDEV_ROW, STDEV, MODE_ROW, FREQ_MODE_ROW, UNIQUE_VALUES,
-                CRED_SET_ROW, INCRED_SET_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
+        String[] rowNamesNumbers = {MEAN_ROW, STDEV_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, MIN_MAX,
+                GEOMETRIC_MEAN_ROW, LOWER_UPPER_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
+        String[] rowNamesCategorical = {MODE_ROW, FREQ_MODE_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, UNIQUE_VALUES,
+                INCRED_SET_ROW, CRED_SET_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
 
         public StatisticsModel() {
         }
@@ -280,7 +281,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             value = tc.getMedian();
                             break;
                         case 5:
-                            return tc.getMode();
+                            return "[" + TraceAnalysis.formattedNumber(tc.getMinimum()) + ", " + TraceAnalysis.formattedNumber(tc.getMaximum()) + "]";
                         case 6:
                             if (!tc.hasGeometricMean()) return "n/a";
                             value = tc.getGeometricMean();
@@ -304,19 +305,19 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                     // categorical
                     switch (row) {
                         case 0:
-                        case 1:
-                        case 2:
-                            return "n/a";
-                        case 3:
                             return tc.getMode();
-                        case 4:
+                        case 1:
                             return tc.getFrequencyOfMode();
+                        case 2:
+                        case 3:
+                        case 4:
+                            return "n/a";
                         case 5:
                             return tc.frequencyCounter.uniqueValues();
                         case 6:
-                            return tc.printCredibleSet();
-                        case 7:
                             return tc.printIncredibleSet();
+                        case 7:
+                            return tc.printCredibleSet();
                         case 8:
                             value = tc.getACT();
                             if (Double.isNaN(value)) return "n/a";
