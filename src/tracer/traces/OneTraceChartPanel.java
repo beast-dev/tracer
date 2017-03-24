@@ -32,7 +32,10 @@ import javax.swing.*;
 import java.util.Map;
 
 /**
- * A shared code for the panel that displays a single trace in a plot
+ * A shared code for the panel that displays a single trace in a plot.
+ * {@link #setupTrace() abstract setupTrace} makes sure
+ * the actions implemented in children classes updating the chart.
+ * @see tracer.traces.FrequencyPanel
  *
  * @author Andrew Rambaut
  * @author Alexei Drummond

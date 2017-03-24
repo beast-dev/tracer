@@ -33,6 +33,8 @@ import java.util.List;
 
 /**
  * A shared code for the panel that displays multi-traces in one plot.
+ * * {@link #setupTraces() abstract setupTraces} makes sure
+ * the actions implemented in children classes updating the chart.
  * @see tracer.traces.DensityPanel, @see tracer.traces.JointDensityPanel,
  * and @see tracer.traces.RawTracePanel.
  *

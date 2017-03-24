@@ -40,8 +40,8 @@ import java.util.Map;
 /**
  * A shared code for the panel that displays a plot of traces,
  * such as most part of toolbar, and the chart panel.
- * {@link #setupTraces() abstract setupTraces} makes sure
- * the actions implemented in children classes updating the chart.
+ * {@link #setupToolBar(JFrame)() abstract setupToolBar} makes sure
+ * the customized toolbar is implemented in children classes.
  *
  * @author Andrew Rambaut
  * @author Alexei Drummond
