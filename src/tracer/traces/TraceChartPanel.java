@@ -138,6 +138,14 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     }
 
     /**
+     * Used in the constructor of the child class to customize toolbar
+     *
+     * @param frame
+     * @return
+     */
+    protected abstract JToolBar setupToolBar(final JFrame frame);
+
+    /**
      * Create {@see JToolBar} toolBar and add axes components
      * @param frame
      * @param currentSettings
@@ -227,19 +235,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     }
 
     //++++++ setup chart +++++++
-    /**
-     * Setup trace(s) for chart, used by the actions implemented in children classes.
-     */
-    protected abstract void setupTraces();
-    //    protected void setupTraces() {
-//        if (!rmAllPlots()) return;
-//
-//        set...();
-//
-//        validate();
-//        repaint();
-//    }
-
     protected void setLegend(final Settings currentSettings) {
         switch (currentSettings.legendAlignment) {
             case 0:
@@ -278,32 +273,19 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         }
     }
 
-    // for Frequency panel and Density panel only
-    protected void setBinsComponents(TraceType traceType) {
-
-        if (traceType == TraceType.REAL) {
-            labelBins.setVisible(true);
-            binsCombo.setVisible(true);
-            showValuesCheckBox.setVisible(false);
-
-        } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
-            labelBins.setVisible(false);
-            binsCombo.setVisible(false);
-            showValuesCheckBox.setVisible(true);
-
-        } else if (traceType == TraceType.CATEGORICAL) {
-            labelBins.setVisible(false);
-            binsCombo.setVisible(false);
-            showValuesCheckBox.setVisible(true);
-
-        } else {
-            throw new RuntimeException("Trace type is not recognized: " + traceType);
-        }
-    }
-
+    /**
+     * Convert a categorical value to the index of unique values,
+     * and put it into the map <code>categoryDataMap</code>.
+     *
+     * @param values
+     * @param td
+     * @param categoryDataMap
+     * @return
+     */
     protected List<Double> getIndexOfCategoricalValues(List values, TraceCorrelation td, Map<Integer, String> categoryDataMap) {
         List<Double> intData = new ArrayList<Double>();
         for (int v = 0; v < values.size(); v++) {
+            // frequencyCounter.getKeyIndex(value)
             int index = td.getIndex(values.get(v).toString());
             intData.add(v, (double) index);
             categoryDataMap.put(index, values.get(v).toString());
@@ -311,6 +293,58 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         return intData;
     }
 
+    /**
+     *  {@link dr.app.gui.chart.DiscreteJChart#setXAxis(boolean, Map<Integer, String>) setXAxis},
+     *  used in {@see tracer.traces.FrequencyPanel} and {@see tracer.traces.DensityPanel}
+     *
+     * @param traceType
+     * @param categoryDataMap
+     */
+    protected void setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) {
+        if (! (traceChart instanceof DiscreteJChart) )
+            throw new RuntimeException("traceChart has to be instanceof DiscreteJChart, " +
+                    "using setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) !");
+
+        if (traceType == TraceType.REAL) {
+            ((DiscreteJChart) traceChart).setXAxis(false, categoryDataMap);
+
+        } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
+            ((DiscreteJChart) traceChart).setXAxis(true, categoryDataMap);
+
+        } else if (traceType == TraceType.CATEGORICAL) {
+            // categoryDataMap has to be filled in before here using getIndexOfCategoricalValues
+            ((DiscreteJChart) traceChart).setXAxis(false, categoryDataMap);
+
+        } else {
+            throw new RuntimeException("Trace type is not recognized: " + traceType);
+        }
+    }
+
+
+    /**
+     * {@link dr.app.gui.chart.JChartPanel#setYAxisTitle(String) setYAxisTitle},
+     * used in {@see tracer.traces.FrequencyPanel} and {@see tracer.traces.DensityPanel}
+     *
+     * @param traceType
+     * @param yLabs
+     */
+    protected void setYLab(TraceType traceType, String[] yLabs) {
+        if (yLabs.length !=2)
+            throw new IllegalArgumentException("Y labs array must have 2 element !");
+
+        if (traceType == TraceType.REAL) {
+            chartPanel.setYAxisTitle(yLabs[0]);
+
+        } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
+            chartPanel.setYAxisTitle(yLabs[1]);
+
+        } else if (traceType == TraceType.CATEGORICAL) {
+            chartPanel.setYAxisTitle(yLabs[1]);
+
+        } else {
+            throw new RuntimeException("Trace type is not recognized: " + traceType);
+        }
+    }
 
     public JComponent getExportableComponent() {
         return chartPanel;

@@ -25,17 +25,16 @@
 
 package tracer.traces;
 
-import dr.app.gui.chart.DiscreteJChart;
 import dr.inference.trace.TraceList;
-import dr.inference.trace.TraceType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A shared code for the panel that displays multi-traces in one plot.
+ * @see tracer.traces.DensityPanel, @see tracer.traces.JointDensityPanel,
+ * and @see tracer.traces.RawTracePanel.
  *
  * @author Andrew Rambaut
  * @author Alexei Drummond
@@ -80,6 +79,18 @@ public abstract class NTracesChartPanel extends TraceChartPanel {
 //    }
 
     //++++++ setup chart +++++++
+    /**
+     * Setup trace(s) for chart, used by the actions implemented in children classes.
+     */
+    protected abstract void setupTraces();
+    //    protected void setupTraces() {
+//        if (!rmAllPlots()) return;
+//
+//        set...();
+//
+//        validate();
+//        repaint();
+//    }
 
     /**
      * If no traces selected, return false, else return true.
@@ -126,44 +137,6 @@ public abstract class NTracesChartPanel extends TraceChartPanel {
 //            if (i == paints.length) i = 0;
 //        }
 //    }
-
-    protected void setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) {
-        if (! (traceChart instanceof DiscreteJChart) )
-            throw new RuntimeException("traceChart has to be instanceof DiscreteJChart, " +
-                    "using setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) !");
-
-        if (traceType == TraceType.REAL) {
-            ((DiscreteJChart) traceChart).setXAxis(false, categoryDataMap);
-
-        } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
-            ((DiscreteJChart) traceChart).setXAxis(true, categoryDataMap);
-
-        } else if (traceType == TraceType.CATEGORICAL) {
-            // categoryDataMap has to be filled in before here using getIndexOfCategoricalValues
-            ((DiscreteJChart) traceChart).setXAxis(false, categoryDataMap);
-
-        } else {
-            throw new RuntimeException("Trace type is not recognized: " + traceType);
-        }
-    }
-
-    protected void setYLab(TraceType traceType, String[] yLabs) {
-        if (yLabs.length !=2)
-            throw new IllegalArgumentException("Y labs array must have 2 element !");
-
-        if (traceType == TraceType.REAL) {
-            chartPanel.setYAxisTitle(yLabs[0]);
-
-        } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
-            chartPanel.setYAxisTitle(yLabs[1]);
-
-        } else if (traceType == TraceType.CATEGORICAL) {
-            chartPanel.setYAxisTitle(yLabs[1]);
-
-        } else {
-            throw new RuntimeException("Trace type is not recognized: " + traceType);
-        }
-    }
 
     protected void setXLab() {
         if (traceLists.length == 1) {

@@ -26,8 +26,10 @@
 package tracer.traces;
 
 import dr.inference.trace.TraceList;
+import dr.inference.trace.TraceType;
 
 import javax.swing.*;
+import java.util.Map;
 
 /**
  * A shared code for the panel that displays a single trace in a plot
@@ -39,10 +41,6 @@ import javax.swing.*;
  */
 public abstract class OneTraceChartPanel extends TraceChartPanel {
 
-
-    /**
-     * Creates new FrequencyPanel
-     */
     public OneTraceChartPanel(final JFrame frame) {
         super(frame);
     }
@@ -53,22 +51,72 @@ public abstract class OneTraceChartPanel extends TraceChartPanel {
 
     public abstract void setTrace(TraceList traceList, String traceName);
 
-//    protected void initTrace(TraceList traceList, String traceName) {
-//        this.traceList = traceList;
-//        this.traceName = traceName;
-//
-//        Settings settings = settingsMap.get(traceName);
-//        if (settings == null) {
-//            settings = new Settings();
-//            settingsMap.put(traceName, settings);
-//        }
-//        currentSettings = settings;
-//    }
+    /**
+     * Find the <code>Settings</code> given a <code>traceName</code> in <code>settingsMap</code>.
+     * If <code>traceName</code> not in <code>settingsMap</code>, then create a new <code>Settings</code>.
+     *
+     * @param traceList
+     * @param traceName
+     * @param settingsMap
+     * @return <code>Settings</code>
+     */
+    protected Settings initSettings(TraceList traceList, String traceName, Map<String, Settings> settingsMap) {
+        this.traceList = traceList;
+        this.traceName = traceName;
+
+        Settings settings = settingsMap.get(traceName);
+        if (settings == null) {
+            settings = new Settings();
+            settingsMap.put(traceName, settings);
+        }
+        return settings;
+    }
 
     //++++++ setup chart +++++++
+    protected abstract void setupTrace();
+
+    /**
+     * If no traces selected, return false, else return true.
+     * Usage: <code>if (!rmAllPlots()) return;</code>
+     *
+     * @return boolean
+     */
+    protected boolean rmAllPlots() {
+        traceChart.removeAllPlots();
+
+        if (traceList == null || traceName == null) {
+            chartPanel.setXAxisTitle("");
+            chartPanel.setYAxisTitle("");
+            return false;
+        }
+        return true;
+    }
 
     protected void setXLab(int traceIndex) {
         chartPanel.setXAxisTitle(traceList.getTraceName(traceIndex));
+    }
+
+    // for Frequency panel only ?
+    protected void setBinsComponents(TraceType traceType) {
+
+        if (traceType == TraceType.REAL) {
+            labelBins.setVisible(true);
+            binsCombo.setVisible(true);
+            showValuesCheckBox.setVisible(false);
+
+        } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
+            labelBins.setVisible(false);
+            binsCombo.setVisible(false);
+            showValuesCheckBox.setVisible(true);
+
+        } else if (traceType == TraceType.CATEGORICAL) {
+            labelBins.setVisible(false);
+            binsCombo.setVisible(false);
+            showValuesCheckBox.setVisible(true);
+
+        } else {
+            throw new RuntimeException("Trace type is not recognized: " + traceType);
+        }
     }
 
 }

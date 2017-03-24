@@ -397,11 +397,11 @@ public class DensityPanel extends NTracesChartPanel {
             if (i == paints.length) i = 0;
         }
 
+        setXLab();
+        setYLab(traceType, new String[]{"Density", "Probability"});
 //        setColours(currentSettings);
         setLegend(currentSettings);
         setChartSetupDialog(currentSettings);
-        setXLab();
-        setYLab(traceType, new String[]{"Density", "Probability"});
 
         validate();
         repaint();
