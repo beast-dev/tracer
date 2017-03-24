@@ -48,9 +48,9 @@ import java.util.Map;
 public class DensityPanel extends NTracesChartPanel {
     private static final int DEFAULT_KDE_BINS = 5000;
 
-    protected class Settings extends TraceChartPanel.Settings {
+    private class Settings extends TraceChartPanel.Settings {
 //        ChartSetupDialog chartSetupDialog = null;
-        KDESetupDialog kdeSetupDialog = null;
+//        KDESetupDialog kdeSetupDialog = null;
         int minimumBins = 100;
         boolean showKDE = true;
         boolean showHistogram = false;
@@ -61,8 +61,8 @@ public class DensityPanel extends NTracesChartPanel {
 //        ColourByOptions colourBy = ColourByOptions.COLOUR_BY_TRACE;
     }
 
-    protected Settings currentSettings = new Settings();
-    protected Map<String, Settings> settingsMap = new HashMap<String, Settings>();
+    private Settings currentSettings = new Settings();
+    private Map<String, Settings> settingsMap = new HashMap<String, Settings>();
 
     //+++++ private field +++++
     private JComboBox displayCombo = new JComboBox(
@@ -236,7 +236,7 @@ public class DensityPanel extends NTracesChartPanel {
         }
 
         displayCombo.setSelectedIndex(currentSettings.showHistogram && currentSettings.showKDE ? 2 : (currentSettings.showKDE ? 0 : 1));
-        binsCombo.setEnabled(currentSettings.showHistogram);
+//        binsCombo.setEnabled(currentSettings.showHistogram);
 
         binsCombo.setSelectedItem(currentSettings.minimumBins);
         relativeDensityCheckBox.setSelected(currentSettings.relativeDensity);
@@ -268,11 +268,11 @@ public class DensityPanel extends NTracesChartPanel {
             }
         }
 
-        // only enable controls relevent to continuous densities...
+        // only enable controls relevant to continuous densities...
         displayCombo.setEnabled(traceType == TraceType.REAL);
         relativeDensityCheckBox.setEnabled(traceType == TraceType.REAL);
         labelBins.setEnabled(traceType == TraceType.REAL);
-        binsCombo.setEnabled(traceType == TraceType.REAL);
+        binsCombo.setEnabled(traceType == TraceType.REAL && currentSettings.showHistogram);
 //        kdeCheckBox.setEnabled(traceType == TraceFactory.TraceType.DOUBLE);
 //        kdeSetupButton.setEnabled(traceType == TraceFactory.TraceType.DOUBLE);
 
