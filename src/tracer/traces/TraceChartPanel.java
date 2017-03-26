@@ -25,14 +25,16 @@
 
 package tracer.traces;
 
-import dr.app.gui.chart.*;
+import dr.app.gui.chart.ChartSetupDialog;
+import dr.app.gui.chart.DiscreteJChart;
+import dr.app.gui.chart.JChart;
+import dr.app.gui.chart.JChartPanel;
 import dr.inference.trace.TraceCorrelation;
 import dr.inference.trace.TraceType;
 import jam.framework.Exportable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,10 +72,13 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     };
 
     protected class Settings {
+        // shared settings
         ChartSetupDialog chartSetupDialog = null;
-        int minimumBins = 50;
         int legendAlignment = 0;
         ColourByOptions colourBy = ColourByOptions.COLOUR_BY_TRACE;
+
+        // this is only used in FrequencyPanel, put here just to reduce code
+        int minimumBins = 50;
     }
 
     /**
@@ -115,14 +120,22 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         //addMainPanel(toolBar);
     }
 
+
+
+    /**
+     * encapsulate <code>traceChart</code>
+     *
+     * @return {@see DiscreteJChart} in {@see tracer.traces.JointDensityPanel},
+     *         or {@see JIntervalsChart} in {@see tracer.traces.FrequencyPanel} and {@see tracer.traces.DensityPanel},
+     *         or {@see JTraceChart} in {@see tracer.traces.RawTracePanel}
+     */
+    protected abstract JChart getTraceChart();
+
     /**
      * create panel container to display <code>traceChart</code>.
-     * @param traceChart either declared as {@see DiscreteJChart} in {@see tracer.traces.JointDensityPanel},
-     *                   or {@see JIntervalsChart} in {@see tracer.traces.FrequencyPanel}, {@see tracer.traces.DensityPanel},
-     *                   or {@see JTraceChart} in {@see tracer.traces.RawTracePanel}
      */
-    protected void initJChartPanel(JChart traceChart){
-        chartPanel = new JChartPanel(traceChart, null, "", "");
+    protected void initJChartPanel(String xAxisTitle, String yAxisTitle){
+        chartPanel = new JChartPanel(getTraceChart(), null, xAxisTitle, yAxisTitle);
     }
 
     /**
@@ -163,21 +176,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         chartSetupButton.setFont(UIManager.getFont("SmallSystemFont"));
         toolBar.add(chartSetupButton);
 
-        chartSetupButton.addActionListener(
-                new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        if (currentSettings.chartSetupDialog == null) {
-                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, true, false,
-                                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
-                        }
-
-                        currentSettings.chartSetupDialog.showDialog(traceChart);
-                        validate();
-                        repaint();
-                    }
-                }
-        );
-
         return toolBar;
     }
 
@@ -194,26 +192,18 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         labelBins.setLabelFor(binsCombo);
         toolBar.add(labelBins);
         toolBar.add(binsCombo);
-
-        //        toolBar.add(showValuesCheckBox); //todo
-        showValuesCheckBox.addActionListener(
-                new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent actionEvent) {
-
-                        validate();
-                        repaint();
-                    }
-                }
-        );
     }
 
     /**
-     * Add legend components to {@see JToolBar} toolBar,
-     * but their listeners have to be added in the child class
+     * Add legend components to {@see JToolBar} toolBar
+     * between two <code>JToolBar.Separator</code>,
+     * but their listeners have to be added in the child class.
+     *
      * @param toolBar
      */
     protected void addLegend(final JToolBar toolBar) {
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+
         JLabel label = new JLabel("Legend:");
         label.setFont(UIManager.getFont("SmallSystemFont"));
         label.setLabelFor(legendCombo);
@@ -235,41 +225,52 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     }
 
     //++++++ setup chart +++++++
+
+    /**
+     * set legend given <code>Settings</code> which includes legend position and colours.
+     *
+     * @param currentSettings
+     */
     protected void setLegend(final Settings currentSettings) {
         switch (currentSettings.legendAlignment) {
             case 0:
                 break;
             case 1:
-                traceChart.setLegendAlignment(SwingConstants.NORTH_WEST);
+                getTraceChart().setLegendAlignment(SwingConstants.NORTH_WEST);
                 break;
             case 2:
-                traceChart.setLegendAlignment(SwingConstants.NORTH);
+                getTraceChart().setLegendAlignment(SwingConstants.NORTH);
                 break;
             case 3:
-                traceChart.setLegendAlignment(SwingConstants.NORTH_EAST);
+                getTraceChart().setLegendAlignment(SwingConstants.NORTH_EAST);
                 break;
             case 4:
-                traceChart.setLegendAlignment(SwingConstants.WEST);
+                getTraceChart().setLegendAlignment(SwingConstants.WEST);
                 break;
             case 5:
-                traceChart.setLegendAlignment(SwingConstants.EAST);
+                getTraceChart().setLegendAlignment(SwingConstants.EAST);
                 break;
             case 6:
-                traceChart.setLegendAlignment(SwingConstants.SOUTH_WEST);
+                getTraceChart().setLegendAlignment(SwingConstants.SOUTH_WEST);
                 break;
             case 7:
-                traceChart.setLegendAlignment(SwingConstants.SOUTH);
+                getTraceChart().setLegendAlignment(SwingConstants.SOUTH);
                 break;
             case 8:
-                traceChart.setLegendAlignment(SwingConstants.SOUTH_EAST);
+                getTraceChart().setLegendAlignment(SwingConstants.SOUTH_EAST);
                 break;
         }
-        traceChart.setShowLegend(currentSettings.legendAlignment != 0);
+        getTraceChart().setShowLegend(currentSettings.legendAlignment != 0);
     }
 
+    /**
+     * set <code>ChartSetupDialog</code> about axes scales.
+     *
+     * @param currentSettings
+     */
     protected void setChartSetupDialog(Settings currentSettings) {
         if (currentSettings.chartSetupDialog != null) {
-            currentSettings.chartSetupDialog.applySettings(traceChart);
+            currentSettings.chartSetupDialog.applySettings(getTraceChart());
         }
     }
 
@@ -301,25 +302,32 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * @param categoryDataMap
      */
     protected void setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) {
-        if (! (traceChart instanceof DiscreteJChart) )
+        if (! (getTraceChart() instanceof DiscreteJChart) )
             throw new RuntimeException("traceChart has to be instanceof DiscreteJChart, " +
                     "using setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) !");
 
         if (traceType == TraceType.REAL) {
-            ((DiscreteJChart) traceChart).setXAxis(false, categoryDataMap);
+            ((DiscreteJChart) getTraceChart()).setXAxis(false, categoryDataMap);
 
         } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
-            ((DiscreteJChart) traceChart).setXAxis(true, categoryDataMap);
+            ((DiscreteJChart) getTraceChart()).setXAxis(true, categoryDataMap);
 
         } else if (traceType == TraceType.CATEGORICAL) {
             // categoryDataMap has to be filled in before here using getIndexOfCategoricalValues
-            ((DiscreteJChart) traceChart).setXAxis(false, categoryDataMap);
+            ((DiscreteJChart) getTraceChart()).setXAxis(false, categoryDataMap);
 
         } else {
             throw new RuntimeException("Trace type is not recognized: " + traceType);
         }
     }
 
+    protected void setXLab(String xLab) {
+        chartPanel.setXAxisTitle(xLab);
+    }
+
+    protected void setYLab(String yLab) {
+        chartPanel.setYAxisTitle(yLab);
+    }
 
     /**
      * {@link dr.app.gui.chart.JChartPanel#setYAxisTitle(String) setYAxisTitle},

@@ -55,31 +55,6 @@ public abstract class NTracesChartPanel extends TraceChartPanel {
 
     public abstract void setTraces(TraceList[] traceLists, List<String> traceNames);
 
-//    protected Settings initTraces(TraceList[] traceLists, List<String> traceNames) {
-//        this.traceLists = traceLists;
-//        this.traceNames = traceNames;
-//
-//        if (traceNames.size() > 0) {
-//            // find the first settings for the one of the selected traces...
-//            Settings settings = null;
-//
-//            for (String name : traceNames) {
-//                settings = settingsMap.get(name);
-//                if (settings != null) {
-//                    break;
-//                }
-//            }
-//            if (settings == null) {
-//                // if none of the traces have settings yet, create and store one for the
-//                // first selected trace
-//                settings = new Settings();
-//                settingsMap.put(traceNames.get(0), settings);
-//            }
-//            return settings;
-//        }
-//        return null;
-//    }
-
     //++++++ setup chart +++++++
     /**
      * Setup trace(s) for chart, used by the actions implemented in children classes.
@@ -101,7 +76,7 @@ public abstract class NTracesChartPanel extends TraceChartPanel {
      * @return boolean
      */
     protected boolean rmAllPlots() {
-        traceChart.removeAllPlots();
+        removeAllPlots();
 
         if (traceLists == null || traceNames == null || traceNames.size() == 0) {
             chartPanel.setXAxisTitle("");
@@ -113,6 +88,14 @@ public abstract class NTracesChartPanel extends TraceChartPanel {
 
         remove(messageLabel);
         return true;
+    }
+
+    /**
+     * to overwrite it to <code>removeAllTraces()</code> in <code>RawTracePanel</code>
+     */
+    protected void removeAllPlots() {
+        getTraceChart().removeAllPlots();
+
     }
 
     // not working, difficult to extract
@@ -140,13 +123,28 @@ public abstract class NTracesChartPanel extends TraceChartPanel {
 //        }
 //    }
 
-    protected void setXLab() {
+    /**
+     * set x labs using <code>setXAxisTitle</code> when x-axis allows multiple traces
+     */
+    protected void setXLabMultiTraces() {
         if (traceLists.length == 1) {
             chartPanel.setXAxisTitle(traceLists[0].getName());
         } else if (traceNames.size() == 1) {
             chartPanel.setXAxisTitle(traceNames.get(0));
         } else {
             chartPanel.setXAxisTitle("Multiple Traces");
+        }
+    }
+    /**
+     * set y labs using <code>setYAxisTitle</code> when y-axis allows multiple traces
+     */
+    protected void setYLabMultiTraces() {
+        if (traceLists.length == 1) {
+            chartPanel.setYAxisTitle(traceLists[0].getName());
+        } else if (traceNames.size() == 1) {
+            chartPanel.setYAxisTitle(traceNames.get(0));
+        } else {
+            chartPanel.setYAxisTitle("Multiple Traces");
         }
     }
 

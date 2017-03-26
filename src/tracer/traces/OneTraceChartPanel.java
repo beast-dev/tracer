@@ -29,7 +29,6 @@ import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 
 import javax.swing.*;
-import java.util.Map;
 
 /**
  * A shared code for the panel that displays a single trace in a plot.
@@ -60,19 +59,19 @@ public abstract class OneTraceChartPanel extends TraceChartPanel {
      *
      * @param traceList
      * @param traceName
-     * @param settingsMap
-     * @return <code>Settings</code>
+//     * @param settingsMap
+//     * @return <code>Settings</code>
      */
-    protected Settings initSettings(TraceList traceList, String traceName, Map<String, Settings> settingsMap) {
+    protected void initSettings(TraceList traceList, String traceName) {//, Map<String, Settings> settingsMap) {
         this.traceList = traceList;
         this.traceName = traceName;
 
-        Settings settings = settingsMap.get(traceName);
-        if (settings == null) {
-            settings = new Settings();
-            settingsMap.put(traceName, settings);
-        }
-        return settings;
+////        Settings settings = settingsMap.get(traceName);
+////        if (settings == null) {
+////            settings = new Settings();
+////            settingsMap.put(traceName, settings);
+////        }
+//        return settings;
     }
 
     //++++++ setup chart +++++++
@@ -85,7 +84,7 @@ public abstract class OneTraceChartPanel extends TraceChartPanel {
      * @return boolean
      */
     protected boolean rmAllPlots() {
-        traceChart.removeAllPlots();
+        getTraceChart().removeAllPlots();
 
         if (traceList == null || traceName == null) {
             chartPanel.setXAxisTitle("");

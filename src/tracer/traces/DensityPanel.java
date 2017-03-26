@@ -34,6 +34,7 @@ import dr.stats.Variate;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class DensityPanel extends NTracesChartPanel {
     }
 
     private Settings currentSettings = new Settings();
-    private Map<String, Settings> settingsMap = new HashMap<String, Settings>();
+//    private Map<String, Settings> settingsMap = new HashMap<String, Settings>();
 
     //+++++ private field +++++
     private JComboBox displayCombo = new JComboBox(
@@ -84,9 +85,13 @@ public class DensityPanel extends NTracesChartPanel {
         super(frame);
         traceChart = new DiscreteJChart(
                 new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
-        initJChartPanel(traceChart);
+        initJChartPanel("", ""); // xAxisTitle, yAxisTitle
         JToolBar toolBar = setupToolBar(frame);
         addMainPanel(toolBar);
+    }
+
+    protected DiscreteJChart getTraceChart() {
+        return (DiscreteJChart) traceChart;
     }
 
     protected JToolBar setupToolBar(final JFrame frame) {
@@ -94,15 +99,6 @@ public class DensityPanel extends NTracesChartPanel {
 
         addBins(toolBar);
         binsCombo.setSelectedItem(currentSettings.minimumBins);
-
-        binsCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-                        currentSettings.minimumBins = (Integer) binsCombo.getSelectedItem();
-                        setupTraces();
-                    }
-                }
-        );
 
         JLabel label = new JLabel("Display:");
         label.setFont(UIManager.getFont("SmallSystemFont"));
@@ -126,6 +122,43 @@ public class DensityPanel extends NTracesChartPanel {
 
         addLegend(toolBar);
 
+//        kdeCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
+//        toolBar.add(kdeCheckBox);
+//
+//        kdeSetupButton.putClientProperty(
+//                "Quaqua.Button.style", "placard"
+//        );
+//        kdeSetupButton.setFont(UIManager.getFont("SmallSystemFont"));
+//        toolBar.add(kdeSetupButton);
+//
+//        kdeSetupButton.setEnabled(kdeCheckBox.isSelected());
+
+
+        // +++++++ Listener ++++++++
+        binsCombo.addItemListener(
+                new java.awt.event.ItemListener() {
+                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
+                        currentSettings.minimumBins = (Integer) binsCombo.getSelectedItem();
+                        setupTraces();
+                    }
+                }
+        );
+
+        chartSetupButton.addActionListener(
+                new java.awt.event.ActionListener() {
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        if (currentSettings.chartSetupDialog == null) {
+                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, true, false,
+                                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
+                        }
+
+                        currentSettings.chartSetupDialog.showDialog(getTraceChart());
+                        validate();
+                        repaint();
+                    }
+                }
+        );
+
         legendCombo.addItemListener(
                 new java.awt.event.ItemListener() {
                     public void itemStateChanged(java.awt.event.ItemEvent ev) {
@@ -143,18 +176,6 @@ public class DensityPanel extends NTracesChartPanel {
                     }
                 }
         );
-
-//        kdeCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
-//        toolBar.add(kdeCheckBox);
-//
-//        kdeSetupButton.putClientProperty(
-//                "Quaqua.Button.style", "placard"
-//        );
-//        kdeSetupButton.setFont(UIManager.getFont("SmallSystemFont"));
-//        toolBar.add(kdeSetupButton);
-//
-//        kdeSetupButton.setEnabled(kdeCheckBox.isSelected());
-
 
 //        relativeDensityCheckBox.addItemListener(
 //                new java.awt.event.ItemListener() {
@@ -216,24 +237,24 @@ public class DensityPanel extends NTracesChartPanel {
         this.traceLists = traceLists;
         this.traceNames = traceNames;
 
-        if (traceNames.size() > 0) {
-            // find the first settings for the one of the selected traces...
-            Settings settings = null;
-
-            for (String name : traceNames) {
-                settings = settingsMap.get(name);
-                if (settings != null) {
-                    break;
-                }
-            }
-            if (settings == null) {
-                // if none of the traces have settings yet, create and store one for the
-                // first selected trace
-                settings = new Settings();
-                settingsMap.put(traceNames.get(0), settings);
-            }
-            currentSettings = settings;
-        }
+//        if (traceNames.size() > 0) {
+//            // find the first settings for the one of the selected traces...
+//            Settings settings = null;
+//
+//            for (String name : traceNames) {
+//                settings = settingsMap.get(name);
+//                if (settings != null) {
+//                    break;
+//                }
+//            }
+//            if (settings == null) {
+//                // if none of the traces have settings yet, create and store one for the
+//                // first selected trace
+//                settings = new Settings();
+//                settingsMap.put(traceNames.get(0), settings);
+//            }
+//            currentSettings = settings;
+//        }
 
         displayCombo.setSelectedIndex(currentSettings.showHistogram && currentSettings.showKDE ? 2 : (currentSettings.showKDE ? 0 : 1));
 //        binsCombo.setEnabled(currentSettings.showHistogram);
@@ -257,7 +278,7 @@ public class DensityPanel extends NTracesChartPanel {
                         traceType = trace.getTraceType();
                     }
                     if (trace.getTraceType() != traceType) {
-                        traceChart.removeAllPlots();
+                        getTraceChart().removeAllPlots();
 
                         chartPanel.setXAxisTitle("");
                         chartPanel.setYAxisTitle("");
@@ -397,7 +418,7 @@ public class DensityPanel extends NTracesChartPanel {
             if (i == paints.length) i = 0;
         }
 
-        setXLab();
+        setXLabMultiTraces();
         setYLab(traceType, new String[]{"Density", "Probability"});
 //        setColours(currentSettings);
         setLegend(currentSettings);

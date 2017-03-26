@@ -32,6 +32,7 @@ import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ import java.util.Map;
 public class FrequencyPanel extends OneTraceChartPanel {
 
     private Settings currentSettings = new Settings();
-    private Map<String, Settings> settingsMap = new HashMap<String, Settings>();
+//    private Map<String, Settings> settingsMap = new HashMap<String, Settings>();
 
     /**
      * Creates new FrequencyPanel
@@ -56,20 +57,36 @@ public class FrequencyPanel extends OneTraceChartPanel {
         super(frame);
         traceChart = new DiscreteJChart(
                 new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
-        initJChartPanel(traceChart);
+        initJChartPanel("", "Frequency"); // xAxisTitle, yAxisTitle
         JToolBar toolBar = setupToolBar(frame);
         addMainPanel(toolBar);
     }
 
-    protected void initJChartPanel(JChart traceChart){
-        chartPanel = new JChartPanel(traceChart, null, "", "Frequency");
+    protected DiscreteJChart getTraceChart() {
+        return (DiscreteJChart) traceChart;
     }
 
-    protected JToolBar setupToolBar(JFrame frame) {
+    protected JToolBar setupToolBar(final JFrame frame) {
         JToolBar toolBar = super.setupToolBar(frame, currentSettings);
 
         addBins(toolBar);
         binsCombo.setSelectedItem(currentSettings.minimumBins);
+
+        // +++++++ Listener ++++++++
+        chartSetupButton.addActionListener(
+                new java.awt.event.ActionListener() {
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        if (currentSettings.chartSetupDialog == null) {
+                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, true, false,
+                                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
+                        }
+
+                        currentSettings.chartSetupDialog.showDialog(getTraceChart());
+                        validate();
+                        repaint();
+                    }
+                }
+        );
 
         binsCombo.addItemListener(
                 new java.awt.event.ItemListener() {
@@ -80,12 +97,23 @@ public class FrequencyPanel extends OneTraceChartPanel {
                 }
         );
 
+        //        toolBar.add(showValuesCheckBox); //todo
+        showValuesCheckBox.addActionListener(
+                new java.awt.event.ActionListener() {
+                    public void actionPerformed(ActionEvent actionEvent) {
+
+                        validate();
+                        repaint();
+                    }
+                }
+        );
+
         return toolBar;
     }
 
 
     public void setTrace(TraceList traceList, String traceName) {
-        currentSettings = initSettings(traceList, traceName, settingsMap);
+        initSettings(traceList, traceName);
         binsCombo.setSelectedItem(currentSettings.minimumBins);
 
         setupTrace();
@@ -142,7 +170,7 @@ public class FrequencyPanel extends OneTraceChartPanel {
             setBinsComponents(traceType);
             setChartSetupDialog(currentSettings);
 
-            traceChart.addPlot(plot);
+            getTraceChart().addPlot(plot);
         }
         setXLab(traceIndex);
     }
