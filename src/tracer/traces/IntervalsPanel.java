@@ -29,11 +29,10 @@ import dr.app.gui.chart.JChartPanel;
 import dr.app.gui.chart.LinearAxis;
 import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceList;
+import jam.framework.Exportable;
 
 import javax.swing.*;
 import java.awt.*;
-
-import jam.framework.Exportable;
 
 
 /**
@@ -71,7 +70,7 @@ public class IntervalsPanel extends JPanel implements Exportable {
         for (TraceList traceList : traceLists) {
             for (String traceName : traceNames) {
                 int index = traceList.getTraceIndex(traceName);
-                TraceDistribution td = traceList.getDistributionStatistics(index);
+                TraceDistribution td = traceList.getCorrelationStatistics(index);
                 if (td != null) {
                     String name = "";
                     if (traceLists.length > 1) {

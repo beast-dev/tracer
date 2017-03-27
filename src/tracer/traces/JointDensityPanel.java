@@ -28,10 +28,9 @@ package tracer.traces;
 import dr.app.gui.chart.*;
 import dr.inference.trace.TraceCorrelation;
 import dr.inference.trace.TraceDistribution;
-import dr.inference.trace.TraceType;
 import dr.inference.trace.TraceList;
+import dr.inference.trace.TraceType;
 import dr.stats.Variate;
-import jam.framework.Exportable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,18 +48,14 @@ import java.util.Map;
  * @author Alexei Drummond
  * @version $Id: CorrelationPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
-public class JointDensityPanel extends JPanel implements Exportable {
+public class JointDensityPanel extends NTracesChartPanel {
 
-    private ChartSetupDialog chartSetupDialog = null;
+    private Settings currentSettings = new Settings();
 
-    private JIntervalsChart correlationChart = new JIntervalsChart(new LinearAxis(), new LinearAxis());
-    private JChartPanel chartPanel = new JChartPanel(correlationChart, null, "", "");
     private TableScrollPane tableScrollPane = new TableScrollPane();
 
     private JComboBox cateTableProbTypeCombo = new JComboBox(CateTableProbType.values());
     private JCheckBox defaultNumberFormatCheckBox = new JCheckBox("Use default number format");
-
-    private JLabel messageLabel = new JLabel("No data loaded");
 
     private JCheckBox sampleCheckBox = new JCheckBox("Sample only");
     private JCheckBox pointsCheckBox = new JCheckBox("Draw as points");
@@ -93,25 +88,19 @@ public class JointDensityPanel extends JPanel implements Exportable {
      * Creates new CorrelationPanel
      */
     public JointDensityPanel(final JFrame frame) {
+        super(frame);
+        traceChart = new JIntervalsChart(new LinearAxis(), new LinearAxis()); // correlationChart
+        initJChartPanel("", ""); // xAxisTitle, yAxisTitle
+        JToolBar toolBar = setupToolBar(frame);
+        addMainPanel(toolBar);
+    }
 
-        setOpaque(false);
-        setMinimumSize(new Dimension(300, 150));
-        setLayout(new BorderLayout());
+    protected JIntervalsChart getTraceChart() {
+        return (JIntervalsChart) traceChart;
+    }
 
-//        add(messageLabel, BorderLayout.NORTH);
-//        add(chartPanel, BorderLayout.CENTER);
-
-        JToolBar toolBar = new JToolBar();
-        toolBar.setOpaque(false);
-        toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-        toolBar.setFloatable(false);
-
-        JButton chartSetupButton = new JButton("Axes...");
-        chartSetupButton.putClientProperty(
-                "Quaqua.Button.style", "placard"
-        );
-        chartSetupButton.setFont(UIManager.getFont("SmallSystemFont"));
-        toolBar.add(chartSetupButton);
+    protected JToolBar setupToolBar(final JFrame frame) {
+        JToolBar toolBar = super.setupToolBar(frame, currentSettings);
 
         sampleCheckBox.setOpaque(false);
         sampleCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
@@ -137,19 +126,15 @@ public class JointDensityPanel extends JPanel implements Exportable {
 
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
-        add(messageLabel, BorderLayout.NORTH);
-        add(toolBar, BorderLayout.SOUTH);
-        add(chartPanel, BorderLayout.CENTER);
-
         chartSetupButton.addActionListener(
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(ActionEvent actionEvent) {
-                        if (chartSetupDialog == null) {
-                            chartSetupDialog = new ChartSetupDialog(frame, true, true,
+                        if (currentSettings.chartSetupDialog == null) {
+                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, true, true,
                                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK);
                         }
 
-                        chartSetupDialog.showDialog(correlationChart);
+                        currentSettings.chartSetupDialog.showDialog(getTraceChart());
                         validate();
                         repaint();
                     }
@@ -158,7 +143,7 @@ public class JointDensityPanel extends JPanel implements Exportable {
 
         ActionListener listener = new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent ev) {
-                setupChartOrTable();
+                setupTraces();
             }
         };
         sampleCheckBox.addActionListener(listener);
@@ -166,6 +151,8 @@ public class JointDensityPanel extends JPanel implements Exportable {
         translucencyCheckBox.addActionListener(listener);
         cateTableProbTypeCombo.addActionListener(listener);
         defaultNumberFormatCheckBox.addActionListener(listener);
+
+        return toolBar;
     }
 
     public void setCombinedTraces() {
@@ -199,14 +186,15 @@ public class JointDensityPanel extends JPanel implements Exportable {
             tl2 = null;
         }
 
-        setupChartOrTable();
+        setupTraces();
     }
 
-    private void setupChartOrTable() {
-        correlationChart.removeAllIntervals();
+    // it was private void setupChartOrTable()
+    protected void setupTraces() {
+        getTraceChart().removeAllIntervals();
 
         if (tl1 == null || tl2 == null) {
-//            correlationChart.removeAllPlots();
+//            getTraceChart().removeAllPlots();
             chartPanel.remove(tableScrollPane);
 
             chartPanel.setXAxisTitle("");
@@ -218,7 +206,7 @@ public class JointDensityPanel extends JPanel implements Exportable {
         TraceCorrelation td1 = tl1.getCorrelationStatistics(traceIndex1);
         TraceCorrelation td2 = tl2.getCorrelationStatistics(traceIndex2);
         if (td1 == null || td2 == null) {
-//            correlationChart.removeAllPlots();
+//            getTraceChart().removeAllPlots();
             chartPanel.remove(tableScrollPane);
 
             chartPanel.setXAxisTitle("");
@@ -230,7 +218,7 @@ public class JointDensityPanel extends JPanel implements Exportable {
         messageLabel.setText("");
 
         if (!td1.getTraceType().isNumber() && !td2.getTraceType().isNumber()) {
-            chartPanel.remove(correlationChart);
+            chartPanel.remove(getTraceChart());
             chartPanel.add(tableScrollPane, "Table");
 
             sampleCheckBox.setVisible(false);
@@ -247,8 +235,8 @@ public class JointDensityPanel extends JPanel implements Exportable {
 
         } else {
             chartPanel.remove(tableScrollPane);
-            chartPanel.add(correlationChart, "Chart");
-//            correlationChart.removeAllPlots();
+            chartPanel.add(getTraceChart(), "Chart");
+//            getTraceChart().removeAllPlots();
             cateTableProbTypeCombo.setVisible(false);
             defaultNumberFormatCheckBox.setVisible(false);
 
@@ -279,15 +267,15 @@ public class JointDensityPanel extends JPanel implements Exportable {
                 translucencyCheckBox.setVisible(true);
             }
         }
-        chartPanel.setXAxisTitle(name1);
-        chartPanel.setYAxisTitle(name2);
+        setXLab(name1);
+        setYLab(name2);
 
         validate();
         repaint();
     }
 
     private void mixedCategoricalPlot(TraceDistribution td, boolean isFirstTraceListNumerical) {
-        correlationChart.setXAxis(new DiscreteAxis(true, true));
+        getTraceChart().setXAxis(new DiscreteAxis(true, true));
         List<String> categoryValues = td.getRange();
         Map<String, TraceDistribution> categoryTdMap = new HashMap<String, TraceDistribution>();
 
@@ -344,7 +332,7 @@ public class JointDensityPanel extends JPanel implements Exportable {
 
         for (String categoryValue : categoryValues) {
             TraceDistribution categoryTd = categoryTdMap.get(categoryValue);
-            correlationChart.addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
+            getTraceChart().addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
         }
     }
 
@@ -458,9 +446,9 @@ public class JointDensityPanel extends JPanel implements Exportable {
 
         int k = 0;
         if (td1.getTraceType() == TraceType.ORDINAL) {
-            correlationChart.setXAxis(new DiscreteAxis(true, true));
+            getTraceChart().setXAxis(new DiscreteAxis(true, true));
         } else {
-            correlationChart.setXAxis(new LinearAxis());
+            getTraceChart().setXAxis(new LinearAxis());
         }
         List values = tl1.getValues(traceIndex1);
 
@@ -472,9 +460,9 @@ public class JointDensityPanel extends JPanel implements Exportable {
 
         k = 0;
         if (td2.getTraceType() == TraceType.ORDINAL) {
-            correlationChart.setYAxis(new DiscreteAxis(true, true));
+            getTraceChart().setYAxis(new DiscreteAxis(true, true));
         } else {
-            correlationChart.setYAxis(new LinearAxis());
+            getTraceChart().setYAxis(new LinearAxis());
         }
         values = tl2.getValues(traceIndex2);
 
@@ -489,7 +477,7 @@ public class JointDensityPanel extends JPanel implements Exportable {
                 new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
                 new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
                 new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
-        correlationChart.addPlot(plot);
+        getTraceChart().addPlot(plot);
     }
 
 //    private double[] removeNaN(double[] sample) {
@@ -509,18 +497,14 @@ public class JointDensityPanel extends JPanel implements Exportable {
 //        return dest;
 //    }
 
-    public JComponent getExportableComponent() {
-        return chartPanel;
-    }
-
     public String toString() {
-        if (correlationChart.getPlotCount() == 0) {
+        if (getTraceChart().getPlotCount() == 0) {
             return "no plot available";
         }
 
         StringBuffer buffer = new StringBuffer();
 
-        Plot plot = correlationChart.getPlot(0);
+        Plot plot = getTraceChart().getPlot(0);
         Variate xData = plot.getXData();
         Variate yData = plot.getYData();
 
