@@ -37,7 +37,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A panel that displays density plots of traces
@@ -310,16 +309,16 @@ public class DensityPanel extends NTracesChartPanel {
         return plot;
     }
 
-    protected Plot setupIntegerPlot(List values, TraceType type, TraceCorrelation td, int barCount, int barId) {
-        CategoryDensityPlot plot = new CategoryDensityPlot(values, -1, td, barCount, barId);
-        return plot;
-    }
-
-    protected Plot setupCategoryPlot(List values, TraceCorrelation td, Map<Integer, String> categoryDataMap, int barCount, int barId) {
-        List<Double> intData = getIndexOfCategoricalValues(values, td, categoryDataMap);
-        CategoryDensityPlot plot = new CategoryDensityPlot(intData, -1, td, barCount, barId);
-        return plot;
-    }
+//    protected Plot setupIntegerPlot(List values, TraceType type, TraceCorrelation td, int barCount, int barId) {
+//        CategoryDensityPlot plot = new CategoryDensityPlot(values, -1, td, barCount, barId);
+//        return plot;
+//    }
+//
+//    protected Plot setupCategoryPlot(List values, TraceCorrelation td, Map<Integer, String> categoryDataMap, int barCount, int barId) {
+//        List<Double> intData = getIndexOfCategoricalValues(values, td, categoryDataMap);
+//        CategoryDensityPlot plot = new CategoryDensityPlot(intData, -1, td, barCount, barId);
+//        return plot;
+//    }
 
 
     protected void setupTraces() {
@@ -346,7 +345,6 @@ public class DensityPanel extends NTracesChartPanel {
 
                     List values = tl.getValues(traceIndex);
 
-                    Map<Integer, String> categoryDataMap = new HashMap<Integer, String>();
                     // set traceType here to avoid Exception from setYLab
                     traceType = trace.getTraceType();
                     if (traceType == TraceType.REAL) {
@@ -378,12 +376,12 @@ public class DensityPanel extends NTracesChartPanel {
 
                     } else if (traceType.isOrdinal()) {
 
-                        plot = setupIntegerPlot(values, traceType, td, currentSettings.barCount, barId);
+                        plot = new CategoryDensityPlot(values, -1, td, currentSettings.barCount, barId);
                         barId++;
 
-                    } else if (traceType.isCatorical()) {
+                    } else if (traceType.isCategorical()) {
 
-                        plot = setupCategoryPlot(values, td, categoryDataMap, currentSettings.barCount, barId);
+                        plot = new CategoryDensityPlot(values, td, currentSettings.barCount, barId);
                         barId++;
 
                     } else {
@@ -401,7 +399,10 @@ public class DensityPanel extends NTracesChartPanel {
                         traceChart.addPlot(plot);
                     }
                     // change x axis to DiscreteAxis or LinearAxis according TraceType
-                    setXAxis(traceType, categoryDataMap);
+                    if (td == null)
+                        setXAxis(traceType, new HashMap<Integer, String>());
+                    else
+                        setXAxis(traceType, td.getIndexMap());
 
                     // colourBy
                     if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_ALL) {

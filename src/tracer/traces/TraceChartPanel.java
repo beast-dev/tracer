@@ -29,20 +29,17 @@ import dr.app.gui.chart.ChartSetupDialog;
 import dr.app.gui.chart.DiscreteJChart;
 import dr.app.gui.chart.JChart;
 import dr.app.gui.chart.JChartPanel;
-import dr.inference.trace.TraceCorrelation;
 import dr.inference.trace.TraceType;
 import jam.framework.Exportable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
  * A shared code for the panel that displays a plot of traces,
  * such as most part of toolbar, and the chart panel.
- * {@link #setupToolBar(JFrame)() abstract setupToolBar} makes sure
+ * {@link #setupToolBar(JFrame) abstract setupToolBar} makes sure
  * the customized toolbar is implemented in children classes.
  *
  * @author Andrew Rambaut
@@ -142,12 +139,17 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * add components to main panel
      * @param toolBar get from {@link #setupToolBar(JFrame, Settings) setupToolBar}
      */
-    protected void addMainPanel(JToolBar toolBar) {
-        add(messageLabel, BorderLayout.NORTH);
+    protected void addMainPanel(JToolBar toolBar, boolean addMessageLabel) {
+        if (addMessageLabel)
+            add(messageLabel, BorderLayout.NORTH);
         add(toolBar, BorderLayout.SOUTH);
         if (chartPanel==null)
             throw new IllegalArgumentException("chartPanel is null, please use initJChartPanel(JChart traceChart) in constructor !");
         add(chartPanel, BorderLayout.CENTER);
+    }
+
+    protected void addMainPanel(JToolBar toolBar) {
+        addMainPanel(toolBar, true);
     }
 
     /**
@@ -275,26 +277,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     }
 
     /**
-     * Convert a categorical value to the index of unique values,
-     * and put it into the map <code>categoryDataMap</code>.
-     *
-     * @param values
-     * @param td
-     * @param categoryDataMap
-     * @return
-     */
-    protected List<Double> getIndexOfCategoricalValues(List values, TraceCorrelation td, Map<Integer, String> categoryDataMap) {
-        List<Double> intData = new ArrayList<Double>();
-        for (int v = 0; v < values.size(); v++) {
-            // frequencyCounter.getKeyIndex(value)
-            int index = td.getIndex(values.get(v).toString());
-            intData.add(v, (double) index);
-            categoryDataMap.put(index, values.get(v).toString());
-        }
-        return intData;
-    }
-
-    /**
      *  {@link dr.app.gui.chart.DiscreteJChart#setXAxis(boolean, Map<Integer, String>) setXAxis},
      *  used in {@see tracer.traces.FrequencyPanel} and {@see tracer.traces.DensityPanel}
      *
@@ -337,20 +319,22 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * @param yLabs
      */
     protected void setYLab(TraceType traceType, String[] yLabs) {
-        if (yLabs.length !=2)
-            throw new IllegalArgumentException("Y labs array must have 2 element !");
+        if (traceType != null) {
+            if (yLabs.length != 2)
+                throw new IllegalArgumentException("Y labs array must have 2 element !");
 
-        if (traceType == TraceType.REAL) {
-            chartPanel.setYAxisTitle(yLabs[0]);
+            if (traceType == TraceType.REAL) {
+                chartPanel.setYAxisTitle(yLabs[0]);
 
-        } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
-            chartPanel.setYAxisTitle(yLabs[1]);
+            } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
+                chartPanel.setYAxisTitle(yLabs[1]);
 
-        } else if (traceType == TraceType.CATEGORICAL) {
-            chartPanel.setYAxisTitle(yLabs[1]);
+            } else if (traceType == TraceType.CATEGORICAL) {
+                chartPanel.setYAxisTitle(yLabs[1]);
 
-        } else {
-            throw new RuntimeException("Trace type is not recognized: " + traceType);
+            } else {
+                throw new RuntimeException("Trace type is not recognized: " + traceType);
+            }
         }
     }
 

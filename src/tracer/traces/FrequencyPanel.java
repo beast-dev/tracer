@@ -35,7 +35,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -59,7 +58,7 @@ public class FrequencyPanel extends OneTraceChartPanel {
                 new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         initJChartPanel("", "Frequency"); // xAxisTitle, yAxisTitle
         JToolBar toolBar = setupToolBar(frame);
-        addMainPanel(toolBar);
+        addMainPanel(toolBar, false);
     }
 
     protected DiscreteJChart getTraceChart() {
@@ -130,7 +129,6 @@ public class FrequencyPanel extends OneTraceChartPanel {
         TraceCorrelation td = traceList.getCorrelationStatistics(traceIndex);
 
         if (trace != null) {
-            Map<Integer, String> categoryDataMap = new HashMap<Integer, String>();
             List values = traceList.getValues(traceIndex);
             TraceType traceType = trace.getTraceType();
             if (traceType == TraceType.REAL) {
@@ -148,15 +146,8 @@ public class FrequencyPanel extends OneTraceChartPanel {
                 }
 
             } else if (traceType == TraceType.CATEGORICAL) {
-                List<Double> intData = getIndexOfCategoricalValues(values, td, categoryDataMap);
 
-//                System.out.println(trace.getName() + "     " + trace.getTraceType());
-//                System.out.println(td.printCredibleSet() + "      " + td.printIncredibleSet() + "   " + td.getTraceType());
-//                for (Integer i : new TreeSet<Integer>(categoryDataMap.keySet())) {
-//                    System.out.println("i = " + i + "; v = " + categoryDataMap.get(i));
-//                }
-
-                plot = new FrequencyPlot(intData, -1, td);
+                plot = new FrequencyPlot(values, td); // convert into index inside constructor
 
                 if (td != null) {
                     plot.setInCredibleSet(td);
@@ -165,7 +156,11 @@ public class FrequencyPanel extends OneTraceChartPanel {
                 throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
             }
 
-            setXAxis(traceType, categoryDataMap);
+            if (td == null)
+                setXAxis(traceType, new HashMap<Integer, String>());
+            else
+                setXAxis(traceType, td.getIndexMap());
+
             setYLab(traceType, new String[]{"Frequency", "Count"});
             setBinsComponents(traceType);
             setChartSetupDialog(currentSettings);

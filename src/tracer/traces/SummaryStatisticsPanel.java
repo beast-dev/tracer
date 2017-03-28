@@ -28,6 +28,7 @@ package tracer.traces;
 import dr.inference.trace.TraceAnalysis;
 import dr.inference.trace.TraceCorrelation;
 import dr.inference.trace.TraceList;
+import dr.inference.trace.TraceTypeUtils;
 import jam.framework.Exportable;
 import jam.table.TableRenderer;
 
@@ -76,7 +77,9 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
     IntervalsPanel intervalsPanel = null;
     JComponent currentPanel = null;
 
-    public SummaryStatisticsPanel(JFrame frame) {
+    BubblePanel bubblePanel = null;
+
+    public SummaryStatisticsPanel(final JFrame frame) {
 
         setOpaque(false);
 
@@ -124,6 +127,10 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
 
         intervalsPanel = new IntervalsPanel();
         intervalsPanel.setBorder(new BorderUIResource.EmptyBorderUIResource(
+                new java.awt.Insets(6, 0, 0, 0)));
+
+        bubblePanel = new BubblePanel();
+        bubblePanel.setBorder(new BorderUIResource.EmptyBorderUIResource(
                 new java.awt.Insets(6, 0, 0, 0)));
 
         splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, topPanel, frequencyPanel);
@@ -174,10 +181,21 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                     statisticsTable.getColumnModel().getColumn(i).setPreferredWidth(100);
                 }
 
-                currentPanel = intervalsPanel;
-                frequencyPanel.setTrace(null, null);
-                intervalsPanel.setTraces(traceLists, traceNames);
-                splitPane1.setBottomComponent(intervalsPanel);
+                // if all discrete, change to bubble chart
+//                if (TraceTypeUtils.allDiscrete(traceLists, traceNames)) {
+                if (TraceTypeUtils.allCategorical(traceLists, traceNames)) {
+                    currentPanel = bubblePanel;
+                    frequencyPanel.setTrace(null, null);
+                    bubblePanel.setTraces(traceLists, traceNames);
+                    splitPane1.setBottomComponent(bubblePanel);
+
+                } else {
+                    currentPanel = intervalsPanel;
+                    frequencyPanel.setTrace(null, null);
+                    intervalsPanel.setTraces(traceLists, traceNames);
+                    splitPane1.setBottomComponent(intervalsPanel);
+                }
+
             }
         } else {
             currentPanel = statisticsTable;
