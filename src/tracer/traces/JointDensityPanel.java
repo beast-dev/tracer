@@ -472,11 +472,16 @@ public class JointDensityPanel extends NTracesChartPanel {
             k += minCount / sampleSize;
         }
 
-        ScatterPlot plot = new ScatterPlot(samples1, samples2);
-        plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
-                new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-                new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
-                new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
+        ScatterPlot plot;
+        if (td1.getTraceType() == TraceType.ORDINAL && td2.getTraceType() == TraceType.ORDINAL) {
+            plot = new TangHuLuPlot(samples1, samples2);
+        } else {
+            plot = new ScatterPlot(samples1, samples2);
+            plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
+                    new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
+                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
+                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
+        }
         getTraceChart().addPlot(plot);
     }
 
