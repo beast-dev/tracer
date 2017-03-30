@@ -108,15 +108,7 @@ public class IntervalsPanel extends NTracesChartPanel {
             }
         }
 
-        chartPanel.setXAxisTitle("");
-        if (traceLists.length == 1) {
-            chartPanel.setYAxisTitle(traceLists[0].getName());
-        } else if (traceNames.size() == 1) {
-            chartPanel.setYAxisTitle(traceNames.get(0));
-        } else {
-            chartPanel.setYAxisTitle("Multiple Traces");
-        }
-        add(chartPanel, BorderLayout.CENTER);
+        setXLabMultiTraces();
 
         validate();
         repaint();

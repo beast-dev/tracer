@@ -263,8 +263,13 @@ public class JointDensityPanel extends NTracesChartPanel {
                 numericalPlot(td1, td2);
 
                 sampleCheckBox.setVisible(true);
-                pointsCheckBox.setVisible(true);
-                translucencyCheckBox.setVisible(true);
+                if (td1.getTraceType().isOrdinal() && td2.getTraceType().isOrdinal()) {
+                    pointsCheckBox.setVisible(false);
+                    translucencyCheckBox.setVisible(false);
+                } else {
+                    pointsCheckBox.setVisible(true);
+                    translucencyCheckBox.setVisible(true);
+                }
             }
         }
         setXLab(name1);
