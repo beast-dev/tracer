@@ -131,6 +131,7 @@ public class JIntervalsChart extends JChart {
                 //float y = (float)transformY(interval.value);
                 float yUpper = (float) transformY(interval.upper);
                 float yLower = (float) transformY(interval.lower);
+                float yMean = (float) transformY(interval.value);
 
                 GeneralPath path = new GeneralPath();
                 path.moveTo(xLeft, yUpper);
@@ -139,6 +140,13 @@ public class JIntervalsChart extends JChart {
                 path.lineTo(x, yLower);
                 path.moveTo(xLeft, yLower);
                 path.lineTo(xRight, yLower);
+
+                // draw a cross for mean
+                int crossLine = 2;
+                path.moveTo(x-crossLine, yMean-crossLine);
+                path.lineTo(x+crossLine, yMean+crossLine);
+                path.moveTo(x+crossLine, yMean-crossLine);
+                path.lineTo(x-crossLine, yMean+crossLine);
 
                 if (interval.bold) {
                     g2.setStroke(new BasicStroke(2.0f));
