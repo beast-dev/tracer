@@ -53,7 +53,10 @@ public abstract class NTracesChartPanel extends TraceChartPanel {
     protected TraceList[] traceLists = null;
     protected List<String> traceNames = null;
 
-    public abstract void setTraces(TraceList[] traceLists, List<String> traceNames);
+    public void setTraces(TraceList[] traceLists, List<String> traceNames) {
+        this.traceLists = traceLists;
+        this.traceNames = traceNames;
+    };
 
     //++++++ setup chart +++++++
     /**

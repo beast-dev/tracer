@@ -125,7 +125,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
         frequencyPanel.setBorder(new BorderUIResource.EmptyBorderUIResource(
                 new java.awt.Insets(6, 0, 0, 0)));
 
-        intervalsPanel = new IntervalsPanel();
+        intervalsPanel = new IntervalsPanel(frame);
         intervalsPanel.setBorder(new BorderUIResource.EmptyBorderUIResource(
                 new java.awt.Insets(6, 0, 0, 0)));
 

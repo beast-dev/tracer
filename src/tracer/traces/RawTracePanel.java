@@ -212,8 +212,7 @@ public class RawTracePanel extends NTracesChartPanel {
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
-        this.traceLists = traceLists;
-        this.traceNames = traceNames;
+        super.setTraces(traceLists, traceNames);
         setupTraces();
     }
 

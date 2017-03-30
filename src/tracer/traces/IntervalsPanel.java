@@ -25,11 +25,9 @@
 
 package tracer.traces;
 
-import dr.app.gui.chart.JChartPanel;
-import dr.app.gui.chart.LinearAxis;
+import dr.app.gui.chart.*;
 import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceList;
-import jam.framework.Exportable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,24 +40,44 @@ import java.awt.*;
  * @author Alexei Drummond
  * @version $Id: IntervalsPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
-public class IntervalsPanel extends JPanel implements Exportable {
+public class IntervalsPanel extends NTracesChartPanel {
 
-    private JIntervalsChart intervalsChart = new JIntervalsChart(new LinearAxis());
-    private JChartPanel chartPanel = new JChartPanel(intervalsChart, null, "", "");
+//    private JIntervalsChart intervalsChart = new JIntervalsChart(new LinearAxis());
+//    private JChartPanel chartPanel = new JChartPanel(intervalsChart, null, "", "");
 
     /**
      * Creates new IntervalsPanel
      */
-    public IntervalsPanel() {
+    public IntervalsPanel(final JFrame frame) {
+        super(frame);
+        traceChart = new JIntervalsChart(new LinearAxis());
+        initJChartPanel("", ""); // xAxisTitle, yAxisTitle
+
+        JToolBar toolBar = setupToolBar(frame);
+        addMainPanel(toolBar);
+    }
+
+    @Override
+    protected JIntervalsChart getTraceChart() {
+        return (JIntervalsChart) traceChart;
+    }
+
+    @Override
+    protected JToolBar setupToolBar(JFrame frame) {
         setOpaque(false);
         setMinimumSize(new Dimension(300, 150));
+        return null;
+    }
+
+    protected void addMainPanel(JToolBar toolBar) {
         setLayout(new BorderLayout());
         add(chartPanel, BorderLayout.CENTER);
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
+        super.setTraces(traceLists, traceNames);
 
-        intervalsChart.removeAllIntervals();
+        getTraceChart().removeAllIntervals();
 
         if (traceLists == null || traceNames == null) {
             chartPanel.setXAxisTitle("");
@@ -67,6 +85,11 @@ public class IntervalsPanel extends JPanel implements Exportable {
             return;
         }
 
+        setupTraces();
+    }
+
+    @Override
+    protected void setupTraces() {
         for (TraceList traceList : traceLists) {
             for (String traceName : traceNames) {
                 int index = traceList.getTraceIndex(traceName);
@@ -80,7 +103,7 @@ public class IntervalsPanel extends JPanel implements Exportable {
                         }
                     }
                     name += traceName;
-                    intervalsChart.addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
+                    getTraceChart().addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
                 }
             }
         }
@@ -99,7 +122,8 @@ public class IntervalsPanel extends JPanel implements Exportable {
         repaint();
     }
 
-    public JComponent getExportableComponent() {
-        return chartPanel;
-    }
+
+//    public JComponent getExportableComponent() {
+//        return chartPanel;
+//    }
 }

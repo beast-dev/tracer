@@ -232,8 +232,7 @@ public class DensityPanel extends NTracesChartPanel {
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
-        this.traceLists = traceLists;
-        this.traceNames = traceNames;
+        super.setTraces(traceLists, traceNames);
 
 //        if (traceNames.size() > 0) {
 //            // find the first settings for the one of the selected traces...
