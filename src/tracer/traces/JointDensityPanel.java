@@ -240,7 +240,7 @@ public class JointDensityPanel extends NTracesChartPanel {
             cateTableProbTypeCombo.setVisible(false);
             defaultNumberFormatCheckBox.setVisible(false);
 
-            if (td1.getTraceType() == TraceType.CATEGORICAL) {
+            if (td1.getTraceType().isCategorical()) {
                 mixedCategoricalPlot(td1, false); // isFirstTraceListNumerical
 
                 sampleCheckBox.setVisible(false);
@@ -248,7 +248,7 @@ public class JointDensityPanel extends NTracesChartPanel {
                 translucencyCheckBox.setVisible(false);
 
 
-            } else if (td2.getTraceType() == TraceType.CATEGORICAL) {
+            } else if (td2.getTraceType().isCategorical()) {
                 mixedCategoricalPlot(td2, true); // isFirstTraceListNumerical
 
                 sampleCheckBox.setVisible(false);
@@ -445,7 +445,7 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         int k = 0;
-        if (td1.getTraceType() == TraceType.ORDINAL) {
+        if (td1.getTraceType().isOrdinal()) {
             getTraceChart().setXAxis(new DiscreteAxis(true, true));
         } else {
             getTraceChart().setXAxis(new LinearAxis());
@@ -459,7 +459,7 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         k = 0;
-        if (td2.getTraceType() == TraceType.ORDINAL) {
+        if (td2.getTraceType().isOrdinal()) {
             getTraceChart().setYAxis(new DiscreteAxis(true, true));
         } else {
             getTraceChart().setYAxis(new LinearAxis());
@@ -473,7 +473,7 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         ScatterPlot plot;
-        if (td1.getTraceType() == TraceType.ORDINAL && td2.getTraceType() == TraceType.ORDINAL) {
+        if (td1.getTraceType().isOrdinal() && td2.getTraceType().isOrdinal()) {
             plot = new TangHuLuPlot(samples1, samples2);
         } else {
             plot = new ScatterPlot(samples1, samples2);
