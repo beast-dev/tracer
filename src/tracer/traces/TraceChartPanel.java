@@ -29,11 +29,13 @@ import dr.app.gui.chart.ChartSetupDialog;
 import dr.app.gui.chart.DiscreteJChart;
 import dr.app.gui.chart.JChart;
 import dr.app.gui.chart.JChartPanel;
+import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceType;
 import jam.framework.Exportable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -280,26 +282,26 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      *  {@link dr.app.gui.chart.DiscreteJChart#setXAxis(boolean, Map<Integer, String>) setXAxis},
      *  used in {@see tracer.traces.FrequencyPanel} and {@see tracer.traces.DensityPanel}
      *
-     * @param traceType
-     * @param categoryDataMap
+     * @param td
      */
-    protected void setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) {
-        if (! (getTraceChart() instanceof DiscreteJChart) )
-            throw new RuntimeException("traceChart has to be instanceof DiscreteJChart, " +
-                    "using setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) !");
+    protected void setXAxis(TraceDistribution td) {
+        if (td != null) {
+            TraceType traceType = td.getTraceType();
 
-        if (traceType == TraceType.REAL) {
-            ((DiscreteJChart) getTraceChart()).setXAxis(false, categoryDataMap);
+            if (!(getTraceChart() instanceof DiscreteJChart))
+                throw new RuntimeException("traceChart has to be instanceof DiscreteJChart, " +
+                        "using setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) !");
 
-        } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
-            ((DiscreteJChart) getTraceChart()).setXAxis(true, categoryDataMap);
+            if (!traceType.isCategorical()) {
+                ((DiscreteJChart) getTraceChart()).setXAxis(traceType.isOrdinalOrBinary(),
+                        new HashMap<Integer, String>());
 
-        } else if (traceType == TraceType.CATEGORICAL) {
-            // categoryDataMap has to be filled in before here using getIndexOfCategoricalValues
-            ((DiscreteJChart) getTraceChart()).setXAxis(false, categoryDataMap);
+            } else if (traceType == TraceType.CATEGORICAL) {
+                ((DiscreteJChart) getTraceChart()).setXAxis(false, td.getIndexMap());
 
-        } else {
-            throw new RuntimeException("Trace type is not recognized: " + traceType);
+            } else {
+                throw new RuntimeException("Trace type is not recognized: " + traceType);
+            }
         }
     }
 

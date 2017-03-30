@@ -35,7 +35,6 @@ import dr.stats.Variate;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -399,10 +398,7 @@ public class DensityPanel extends NTracesChartPanel {
                         traceChart.addPlot(plot);
                     }
                     // change x axis to DiscreteAxis or LinearAxis according TraceType
-                    if (td == null)
-                        setXAxis(traceType, new HashMap<Integer, String>());
-                    else
-                        setXAxis(traceType, td.getIndexMap());
+                    setXAxis(td);
 
                     // colourBy
                     if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_ALL) {

@@ -52,9 +52,9 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
     //    static final String STDEV_VAR_ROW = "stderr of variance";
     static final String GEOMETRIC_MEAN_ROW = "geometric mean";
     static final String MEDIAN_ROW = "median";
-    static final String LOWER_UPPER_ROW = "95% HPD Interval";
-    static final String CRED_SET_ROW = "95% Credible Set";
-    static final String INCRED_SET_ROW = "5% Incredible Set";
+    static final String LOWER_UPPER_ROW = "95% HPD interval";
+    static final String CRED_SET_ROW = "95% credible set";
+    static final String INCRED_SET_ROW = "5% non-credible set";
     static final String ACT_ROW = "auto-correlation time (ACT)";
     static final String ESS_ROW = "effective sample size (ESS)";
     static final String SUM_ESS_ROW = "effective sample size (sum of ESS)";

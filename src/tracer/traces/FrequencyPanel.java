@@ -33,7 +33,6 @@ import dr.inference.trace.TraceType;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -156,11 +155,7 @@ public class FrequencyPanel extends OneTraceChartPanel {
                 throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
             }
 
-            if (td == null)
-                setXAxis(traceType, new HashMap<Integer, String>());
-            else
-                setXAxis(traceType, td.getIndexMap());
-
+            setXAxis(td);
             setYLab(traceType, new String[]{"Frequency", "Count"});
             setBinsComponents(traceType);
             setChartSetupDialog(currentSettings);
