@@ -28,7 +28,6 @@ package tracer.traces;
 import dr.inference.trace.TraceAnalysis;
 import dr.inference.trace.TraceCorrelation;
 import dr.inference.trace.TraceList;
-import dr.inference.trace.TraceTypeUtils;
 import jam.framework.Exportable;
 import jam.table.TableRenderer;
 
@@ -183,18 +182,18 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
 
                 // if all discrete, change to bubble chart
 //                if (TraceTypeUtils.allDiscrete(traceLists, traceNames)) {
-                if (TraceTypeUtils.allCategorical(traceLists, traceNames)) {
-                    currentPanel = bubblePanel;
-                    frequencyPanel.setTrace(null, null);
-                    bubblePanel.setTraces(traceLists, traceNames);
-                    splitPane1.setBottomComponent(bubblePanel);
-
-                } else {
+//                if (TraceTypeUtils.allCategorical(traceLists, traceNames)) {
+//                    currentPanel = bubblePanel;
+//                    frequencyPanel.setTrace(null, null);
+//                    bubblePanel.setTraces(traceLists, traceNames);
+//                    splitPane1.setBottomComponent(bubblePanel);
+//
+//                } else {
                     currentPanel = intervalsPanel;
                     frequencyPanel.setTrace(null, null);
                     intervalsPanel.setTraces(traceLists, traceNames);
                     splitPane1.setBottomComponent(intervalsPanel);
-                }
+//                }
 
             }
         } else {

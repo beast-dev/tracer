@@ -40,22 +40,26 @@ public class JIntervalsChart extends JChart {
 
     // private boolean isLinePlot = false;
 
-    private class Interval {
+    protected class Interval {
         String name;
-        double value, upper, lower;
+        double value; // mean
+        double upper, lower; // HPD
         boolean bold;
 
-        Interval(String name, double value, double upper, double lower, boolean bold) {
-
+        Interval(String name, double value) {
             this.name = name;
             this.value = value;
+        }
+
+        Interval(String name, double value, double upper, double lower, boolean bold) {
+            this(name, value);
             this.upper = upper;
             this.lower = lower;
             this.bold = bold;
         }
     }
 
-    private final ArrayList<Interval> intervals = new ArrayList<Interval>();
+    protected final ArrayList<Interval> intervals = new ArrayList<Interval>();
 
     public JIntervalsChart(Axis yAxis) {
         super(new DiscreteAxis(true, true), yAxis);
@@ -103,6 +107,7 @@ public class JIntervalsChart extends JChart {
             g2.setStroke(getAxisStroke());
 
             int index = ((int) value) - 1;
+            if (index < 0) index = 0; // allow single interval or box plot
             Interval interval = intervals.get(index);
             String label = interval.name;
 
@@ -125,41 +130,46 @@ public class JIntervalsChart extends JChart {
 
                 Interval interval = intervals.get(i);
 
-                float x = (float) transformX(i + 1);
-                float xLeft = (float) transformX(((double) i + 1) - 0.1);
-                float xRight = (float) transformX(((double) i + 1) + 0.1);
-                //float y = (float)transformY(interval.value);
-                float yUpper = (float) transformY(interval.upper);
-                float yLower = (float) transformY(interval.lower);
-                float yMean = (float) transformY(interval.value);
-
-                GeneralPath path = new GeneralPath();
-                path.moveTo(xLeft, yUpper);
-                path.lineTo(xRight, yUpper);
-                path.moveTo(x, yUpper);
-                path.lineTo(x, yLower);
-                path.moveTo(xLeft, yLower);
-                path.lineTo(xRight, yLower);
-
-                // draw a cross for mean
-                int crossLine = 2;
-                path.moveTo(x-crossLine, yMean-crossLine);
-                path.lineTo(x+crossLine, yMean+crossLine);
-                path.moveTo(x+crossLine, yMean-crossLine);
-                path.lineTo(x-crossLine, yMean+crossLine);
-
-                if (interval.bold) {
-                    g2.setStroke(new BasicStroke(2.0f));
-                } else {
-                    g2.setStroke(new BasicStroke(1.0f));
-                }
-                g2.setPaint(Color.black);
-                g2.draw(path);
+                drawInterval(g2, i, interval);
             }
         } else {
             super.paintContents(g2);
         }
 
+    }
+
+    protected void drawInterval(Graphics2D g2, int i, Interval interval) {
+
+        float x = (float) transformX(i + 1);
+        float xLeft = (float) transformX(((double) i + 1) - 0.1);
+        float xRight = (float) transformX(((double) i + 1) + 0.1);
+        //float y = (float)transformY(interval.value);
+        float yUpper = (float) transformY(interval.upper);
+        float yLower = (float) transformY(interval.lower);
+        float yMean = (float) transformY(interval.value);
+
+        GeneralPath path = new GeneralPath();
+        path.moveTo(xLeft, yUpper);
+        path.lineTo(xRight, yUpper);
+        path.moveTo(x, yUpper);
+        path.lineTo(x, yLower);
+        path.moveTo(xLeft, yLower);
+        path.lineTo(xRight, yLower);
+
+        // draw a cross for mean
+        int crossLine = 2;
+        path.moveTo(x-crossLine, yMean-crossLine);
+        path.lineTo(x+crossLine, yMean+crossLine);
+        path.moveTo(x+crossLine, yMean-crossLine);
+        path.lineTo(x-crossLine, yMean+crossLine);
+
+        if (interval.bold) {
+            g2.setStroke(new BasicStroke(2.0f));
+        } else {
+            g2.setStroke(new BasicStroke(1.0f));
+        }
+        g2.setPaint(Color.black);
+        g2.draw(path);
     }
 
 }

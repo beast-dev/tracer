@@ -50,7 +50,7 @@ public class IntervalsPanel extends NTracesChartPanel {
      */
     public IntervalsPanel(final JFrame frame) {
         super(frame);
-        traceChart = new JIntervalsChart(new LinearAxis());
+        traceChart = new BoxPlotChart(new LinearAxis());
         initJChartPanel("", ""); // xAxisTitle, yAxisTitle
 
         JToolBar toolBar = setupToolBar(frame);
@@ -58,8 +58,8 @@ public class IntervalsPanel extends NTracesChartPanel {
     }
 
     @Override
-    protected JIntervalsChart getTraceChart() {
-        return (JIntervalsChart) traceChart;
+    protected BoxPlotChart getTraceChart() {
+        return (BoxPlotChart) traceChart;
     }
 
     @Override
@@ -103,7 +103,11 @@ public class IntervalsPanel extends NTracesChartPanel {
                         }
                     }
                     name += traceName;
-                    getTraceChart().addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
+                    if (td.getTraceType().isOrdinalOrBinary())
+                        getTraceChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
+                                td.getMinimum(), td.getMaximum());
+                    else
+                        getTraceChart().addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
                 }
             }
         }
