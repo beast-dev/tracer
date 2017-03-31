@@ -36,10 +36,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A panel that displays correlation plots of 2 traces
@@ -241,7 +239,7 @@ public class JointDensityPanel extends NTracesChartPanel {
             defaultNumberFormatCheckBox.setVisible(false);
 
             if (td1.getTraceType().isCategorical()) {
-                mixedCategoricalPlot(td1, false); // isFirstTraceListNumerical
+                mixedCategoricalPlot(td1, td2, false); // isFirstTraceListNumerical
 
                 sampleCheckBox.setVisible(false);
                 pointsCheckBox.setVisible(false);
@@ -249,21 +247,23 @@ public class JointDensityPanel extends NTracesChartPanel {
 
 
             } else if (td2.getTraceType().isCategorical()) {
-                mixedCategoricalPlot(td2, true); // isFirstTraceListNumerical
+                mixedCategoricalPlot(td2, td1, true); // isFirstTraceListNumerical
 
                 sampleCheckBox.setVisible(false);
                 pointsCheckBox.setVisible(false);
                 translucencyCheckBox.setVisible(false);
 
-                String swapName = name1;
-                name1 = name2;
-                name2 = swapName;
+                if (!td1.getTraceType().isOrdinalOrBinary()) { // do not swap name for TangHuLu plot
+                    String swapName = name1;
+                    name1 = name2;
+                    name2 = swapName;
+                }
 
             } else {
                 numericalPlot(td1, td2);
 
                 sampleCheckBox.setVisible(true);
-                if (td1.getTraceType().isOrdinal() && td2.getTraceType().isOrdinal()) {
+                if (td1.getTraceType().isOrdinalOrBinary() && td2.getTraceType().isOrdinalOrBinary()) {
                     pointsCheckBox.setVisible(false);
                     translucencyCheckBox.setVisible(false);
                 } else {
@@ -279,9 +279,10 @@ public class JointDensityPanel extends NTracesChartPanel {
         repaint();
     }
 
-    private void mixedCategoricalPlot(TraceDistribution td, boolean isFirstTraceListNumerical) {
-        getTraceChart().setXAxis(new DiscreteAxis(true, true));
-        List<String> categoryValues = td.getRange();
+    // td is categorical
+    private void mixedCategoricalPlot(TraceDistribution tdCategorical, TraceDistribution tdNumerical,
+                                      boolean isFirstTraceListNumerical) {
+        List<String> categoryValues = tdCategorical.getRange();
         Map<String, TraceDistribution> categoryTdMap = new HashMap<String, TraceDistribution>();
 
         if (categoryValues == null || categoryValues.size() < 1) return;
@@ -291,7 +292,7 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         int sampleSize = minCount;
 
-        double samples1[] = new double[sampleSize];
+        List<Double> samples1 = new ArrayList<Double>(sampleSize);
         int k = 0;
 
         List values;
@@ -302,12 +303,11 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         for (int i = 0; i < sampleSize; i++) {
-            samples1[i] = ((Number) values.get(k)).doubleValue();
+            samples1.add(i, ((Number) values.get(k)).doubleValue());
             k += minCount / sampleSize;
         }
 
-
-        String samples2[] = new String[sampleSize];
+        List<String> samples2 = new ArrayList<String>(sampleSize);
         k = 0;
 
         List values2;
@@ -317,28 +317,44 @@ public class JointDensityPanel extends NTracesChartPanel {
             values2 = tl1.getValues(traceIndex1);
         }
         for (int i = 0; i < sampleSize; i++) {
-            samples2[i] = values2.get(k).toString();
+            samples2.add(i, values2.get(k).toString());
             k += minCount / sampleSize;
         }
 
-        // separate samples into categoryTdMap
-        ArrayList[] sepValues = new ArrayList[categoryValues.size()];
-        for (int i = 0; i < categoryValues.size(); i++) {
-            sepValues[i] = new ArrayList<Double>();
-            for (int j = 0; j < samples2.length; j++) {
-                if (categoryValues.get(i).equals(samples2[j])) {
-                    sepValues[i].add(samples1[j]);
+        getTraceChart().setXAxis(new DiscreteAxis(true, true));
+        if (tdNumerical.getTraceType().isOrdinalOrBinary()) {
+            // samples1 is not real number
+            getTraceChart().setYAxis(new DiscreteAxis(true, true));
+
+            List<Double> intData = tdCategorical.indexingData(samples2);
+            ScatterPlot plot;
+            if (isFirstTraceListNumerical)
+                plot  = new TangHuLuPlot(samples1, intData);
+            else
+                plot  = new TangHuLuPlot(intData, samples1);
+            getTraceChart().addPlot(plot);
+        } else {
+            // samples1 is real number
+            // separate samples into categoryTdMap
+            ArrayList[] sepValues = new ArrayList[categoryValues.size()];
+            for (int i = 0; i < categoryValues.size(); i++) {
+                sepValues[i] = new ArrayList<Double>();
+                for (int j = 0; j < samples2.size(); j++) {
+                    if (categoryValues.get(i).equals(samples2.get(j))) {
+                        sepValues[i].add(samples1.get(j));
+                    }
                 }
+
+                TraceDistribution categoryTd = new TraceDistribution(sepValues[i], TraceType.REAL); // todo ?
+                categoryTdMap.put(categoryValues.get(i), categoryTd);
             }
 
-            TraceDistribution categoryTd = new TraceDistribution(sepValues[i], TraceType.REAL); // todo ?
-            categoryTdMap.put(categoryValues.get(i), categoryTd);
+            for (String categoryValue : categoryValues) {
+                TraceDistribution categoryTd = categoryTdMap.get(categoryValue);
+                getTraceChart().addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
+            }
         }
 
-        for (String categoryValue : categoryValues) {
-            TraceDistribution categoryTd = categoryTdMap.get(categoryValue);
-            getTraceChart().addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
-        }
     }
 
     private double[][] categoricalPlot(TraceDistribution td1, TraceDistribution td2) {
@@ -478,9 +494,11 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         ScatterPlot plot;
-        if (td1.getTraceType().isOrdinal() && td2.getTraceType().isOrdinal()) {
+        if (td1.getTraceType().isOrdinalOrBinary() && td2.getTraceType().isOrdinalOrBinary()) {
+            // samples1 samples2 are both ordinal
             plot = new TangHuLuPlot(samples1, samples2);
         } else {
+            // either samples1 or samples2 is real
             plot = new ScatterPlot(samples1, samples2);
             plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
                     new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
