@@ -27,6 +27,7 @@ package tracer.traces;
 
 import dr.inference.trace.TraceAnalysis;
 import dr.inference.trace.TraceCorrelation;
+import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceList;
 import jam.framework.Exportable;
 import jam.table.TableRenderer;
@@ -238,6 +239,10 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
         public StatisticsModel() {
         }
 
+        private String mixedRowName(String firstRN, String secondRN) {
+            return firstRN.equals(secondRN) ? firstRN : firstRN + " | " + secondRN;
+        }
+
         public int getColumnCount() {
             if (traceLists != null && traceNames != null) {
                 return (traceLists.length * traceNames.size()) + 1;
@@ -269,17 +274,31 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
             }
 
             if (col == 0) {
-                if (tc != null && !tc.getTraceType().isNumber()) {
-                    return rowNamesCategorical[row];
-                } else {
-                    return rowNamesNumbers[row];
+                // row names
+                if (tc != null) { // traceLists != null && traceNames != null
+                    // mixed
+                    for (TraceList traceList : traceLists) {
+                        for (String traceName : traceNames) {
+                            int index = traceList.getTraceIndex(traceName);
+                            TraceDistribution td = traceList.getCorrelationStatistics(index);
+                            if (td != null) {
+                                if (!tc.getTraceType().isNumber() && td.getTraceType().isNumber())
+                                    return mixedRowName(rowNamesCategorical[row], rowNamesNumbers[row]);
+                                else if (tc.getTraceType().isNumber() && !td.getTraceType().isNumber())
+                                    return mixedRowName(rowNamesNumbers[row], rowNamesCategorical[row]);
+                            }
+                        }
+                    }
+
+                    if (!tc.getTraceType().isNumber())
+                        return rowNamesCategorical[row]; // only categorical
                 }
+                return rowNamesNumbers[row]; // only numeric
             }
 
             double value = 0.0;
 
             if (tc != null) {
-
                 if (tc.getTraceType().isNumber()) {
                     switch (row) {
                         case 0:

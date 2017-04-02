@@ -439,6 +439,7 @@ public class JointDensityPanel extends NTracesChartPanel {
             for (Double ordinal : samples2) {
                 stringList.add(String.valueOf(Math.round(ordinal)));
             }
+            getTraceChart().setXAxis(new DiscreteAxis(true, true));
 
             drawDiscreteBoxPlot(categoryValues, samples1, stringList);
 

@@ -103,10 +103,12 @@ public class IntervalsPanel extends NTracesChartPanel {
                         }
                     }
                     name += traceName;
-                    if (td.getTraceType().isOrdinalOrBinary())
-                        getTraceChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
-                                td.getMinimum(), td.getMaximum());
-                    else
+
+                    // TODO: boxplot scale not correct
+//                    if (td.getTraceType().isOrdinalOrBinary())
+//                        getTraceChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
+//                                td.getMinimum(), td.getMaximum());
+//                    else
                         getTraceChart().addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
                 }
             }
