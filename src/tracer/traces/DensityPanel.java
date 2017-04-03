@@ -321,7 +321,7 @@ public class DensityPanel extends NTracesChartPanel {
 
     protected void setupTraces() {
         // return if no traces selected
-        if (!rmAllPlots()) return;
+        if (!rmAllPlots(false)) return;
 
         int barId = 0;
         int i = 0;
@@ -345,7 +345,7 @@ public class DensityPanel extends NTracesChartPanel {
 
                     // set traceType here to avoid Exception from setYLab
                     traceType = trace.getTraceType();
-                    if (traceType == TraceType.REAL) {
+                    if (traceType.isContinuous()) {
                         if (currentSettings.showHistogram) {
                             plot = setupDensityPlot(values, td);
                             ((NumericalDensityPlot)plot).setRelativeDensity(currentSettings.relativeDensity);

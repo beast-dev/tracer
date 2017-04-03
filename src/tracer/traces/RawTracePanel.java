@@ -223,7 +223,7 @@ public class RawTracePanel extends NTracesChartPanel {
 
     protected void setupTraces() {
         // return if no traces selected
-        if (!rmAllPlots()) return; // traceChart.removeAllTraces();
+        if (!rmAllPlots(true)) return; // traceChart.removeAllTraces();
 
         int i = 0;
         List valuesX = new ArrayList();

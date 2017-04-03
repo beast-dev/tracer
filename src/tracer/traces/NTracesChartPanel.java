@@ -78,7 +78,7 @@ public abstract class NTracesChartPanel extends TraceChartPanel {
      *
      * @return boolean
      */
-    protected boolean rmAllPlots() {
+    protected boolean rmAllPlots(boolean rmMessageLabel) {
         removeAllPlots();
 
         if (traceLists == null || traceNames == null || traceNames.size() == 0) {
@@ -89,7 +89,7 @@ public abstract class NTracesChartPanel extends TraceChartPanel {
             return false;
         }
 
-        remove(messageLabel);
+        if (rmMessageLabel) remove(messageLabel);
         return true;
     }
 
