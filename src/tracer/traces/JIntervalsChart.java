@@ -37,7 +37,7 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 /**
- * Intervals for numeric, triangles for categorical
+ * Intervals for numeric, violins for categorical
  *
  * @author Andrew Rambaut
  * @author Walter Xie
@@ -72,6 +72,7 @@ public class JIntervalsChart extends JChart {
         Interval(String name, double modeIndex, FrequencyCounter frequencyCounter) {
             this(name, modeIndex);
             this.frequencyCounter = frequencyCounter;
+            this.bold = true; // think bar
         }
 
         public boolean isCategorical() {
@@ -103,12 +104,12 @@ public class JIntervalsChart extends JChart {
     }
 
     /**
-     * Create triangles to show the relative abundances of each category.
+     * Create discrete violin plots
      *
      * @param name
      * @param td
      */
-    public void addTriangles(String name, TraceDistribution td) {
+    public void addViolins(String name, TraceDistribution td) {
 
         FrequencyCounter fc = td.frequencyCounter;
         int modeIndex = fc.getKeyIndex(fc.getModeStats().getMode());
@@ -116,8 +117,8 @@ public class JIntervalsChart extends JChart {
         intervals.add(new Interval(name, modeIndex, fc));
 
         xAxis.addRange(1, intervals.size());
-        if (yAxis.getMinData() > 0)
-            yAxis.addRange(0, yAxis.getMaxData());
+        if (yAxis.getMinData() >= 0)
+            yAxis.addRange(-1, yAxis.getMaxData()); // show the bottom horizontal bar
         if (yAxis.getMaxData() < fc.getCounterSize())
             yAxis.addRange(yAxis.getMinData(), fc.getCounterSize());
 
@@ -184,7 +185,7 @@ public class JIntervalsChart extends JChart {
 
     protected void drawInterval(Graphics2D g2, int i, Interval interval) {
 
-        GeneralPath path = drawIntervalsOrTriangles(i, interval);
+        GeneralPath path = drawIntervalsOrViolins(i, interval);
 
         if (interval.bold) {
             g2.setStroke(new BasicStroke(2.0f));
@@ -195,9 +196,9 @@ public class JIntervalsChart extends JChart {
         g2.draw(path);
     }
 
-    private GeneralPath drawIntervalsOrTriangles(int i, Interval interval) {
+    private GeneralPath drawIntervalsOrViolins(int i, Interval interval) {
         if (interval.isCategorical())
-            return drawTriangles(i, interval);
+            return drawViolins(i, interval);
         return drawIntervals(i, interval);
     }
 
@@ -227,13 +228,13 @@ public class JIntervalsChart extends JChart {
         return path;
     }
 
-    private GeneralPath drawTriangles(int i, Interval interval) {
+    private GeneralPath drawViolins(int i, Interval interval) {
         GeneralPath path = new GeneralPath();
         FrequencyCounter fc = interval.frequencyCounter;
 
-        float xLeft2 = 0;
-        float xRight2 = 0;
-        float y2 = 0;
+//        float xLeft2 = 0;
+//        float xRight2 = 0;
+//        float y2 = 0;
         for (Object key : fc.uniqueValues()) {
             float halfwidth = (float) (0.2 * fc.getFreqScaledMaxTo1(key));
 
@@ -247,15 +248,15 @@ public class JIntervalsChart extends JChart {
             path.lineTo(xRight, y);
 
             // draw triangle
-            if (index > 0) {
-                path.moveTo(xLeft2, y2);
-                path.lineTo(xRight, y);
-                path.moveTo(xRight2, y2);
-                path.lineTo(xLeft, y);
-            }
-            xLeft2 = xLeft;
-            xRight2 = xRight;
-            y2 = y;
+//            if (index > 0) {
+//                path.moveTo(xLeft2, y2);
+//                path.lineTo(xRight, y);
+//                path.moveTo(xRight2, y2);
+//                path.lineTo(xLeft, y);
+//            }
+//            xLeft2 = xLeft;
+//            xRight2 = xRight;
+//            y2 = y;
 
             // draw cross on mode
             if (index == interval.value) {

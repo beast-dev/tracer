@@ -109,7 +109,7 @@ public class IntervalsPanel extends NTracesChartPanel {
 //                        getTraceChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
 //                                td.getMinimum(), td.getMaximum());
                     if (td.getTraceType().isCategorical())
-                        getTraceChart().addTriangles(name, td);
+                        getTraceChart().addViolins(name, td);
                     else
                         getTraceChart().addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
                 }
