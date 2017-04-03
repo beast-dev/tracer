@@ -87,7 +87,9 @@ public class JointDensityPanel extends NTracesChartPanel {
      */
     public JointDensityPanel(final JFrame frame) {
         super(frame);
-        traceChart = new BoxPlotChart(new LinearAxis(), new LinearAxis()); // correlationChart
+        // traceChart only used for Box Plot, ScatterPlot is added by addPlot()
+        traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS),
+                new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         initJChartPanel("", ""); // xAxisTitle, yAxisTitle
         JToolBar toolBar = setupToolBar(frame);
         addMainPanel(toolBar);
@@ -320,6 +322,7 @@ public class JointDensityPanel extends NTracesChartPanel {
             k += minCount / sampleSize;
         }
 
+        // set x axis
         getTraceChart().setXAxis(new DiscreteAxis(true, true));
         if (tdNumerical.getTraceType().isOrdinalOrBinary()) {
             // samples1 is not real number
@@ -387,11 +390,6 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         int k = 0;
-        if (td1.getTraceType().isOrdinal()) {
-            getTraceChart().setXAxis(new DiscreteAxis(true, true));
-        } else {
-            getTraceChart().setXAxis(new LinearAxis());
-        }
         List values = tl1.getValues(traceIndex1);
 
         List<Double> samples1 = new ArrayList<Double>();
@@ -401,11 +399,6 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         k = 0;
-        if (td2.getTraceType().isOrdinal()) {
-            getTraceChart().setYAxis(new DiscreteAxis(true, true));
-        } else {
-            getTraceChart().setYAxis(new LinearAxis());
-        }
         values = tl2.getValues(traceIndex2);
 
         List<Double> samples2 = new ArrayList<Double>();
@@ -414,6 +407,19 @@ public class JointDensityPanel extends NTracesChartPanel {
             k += minCount / sampleSize;
         }
 
+        // set axis
+        if (td1.getTraceType().isOrdinal()) {
+            getTraceChart().setXAxis(new DiscreteAxis(true, true));
+        } else {
+            getTraceChart().setXAxis(new LinearAxis());
+        }
+        if (td2.getTraceType().isOrdinal()) {
+            getTraceChart().setYAxis(new DiscreteAxis(true, true));
+        } else {
+            getTraceChart().setYAxis(new LinearAxis());
+        }
+
+        // add plot
         ScatterPlot plot;
         if (td1.getTraceType().isOrdinalOrBinary() && td2.getTraceType().isOrdinalOrBinary()) {
             // samples1 samples2 are both ordinal

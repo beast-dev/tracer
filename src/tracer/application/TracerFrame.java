@@ -1570,7 +1570,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                     value = td.getMean();
                     break;
                 case 2:
-//                    if (!td.isMultipleValues()) return "-";
+//                    if (!td.minEqualToMax()) return "-";
                     value = td.getESS();
                     if (Double.isNaN(value) || value < 1) {
                         // assume not applicable; should be tested in the computation

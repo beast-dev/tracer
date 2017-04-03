@@ -306,7 +306,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             value = tc.getGeometricMean();
                             break;
                         case 7:
-                            if (!tc.isMultipleValues()) return "n/a";
+                            if (!tc.isMinEqualToMax()) return "n/a";
                             return "[" + TraceAnalysis.formattedNumber(tc.getLowerHPD()) + ", " + TraceAnalysis.formattedNumber(tc.getUpperHPD()) + "]";
                         case 8:
                             value = tc.getACT();
