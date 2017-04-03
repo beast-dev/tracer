@@ -50,7 +50,7 @@ public class IntervalsPanel extends NTracesChartPanel {
      */
     public IntervalsPanel(final JFrame frame) {
         super(frame);
-        traceChart = new BoxPlotChart(new LinearAxis());
+        traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         initJChartPanel("", ""); // xAxisTitle, yAxisTitle
 
         JToolBar toolBar = setupToolBar(frame);

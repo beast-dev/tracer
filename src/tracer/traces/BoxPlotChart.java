@@ -86,16 +86,6 @@ public class BoxPlotChart extends JIntervalsChart {
         repaint();
     }
 
-    public void addIntervals(String name, double mean, double upper, double lower, boolean bold) {
-
-        intervals.add(new Interval(name, mean, upper, lower, bold));
-
-        xAxis.addRange(1, intervals.size());
-        yAxis.addRange(lower, upper);
-
-        recalibrate();
-        repaint();
-    }
 
     protected void paintContents(Graphics2D g2) {
         if (intervals.size() > 0) {

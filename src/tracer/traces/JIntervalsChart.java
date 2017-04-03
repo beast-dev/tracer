@@ -117,10 +117,7 @@ public class JIntervalsChart extends JChart {
         intervals.add(new Interval(name, modeIndex, fc));
 
         xAxis.addRange(1, intervals.size());
-        if (yAxis.getMinData() >= 0)
-            yAxis.addRange(-1, yAxis.getMaxData()); // show the bottom horizontal bar
-        if (yAxis.getMaxData() < fc.getCounterSize())
-            yAxis.addRange(yAxis.getMinData(), fc.getCounterSize());
+        yAxis.addRange(0, fc.getCounterSize()-1);
 
         recalibrate();
         repaint();
