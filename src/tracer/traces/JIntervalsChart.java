@@ -28,12 +28,20 @@ package tracer.traces;
 import dr.app.gui.chart.Axis;
 import dr.app.gui.chart.DiscreteAxis;
 import dr.app.gui.chart.JChart;
+import dr.inference.trace.TraceDistribution;
+import dr.stats.FrequencyCounter;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
+/**
+ * Intervals for numeric, triangles for categorical
+ *
+ * @author Andrew Rambaut
+ * @author Walter Xie
+ */
 public class JIntervalsChart extends JChart {
 
     //private static final int MAX_POINTS = 1000;
@@ -45,18 +53,31 @@ public class JIntervalsChart extends JChart {
         double value; // mean
         double upper, lower; // HPD
         boolean bold;
+        FrequencyCounter frequencyCounter;
 
         Interval(String name, double value) {
             this.name = name;
             this.value = value;
         }
 
-        Interval(String name, double value, double upper, double lower, boolean bold) {
-            this(name, value);
+        // numeric
+        Interval(String name, double mean, double upper, double lower, boolean bold) {
+            this(name, mean);
             this.upper = upper;
             this.lower = lower;
             this.bold = bold;
         }
+
+        // categorical
+        Interval(String name, double modeIndex, FrequencyCounter frequencyCounter) {
+            this(name, modeIndex);
+            this.frequencyCounter = frequencyCounter;
+        }
+
+        public boolean isCategorical() {
+            return frequencyCounter != null;
+        }
+
     }
 
     protected final ArrayList<Interval> intervals = new ArrayList<Interval>();
@@ -76,6 +97,29 @@ public class JIntervalsChart extends JChart {
 
         xAxis.addRange(1, intervals.size());
         yAxis.addRange(lower, upper);
+
+        recalibrate();
+        repaint();
+    }
+
+    /**
+     * Create triangles to show the relative abundances of each category.
+     *
+     * @param name
+     * @param td
+     */
+    public void addTriangles(String name, TraceDistribution td) {
+
+        FrequencyCounter fc = td.frequencyCounter;
+        int modeIndex = fc.getKeyIndex(fc.getModeStats().getMode());
+
+        intervals.add(new Interval(name, modeIndex, fc));
+
+        xAxis.addRange(1, intervals.size());
+        if (yAxis.getMinData() > 0)
+            yAxis.addRange(0, yAxis.getMaxData());
+        if (yAxis.getMaxData() < fc.getCounterSize())
+            yAxis.addRange(yAxis.getMinData(), fc.getCounterSize());
 
         recalibrate();
         repaint();
@@ -140,6 +184,24 @@ public class JIntervalsChart extends JChart {
 
     protected void drawInterval(Graphics2D g2, int i, Interval interval) {
 
+        GeneralPath path = drawIntervalsOrTriangles(i, interval);
+
+        if (interval.bold) {
+            g2.setStroke(new BasicStroke(2.0f));
+        } else {
+            g2.setStroke(new BasicStroke(1.0f));
+        }
+        g2.setPaint(Color.black);
+        g2.draw(path);
+    }
+
+    private GeneralPath drawIntervalsOrTriangles(int i, Interval interval) {
+        if (interval.isCategorical())
+            return drawTriangles(i, interval);
+        return drawIntervals(i, interval);
+    }
+
+    private GeneralPath drawIntervals(int i, Interval interval) {
         float x = (float) transformX(i + 1);
         float xLeft = (float) transformX(((double) i + 1) - 0.1);
         float xRight = (float) transformX(((double) i + 1) + 0.1);
@@ -162,14 +224,49 @@ public class JIntervalsChart extends JChart {
         path.lineTo(x+crossLine, yMean+crossLine);
         path.moveTo(x+crossLine, yMean-crossLine);
         path.lineTo(x-crossLine, yMean+crossLine);
+        return path;
+    }
 
-        if (interval.bold) {
-            g2.setStroke(new BasicStroke(2.0f));
-        } else {
-            g2.setStroke(new BasicStroke(1.0f));
+    private GeneralPath drawTriangles(int i, Interval interval) {
+        GeneralPath path = new GeneralPath();
+        FrequencyCounter fc = interval.frequencyCounter;
+
+        float xLeft2 = 0;
+        float xRight2 = 0;
+        float y2 = 0;
+        for (Object key : fc.uniqueValues()) {
+            float halfwidth = (float) (0.2 * fc.getFreqScaledMaxTo1(key));
+
+            int index = fc.getKeyIndex(key);
+            float x = (float) transformX(i + 1);
+            float xLeft = (float) transformX(((double) i + 1) - halfwidth);
+            float xRight = (float) transformX(((double) i + 1) + halfwidth);
+            float y = (float)transformY(index);
+
+            path.moveTo(xLeft, y);
+            path.lineTo(xRight, y);
+
+            // draw triangle
+            if (index > 0) {
+                path.moveTo(xLeft2, y2);
+                path.lineTo(xRight, y);
+                path.moveTo(xRight2, y2);
+                path.lineTo(xLeft, y);
+            }
+            xLeft2 = xLeft;
+            xRight2 = xRight;
+            y2 = y;
+
+            // draw cross on mode
+            if (index == interval.value) {
+                int crossLine = 2;
+                path.moveTo(x - crossLine, y - crossLine);
+                path.lineTo(x + crossLine, y + crossLine);
+                path.moveTo(x + crossLine, y - crossLine);
+                path.lineTo(x - crossLine, y + crossLine);
+            }
         }
-        g2.setPaint(Color.black);
-        g2.draw(path);
+        return path;
     }
 
 }

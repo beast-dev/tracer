@@ -1,5 +1,5 @@
 /*
- * JIntervalsChart.java
+ * BoxPlotChart.java
  *
  * Copyright (c) 2002-2015 Alexei Drummond, Andrew Rambaut and Marc Suchard
  *
@@ -32,6 +32,12 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Create box plots and intervals in the same chart.
+ *
+ * @author Andrew Rambaut
+ * @author Walter Xie
+ */
 public class BoxPlotChart extends JIntervalsChart {
 
     private boolean plotOutliers = true;

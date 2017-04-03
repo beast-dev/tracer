@@ -77,8 +77,6 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
     IntervalsPanel intervalsPanel = null;
     JComponent currentPanel = null;
 
-    BubblePanel bubblePanel = null;
-
     public SummaryStatisticsPanel(final JFrame frame) {
 
         setOpaque(false);
@@ -129,10 +127,6 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
         intervalsPanel.setBorder(new BorderUIResource.EmptyBorderUIResource(
                 new java.awt.Insets(6, 0, 0, 0)));
 
-        bubblePanel = new BubblePanel();
-        bubblePanel.setBorder(new BorderUIResource.EmptyBorderUIResource(
-                new java.awt.Insets(6, 0, 0, 0)));
-
         splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, topPanel, frequencyPanel);
         splitPane1.setOpaque(false);
         splitPane1.setBorder(null);
@@ -181,21 +175,10 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                     statisticsTable.getColumnModel().getColumn(i).setPreferredWidth(100);
                 }
 
-                // if all discrete, change to bubble chart
-//                if (TraceTypeUtils.allDiscrete(traceLists, traceNames)) {
-//                if (TraceTypeUtils.allCategorical(traceLists, traceNames)) {
-//                    currentPanel = bubblePanel;
-//                    frequencyPanel.setTrace(null, null);
-//                    bubblePanel.setTraces(traceLists, traceNames);
-//                    splitPane1.setBottomComponent(bubblePanel);
-//
-//                } else {
-                    currentPanel = intervalsPanel;
-                    frequencyPanel.setTrace(null, null);
-                    intervalsPanel.setTraces(traceLists, traceNames);
-                    splitPane1.setBottomComponent(intervalsPanel);
-//                }
-
+                currentPanel = intervalsPanel;
+                frequencyPanel.setTrace(null, null);
+                intervalsPanel.setTraces(traceLists, traceNames);
+                splitPane1.setBottomComponent(intervalsPanel);
             }
         } else {
             currentPanel = statisticsTable;
