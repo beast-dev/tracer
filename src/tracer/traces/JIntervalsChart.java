@@ -93,6 +93,11 @@ public class JIntervalsChart extends JChart {
     }
 
     public void addIntervals(String name, double mean, double upper, double lower, boolean bold) {
+        // for minData == maxData
+        if (lower == upper & upper != mean) {
+            lower = mean;
+            upper = mean;
+        }
 
         intervals.add(new Interval(name, mean, upper, lower, bold));
 
