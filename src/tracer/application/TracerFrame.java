@@ -35,15 +35,15 @@ import dr.app.gui.FileDrop;
 import dr.app.gui.chart.ChartRuntimeException;
 import dr.app.gui.table.TableEditorStopper;
 import dr.app.gui.util.LongTask;
+import dr.inference.trace.*;
+import jam.framework.DocumentFrame;
+import jam.panels.ActionPanel;
+import jam.table.TableRenderer;
 import tracer.analysis.*;
 import tracer.traces.CombinedTraces;
 import tracer.traces.FilterDialog;
 import tracer.traces.FilterListPanel;
 import tracer.traces.TracePanel;
-import dr.inference.trace.*;
-import jam.framework.DocumentFrame;
-import jam.panels.ActionPanel;
-import jam.table.TableRenderer;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -92,6 +92,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     private final List<String> commonTraceNames = new ArrayList<String>();
     private boolean homogenousTraceFiles = true;
 
+    private JButton reloadButton;
     private JButton realButton;
     private JButton ordinalButton;
 //    private JButton binaryButton;
@@ -141,6 +142,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         };
         setImportAction(importAction);
         setExportAction(exportDataAction);
+//        setAction(reloadAction); // todo how to add reloadAction to menu ?
 
         setAnalysesEnabled(false);
     }
@@ -176,6 +178,18 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         actionPanel1.setAddAction(getImportAction());
         actionPanel1.setRemoveAction(getRemoveTraceAction());
         getRemoveTraceAction().setEnabled(false);
+
+        reloadButton = new JButton("R");
+        reloadButton.setToolTipText("Reload the selected log file(s)");
+//        Icon refreshIcon = new ImageIcon(IconUtils.getImage(TracerFrame.class, "images/refresh.png"));
+//        reloadButton.setIcon(refreshIcon);
+        reloadButton.setPreferredSize(new Dimension(22,20));
+        actionPanel1.add(reloadButton);
+        reloadButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                refreshTraceList();
+            }
+        });
 
         JPanel controlPanel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controlPanel1.add(actionPanel1);
@@ -481,7 +495,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     }
 
-    private void removeTraceList() {
+    private LogFileTraces[] removeTraceList() {
         int[] selRows = traceTable.getSelectedRows();
 
         LogFileTraces[] tls = new LogFileTraces[selRows.length];
@@ -521,6 +535,20 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             traceTable.getSelectionModel().addSelectionInterval(row, row);
         }
         setupDividerLocation();
+
+        return tls;
+    }
+
+    // reload all logs
+    private void refreshTraceList() {
+        LogFileTraces[] tls = removeTraceList();
+        LogFileTraces[] newTls = new LogFileTraces[tls.length];
+
+        for (int i = 0; i < tls.length; i++) {
+            newTls[i] = new LogFileTraces(tls[i].getName(), tls[i].getFile());
+        }
+
+        processTraces(newTls);
     }
 
     public void setBurnIn(int index, int burnIn) {
@@ -1629,6 +1657,10 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         return removeTraceAction;
     }
 
+    public Action getReloadAction() {
+        return reloadAction;
+    }
+
     public Action getDemographicAction() {
         return demographicAction;
     }
@@ -1762,6 +1794,12 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     private final AbstractAction removeTraceAction = new AbstractAction() {
         public void actionPerformed(ActionEvent ae) {
             removeTraceList();
+        }
+    };
+
+    private final AbstractAction reloadAction = new AbstractAction() {
+        public void actionPerformed(ActionEvent ae) {
+            refreshTraceList();
         }
     };
 
