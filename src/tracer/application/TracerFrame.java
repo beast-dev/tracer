@@ -508,6 +508,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             currentTraceLists.clear();
             allTraceLists.clear();
             statisticTableModel.fireTableDataChanged();
+
+            tracePanel.setTraces(null, null);
         }
 
 

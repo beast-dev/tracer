@@ -263,36 +263,39 @@ public class DensityPanel extends NTracesChartPanel {
 //        kdeCheckBox.setSelected(currentSettings.showKDE);
 //        kdeSetupButton.setEnabled(currentSettings.showKDE);
 
-        TraceType traceType = null;
 
+        if (traceLists != null) {
 //        barCount = 0;
-        for (TraceList tl : traceLists) {
-            for (String traceName : traceNames) {
-                int traceIndex = tl.getTraceIndex(traceName);
-                Trace trace = tl.getTrace(traceIndex);
-                if (trace != null) {
-                    if (traceType == null) {
-                        traceType = trace.getTraceType();
-                    }
-                    if (trace.getTraceType() != traceType) {
-                        getTraceChart().removeAllPlots();
+            TraceType traceType = null;
+            for (TraceList tl : traceLists) {
+                for (String traceName : traceNames) {
+                    int traceIndex = tl.getTraceIndex(traceName);
+                    Trace trace = tl.getTrace(traceIndex);
+                    if (trace != null) {
+                        if (traceType == null) {
+                            traceType = trace.getTraceType();
+                        }
+                        if (trace.getTraceType() != traceType) {
+                            getTraceChart().removeAllPlots();
 
-                        chartPanel.setXAxisTitle("");
-                        chartPanel.setYAxisTitle("");
-                        messageLabel.setText("Unable to display a mixture statistics types.");
-                        return;
+                            chartPanel.setXAxisTitle("");
+                            chartPanel.setYAxisTitle("");
+                            messageLabel.setText("Unable to display a mixture statistics types.");
+                            return;
+                        }
+                        messageLabel.setText("");
                     }
                 }
             }
-        }
 
-        // only enable controls relevant to continuous densities...
-        displayCombo.setEnabled(traceType == TraceType.REAL);
-        relativeDensityCheckBox.setEnabled(traceType == TraceType.REAL);
-        labelBins.setEnabled(traceType == TraceType.REAL);
-        binsCombo.setEnabled(traceType == TraceType.REAL && currentSettings.showHistogram);
+            // only enable controls relevant to continuous densities...
+            displayCombo.setEnabled(traceType == TraceType.REAL);
+            relativeDensityCheckBox.setEnabled(traceType == TraceType.REAL);
+            labelBins.setEnabled(traceType == TraceType.REAL);
+            binsCombo.setEnabled(traceType == TraceType.REAL && currentSettings.showHistogram);
 //        kdeCheckBox.setEnabled(traceType == TraceFactory.TraceType.DOUBLE);
 //        kdeSetupButton.setEnabled(traceType == TraceFactory.TraceType.DOUBLE);
+        }
 
         setupTraces();
     }
