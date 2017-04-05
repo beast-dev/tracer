@@ -551,7 +551,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         processTraces(newTls);
     }
 
-    public void setBurnIn(int index, int burnIn) {
+    public void setBurnIn(int index, long burnIn) {
         LogFileTraces trace = traceLists.get(index);
         trace.setBurnIn(burnIn);
         analyseTraceList(trace);
@@ -1546,7 +1546,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         public void setValueAt(Object value, int row, int col) {
             if (col == 2) {
-                setBurnIn(row, (Integer) value);
+                setBurnIn(row, (Long) value);
             }
         }
 
