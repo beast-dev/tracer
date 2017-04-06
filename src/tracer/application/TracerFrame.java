@@ -542,13 +542,15 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     // reload all logs
     private void refreshTraceList() {
         LogFileTraces[] tls = removeTraceList();
-        LogFileTraces[] newTls = new LogFileTraces[tls.length];
+        if (tls.length > 0) {
+            LogFileTraces[] newTls = new LogFileTraces[tls.length];
 
-        for (int i = 0; i < tls.length; i++) {
-            newTls[i] = new LogFileTraces(tls[i].getName(), tls[i].getFile());
+            for (int i = 0; i < tls.length; i++) {
+                newTls[i] = new LogFileTraces(tls[i].getName(), tls[i].getFile());
+            }
+
+            processTraces(newTls);
         }
-
-        processTraces(newTls);
     }
 
     public void setBurnIn(int index, long burnIn) {
