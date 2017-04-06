@@ -25,10 +25,7 @@
 
 package tracer.traces;
 
-import dr.inference.trace.TraceAnalysis;
-import dr.inference.trace.TraceCorrelation;
-import dr.inference.trace.TraceDistribution;
-import dr.inference.trace.TraceList;
+import dr.inference.trace.*;
 import jam.framework.Exportable;
 import jam.table.TableRenderer;
 
@@ -282,6 +279,10 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
             double value = 0.0;
 
             if (tc != null) {
+                // if number of sample < MIN_SAMPLE, then return -
+                if (tc.getSize() < LogFileTraces.MIN_SAMPLE && row < 9)
+                    row = 11;
+
                 if (tc.getTraceType().isNumber()) {
                     switch (row) {
                         case 0:
