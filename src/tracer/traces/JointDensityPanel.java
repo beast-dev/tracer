@@ -262,9 +262,10 @@ public class JointDensityPanel extends NTracesChartPanel {
                 }
 
             } else {
+                numericalPlot(td1, td2);
+
                 if (td1.getTraceType().isOrdinalOrBinary() && td2.getTraceType().isOrdinalOrBinary()) {
                     sampleCheckBox.setVisible(true);
-                    sampleCheckBox.setSelected(false);
                     pointsCheckBox.setVisible(false);
                     translucencyCheckBox.setVisible(false);
                 } else {
@@ -272,8 +273,6 @@ public class JointDensityPanel extends NTracesChartPanel {
                     pointsCheckBox.setVisible(true);
                     translucencyCheckBox.setVisible(true);
                 }
-
-                numericalPlot(td1, td2); // after sampleCheckBox.setSelected(false);
             }
         }
         setXLab(name1);
@@ -357,14 +356,17 @@ public class JointDensityPanel extends NTracesChartPanel {
                 }
             }
 
-            TraceDistribution categoryTd = new TraceDistribution(sepValues[i], TraceType.REAL); // todo ?
-            categoryTdMap.put(categoryValues.get(i), categoryTd);
+            if (sepValues[i].size() > 0) { // avoid RuntimeException: no value sent to statistics calculation
+                TraceDistribution categoryTd = new TraceDistribution(sepValues[i], TraceType.REAL); // todo ?
+                categoryTdMap.put(categoryValues.get(i), categoryTd);
+            }
         }
 
-        for (String categoryValue : categoryValues) {
-            TraceDistribution categoryTd = categoryTdMap.get(categoryValue);
+        // categoryTdMap.size <= categoryValues.size because of sampling
+        for (Map.Entry<String, TraceDistribution> entry : categoryTdMap.entrySet()) {
+            TraceDistribution categoryTd = entry.getValue();
 //                getTraceChart().addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
-            getTraceChart().addBoxPlots(categoryValue, categoryTd.getMedian(), categoryTd.getQ1(),
+            getTraceChart().addBoxPlots(entry.getKey(), categoryTd.getMedian(), categoryTd.getQ1(),
                     categoryTd.getQ3(), categoryTd.getMinimum(), categoryTd.getMaximum());
         }
     }
