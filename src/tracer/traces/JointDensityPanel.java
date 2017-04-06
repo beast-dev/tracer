@@ -265,14 +265,14 @@ public class JointDensityPanel extends NTracesChartPanel {
             } else {
                 numericalPlot(td1, td2);
 
-                if (td1.getTraceType().isOrdinalOrBinary() && td2.getTraceType().isOrdinalOrBinary()) {
-                    sampleCheckBox.setVisible(true);
-                    pointsCheckBox.setVisible(false);
-                    translucencyCheckBox.setVisible(false);
-                } else {
+                if (td1.getTraceType().isContinuous() && td2.getTraceType().isContinuous()) {
                     sampleCheckBox.setVisible(true);
                     pointsCheckBox.setVisible(true);
                     translucencyCheckBox.setVisible(true);
+                } else {
+                    sampleCheckBox.setVisible(false);
+                    pointsCheckBox.setVisible(false);
+                    translucencyCheckBox.setVisible(false);
                 }
             }
         }
@@ -386,7 +386,8 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         int sampleSize = minCount;
 
-        if (sampleCheckBox.isSelected()) {
+        // sampling only required by scatter plot
+        if (sampleCheckBox.isSelected() && td1.getTraceType().isContinuous() && td2.getTraceType().isContinuous()) {
             if (td1.getESS() < td2.getESS()) {
                 sampleSize = (int) td1.getESS();
             } else {
