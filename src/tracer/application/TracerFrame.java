@@ -805,7 +805,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 tracePanel.setTraces(tl, selectedTraces);
             } catch (ChartRuntimeException cre) {
                 JOptionPane.showMessageDialog(this, "One or more traces contain invalid values and \rare not able to be displayed.",
-                        "Problem with tree file",
+                        "Problem with trace file",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -1085,7 +1085,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                                     new Runnable() {
                                         public void run() {
                                             JOptionPane.showMessageDialog(frame, "Problem with trace file: " + te.getMessage(),
-                                                    "Problem with tree file",
+                                                    "Problem with trace file",
                                                     JOptionPane.ERROR_MESSAGE);
                                         }
                                     });
@@ -1151,7 +1151,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                                 new Runnable() {
                                     public void run() {
                                         JOptionPane.showMessageDialog(frame, "Problem with trace file: " + te.getMessage(),
-                                                "Problem with tree file",
+                                                "Problem with trace file",
                                                 JOptionPane.ERROR_MESSAGE);
                                     }
                                 });
