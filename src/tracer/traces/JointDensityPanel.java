@@ -290,33 +290,36 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         if (categoryValues == null || categoryValues.size() < 1) return;
 
-        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
-        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
+//        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
+//        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
+        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
+        List values1 = tl1.getValues(traceIndex1);
+        List values2 = tl2.getValues(traceIndex2);
+        int maxCount = Math.max(values1.size(), values2.size());
+        int minCount = Math.min(values1.size(), values2.size());
 
         int sampleSize = minCount;
 
         List<Double> samples1 = new ArrayList<Double>(sampleSize);
         int k = 0;
 
-        List values;
-        if (isFirstTraceListNumerical) {
-            values = tl1.getValues(traceIndex1);
-        } else {
-            values = tl2.getValues(traceIndex2);
+        if (!isFirstTraceListNumerical) {
+//            values1 = tl1.getValues(traceIndex1);
+//        } else {
+            values1 = tl2.getValues(traceIndex2);
         }
 
         for (int i = 0; i < sampleSize; i++) {
-            samples1.add(i, ((Number) values.get(k)).doubleValue());
+            samples1.add(i, ((Number) values1.get(k)).doubleValue());
             k += minCount / sampleSize;
         }
 
         List<String> samples2 = new ArrayList<String>(sampleSize);
         k = 0;
 
-        List values2;
-        if (isFirstTraceListNumerical) {
-            values2 = tl2.getValues(traceIndex2);
-        } else {
+        if (!isFirstTraceListNumerical) {
+//            values2 = tl2.getValues(traceIndex2);
+//        } else {
             values2 = tl1.getValues(traceIndex1);
         }
         for (int i = 0; i < sampleSize; i++) {
@@ -473,8 +476,13 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         double[][] data = new double[rowNames.size()][colNames.size()];
 
-        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
-        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
+//        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
+//        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
+        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
+        List values1 = tl1.getValues(traceIndex1);
+        List values2 = tl2.getValues(traceIndex2);
+        int maxCount = Math.max(values1.size(), values2.size());
+        int minCount = Math.min(values1.size(), values2.size());
 
         int sampleSize = minCount;
 
@@ -483,13 +491,12 @@ public class JointDensityPanel extends NTracesChartPanel {
         String samples1[] = new String[sampleSize];
         int k = 0;
 
-        List values = tl1.getValues(traceIndex1);
         TraceType type = tl1.getTrace(traceIndex1).getTraceType();
         for (int i = 0; i < sampleSize; i++) {
             if (type == TraceType.ORDINAL) { // as Integer is stored as Double in Trace
-                samples1[i] = Integer.toString( ((Number) values.get(k)).intValue() );
+                samples1[i] = Integer.toString( ((Number) values1.get(k)).intValue() );
             } else {
-                samples1[i] = values.get(k).toString();
+                samples1[i] = values1.get(k).toString();
             }
             k += minCount / sampleSize; // = 1 for non-continous vs non-continous
         }
@@ -497,13 +504,12 @@ public class JointDensityPanel extends NTracesChartPanel {
         String samples2[] = new String[sampleSize];
         k = 0;
 
-        values = tl2.getValues(traceIndex2);
         type = tl2.getTrace(traceIndex2).getTraceType();
         for (int i = 0; i < sampleSize; i++) {
             if (type == TraceType.ORDINAL) { // as Integer is stored as Double in Trace
-                samples2[i] = Integer.toString( ((Number) values.get(k)).intValue() );
+                samples2[i] = Integer.toString( ((Number) values2.get(k)).intValue() );
             } else {
-                samples2[i] = values.get(k).toString();
+                samples2[i] = values2.get(k).toString();
             }
             k += minCount / sampleSize;
         }
