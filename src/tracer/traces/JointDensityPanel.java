@@ -104,6 +104,7 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         sampleCheckBox.setOpaque(false);
         sampleCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
+        // todo make 'samples only' unchecked as default for ordinal types
         sampleCheckBox.setSelected(true);
         toolBar.add(sampleCheckBox);
 
