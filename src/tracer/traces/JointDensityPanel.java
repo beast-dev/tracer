@@ -373,8 +373,13 @@ public class JointDensityPanel extends NTracesChartPanel {
     }
 
     private void numericalPlot(TraceCorrelation td1, TraceCorrelation td2) {
-        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
-        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
+//        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
+//        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
+        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
+        List values1 = tl1.getValues(traceIndex1);
+        List values2 = tl2.getValues(traceIndex2);
+        int maxCount = Math.max(values1.size(), values2.size());
+        int minCount = Math.min(values1.size(), values2.size());
 
         int sampleSize = minCount;
 
@@ -395,20 +400,16 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         int k = 0;
-        List values = tl1.getValues(traceIndex1);
-
         List<Double> samples1 = new ArrayList<Double>();
         for (int i = 0; i < sampleSize; i++) {
-            samples1.add(i, ((Number) values.get(k)).doubleValue());
+            samples1.add(i, ((Number) values1.get(k)).doubleValue());
             k += minCount / sampleSize;
         }
 
         k = 0;
-        values = tl2.getValues(traceIndex2);
-
         List<Double> samples2 = new ArrayList<Double>();
         for (int i = 0; i < sampleSize; i++) {
-            samples2.add(i, ((Number) values.get(k)).doubleValue());
+            samples2.add(i, ((Number) values2.get(k)).doubleValue());
             k += minCount / sampleSize;
         }
 
