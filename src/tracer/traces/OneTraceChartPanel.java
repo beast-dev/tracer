@@ -101,17 +101,17 @@ public abstract class OneTraceChartPanel extends TraceChartPanel {
     // for Frequency panel only ?
     protected void setBinsComponents(TraceType traceType) {
 
-        if (traceType == TraceType.REAL) {
+        if (traceType.isContinuous()) {
             labelBins.setVisible(true);
             binsCombo.setVisible(true);
             showValuesCheckBox.setVisible(false);
 
-        } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
+        } else if (traceType.isIntegerOrBinary()) {
             labelBins.setVisible(false);
             binsCombo.setVisible(false);
             showValuesCheckBox.setVisible(true);
 
-        } else if (traceType == TraceType.CATEGORICAL) {
+        } else if (traceType.isCategorical()) {
             labelBins.setVisible(false);
             binsCombo.setVisible(false);
             showValuesCheckBox.setVisible(true);

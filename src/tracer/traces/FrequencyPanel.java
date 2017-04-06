@@ -137,7 +137,7 @@ public class FrequencyPanel extends OneTraceChartPanel {
                     plot.setIntervals(td.getUpperHPD(), td.getLowerHPD());
                 }
 
-            } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
+            } else if (traceType.isIntegerOrBinary()) {
                 plot = new FrequencyPlot(values, -1, td);
 
                 if (td != null) {

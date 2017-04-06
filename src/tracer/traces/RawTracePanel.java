@@ -253,8 +253,8 @@ public class RawTracePanel extends NTracesChartPanel {
                     double[] minMax;
                     if (trace.getTraceType().isNumber()) {
 
-                        getTraceChart().setYAxis(trace.getTraceType().isOrdinal(), new HashMap<Integer, String>());
-                        if (trace.getTraceType().isOrdinal()) {
+                        getTraceChart().setYAxis(trace.getTraceType().isInteger(), new HashMap<Integer, String>());
+                        if (trace.getTraceType().isInteger()) {
                             getTraceChart().getYAxis().setAxisFlags(Axis.AT_DATA, Axis.AT_DATA);
 
                             if (trace.getTraceType().isBinary()) {

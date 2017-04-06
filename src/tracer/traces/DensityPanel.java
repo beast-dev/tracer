@@ -375,7 +375,7 @@ public class DensityPanel extends NTracesChartPanel {
                             traceChart.addPlot(plot2);
                         }
 
-                    } else if (traceType.isOrdinal()) {
+                    } else if (traceType.isInteger()) {
 
                         plot = new CategoryDensityPlot(values, -1, td, currentSettings.barCount, barId);
                         barId++;

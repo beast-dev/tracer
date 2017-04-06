@@ -293,7 +293,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                         "using setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) !");
 
             if (!traceType.isCategorical()) {
-                ((DiscreteJChart) getTraceChart()).setXAxis(traceType.isOrdinalOrBinary(),
+                ((DiscreteJChart) getTraceChart()).setXAxis(traceType.isIntegerOrBinary(),
                         new HashMap<Integer, String>());
 
             } else if (traceType == TraceType.CATEGORICAL) {
@@ -325,13 +325,13 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
             if (yLabs.length != 2)
                 throw new IllegalArgumentException("Y labs array must have 2 element !");
 
-            if (traceType == TraceType.REAL) {
+            if (traceType.isContinuous()) {
                 chartPanel.setYAxisTitle(yLabs[0]);
 
-            } else if (traceType == TraceType.ORDINAL || traceType == TraceType.BINARY) {
+            } else if (traceType.isIntegerOrBinary()) {
                 chartPanel.setYAxisTitle(yLabs[1]);
 
-            } else if (traceType == TraceType.CATEGORICAL) {
+            } else if (traceType.isCategorical()) {
                 chartPanel.setYAxisTitle(yLabs[1]);
 
             } else {

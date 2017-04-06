@@ -94,7 +94,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     private JButton reloadButton;
     private JButton realButton;
-    private JButton ordinalButton;
+    private JButton integerButton;
 //    private JButton binaryButton;
     private JButton categoricalButton;
 
@@ -252,12 +252,12 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         realButton.setFont(UIManager.getFont("SmallSystemFont"));
         realButton.setEnabled(false);
 
-        ordinalButton = new JButton("(O)rd");
-        ordinalButton.setToolTipText(TraceType.ORDINAL.toString());
+        integerButton = new JButton("(I)nt");
+        integerButton.setToolTipText(TraceType.INTEGER.toString());
         // Only affect Mac OS X - nicer GUI
-        ordinalButton.putClientProperty("Quaqua.Button.style", "placard");
-        ordinalButton.setFont(UIManager.getFont("SmallSystemFont"));
-        ordinalButton.setEnabled(false);
+        integerButton.putClientProperty("Quaqua.Button.style", "placard");
+        integerButton.setFont(UIManager.getFont("SmallSystemFont"));
+        integerButton.setEnabled(false);
 
 //        binaryButton = new JButton("(B)in");
 //        binaryButton.setToolTipText(TraceType.BINARY.toString());
@@ -278,9 +278,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 changeTraceType(TraceType.REAL);
             }
         });
-        ordinalButton.addActionListener(new ActionListener() {
+        integerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                changeTraceType(TraceType.ORDINAL);
+                changeTraceType(TraceType.INTEGER);
             }
         });
 //        binaryButton.addActionListener(new ActionListener() {
@@ -295,7 +295,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         });
 
         changeTraceTypePanel.add(realButton);
-        changeTraceTypePanel.add(ordinalButton);
+        changeTraceTypePanel.add(integerButton);
 //        changeTraceTypePanel.add(binaryButton);
         changeTraceTypePanel.add(categoricalButton);
         changeTraceTypePanel.setToolTipText("<html> Change the data type of a selected parameter here. <br>" +
@@ -813,7 +813,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
 
         realButton.setEnabled(selRows.length > 0);
-        ordinalButton.setEnabled(selRows.length > 0);
+        integerButton.setEnabled(selRows.length > 0);
 //        binaryButton.setEnabled(selRows.length > 0);
         categoricalButton.setEnabled(selRows.length > 0);
     }

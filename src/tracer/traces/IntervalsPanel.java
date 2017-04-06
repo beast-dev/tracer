@@ -105,7 +105,7 @@ public class IntervalsPanel extends NTracesChartPanel {
                     name += traceName;
 
                     // TODO: boxplot scale not correct here
-//                    if (td.getTraceType().isOrdinalOrBinary())
+//                    if (td.getTraceType().isIntegerOrBinary())
 //                        getTraceChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
 //                                td.getMinimum(), td.getMaximum());
                     if (td.getTraceType().isCategorical())

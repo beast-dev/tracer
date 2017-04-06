@@ -256,7 +256,7 @@ public class JointDensityPanel extends NTracesChartPanel {
                 pointsCheckBox.setVisible(false);
                 translucencyCheckBox.setVisible(false);
 
-                if (!td1.getTraceType().isOrdinalOrBinary()) { // do not swap name for TangHuLu plot
+                if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
                     String swapName = name1;
                     name1 = name2;
                     name2 = swapName;
@@ -329,7 +329,7 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         // set x axis
         getTraceChart().setXAxis(new DiscreteAxis(true, true));
-        if (tdNumerical.getTraceType().isOrdinalOrBinary()) {
+        if (tdNumerical.getTraceType().isIntegerOrBinary()) {
             // samples1 is not real number
             getTraceChart().setYAxis(new DiscreteAxis(true, true));
 
@@ -418,12 +418,12 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         // set axis
-        if (td1.getTraceType().isOrdinal()) {
+        if (td1.getTraceType().isInteger()) {
             getTraceChart().setXAxis(new DiscreteAxis(true, true));
         } else {
             getTraceChart().setXAxis(new LinearAxis());
         }
-        if (td2.getTraceType().isOrdinal()) {
+        if (td2.getTraceType().isInteger()) {
             getTraceChart().setYAxis(new DiscreteAxis(true, true));
         } else {
             getTraceChart().setYAxis(new LinearAxis());
@@ -431,12 +431,12 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         // add plot
         ScatterPlot plot;
-        if (td1.getTraceType().isOrdinalOrBinary() && td2.getTraceType().isOrdinalOrBinary()) {
+        if (td1.getTraceType().isIntegerOrBinary() && td2.getTraceType().isIntegerOrBinary()) {
             // samples1 samples2 are both ordinal
             plot = new TangHuLuPlot(samples1, samples2);
             getTraceChart().addPlot(plot);
 
-        } else if (td1.getTraceType().isOrdinalOrBinary()) {
+        } else if (td1.getTraceType().isIntegerOrBinary()) {
             List<String> categoryValues = td1.getRange();
             if (categoryValues == null || categoryValues.size() < 1) return;
 
@@ -447,7 +447,7 @@ public class JointDensityPanel extends NTracesChartPanel {
 
             drawDiscreteBoxPlot(categoryValues, samples2, stringList);
 
-        } else if (td2.getTraceType().isOrdinalOrBinary()) {
+        } else if (td2.getTraceType().isIntegerOrBinary()) {
             List<String> categoryValues = td2.getRange();
             if (categoryValues == null || categoryValues.size() < 1) return;
 
@@ -494,7 +494,7 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         TraceType type = tl1.getTrace(traceIndex1).getTraceType();
         for (int i = 0; i < sampleSize; i++) {
-            if (type == TraceType.ORDINAL) { // as Integer is stored as Double in Trace
+            if (type.isInteger()) { // as Integer is stored as Double in Trace
                 samples1[i] = Integer.toString( ((Number) values1.get(k)).intValue() );
             } else {
                 samples1[i] = values1.get(k).toString();
@@ -507,7 +507,7 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         type = tl2.getTrace(traceIndex2).getTraceType();
         for (int i = 0; i < sampleSize; i++) {
-            if (type == TraceType.ORDINAL) { // as Integer is stored as Double in Trace
+            if (type.isInteger()) { // as Integer is stored as Double in Trace
                 samples2[i] = Integer.toString( ((Number) values2.get(k)).intValue() );
             } else {
                 samples2[i] = values2.get(k).toString();
