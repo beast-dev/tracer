@@ -262,16 +262,18 @@ public class JointDensityPanel extends NTracesChartPanel {
                 }
 
             } else {
-                numericalPlot(td1, td2);
-
-                sampleCheckBox.setVisible(true);
                 if (td1.getTraceType().isOrdinalOrBinary() && td2.getTraceType().isOrdinalOrBinary()) {
+                    sampleCheckBox.setVisible(true);
+                    sampleCheckBox.setSelected(false);
                     pointsCheckBox.setVisible(false);
                     translucencyCheckBox.setVisible(false);
                 } else {
+                    sampleCheckBox.setVisible(true);
                     pointsCheckBox.setVisible(true);
                     translucencyCheckBox.setVisible(true);
                 }
+
+                numericalPlot(td1, td2); // after sampleCheckBox.setSelected(false);
             }
         }
         setXLab(name1);
