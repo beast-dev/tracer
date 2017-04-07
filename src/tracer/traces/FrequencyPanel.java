@@ -130,7 +130,7 @@ public class FrequencyPanel extends OneTraceChartPanel {
         if (trace != null) {
             List values = traceList.getValues(traceIndex);
             TraceType traceType = trace.getTraceType();
-            if (traceType == TraceType.REAL) {
+            if (traceType.isContinuous()) {
                 plot = new FrequencyPlot(values, currentSettings.minimumBins, td);
 
                 if (td != null) {
@@ -144,7 +144,7 @@ public class FrequencyPanel extends OneTraceChartPanel {
                     plot.setInCredibleSet(td);
                 }
 
-            } else if (traceType == TraceType.CATEGORICAL) {
+            } else if (traceType.isCategorical()) {
 
                 plot = new FrequencyPlot(values, td); // convert into index inside constructor
 

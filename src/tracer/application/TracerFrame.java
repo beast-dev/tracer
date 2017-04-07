@@ -86,7 +86,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     private final List<LogFileTraces> traceLists = new ArrayList<LogFileTraces>();
     private final List<TraceList> currentTraceLists = new ArrayList<TraceList>();
-    private final List<TraceList> allTraceLists = new ArrayList<TraceList>();
+    // allTraceLists not used except deleting and adding log, traceLists did all jobs
+//    private final List<TraceList> allTraceLists = new ArrayList<TraceList>();
     private CombinedTraces combinedTraces = null;
 
     private final List<String> commonTraceNames = new ArrayList<String>();
@@ -166,7 +167,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         traceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
-                if(!evt.getValueIsAdjusting())
+//                if(!evt.getValueIsAdjusting())
                     traceTableSelectionChanged();
             }
         });
@@ -491,7 +492,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         setupDividerLocation();
 
-        allTraceLists.add(traceList);
+//        allTraceLists.add(traceList);
 
     }
 
@@ -506,7 +507,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
         for (LogFileTraces tl : tls) {
             traceLists.remove(tl);
-            allTraceLists.remove(tl);
+//            allTraceLists.remove(tl);
         }
 
         updateCombinedTraces();
@@ -520,7 +521,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             setAnalysesEnabled(false);
 
             currentTraceLists.clear();
-            allTraceLists.clear();
+//            allTraceLists.clear();
             statisticTableModel.fireTableDataChanged();
 
             tracePanel.setTraces(null, null);
@@ -541,16 +542,33 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     // reload all logs
     private void refreshTraceList() {
+
+        int[] statsSelRows = statisticTable.getSelectedRows();
+
         LogFileTraces[] tls = removeTraceList();
         if (tls.length > 0) {
-            LogFileTraces[] newTls = new LogFileTraces[tls.length];
+            final LogFileTraces[] newTls = new LogFileTraces[tls.length];
 
             for (int i = 0; i < tls.length; i++) {
                 newTls[i] = new LogFileTraces(tls[i].getName(), tls[i].getFile());
             }
 
+            // loadTraces(in) and addTraceList
             processTraces(newTls);
+
+            //todo selection not working, wait processTraces finish?
+//            updateCombinedTraces();
+//
+//            statisticTableModel.fireTableDataChanged();
+//            statisticTable.getSelectionModel().clearSelection();
+//            for (int row : statsSelRows) {
+//                statisticTable.getSelectionModel().addSelectionInterval(row, row);
+//            }
+
+//            traceTableSelectionChanged();
+//            statisticTableSelectionChanged();
         }
+
     }
 
     public void setBurnIn(int index, long burnIn) {
@@ -614,6 +632,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         setAnalysesEnabled(true);
 
         getRemoveTraceAction().setEnabled(true);
+        reloadButton.setEnabled(true);
 
         currentTraceLists.clear();
 
@@ -621,6 +640,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             if (row == traceLists.size()) {
                 // Combined is include in the selection so disable remove
                 getRemoveTraceAction().setEnabled(false);
+                reloadButton.setEnabled(false);
                 currentTraceLists.add(combinedTraces);
             }
         }
@@ -1659,9 +1679,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         return removeTraceAction;
     }
 
-    public Action getReloadAction() {
-        return reloadAction;
-    }
+//    public Action getReloadAction() {
+//        return reloadAction;
+//    }
 
     public Action getDemographicAction() {
         return demographicAction;
@@ -1799,11 +1819,11 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
     };
 
-    private final AbstractAction reloadAction = new AbstractAction() {
-        public void actionPerformed(ActionEvent ae) {
-            refreshTraceList();
-        }
-    };
+//    private final AbstractAction reloadAction = new AbstractAction() {
+//        public void actionPerformed(ActionEvent ae) {
+//            refreshTraceList();
+//        }
+//    };
 
     private final AbstractAction exportDataAction = new AbstractAction("Export Data...") {
         public void actionPerformed(ActionEvent ae) {
