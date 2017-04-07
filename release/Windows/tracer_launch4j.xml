@@ -3,7 +3,7 @@
   <icon>icons/Tracer.ico</icon>
   <cmdLine/>
   <jre>
-    <minVersion>1.6.0</minVersion>
+    <minVersion>1.8.0</minVersion>
     <initialHeapSize>64</initialHeapSize>
     <maxHeapSize>1024</maxHeapSize>
   </jre>    

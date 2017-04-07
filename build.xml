@@ -26,7 +26,7 @@
 <project name="Tracer_RELEASE" default="compile" basedir=".">
     <description>
         Build file for BEAST release versions
-        $Id: build_release.xml,v 1.6 2017/02/28 18:16:17 rambaut Exp $
+        $Id: build_release.xml,v 1.8 2017/02/28 18:16:17 rambaut Exp $
     </description>
     <!-- source & lib from beast1 but build in tracer -->
     <property name="src" location="src"/>
@@ -50,7 +50,7 @@
 
     <target name="compile" depends="init">
         <!-- Compile the java code from ${src} into ${build} -->
-        <javac source="1.6" target="1.6" srcdir="${src}" destdir="${build}"
+        <javac source="1.6" target="1.8" srcdir="${src}" destdir="${build}"
                classpath="${lib}/beast.jar:${lib}/jam.jar:${lib}/itext-1.4.5.jar">
             <include name="tracer/**"/>
         </javac>
@@ -173,7 +173,7 @@
                         stubfile="${packaging_tools}/mac/universalJavaApplicationStub"
 						useJavaXKey="true"
                         icon="${Mac_dir}/icons/Tracer.icns"
-                        jvmversion="1.6+"
+                        jvmversion="1.8+"
                         vmoptions="-Xmx1024M"
                         arguments=""
                         version="${version}"
