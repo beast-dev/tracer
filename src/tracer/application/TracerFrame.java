@@ -143,7 +143,13 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         };
         setImportAction(importAction);
         setExportAction(exportDataAction);
-//        setAction(reloadAction); // todo how to add reloadAction to menu ?
+        // todo cannot add reloadAction to menu using jam.framework.MenuFactory
+//        AbstractAction reloadAction = new AbstractAction("Reload Trace File...") {
+//            public void actionPerformed(ActionEvent ae) {
+//                refreshTraceList();
+//            }
+//        };
+//        setAction(reloadAction);
 
         setAnalysesEnabled(false);
     }

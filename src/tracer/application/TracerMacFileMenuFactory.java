@@ -73,6 +73,11 @@ public class TracerMacFileMenuFactory implements MenuFactory {
                 menu.add(item);
             }
 
+//            item = new JMenuItem("Reload Trace File...");
+//            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MenuBarFactory.MENU_MASK));
+//            item.setEnabled(false);
+//            menu.add(item);
+
             menu.addSeparator();
 
             item = new JMenuItem(((TracerFileMenuHandler)frame).getExportDataAction());
@@ -91,6 +96,11 @@ public class TracerMacFileMenuFactory implements MenuFactory {
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, MenuBarFactory.MENU_MASK));
             item.setEnabled(false);
             menu.add(item);
+
+//            item = new JMenuItem("Reload Trace File...");
+//            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MenuBarFactory.MENU_MASK));
+//            item.setEnabled(false);
+//            menu.add(item);
 
             menu.addSeparator();
 
