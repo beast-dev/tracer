@@ -63,7 +63,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler, AnalysisMenuHandler {
+public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler, AnalysisMenuHandler, TracerFileExtraMenuHandler {
     private final static boolean CONFIRM_BUTTON_PRESSES = false;
 
     private final String[] columnToolTips = {null, null, null,
@@ -143,13 +143,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         };
         setImportAction(importAction);
         setExportAction(exportDataAction);
-        // todo cannot add reloadAction to menu using jam.framework.MenuFactory
-//        AbstractAction reloadAction = new AbstractAction("Reload Trace File...") {
-//            public void actionPerformed(ActionEvent ae) {
-//                refreshTraceList();
-//            }
-//        };
-//        setAction(reloadAction);
 
         setAnalysesEnabled(false);
     }
@@ -197,6 +190,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 refreshTraceList();
             }
         });
+        // todo how to merge reloadButton to getReloadAction()?
+        reloadButton.setEnabled(false);
+        getReloadAction().setEnabled(false);
 
         JPanel controlPanel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controlPanel1.add(actionPanel1);
@@ -469,6 +465,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         getExportAction().setEnabled(enabled);
         getExportDataAction().setEnabled(enabled);
+        getFullStatistics().setEnabled(enabled);
         getExportPDFAction().setEnabled(enabled);
         getCopyAction().setEnabled(true);
     }
@@ -631,6 +628,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (selRows.length == 0) {
             getRemoveTraceAction().setEnabled(false);
+            getReloadAction().setEnabled(false);
+            // todo how to merge reloadButton to getReloadAction()?
+            reloadButton.setEnabled(false);
             setAnalysesEnabled(false);
             return;
         }
@@ -638,6 +638,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         setAnalysesEnabled(true);
 
         getRemoveTraceAction().setEnabled(true);
+        getReloadAction().setEnabled(true);
         reloadButton.setEnabled(true);
 
         currentTraceLists.clear();
@@ -646,6 +647,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             if (row == traceLists.size()) {
                 // Combined is include in the selection so disable remove
                 getRemoveTraceAction().setEnabled(false);
+                getReloadAction().setEnabled(false);
                 reloadButton.setEnabled(false);
                 currentTraceLists.add(combinedTraces);
             }
@@ -1001,6 +1003,35 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     }
 
+    /**
+     * export full statistic summary of selected traceList (log) to a tab-delimited txt file
+     */
+    public final void doExportStatisticSummary() {
+        final JFrame frame = this;
+
+        FileDialog dialog = new FileDialog(frame, "Export Statistic Summary...", FileDialog.SAVE);
+
+        dialog.setVisible(true);
+        if (dialog.getFile() != null) {
+            File file = new File(dialog.getDirectory(), dialog.getFile());
+
+            // todo use LongTask
+            final String statSummTxt = TraceAnalysis.getStatisticSummary(currentTraceLists);
+
+            try {
+
+                FileWriter writer = new FileWriter(file);
+                writer.write(statSummTxt);
+                writer.close();
+
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(this, "Unable to write file: " + ioe,
+                        "Unable to write file",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     public final void doExportPDF() {
         FileDialog dialog = new FileDialog(this,
                 "Export PDF Image...",
@@ -1016,9 +1047,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 // step 2
                 PdfWriter writer;
                 writer = PdfWriter.getInstance(document, new FileOutputStream(file));
-// step 3
+                // step 3
                 document.open();
-// step 4
+                // step 4
                 PdfContentByte cb = writer.getDirectContent();
                 PdfTemplate tp = cb.createTemplate((float) bounds.getWidth(), (float) bounds.getHeight());
                 Graphics2D g2d = tp.createGraphics((float) bounds.getWidth(), (float) bounds.getHeight(), new DefaultFontMapper());
@@ -1673,6 +1704,14 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
     }
 
+    public Action getReloadAction() {
+        return reloadAction;
+    }
+
+    public Action getFullStatistics() {
+        return exportFullStatisticsAction;
+    }
+
     public Action getExportDataAction() {
         return exportDataAction;
     }
@@ -1684,10 +1723,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     public Action getRemoveTraceAction() {
         return removeTraceAction;
     }
-
-//    public Action getReloadAction() {
-//        return reloadAction;
-//    }
 
     public Action getDemographicAction() {
         return demographicAction;
@@ -1825,11 +1860,17 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
     };
 
-//    private final AbstractAction reloadAction = new AbstractAction() {
-//        public void actionPerformed(ActionEvent ae) {
-//            refreshTraceList();
-//        }
-//    };
+    private final AbstractAction reloadAction = new AbstractAction("Reload Trace File ...") {
+        public void actionPerformed(ActionEvent ae) {
+            refreshTraceList();
+        }
+    };
+
+    private final AbstractAction exportFullStatisticsAction = new AbstractAction("Export Statistic Summary...") {
+        public void actionPerformed(ActionEvent ae) {
+            doExportStatisticSummary();
+        }
+    };
 
     private final AbstractAction exportDataAction = new AbstractAction("Export Data...") {
         public void actionPerformed(ActionEvent ae) {

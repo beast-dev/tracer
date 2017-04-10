@@ -333,7 +333,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                         case 4:
                             return "n/a";
                         case 5:
-                            return tc.frequencyCounter.uniqueValues();
+                            return tc.printUniqueValues();
                         case 6:
                             return tc.printIncredibleSet();
                         case 7:
