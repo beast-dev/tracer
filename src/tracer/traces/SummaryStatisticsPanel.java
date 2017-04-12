@@ -44,7 +44,8 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
     static final String MODE_ROW = "mode";
     static final String STDEV_ROW = "stderr of mean";
     static final String STDEV = "stdev";
-    static final String FREQ_MODE_ROW = "frequency of mode";
+    static final String MODE_FREQ_ROW = "mode frequency";
+    static final String MODE_PROB_ROW = "mode probability";
     static final String VARIANCE_ROW = "variance";
     //    static final String STDEV_VAR_ROW = "stderr of variance";
     static final String GEOMETRIC_MEAN_ROW = "geometric mean";
@@ -213,7 +214,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
 
         String[] rowNamesNumbers = {MEAN_ROW, STDEV_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, MIN_MAX,
                 GEOMETRIC_MEAN_ROW, LOWER_UPPER_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
-        String[] rowNamesCategorical = {MODE_ROW, FREQ_MODE_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, UNIQUE_VALUES,
+        String[] rowNamesCategorical = {MODE_ROW, MODE_FREQ_ROW, MODE_PROB_ROW, VARIANCE_ROW, MEDIAN_ROW, UNIQUE_VALUES,
                 INCRED_SET_ROW, CRED_SET_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
 
         public StatisticsModel() {
@@ -329,6 +330,8 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                         case 1:
                             return tc.getFrequencyOfMode();
                         case 2:
+                            value = tc.getProbabilityOfMode();
+                            break;
                         case 3:
                         case 4:
                             return "n/a";
