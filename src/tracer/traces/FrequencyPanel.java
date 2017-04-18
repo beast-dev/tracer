@@ -141,7 +141,8 @@ public class FrequencyPanel extends OneTraceChartPanel {
                 plot = new FrequencyPlot(values, -1, td);
 
                 if (td != null) {
-                    plot.setInCredibleSet(td);
+//                    plot.setInCredibleSet(td);
+                    plot.setIntervals(td.getUpperHPD(), td.getLowerHPD()); // Integer coloured by HPD not Credible set
                 }
 
             } else if (traceType.isCategorical()) {
