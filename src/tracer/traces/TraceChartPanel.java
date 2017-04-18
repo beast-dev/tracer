@@ -296,7 +296,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                 ((DiscreteJChart) getTraceChart()).setXAxis(traceType.isIntegerOrBinary(),
                         new HashMap<Integer, String>());
 
-            } else if (traceType == TraceType.CATEGORICAL) {
+            } else if (traceType.isCategorical()) {
                 ((DiscreteJChart) getTraceChart()).setXAxis(false, td.getIndexMap());
 
             } else {
