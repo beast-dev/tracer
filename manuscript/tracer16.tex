@@ -71,7 +71,8 @@ Blah blah
 
 \section*{Design and Implementation}
 
-The design of Tracer is illustrated in Figure~\ref{fig:tracer}. Tracer can analyse either a single MCMC log or combine the shared traces from multiple logs. Traces panel provides the list of the statistical summary from the sampling parameters' values at all states logged during a MCMC process. 
+The design of Tracer is illustrated in Figure~\ref{fig:tracer}. It can analyse either a single MCMC log or combine the shared traces from multiple logs. 
+The list of traces in each log are created from the sampling parameters logged during a MCMC process, which include their statistical summaries from their values at all states logged. 
 
 \begin{figure}[ht]
 \includegraphics[width=.38\textwidth]{./figures/tracer.pdf}  
@@ -79,21 +80,46 @@ The design of Tracer is illustrated in Figure~\ref{fig:tracer}. Tracer can analy
 \label{fig:tracer}
 \end{figure}
 
-There are 4 analysis tabs to choose from a selected parameter:
-\begin{itemize}
-\item Estimates - this shows the mean, standard deviation, confidence intervals, effective sample size, and other statistics about the selected parameter. A frequency distribution will also be plotted.
-\item Density - this shows the Bayesian posterior density plot for the selected parameter.
-\item Joint-Marginal - this only appears if exactly 2 parameters are chosen. It then plots one against the other to look at their joint-marginal distribution.
-\item Trace - this shows the trace of the parameter against state or generation number. It can be used to check mixing, choose a suitable burn-in and look for trends that might suggest problems with convergence.
-\end{itemize}
+Tracer can handle 3 trace types $-$ variable types \citep{mendenhall2012introduction}: real, integer, and categorical.
+The real trace is used to handle continuous quantitative variables, which is the most common type in logged parameters.
+The integer is dealing with discrete quantitative variables, and the categorical trace is for categorical qualitative variables. 
+% check about defination 
+These three types can be automatically assigned when the log file is imported. But they can also be changed later. 
 
-Multiple parameters can be selected, which will overlay the plots for the different parameters allowing comparisons to be made, such as Figure~\ref{fig:multitrace}. Similarly multiple trace files can be selected as well to compare different runs. If multiple trace files have the same trace names then a ``Combined'' trace will automatically appear. This can be selected as well as the individual trace files.
+Multiple traces can be selected as shown in Figure~\ref{fig:multitrace}, which will overlay the plots for the different traces allowing comparisons to be made. Similarly multiple trace files can be selected as well to compare different runs. If multiple trace files have the same trace names then a ``Combined'' trace will automatically appear, which can be selected as well as the individual trace files.
 
 \begin{figure}[ht]
 \includegraphics[width=.5\textwidth]{./figures/multitrace.png}  
-\caption{Multiple parameters}
+\caption{A comparison of multiple traces}
 \label{fig:multitrace}
 \end{figure}
+
+There are four analysis tabs to choose from either a selected trace (sampling parameter) or multiple traces:
+
+\begin{figure}[ht]
+\subfigure[Estimates]{\includegraphics[width = .22\textwidth, height = 3cm]{./figures/frequency.pdf}}
+\subfigure[Density]{\includegraphics[width = .22\textwidth, height = 3cm]{./figures/multiKDE.pdf}}\\
+\subfigure[Joint-Marginal]{\includegraphics[width = .22\textwidth, height = 3cm]{./figures/joint-marginal.pdf}}
+\subfigure[Trace]{\includegraphics[width = .22\textwidth, height = 3cm]{./figures/trace.pdf}}
+\caption{Image exported from Tracer's four analysis tabs}
+\label{fig:4tabs}
+\end{figure}
+
+\begin{itemize}
+\item Estimates - this shows the mean, standard deviation, confidence intervals, effective sample size, and other statistics about the selected trace(s). A frequency distribution will also be plotted for a single selected trace, such as Figure~\ref{fig:4tabs}.a. Interval bars for quantitative traces (real or integer) or violin plots for categorical traces will be drawn for a comparison, such as Figure~\ref{fig:multitrace}, if multiple traces are selected.
+
+\item Density - this shows the Bayesian posterior density plot for the selected trace(s), if they are continuous, the kernel density estimates will be available, for example, in Figure~\ref{fig:4tabs}.b.
+
+\item Joint-Marginal - this only appears if exactly 2 traces are chosen. It then plots one against the other to look at their joint-marginal distribution, for example, in Figure~\ref{fig:4tabs}.c.
+
+% trace is duplicate to trace, use trajectory?
+\item Trace - this shows the trajectory of the selected trace(s) against state or generation number as it can be seen in Figure~\ref{fig:4tabs}.d. It can be used to check mixing, choose a suitable burn-in and look for trends that might suggest problems with convergence.
+
+\end{itemize}
+
+Tracer also provides demographic population analysis given a log or its tree log,
+For example, ``Demographic Analysis" plots the distribution of demographic population sizes over time for a number of models, such as constant size, exponential growth, and logistic growth, all of which are available in BEAST. 
+
 
 
 
@@ -112,13 +138,14 @@ The "Analysis" menu also contains options for performing Bayesian Skyline recons
 
 
 
-
+%Model selection HME and AICM have been removed 
 New features:
 \begin{itemize}
 \item Three trace types: real, integer, string
 \item Kernel density estimates
-\item HME
-\item AICM
+\item Conditional posterior distribution
+%\item HME
+%\item AICM
 \end{itemize}
 
 
@@ -126,11 +153,6 @@ New features:
 
 
 
-\begin{figure}[H]
-\includegraphics[width=.5\textwidth]{./figures/estimates.pdf}  
-\caption{The estimates}
-\label{fig:estimates}
-\end{figure}
 
 \begin{figure}[H]
 \includegraphics[width=.5\textwidth]{./figures/comp-95HPD.pdf}  
@@ -138,11 +160,6 @@ New features:
 \label{fig:comp95HPD}
 \end{figure}
 
-\begin{figure}[H]
-\includegraphics[width=.5\textwidth]{./figures/trace.pdf}  
-\caption{The trace}
-\label{fig:trace}
-\end{figure}
 
 
 \begin{figure}[H]
@@ -151,13 +168,33 @@ New features:
 \label{fig:int:jointpr}
 \end{figure}
 
+%\begin{figure}[ht]
+%\includegraphics[width=.5\textwidth]{./figures/frequency.pdf}  
+%\caption{A frequency distribution for a continuous trace}
+%\label{fig:freq}
+%\end{figure}
+%\begin{figure}[ht]
+%\includegraphics[width=.5\textwidth]{./figures/multiKDE.pdf}  
+%\caption{KDE of multiple traces}
+%\label{fig:multiKDE}
+%\end{figure}
+%\begin{figure}[ht]
+%\includegraphics[width=.5\textwidth]{./figures/joint-marginal.pdf}  
+%\caption{The joint-marginal distribution of two selected traces}
+%\label{fig:trace}
+%\end{figure}
+%\begin{figure}[ht]
+%\includegraphics[width=.5\textwidth]{./figures/trace.pdf}  
+%\caption{The selected traces against state}
+%\label{fig:trace}
+%\end{figure}
 
 
 \subsubsection*{Diagnostics:} Blah blah 
 
 \subsubsection*{Demographic reconstruction:} 
 
-\subsubsection*{Model selection:}
+%\subsubsection*{Model selection:}
 
 
 \subsubsection*{Conditional posterior distribution:}
@@ -189,19 +226,19 @@ Feature list:
 \item demographic trajectory reconstruction
 \end{itemize}
 
-\section*{Taken from the Tracer website}
+%\section*{Taken from the Tracer website}
 
 %Tracer is a program for analysing the trace files generated by Bayesian MCMC runs (that is, the continuous parameter values sampled from the chain). It can be used to analyse runs of BEAST \citep{drummond2007beast,drummond2012bayesian}, BEAST2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison} and possibly other MCMC programs.
 
-Although Tracer can be used with programs other than BEAST, users may find it useful to join the BEAST users mailing list. This is used to announce new versions and advise users about bugs and problems.
+%Although Tracer can be used with programs other than BEAST, users may find it useful to join the BEAST users mailing list. This is used to announce new versions and advise users about bugs and problems.
 
-You can join the mailing list here:
-http://groups.google.com/group/beast-users
+%You can join the mailing list here:
+%http://groups.google.com/group/beast-users
 
-The website for BEAST (and Tracer) is here:
-http://beast.bio.ed.ac.uk/
+%The website for BEAST (and Tracer) is here:
+%http://beast.bio.ed.ac.uk/
 
-At present there is no detailed manual for this application, you will simply have to play around and see what happens. Basically you can select the trace file in the top left of the window, the individual parameter in the bottom left and the analysis appears on the right.
+%At present there is no detailed manual for this application, you will simply have to play around and see what happens. Basically you can select the trace file in the top left of the window, the individual parameter in the bottom left and the analysis appears on the right.
 
 %There are 4 analysis tabs to choose from:
 
@@ -215,9 +252,9 @@ At present there is no detailed manual for this application, you will simply hav
 
 %The "Analysis" menu also contains options for performing Bayesian Skyline reconstructions and for calculating Bayes Factors between runs.
 
-The "Print" function in the "File" menu will print the current graph or table and the "Export Data" function can be used to export the data from the plots for use in another graphic package.
+%The "Print" function in the "File" menu will print the current graph or table and the "Export Data" function can be used to export the data from the plots for use in another graphic package.
 
-To export the currently displayed graphic use the "Export PDF" function in the "File" menu.
+%To export the currently displayed graphic use the "Export PDF" function in the "File" menu.
 
 
 
