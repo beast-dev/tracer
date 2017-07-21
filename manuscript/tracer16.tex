@@ -76,13 +76,13 @@ The list of traces in each log are created from the sampling parameters logged d
 
 \begin{figure}[ht]
 \includegraphics[width=.38\textwidth]{./figures/tracer.pdf}  
-\caption{Tracer design}
+\caption{The design of Tracer}
 \label{fig:tracer}
 \end{figure}
 
-Tracer can handle 3 trace types $-$ variable types \citep{mendenhall2012introduction}: real, integer, and categorical.
-The real trace is used to handle continuous quantitative variables, which is the most common type in logged parameters.
-The integer is dealing with discrete quantitative variables, and the categorical trace is for categorical qualitative variables. 
+Tracer can handle 3 trace types, also known as variable types \citep{mendenhall2012introduction}: real, integer, and categorical.
+The real trace is used to handle quantitative continuous variables, which is the most common type in logged parameters.
+The integer is dealing with quantitative discrete variables, and the categorical trace is for qualitative categorical variables. 
 % check about defination 
 These three types can be automatically assigned when the log file is imported. But they can also be changed later. 
 
@@ -97,10 +97,10 @@ Multiple traces can be selected as shown in Figure~\ref{fig:multitrace}, which w
 There are four analysis tabs to choose from either a selected trace (sampling parameter) or multiple traces:
 
 \begin{figure}[ht]
-\subfigure[Estimates]{\includegraphics[width = .22\textwidth, height = 3cm]{./figures/frequency.pdf}}
-\subfigure[Density]{\includegraphics[width = .22\textwidth, height = 3cm]{./figures/multiKDE.pdf}}\\
-\subfigure[Joint-Marginal]{\includegraphics[width = .22\textwidth, height = 3cm]{./figures/joint-marginal.pdf}}
-\subfigure[Trace]{\includegraphics[width = .22\textwidth, height = 3cm]{./figures/trace.pdf}}
+\subfigure[Estimates]{\includegraphics[width = .223\textwidth, height = 3cm]{./figures/frequency.pdf}}
+\subfigure[Density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/multiKDE.pdf}}\\
+\subfigure[Joint-Marginal]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/joint-marginal.pdf}}
+\subfigure[Trace]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/trace.pdf}}
 \caption{Image exported from Tracer's four analysis tabs}
 \label{fig:4tabs}
 \end{figure}
@@ -117,26 +117,65 @@ There are four analysis tabs to choose from either a selected trace (sampling pa
 
 \end{itemize}
 
-Tracer also provides demographic population analysis given a log or its tree log,
-For example, ``Demographic Analysis" plots the distribution of demographic population sizes over time for a number of models, such as constant size, exponential growth, and logistic growth, all of which are available in BEAST. 
+In addition to illustrating joint-marginal distribution between two continuous traces, we newly invented a TangHuLu chart to visualise the joint probability between two integer or categorical traces using coloured bubbles, as shown in Figure~\ref{fig:tanghulu}.a. The size of circle is proportional to the joint probability, the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set. The tile background is coloured if there is any circle, in case the very small circle wouldn't be missed out. The coloured background can also help to show the area of the credible set and non-credible set.
+
+Furthermore, box-and-whisker plots are used to display the joint-marginal distribution between one continuous trace and one integer or categorical trace as shown in Figure~\ref{fig:tanghulu}.b. 
+
+\begin{figure}[ht]
+\subfigure[TangHuLu chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/tanghulu.pdf}}
+\subfigure[boxplot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/boxplot.pdf}}
+\caption{Visualisation of joint-marginal distribution (a) between two integer or categorical traces using TangHuLu chart, and (b) between one continuous trace and one integer or categorical trace using box-and-whisker plot.}
+\label{fig:tanghulu}
+\end{figure}
 
 
-
-
-You can also select the "Demographic Analysis" from the Analysis menu - This plots the distribution of demographic population sizes over time for a number of models (constant size, exponential growth \& logistic growth) that are available in BEAST. This involves you selecting the traces for each parameter of the model. You should only select the model that was actually run under BEAST (e.g., if you ran an exponential growth model, you shouldn't plot the constant population size model).
-
-The "Analysis" menu also contains options for performing Bayesian Skyline reconstructions and for calculating Bayes Factors between runs.
-
+Tracer also provides demographic reconstruction resulting in a graphical plot to estimate the distribution of effective population sizes over time, given a MCMC log from a Bayesian framework or additionally with the tree log depending on the model.
+For example, ``Demographic Reconstruction" performs reconstructions of the distribution for a number of models, such as constant size, exponential growth \citep{drummond2002estimating}, and logistic growth. %citation?
+Besides ``Bayesian Skyline Reconstruction'' reconstructs a generalised Bayesian skyline plot (e.g. Figure~\ref{fig:flu}.a) describing demographic history under canonical scenarios \citep{drummond2005bayesian},
+``GMRF Skyride Reconstruction'' and ``SkyGrid Reconstruction'' are respectively available for a temporal smoothing method using the Gaussian Markov random field (GMRF) model  \citep{minin2008smooth} and a generalisation of the GMRF model \citep{gill2012improving}.
+``Lineages Through Time'' plots quantiles of the number of lineages against time, which describes the change of diversification of all organisms over time. %citation?
+All these models are available in BEAST \citep{drummond2007beast}. 
 
 \begin{figure}[ht]
 %\includegraphics[width=.5\textwidth]{./figures/fluBSP.pdf}  
 \subfigure[Bayesian Skyline]{\includegraphics[width = .22\textwidth]{./figures/fluBSP.pdf}}
-\subfigure[Lineages Though Time]{\includegraphics[width = .22\textwidth]{./figures/fluLTT.pdf}}
-\caption{The plot to estimate population sizes over time from ``Flu'' data, where time starts from year 1997 at the 0 position and the unit is year.}
+\subfigure[Lineages Through Time]{\includegraphics[width = .22\textwidth]{./figures/fluLTT.pdf}}
+\caption{The plot (a) performs Bayesian Skyline reconstruction to estimate population sizes over time and (b) Lineages Through Time , from ``Flu'' data, where time starts from year 1997 at the 0 position and the unit is year.}
 \label{fig:flu}
 \end{figure}
 
+Tracer recently offers a fairly general solution of looking at conditional posterior distributions. This, specifically, supports for BSSVS forms of model averaging, in which some parameters are only in the likelihood when their sub-model is ``indicated" by some indicator function that is usually a discrete, integer or boolean variable. In that case the posterior of the parameter should not include the states when it was sampled only in the prior because the sub-model it belonged to was ``turned off". This is relevant for EBSP, Random Local Clocks model, microsatellite model averaging and relaxed clock model averaging methods all from my group in last couple of years. It is also relevant for BSSVS in phylogeography as well depending on how the state is logged.
 
+% TODO more ?
+
+\section*{Example}
+
+Even users of \textsc{MrBayes} and \textsc{RevBayes} find Tracer handy.  
+
+\section*{Availability and Future Directions}
+
+We make the Tracer package available in both executable and source code forms.  Tracer requires Java version 1.6 or greater and executables for Windows, Mac OS and Linux platforms are located at \url{http://beast.bio.ed.ac.uk} which serves as the main page for the package. This page also links to a sizable list of self-contained, step-by-step tutorials covering basic to advance usage of Tracer to summarize posterior distributions of a large set of phylogenetic models simulated using BEAST.  For example, popular tutorials describe how to use Tracer to generate marginal parameter summaries and infer population dynamics trajectories over time.
+
+Github houses the Tracer's version-controlled source code within \url{https://github.com/beast-dev/tracer} and links to two GoogleGroup discussion groups related to Tracer.  
+The first is the ``beast-users" group (\url{http://groups.google.com/group/beast-users}) with over 1,500 members. 
+%At the time of writing, forty-seven developers belong to the ``beast-dev" group that facilitates BEAST development across three continents.
+
+Future development directions for Tracer focus on \ldots
+
+
+
+\section*{Old Text}
+
+%You can also select the "Demographic Analysis" from the Analysis menu - This plots the distribution of demographic population sizes over time for a number of models (constant size, exponential growth \& logistic growth) that are available in BEAST. This involves you selecting the traces for each parameter of the model. You should only select the model that was actually run under BEAST (e.g., if you ran an exponential growth model, you shouldn't plot the constant population size model).
+
+%The "Analysis" menu also contains options for performing Bayesian Skyline reconstructions and for calculating Bayes Factors between runs.
+
+Feature list:
+\begin{itemize}
+\item KDEs
+\item cheap marginal likelihood estimators
+\item demographic trajectory reconstruction
+\end{itemize}
 
 %Model selection HME and AICM have been removed 
 New features:
@@ -147,12 +186,6 @@ New features:
 %\item HME
 %\item AICM
 \end{itemize}
-
-
-%TODO better figures
-
-
-
 
 \begin{figure}[H]
 \includegraphics[width=.5\textwidth]{./figures/comp-95HPD.pdf}  
@@ -196,36 +229,11 @@ New features:
 
 %\subsubsection*{Model selection:}
 
-
 \subsubsection*{Conditional posterior distribution:}
 
-Fairly general solution to looking at conditional posterior distributions;
+%Fairly general solution to looking at conditional posterior distributions;
 
-Specifically, support for BSSVS forms of model averaging, in which some parameters are only in the likelihood when their submodel is "indicated" by some indicator function that is usually a discrete, integer or boolean variable. In that case the posterior of the parameter should not include the states when it was sampled only in the prior because the submodel it belonged to was "turned off". This is relevant for EBSP, Random Local Clocks model, microsatellite model averaging and relaxed clock model averaging methods all from my group in last couple of years. Also relevant for BSSVS in phylogeography as well depending on how the state is logged.
-
-
-\section*{Example}
-
-Even users of \textsc{MrBayes} and \textsc{RevBayes} find Tracer handy.  
-
-\section*{Availability and Future Directions}
-
-We make the Tracer package available in both executable and source code forms.  Tracer requires Java version 1.6 or greater and executables for Windows, Mac OS and Linux platforms are located at \url{http://beast.bio.ed.ac.uk} which serves as the main page for the package. This page also links to a sizable list of self-contained, step-by-step tutorials covering basic to advance usage of Tracer to summarize posterior distributions of a large set of phylogenetic models simulated using BEAST.  For example, popular tutorials describe how to use Tracer to generate marginal parameter summaries and infer population dynamics trajectories over time.
-
-Github houses the Tracer's version-controlled source code within \url{https://github.com/beast-dev/tracer} and links to two GoogleGroup discussion groups related to Tracer.  
-The first is the ``beast-users" group (\url{http://groups.google.com/group/beast-users}) with over 1,500 members. 
-%At the time of writing, forty-seven developers belong to the ``beast-dev" group that facilitates BEAST development across three continents.
-
-Future development directions for Tracer focus on \ldots
-
-
-Feature list:
-\begin{itemize}
-\item KDEs
-\item cheap marginal likelihood estimators
-\item demographic trajectory reconstruction
-\end{itemize}
-
+%Specifically, support for BSSVS forms of model averaging, in which some parameters are only in the likelihood when their submodel is "indicated" by some indicator function that is usually a discrete, integer or boolean variable. In that case the posterior of the parameter should not include the states when it was sampled only in the prior because the submodel it belonged to was "turned off". This is relevant for EBSP, Random Local Clocks model, microsatellite model averaging and relaxed clock model averaging methods all from my group in last couple of years. Also relevant for BSSVS in phylogeography as well depending on how the state is logged.
 %\section*{Taken from the Tracer website}
 
 %Tracer is a program for analysing the trace files generated by Bayesian MCMC runs (that is, the continuous parameter values sampled from the chain). It can be used to analyse runs of BEAST \citep{drummond2007beast,drummond2012bayesian}, BEAST2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison} and possibly other MCMC programs.
@@ -255,7 +263,6 @@ Feature list:
 %The "Print" function in the "File" menu will print the current graph or table and the "Export Data" function can be used to export the data from the plots for use in another graphic package.
 
 %To export the currently displayed graphic use the "Export PDF" function in the "File" menu.
-
 
 
 \section*{Acknowledgments}
