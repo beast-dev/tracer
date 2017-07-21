@@ -274,6 +274,12 @@ public class JointDensityPanel extends NTracesChartPanel {
                     pointsCheckBox.setVisible(false);
                     translucencyCheckBox.setVisible(false);
                 }
+
+                if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
+                    String swapName = name1;
+                    name1 = name2;
+                    name2 = swapName;
+                }
             }
         }
         setXLab(name1);
