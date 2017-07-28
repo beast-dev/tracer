@@ -39,6 +39,8 @@ import dr.inference.trace.*;
 import jam.framework.DocumentFrame;
 import jam.panels.ActionPanel;
 import jam.table.TableRenderer;
+import jam.toolbar.Toolbar;
+import jam.toolbar.ToolbarOptions;
 import tracer.analysis.*;
 import tracer.traces.CombinedTraces;
 import tracer.traces.FilterDialog;
@@ -171,6 +173,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             }
         });
 
+        traceTable.setFocusable(false);
         scrollPane1 = new JScrollPane(traceTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -179,12 +182,14 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         actionPanel1.setRemoveAction(getRemoveTraceAction());
         getRemoveTraceAction().setEnabled(false);
 
-        reloadButton = new JButton("R");
+        Toolbar controlPanel1 = new Toolbar();
+        reloadButton = new JButton("Reload");
+        reloadButton.putClientProperty("Quaqua.Button.style", "square");
+        reloadButton.setFont(UIManager.getFont("SmallSystemFont"));
         reloadButton.setToolTipText("Reload the selected log file(s)");
 //        Icon refreshIcon = new ImageIcon(IconUtils.getImage(TracerFrame.class, "images/refresh.png"));
 //        reloadButton.setIcon(refreshIcon);
-        reloadButton.setPreferredSize(new Dimension(22,20));
-        actionPanel1.add(reloadButton);
+        //reloadButton.setPreferredSize(new Dimension(22,20));
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 refreshTraceList();
@@ -194,9 +199,12 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         reloadButton.setEnabled(false);
         getReloadAction().setEnabled(false);
 
-        JPanel controlPanel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controlPanel1.add(actionPanel1);
-
+        controlPanel1.addFlexibleSpace();
+        controlPanel1.add(reloadButton);
+        controlPanel1.setFloatable(false);
+        controlPanel1.setBorder(BorderFactory.createEmptyBorder());
+        
         topPanel = new JPanel(new BorderLayout(0, 0));
         topPanel.setBorder(new BorderUIResource.EmptyBorderUIResource(new java.awt.Insets(0, 0, 6, 0)));
         topPanel.add(new JLabel("Trace Files:"), BorderLayout.NORTH);
@@ -238,6 +246,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         TableEditorStopper.ensureEditingStopWhenTableLosesFocus(statisticTable);
 
+        statisticTable.setFocusable(false);
+
         JScrollPane scrollPane2 = new JScrollPane(statisticTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -251,28 +261,28 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         realButton = new JButton("(R)eal");
         realButton.setToolTipText(TraceType.REAL.toString());
         // Only affect Mac OS X - nicer GUI
-        realButton.putClientProperty("Quaqua.Button.style", "placard");
+        realButton.putClientProperty("Quaqua.Button.style", "square");
         realButton.setFont(UIManager.getFont("SmallSystemFont"));
         realButton.setEnabled(false);
 
         integerButton = new JButton("(I)nt");
         integerButton.setToolTipText(TraceType.INTEGER.toString());
         // Only affect Mac OS X - nicer GUI
-        integerButton.putClientProperty("Quaqua.Button.style", "placard");
+        integerButton.putClientProperty("Quaqua.Button.style", "square");
         integerButton.setFont(UIManager.getFont("SmallSystemFont"));
         integerButton.setEnabled(false);
 
 //        binaryButton = new JButton("(B)in");
 //        binaryButton.setToolTipText(TraceType.BINARY.toString());
 //        // Only affect Mac OS X - nicer GUI
-//        binaryButton.putClientProperty("Quaqua.Button.style", "placard");
+//        binaryButton.putClientProperty("Quaqua.Button.style", "square");
 //        binaryButton.setFont(UIManager.getFont("SmallSystemFont"));
 //        binaryButton.setEnabled(false);
 
         categoricalButton = new JButton("(C)at");
         categoricalButton.setToolTipText(TraceType.CATEGORICAL.toString());
         // Only affect Mac OS X - nicer GUI
-        categoricalButton.putClientProperty("Quaqua.Button.style", "placard");
+        categoricalButton.putClientProperty("Quaqua.Button.style", "square");
         categoricalButton.setFont(UIManager.getFont("SmallSystemFont"));
         categoricalButton.setEnabled(false);
 
