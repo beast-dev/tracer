@@ -539,7 +539,7 @@ public class ExtendedBayesianSkylineDialog {
             List heights = traceList.getValues(traceList.getTraceIndex(rootHeightTrace));
 
             TraceDistribution distribution = new TraceDistribution(heights,
-                    traceList.getTrace(traceList.getTraceIndex(rootHeightTrace)).getTraceType(), traceList.getStepSize());
+                    traceList.getTrace(traceList.getTraceIndex(rootHeightTrace)).getTraceType());
 
             double timeMean = distribution.getMean();
             double timeMedian = distribution.getMedian();

@@ -25,7 +25,7 @@
 
 <project name="Tracer_RELEASE" default="compile" basedir=".">
     <description>
-        Build file for BEAST release versions
+        Build file for Tracer release versions
         $Id: build_release.xml,v 1.6 2017/02/28 18:16:17 rambaut Exp $
     </description>
     <!-- source & lib from beast1 but build in tracer -->
@@ -85,8 +85,8 @@
 
     </target>
 
-    <property name="version" value="1.6.1pre" />
-    <property name="version_number" value="1.6.1" />
+    <property name="version" value="1.6.2pre" />
+    <property name="version_number" value="1.6.2" />
     <property name="release_dir" value="release" />
     <property name="name" value="Tracer" />
 

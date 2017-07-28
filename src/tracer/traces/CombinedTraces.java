@@ -161,6 +161,7 @@ public class CombinedTraces extends FilteredTraceList { //implements TraceList {
     /**
      * @return the trace distribution statistic object for the given index
      */
+    @Deprecated
     public TraceDistribution getDistributionStatistics(int index) {
         return getCorrelationStatistics(index);
     }

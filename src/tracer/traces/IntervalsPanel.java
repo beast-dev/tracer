@@ -25,15 +25,12 @@
 
 package tracer.traces;
 
-import dr.app.gui.chart.JChartPanel;
-import dr.app.gui.chart.LinearAxis;
+import dr.app.gui.chart.*;
 import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceList;
 
 import javax.swing.*;
 import java.awt.*;
-
-import jam.framework.Exportable;
 
 
 /**
@@ -43,24 +40,44 @@ import jam.framework.Exportable;
  * @author Alexei Drummond
  * @version $Id: IntervalsPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
-public class IntervalsPanel extends JPanel implements Exportable {
+public class IntervalsPanel extends NTracesChartPanel {
 
-    private JIntervalsChart intervalsChart = new JIntervalsChart(new LinearAxis());
-    private JChartPanel chartPanel = new JChartPanel(intervalsChart, null, "", "");
+//    private JIntervalsChart intervalsChart = new JIntervalsChart(new LinearAxis());
+//    private JChartPanel chartPanel = new JChartPanel(intervalsChart, null, "", "");
 
     /**
      * Creates new IntervalsPanel
      */
-    public IntervalsPanel() {
+    public IntervalsPanel(final JFrame frame) {
+        super(frame);
+        traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        initJChartPanel("", ""); // xAxisTitle, yAxisTitle
+
+        JToolBar toolBar = setupToolBar(frame);
+        addMainPanel(toolBar);
+    }
+
+    @Override
+    protected BoxPlotChart getTraceChart() {
+        return (BoxPlotChart) traceChart;
+    }
+
+    @Override
+    protected JToolBar setupToolBar(JFrame frame) {
         setOpaque(false);
         setMinimumSize(new Dimension(300, 150));
+        return null;
+    }
+
+    protected void addMainPanel(JToolBar toolBar) {
         setLayout(new BorderLayout());
         add(chartPanel, BorderLayout.CENTER);
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
+        super.setTraces(traceLists, traceNames);
 
-        intervalsChart.removeAllIntervals();
+        getTraceChart().removeAllIntervals();
 
         if (traceLists == null || traceNames == null) {
             chartPanel.setXAxisTitle("");
@@ -68,10 +85,15 @@ public class IntervalsPanel extends JPanel implements Exportable {
             return;
         }
 
+        setupTraces();
+    }
+
+    @Override
+    protected void setupTraces() {
         for (TraceList traceList : traceLists) {
             for (String traceName : traceNames) {
                 int index = traceList.getTraceIndex(traceName);
-                TraceDistribution td = traceList.getDistributionStatistics(index);
+                TraceDistribution td = traceList.getCorrelationStatistics(index);
                 if (td != null) {
                     String name = "";
                     if (traceLists.length > 1) {
@@ -81,26 +103,27 @@ public class IntervalsPanel extends JPanel implements Exportable {
                         }
                     }
                     name += traceName;
-                    intervalsChart.addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
+
+                    // TODO: boxplot scale not correct here
+//                    if (td.getTraceType().isIntegerOrBinary())
+//                        getTraceChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
+//                                td.getMinimum(), td.getMaximum());
+                    if (td.getTraceType().isCategorical())
+                        getTraceChart().addViolins(name, td);
+                    else
+                        getTraceChart().addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
                 }
             }
         }
 
-        chartPanel.setXAxisTitle("");
-        if (traceLists.length == 1) {
-            chartPanel.setYAxisTitle(traceLists[0].getName());
-        } else if (traceNames.size() == 1) {
-            chartPanel.setYAxisTitle(traceNames.get(0));
-        } else {
-            chartPanel.setYAxisTitle("Multiple Traces");
-        }
-        add(chartPanel, BorderLayout.CENTER);
+        setXLabMultiTraces();
 
         validate();
         repaint();
     }
 
-    public JComponent getExportableComponent() {
-        return chartPanel;
-    }
+
+//    public JComponent getExportableComponent() {
+//        return chartPanel;
+//    }
 }

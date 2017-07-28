@@ -25,13 +25,15 @@
 
 package tracer.traces;
 
-import dr.app.gui.chart.*;
+import dr.app.gui.chart.Axis;
+import dr.app.gui.chart.ChartSetupDialog;
+import dr.app.gui.chart.LinearAxis;
+import dr.app.gui.chart.Plot;
 import dr.inference.trace.Trace;
 import dr.inference.trace.TraceDistribution;
-import dr.inference.trace.TraceType;
 import dr.inference.trace.TraceList;
+import dr.inference.trace.TraceType;
 import dr.stats.Variate;
-import jam.framework.Exportable;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -52,65 +54,34 @@ import java.util.Map;
  * @author Alexei Drummond
  * @version $Id: RawTracePanel.java,v 1.2 2006/11/30 17:39:29 rambaut Exp $
  */
-public class RawTracePanel extends JPanel implements Exportable {
-    public static int COLOUR_BY_TRACE = 0;
-    public static int COLOUR_BY_FILE = 1;
-    public static int COLOUR_BY_ALL = 2;
+public class RawTracePanel extends NTracesChartPanel {
 
-    private static final Color[] paints = new Color[]{
-            Color.BLACK,
-            new Color(64, 35, 225),
-            new Color(229, 35, 60),
-            new Color(255, 174, 34),
-            new Color(86, 255, 34),
-            new Color(35, 141, 148),
-            new Color(146, 35, 142),
-            new Color(255, 90, 34),
-            new Color(239, 255, 34),
-            Color.DARK_GRAY
-    };
-
-    private ChartSetupDialog chartSetupDialog = null;
-
-    private JTraceChart traceChart = new JTraceChart(new LinearAxis(Axis.AT_ZERO, Axis.AT_DATA), new LinearAxis());
-    private JChartPanel chartPanel = new JChartPanel(traceChart, null, "", "");
+    private Settings currentSettings = new Settings();
 
     private JCheckBox burninCheckBox = new JCheckBox("Show Burn-in");
     private JCheckBox sampleCheckBox = new JCheckBox("Sample only");
     private JCheckBox linePlotCheckBox = new JCheckBox("Draw line plot");
-    private JComboBox legendCombo = new JComboBox(
-            new String[]{"None", "Top-Left", "Top", "Top-Right", "Left",
-                    "Right", "Bottom-Left", "Bottom", "Bottom-Right"}
-    );
-    private JComboBox colourByCombo = new JComboBox(
-            new String[]{"Trace", "Trace File", "All"}
-    );
-    private JLabel messageLabel = new JLabel("No data loaded");
+
     private JButton listenButton = new JButton("Listen");
 
-    private int colourBy = COLOUR_BY_TRACE;
 
     /**
      * Creates new RawTracePanel
      */
     public RawTracePanel(final JFrame frame) {
+        super(frame);
+        traceChart = new JTraceChart(new LinearAxis(Axis.AT_ZERO, Axis.AT_DATA), new LinearAxis());
+        initJChartPanel("", ""); // xAxisTitle, yAxisTitle
+        JToolBar toolBar = setupToolBar(frame);
+        addMainPanel(toolBar);
+    }
 
-        setOpaque(false);
+    protected JTraceChart getTraceChart() {
+        return (JTraceChart) traceChart;
+    }
 
-        setMinimumSize(new Dimension(300, 150));
-        setLayout(new BorderLayout());
-
-        JToolBar toolBar = new JToolBar();
-        toolBar.setOpaque(false);
-        toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-        toolBar.setFloatable(false);
-
-        JButton chartSetupButton = new JButton("Axes...");
-        chartSetupButton.putClientProperty(
-                "Quaqua.Button.style", "placard"
-        );
-        chartSetupButton.setFont(UIManager.getFont("SmallSystemFont"));
-        toolBar.add(chartSetupButton);
+    protected JToolBar setupToolBar(final JFrame frame) {
+        JToolBar toolBar = super.setupToolBar(frame, currentSettings);
 
         burninCheckBox.setSelected(true);
         burninCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
@@ -128,42 +99,22 @@ public class RawTracePanel extends JPanel implements Exportable {
         linePlotCheckBox.setOpaque(false);
         toolBar.add(linePlotCheckBox);
 
-        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
-        JLabel label = new JLabel("Legend:");
-        label.setFont(UIManager.getFont("SmallSystemFont"));
-        label.setLabelFor(legendCombo);
-        toolBar.add(label);
-        legendCombo.setFont(UIManager.getFont("SmallSystemFont"));
-        legendCombo.setOpaque(false);
-        toolBar.add(legendCombo);
-
-        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
-        label = new JLabel("Colour by:");
-        label.setFont(UIManager.getFont("SmallSystemFont"));
-        label.setLabelFor(colourByCombo);
-        toolBar.add(label);
-        colourByCombo.setFont(UIManager.getFont("SmallSystemFont"));
-        colourByCombo.setOpaque(false);
-        toolBar.add(colourByCombo);
+        addLegend(toolBar);
 
         toolBar.add(listenButton);
-
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
-        add(messageLabel, BorderLayout.NORTH);
-        add(toolBar, BorderLayout.SOUTH);
-        add(chartPanel, BorderLayout.CENTER);
-
+        // +++++++ Listener ++++++++
         chartSetupButton.addActionListener(
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(ActionEvent actionEvent) {
-                        if (chartSetupDialog == null) {
-                            chartSetupDialog = new ChartSetupDialog(frame, false, true,
+                        if (currentSettings.chartSetupDialog == null) {
+                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, false, true,
                                     Axis.AT_ZERO, Axis.AT_MAJOR_TICK,
                                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK);
                         }
 
-                        chartSetupDialog.showDialog(traceChart);
+                        currentSettings.chartSetupDialog.showDialog(traceChart);
                         validate();
                         repaint();
                     }
@@ -181,7 +132,7 @@ public class RawTracePanel extends JPanel implements Exportable {
         sampleCheckBox.addActionListener(
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent ev) {
-                        traceChart.setUseSample(sampleCheckBox.isSelected());
+                        getTraceChart().setUseSample(sampleCheckBox.isSelected());
                         validate();
                         repaint();
                     }
@@ -191,7 +142,7 @@ public class RawTracePanel extends JPanel implements Exportable {
         linePlotCheckBox.addActionListener(
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent ev) {
-                        traceChart.setIsLinePlot(linePlotCheckBox.isSelected());
+                        getTraceChart().setIsLinePlot(linePlotCheckBox.isSelected());
                         validate();
                         repaint();
                     }
@@ -201,35 +152,8 @@ public class RawTracePanel extends JPanel implements Exportable {
         legendCombo.addItemListener(
                 new java.awt.event.ItemListener() {
                     public void itemStateChanged(java.awt.event.ItemEvent ev) {
-                        switch (legendCombo.getSelectedIndex()) {
-                            case 0:
-                                break;
-                            case 1:
-                                traceChart.setLegendAlignment(SwingConstants.NORTH_WEST);
-                                break;
-                            case 2:
-                                traceChart.setLegendAlignment(SwingConstants.NORTH);
-                                break;
-                            case 3:
-                                traceChart.setLegendAlignment(SwingConstants.NORTH_EAST);
-                                break;
-                            case 4:
-                                traceChart.setLegendAlignment(SwingConstants.WEST);
-                                break;
-                            case 5:
-                                traceChart.setLegendAlignment(SwingConstants.EAST);
-                                break;
-                            case 6:
-                                traceChart.setLegendAlignment(SwingConstants.SOUTH_WEST);
-                                break;
-                            case 7:
-                                traceChart.setLegendAlignment(SwingConstants.SOUTH);
-                                break;
-                            case 8:
-                                traceChart.setLegendAlignment(SwingConstants.SOUTH_EAST);
-                                break;
-                        }
-                        traceChart.setShowLegend(legendCombo.getSelectedIndex() != 0);
+                        currentSettings.legendAlignment = legendCombo.getSelectedIndex();
+                        setupTraces();
                         validate();
                         repaint();
                     }
@@ -239,10 +163,8 @@ public class RawTracePanel extends JPanel implements Exportable {
         colourByCombo.addItemListener(
                 new java.awt.event.ItemListener() {
                     public void itemStateChanged(java.awt.event.ItemEvent ev) {
-                        colourBy = colourByCombo.getSelectedIndex();
+                        currentSettings.colourBy = ColourByOptions.values()[colourByCombo.getSelectedIndex()];
                         setupTraces();
-                        validate();
-                        repaint();
                     }
                 }
         );
@@ -286,33 +208,22 @@ public class RawTracePanel extends JPanel implements Exportable {
                 }
         );
 
-
+        return toolBar;
     }
 
-    private TraceList[] traceLists = null;
-    private java.util.List<String> traceNames = null;
-
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
-        this.traceLists = traceLists;
-        this.traceNames = traceNames;
+        super.setTraces(traceLists, traceNames);
         setupTraces();
     }
 
+    @Override
+    protected void removeAllPlots() {
+        getTraceChart().removeAllTraces();
+    }
 
-    private void setupTraces() {
-
-        traceChart.removeAllTraces();
-
-
-        if (traceLists == null || traceNames == null || traceNames.size() == 0) {
-            chartPanel.setXAxisTitle("");
-            chartPanel.setYAxisTitle("");
-            messageLabel.setText("No traces selected");
-            add(messageLabel, BorderLayout.NORTH);
-            return;
-        }
-
-        remove(messageLabel);
+    protected void setupTraces() {
+        // return if no traces selected
+        if (!rmAllPlots(true)) return; // traceChart.removeAllTraces();
 
         int i = 0;
         List valuesX = new ArrayList();
@@ -330,7 +241,7 @@ public class RawTracePanel extends JPanel implements Exportable {
                 }
 
                 Trace trace = tl.getTrace(traceIndex);
-                TraceDistribution td = tl.getDistributionStatistics(traceIndex);
+                TraceDistribution td = tl.getCorrelationStatistics(traceIndex);
 
                 if (trace != null) {
                     Map<Integer, String> categoryDataMap = new HashMap<Integer, String>();
@@ -342,17 +253,17 @@ public class RawTracePanel extends JPanel implements Exportable {
                     double[] minMax;
                     if (trace.getTraceType().isNumber()) {
 
-                        traceChart.setYAxis(trace.getTraceType().isOrdinal(), new HashMap<Integer, String>());
-                        if (trace.getTraceType().isOrdinal()) {
-                            traceChart.getYAxis().setAxisFlags(Axis.AT_DATA, Axis.AT_DATA);
+                        getTraceChart().setYAxis(trace.getTraceType().isInteger(), new HashMap<Integer, String>());
+                        if (trace.getTraceType().isInteger()) {
+                            getTraceChart().getYAxis().setAxisFlags(Axis.AT_DATA, Axis.AT_DATA);
 
                             if (trace.getTraceType().isBinary()) {
-                                traceChart.getYAxis().setManualAxis(0, 1.0, 1.0, 0.0);
-                                traceChart.getYAxis().setManualRange(0.0, 1.0);
-                                traceChart.getYAxis().setRange(0.0, 1.0);
+                                getTraceChart().getYAxis().setManualAxis(0, 1.0, 1.0, 0.0);
+                                getTraceChart().getYAxis().setManualRange(0.0, 1.0);
+                                getTraceChart().getYAxis().setRange(0.0, 1.0);
                             }
                         }
-                        minMax = traceChart.addTrace(name, stateStart, stateStep, values, burninValues, paints[i]);
+                        minMax = getTraceChart().addTrace(name, stateStart, stateStep, values, burninValues, paints[i]);
 
                     } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
 
@@ -374,8 +285,8 @@ public class RawTracePanel extends JPanel implements Exportable {
                             }
                         }
 
-                        traceChart.setYAxis(false, categoryDataMap);
-                        minMax = traceChart.addTrace(name, stateStart, stateStep, doubleData, doubleBurninData, paints[i]);
+                        getTraceChart().setYAxis(false, categoryDataMap);
+                        minMax = getTraceChart().addTrace(name, stateStart, stateStep, doubleData, doubleBurninData, paints[i]);
 
                     } else {
                         throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
@@ -385,15 +296,15 @@ public class RawTracePanel extends JPanel implements Exportable {
                     valuesY.add(minMax[2]);
                     valuesY.add(minMax[3]);
 
-                    if (colourBy == COLOUR_BY_TRACE || colourBy == COLOUR_BY_ALL) {
+                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_ALL) {
                         i++;
                     }
                     if (i == paints.length) i = 0;
                 }
             }
-            if (colourBy == COLOUR_BY_FILE) {
+            if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
                 i++;
-            } else if (colourBy == COLOUR_BY_TRACE) {
+            } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
                 i = 0;
             }
             if (i == paints.length) i = 0;
@@ -401,26 +312,21 @@ public class RawTracePanel extends JPanel implements Exportable {
         if (traceLists.length > 1 || traceNames.size() > 1) {
             Variate.D xV = new Variate.D(valuesX);
             Variate.D yV = new Variate.D(valuesY);
-            traceChart.setRange(xV.getMin(), xV.getMax(), yV.getMin(), yV.getMax());
+            getTraceChart().setRange(xV.getMin(), xV.getMax(), yV.getMin(), yV.getMax());
         }
 
-        chartPanel.setXAxisTitle("State");
-        if (traceLists.length == 1) {
-            chartPanel.setYAxisTitle(traceLists[0].getName());
-        } else if (traceNames.size() == 1) {
-            chartPanel.setYAxisTitle(traceNames.get(0));
-        } else {
-            chartPanel.setYAxisTitle("Multiple Traces");
-        }
-
+        setXLab("State");
+        setYLabMultiTraces();
+        setLegend(currentSettings);
+        setChartSetupDialog(currentSettings);
 
         validate();
         repaint();
     }
 
-    public JComponent getExportableComponent() {
-        return chartPanel;
-    }
+//    public JComponent getExportableComponent() {
+//        return chartPanel;
+//    }
 
     public void toAudio(Double[][] values) {
         int volume = 128;
@@ -488,7 +394,7 @@ public class RawTracePanel extends JPanel implements Exportable {
     }
 
     public String toString() {
-        if (traceChart.getPlotCount() == 0) {
+        if (getTraceChart().getPlotCount() == 0) {
             return "no plot available";
         }
 
@@ -500,8 +406,8 @@ public class RawTracePanel extends JPanel implements Exportable {
         ArrayList<ArrayList> traceValues = new ArrayList<ArrayList>();
         int maxLength = 0;
 
-        for (int i = 0; i < traceChart.getPlotCount(); i++) {
-            Plot plot = traceChart.getPlot(i);
+        for (int i = 0; i < getTraceChart().getPlotCount(); i++) {
+            Plot plot = getTraceChart().getPlot(i);
             if (i > 0) {
                 buffer.append("\t");
             }
@@ -509,8 +415,8 @@ public class RawTracePanel extends JPanel implements Exportable {
             buffer.append("\t");
             buffer.append(plot.getName());
 
-            traceStates.add(i, new ArrayList(traceChart.getTraceStates(i)));
-            traceValues.add(i, new ArrayList(traceChart.getTraceValues(i)));
+            traceStates.add(i, new ArrayList(getTraceChart().getTraceStates(i)));
+            traceValues.add(i, new ArrayList(getTraceChart().getTraceValues(i)));
             if (traceStates.get(i).size() > maxLength) {
                 maxLength = traceStates.get(i).size();
             }

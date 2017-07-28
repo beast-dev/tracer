@@ -35,15 +35,15 @@ import dr.app.gui.FileDrop;
 import dr.app.gui.chart.ChartRuntimeException;
 import dr.app.gui.table.TableEditorStopper;
 import dr.app.gui.util.LongTask;
+import dr.inference.trace.*;
+import jam.framework.DocumentFrame;
+import jam.panels.ActionPanel;
+import jam.table.TableRenderer;
 import tracer.analysis.*;
 import tracer.traces.CombinedTraces;
 import tracer.traces.FilterDialog;
 import tracer.traces.FilterListPanel;
 import tracer.traces.TracePanel;
-import dr.inference.trace.*;
-import jam.framework.DocumentFrame;
-import jam.panels.ActionPanel;
-import jam.table.TableRenderer;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -63,7 +63,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler, AnalysisMenuHandler {
+public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler, AnalysisMenuHandler, TracerFileExtraMenuHandler {
     private final static boolean CONFIRM_BUTTON_PRESSES = false;
 
     private final String[] columnToolTips = {null, null, null,
@@ -86,14 +86,16 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     private final List<LogFileTraces> traceLists = new ArrayList<LogFileTraces>();
     private final List<TraceList> currentTraceLists = new ArrayList<TraceList>();
-    private final List<TraceList> allTraceLists = new ArrayList<TraceList>();
+    // allTraceLists not used except deleting and adding log, traceLists did all jobs
+//    private final List<TraceList> allTraceLists = new ArrayList<TraceList>();
     private CombinedTraces combinedTraces = null;
 
     private final List<String> commonTraceNames = new ArrayList<String>();
     private boolean homogenousTraceFiles = true;
 
+    private JButton reloadButton;
     private JButton realButton;
-    private JButton ordinalButton;
+    private JButton integerButton;
 //    private JButton binaryButton;
     private JButton categoricalButton;
 
@@ -164,7 +166,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         traceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
-                if(!evt.getValueIsAdjusting())
+//                if(!evt.getValueIsAdjusting())
                     traceTableSelectionChanged();
             }
         });
@@ -176,6 +178,21 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         actionPanel1.setAddAction(getImportAction());
         actionPanel1.setRemoveAction(getRemoveTraceAction());
         getRemoveTraceAction().setEnabled(false);
+
+        reloadButton = new JButton("R");
+        reloadButton.setToolTipText("Reload the selected log file(s)");
+//        Icon refreshIcon = new ImageIcon(IconUtils.getImage(TracerFrame.class, "images/refresh.png"));
+//        reloadButton.setIcon(refreshIcon);
+        reloadButton.setPreferredSize(new Dimension(22,20));
+        actionPanel1.add(reloadButton);
+        reloadButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                refreshTraceList();
+            }
+        });
+        // todo how to merge reloadButton to getReloadAction()?
+        reloadButton.setEnabled(false);
+        getReloadAction().setEnabled(false);
 
         JPanel controlPanel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controlPanel1.add(actionPanel1);
@@ -238,12 +255,12 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         realButton.setFont(UIManager.getFont("SmallSystemFont"));
         realButton.setEnabled(false);
 
-        ordinalButton = new JButton("(O)rd");
-        ordinalButton.setToolTipText(TraceType.ORDINAL.toString());
+        integerButton = new JButton("(I)nt");
+        integerButton.setToolTipText(TraceType.INTEGER.toString());
         // Only affect Mac OS X - nicer GUI
-        ordinalButton.putClientProperty("Quaqua.Button.style", "placard");
-        ordinalButton.setFont(UIManager.getFont("SmallSystemFont"));
-        ordinalButton.setEnabled(false);
+        integerButton.putClientProperty("Quaqua.Button.style", "placard");
+        integerButton.setFont(UIManager.getFont("SmallSystemFont"));
+        integerButton.setEnabled(false);
 
 //        binaryButton = new JButton("(B)in");
 //        binaryButton.setToolTipText(TraceType.BINARY.toString());
@@ -264,9 +281,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 changeTraceType(TraceType.REAL);
             }
         });
-        ordinalButton.addActionListener(new ActionListener() {
+        integerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                changeTraceType(TraceType.ORDINAL);
+                changeTraceType(TraceType.INTEGER);
             }
         });
 //        binaryButton.addActionListener(new ActionListener() {
@@ -281,7 +298,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         });
 
         changeTraceTypePanel.add(realButton);
-        changeTraceTypePanel.add(ordinalButton);
+        changeTraceTypePanel.add(integerButton);
 //        changeTraceTypePanel.add(binaryButton);
         changeTraceTypePanel.add(categoricalButton);
         changeTraceTypePanel.setToolTipText("<html> Change the data type of a selected parameter here. <br>" +
@@ -448,6 +465,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         getExportAction().setEnabled(enabled);
         getExportDataAction().setEnabled(enabled);
+        getFullStatistics().setEnabled(enabled);
         getExportPDFAction().setEnabled(enabled);
         getCopyAction().setEnabled(true);
     }
@@ -477,11 +495,11 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         setupDividerLocation();
 
-        allTraceLists.add(traceList);
+//        allTraceLists.add(traceList);
 
     }
 
-    private void removeTraceList() {
+    private LogFileTraces[] removeTraceList() {
         int[] selRows = traceTable.getSelectedRows();
 
         LogFileTraces[] tls = new LogFileTraces[selRows.length];
@@ -492,7 +510,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
         for (LogFileTraces tl : tls) {
             traceLists.remove(tl);
-            allTraceLists.remove(tl);
+//            allTraceLists.remove(tl);
         }
 
         updateCombinedTraces();
@@ -506,8 +524,10 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             setAnalysesEnabled(false);
 
             currentTraceLists.clear();
-            allTraceLists.clear();
+//            allTraceLists.clear();
             statisticTableModel.fireTableDataChanged();
+
+            tracePanel.setTraces(null, null);
         }
 
 
@@ -519,9 +539,42 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             traceTable.getSelectionModel().addSelectionInterval(row, row);
         }
         setupDividerLocation();
+
+        return tls;
     }
 
-    public void setBurnIn(int index, int burnIn) {
+    // reload all logs
+    private void refreshTraceList() {
+
+        int[] statsSelRows = statisticTable.getSelectedRows();
+
+        LogFileTraces[] tls = removeTraceList();
+        if (tls.length > 0) {
+            final LogFileTraces[] newTls = new LogFileTraces[tls.length];
+
+            for (int i = 0; i < tls.length; i++) {
+                newTls[i] = new LogFileTraces(tls[i].getName(), tls[i].getFile());
+            }
+
+            // loadTraces(in) and addTraceList
+            processTraces(newTls);
+
+            //todo selection not working, wait processTraces finish?
+//            updateCombinedTraces();
+//
+//            statisticTableModel.fireTableDataChanged();
+//            statisticTable.getSelectionModel().clearSelection();
+//            for (int row : statsSelRows) {
+//                statisticTable.getSelectionModel().addSelectionInterval(row, row);
+//            }
+
+//            traceTableSelectionChanged();
+//            statisticTableSelectionChanged();
+        }
+
+    }
+
+    public void setBurnIn(int index, long burnIn) {
         LogFileTraces trace = traceLists.get(index);
         trace.setBurnIn(burnIn);
         analyseTraceList(trace);
@@ -575,6 +628,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (selRows.length == 0) {
             getRemoveTraceAction().setEnabled(false);
+            getReloadAction().setEnabled(false);
+            // todo how to merge reloadButton to getReloadAction()?
+            reloadButton.setEnabled(false);
             setAnalysesEnabled(false);
             return;
         }
@@ -582,6 +638,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         setAnalysesEnabled(true);
 
         getRemoveTraceAction().setEnabled(true);
+        getReloadAction().setEnabled(true);
+        reloadButton.setEnabled(true);
 
         currentTraceLists.clear();
 
@@ -589,6 +647,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             if (row == traceLists.size()) {
                 // Combined is include in the selection so disable remove
                 getRemoveTraceAction().setEnabled(false);
+                getReloadAction().setEnabled(false);
+                reloadButton.setEnabled(false);
                 currentTraceLists.add(combinedTraces);
             }
         }
@@ -775,13 +835,13 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 tracePanel.setTraces(tl, selectedTraces);
             } catch (ChartRuntimeException cre) {
                 JOptionPane.showMessageDialog(this, "One or more traces contain invalid values and \rare not able to be displayed.",
-                        "Problem with tree file",
+                        "Problem with trace file",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
 
         realButton.setEnabled(selRows.length > 0);
-        ordinalButton.setEnabled(selRows.length > 0);
+        integerButton.setEnabled(selRows.length > 0);
 //        binaryButton.setEnabled(selRows.length > 0);
         categoricalButton.setEnabled(selRows.length > 0);
     }
@@ -943,6 +1003,35 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     }
 
+    /**
+     * export full statistic summary of selected traceList (log) to a tab-delimited txt file
+     */
+    public final void doExportStatisticSummary() {
+        final JFrame frame = this;
+
+        FileDialog dialog = new FileDialog(frame, "Export Statistic Summary...", FileDialog.SAVE);
+
+        dialog.setVisible(true);
+        if (dialog.getFile() != null) {
+            File file = new File(dialog.getDirectory(), dialog.getFile());
+
+            // todo use LongTask
+            final String statSummTxt = TraceAnalysis.getStatisticSummary(currentTraceLists);
+
+            try {
+
+                FileWriter writer = new FileWriter(file);
+                writer.write(statSummTxt);
+                writer.close();
+
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(this, "Unable to write file: " + ioe,
+                        "Unable to write file",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     public final void doExportPDF() {
         FileDialog dialog = new FileDialog(this,
                 "Export PDF Image...",
@@ -958,9 +1047,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 // step 2
                 PdfWriter writer;
                 writer = PdfWriter.getInstance(document, new FileOutputStream(file));
-// step 3
+                // step 3
                 document.open();
-// step 4
+                // step 4
                 PdfContentByte cb = writer.getDirectContent();
                 PdfTemplate tp = cb.createTemplate((float) bounds.getWidth(), (float) bounds.getHeight());
                 Graphics2D g2d = tp.createGraphics((float) bounds.getWidth(), (float) bounds.getHeight(), new DefaultFontMapper());
@@ -1055,7 +1144,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                                     new Runnable() {
                                         public void run() {
                                             JOptionPane.showMessageDialog(frame, "Problem with trace file: " + te.getMessage(),
-                                                    "Problem with tree file",
+                                                    "Problem with trace file",
                                                     JOptionPane.ERROR_MESSAGE);
                                         }
                                     });
@@ -1121,7 +1210,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                                 new Runnable() {
                                     public void run() {
                                         JOptionPane.showMessageDialog(frame, "Problem with trace file: " + te.getMessage(),
-                                                "Problem with tree file",
+                                                "Problem with trace file",
                                                 JOptionPane.ERROR_MESSAGE);
                                     }
                                 });
@@ -1516,7 +1605,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         public void setValueAt(Object value, int row, int col) {
             if (col == 2) {
-                setBurnIn(row, (Integer) value);
+                setBurnIn(row, (Long) value);
             }
         }
 
@@ -1557,7 +1646,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 return "n/a";
             }
 
-            TraceDistribution td = currentTraceLists.get(0).getDistributionStatistics(row);
+            TraceCorrelation td = currentTraceLists.get(0).getCorrelationStatistics(row);
             if (td == null) return "-";
             if (col == 3) return td.getTraceType().getBrief();
 
@@ -1566,10 +1655,11 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             boolean extremeWarning = false;
             switch (col) {
                 case 1:
+                    if (td.getTraceType().isCategorical()) return "n/a";
                     value = td.getMean();
                     break;
                 case 2:
-                    if (!td.isValid()) return "-";
+//                    if (!td.minEqualToMax()) return "-";
                     value = td.getESS();
                     if (Double.isNaN(value) || value < 1) {
                         // assume not applicable; should be tested in the computation
@@ -1612,6 +1702,14 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             }
             return getValueAt(0, c).getClass();
         }
+    }
+
+    public Action getReloadAction() {
+        return reloadAction;
+    }
+
+    public Action getFullStatistics() {
+        return exportFullStatisticsAction;
     }
 
     public Action getExportDataAction() {
@@ -1759,6 +1857,18 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     private final AbstractAction removeTraceAction = new AbstractAction() {
         public void actionPerformed(ActionEvent ae) {
             removeTraceList();
+        }
+    };
+
+    private final AbstractAction reloadAction = new AbstractAction("Reload Trace File ...") {
+        public void actionPerformed(ActionEvent ae) {
+            refreshTraceList();
+        }
+    };
+
+    private final AbstractAction exportFullStatisticsAction = new AbstractAction("Export Statistic Summary...") {
+        public void actionPerformed(ActionEvent ae) {
+            doExportStatisticSummary();
         }
     };
 

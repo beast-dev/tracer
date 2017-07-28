@@ -25,9 +25,7 @@
 
 package tracer.traces;
 
-import dr.inference.trace.TraceAnalysis;
-import dr.inference.trace.TraceCorrelation;
-import dr.inference.trace.TraceList;
+import dr.inference.trace.*;
 import jam.framework.Exportable;
 import jam.table.TableRenderer;
 
@@ -46,17 +44,21 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
     static final String MODE_ROW = "mode";
     static final String STDEV_ROW = "stderr of mean";
     static final String STDEV = "stdev";
-    static final String FREQ_MODE_ROW = "frequency of mode";
+    static final String MODE_FREQ_ROW = "mode frequency";
+    static final String MODE_PROB_ROW = "mode probability";
     static final String VARIANCE_ROW = "variance";
     //    static final String STDEV_VAR_ROW = "stderr of variance";
     static final String GEOMETRIC_MEAN_ROW = "geometric mean";
     static final String MEDIAN_ROW = "median";
-    static final String LOWER_UPPER_ROW = "95% HPD Interval";
-    static final String CRED_SET_ROW = "95% Credible Set";
-    static final String INCRED_SET_ROW = "5% Incredible Set";
+    static final String LOWER_UPPER_ROW = "95% HPD interval";
+    static final String CRED_SET_ROW = "95% credible set";
+    static final String INCRED_SET_ROW = "5% non-credible set";
     static final String ACT_ROW = "auto-correlation time (ACT)";
     static final String ESS_ROW = "effective sample size (ESS)";
     static final String SUM_ESS_ROW = "effective sample size (sum of ESS)";
+    static final String NUM_SAMPLES = "number of samples";
+    static final String UNIQUE_VALUES = "unique values";
+    static final String MIN_MAX = "value range";
 
     TraceList[] traceLists = null;
     java.util.List<String> traceNames = null;
@@ -73,7 +75,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
     IntervalsPanel intervalsPanel = null;
     JComponent currentPanel = null;
 
-    public SummaryStatisticsPanel(JFrame frame) {
+    public SummaryStatisticsPanel(final JFrame frame) {
 
         setOpaque(false);
 
@@ -119,7 +121,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
         frequencyPanel.setBorder(new BorderUIResource.EmptyBorderUIResource(
                 new java.awt.Insets(6, 0, 0, 0)));
 
-        intervalsPanel = new IntervalsPanel();
+        intervalsPanel = new IntervalsPanel(frame);
         intervalsPanel.setBorder(new BorderUIResource.EmptyBorderUIResource(
                 new java.awt.Insets(6, 0, 0, 0)));
 
@@ -210,12 +212,16 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
 
     class StatisticsModel extends AbstractTableModel {
 
-        String[] rowNamesNumbers = {MEAN_ROW, STDEV_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, MODE_ROW, GEOMETRIC_MEAN_ROW,
-                LOWER_UPPER_ROW, ACT_ROW, ESS_ROW};
-        String[] rowNamesCategorical = {MEAN_ROW, STDEV_ROW, STDEV, CRED_SET_ROW, INCRED_SET_ROW, MODE_ROW, FREQ_MODE_ROW,
-                LOWER_UPPER_ROW, ACT_ROW, ESS_ROW};
+        String[] rowNamesNumbers = {MEAN_ROW, STDEV_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, MIN_MAX,
+                GEOMETRIC_MEAN_ROW, LOWER_UPPER_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
+        String[] rowNamesCategorical = {MODE_ROW, MODE_FREQ_ROW, MODE_PROB_ROW, VARIANCE_ROW, MEDIAN_ROW, UNIQUE_VALUES,
+                INCRED_SET_ROW, CRED_SET_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
 
         public StatisticsModel() {
+        }
+
+        private String mixedRowName(String firstRN, String secondRN) {
+            return firstRN.equals(secondRN) ? firstRN : firstRN + " | " + secondRN;
         }
 
         public int getColumnCount() {
@@ -249,17 +255,34 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
             }
 
             if (col == 0) {
-                if (tc != null && !tc.getTraceType().isNumber()) {
-                    return rowNamesCategorical[row];
-                } else {
-                    return rowNamesNumbers[row];
+                // row names
+                if (tc != null) { // traceLists != null && traceNames != null
+                    // mixed
+                    for (TraceList traceList : traceLists) {
+                        for (String traceName : traceNames) {
+                            int index = traceList.getTraceIndex(traceName);
+                            TraceDistribution td = traceList.getCorrelationStatistics(index);
+                            if (td != null) {
+                                if (!tc.getTraceType().isNumber() && td.getTraceType().isNumber())
+                                    return mixedRowName(rowNamesCategorical[row], rowNamesNumbers[row]);
+                                else if (tc.getTraceType().isNumber() && !td.getTraceType().isNumber())
+                                    return mixedRowName(rowNamesNumbers[row], rowNamesCategorical[row]);
+                            }
+                        }
+                    }
+
+                    if (!tc.getTraceType().isNumber())
+                        return rowNamesCategorical[row]; // only categorical
                 }
+                return rowNamesNumbers[row]; // only numeric
             }
 
             double value = 0.0;
 
             if (tc != null) {
-                if (row != 0 && !tc.isValid()) return "n/a";
+                // if number of sample < MIN_SAMPLE, then return -
+                if (tc.getSize() < LogFileTraces.MIN_SAMPLE && row < 9)
+                    row = 11;
 
                 if (tc.getTraceType().isNumber()) {
                     switch (row) {
@@ -279,12 +302,13 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             value = tc.getMedian();
                             break;
                         case 5:
-                            return tc.getMode();
+                            return "[" + TraceAnalysis.formattedNumber(tc.getMinimum()) + ", " + TraceAnalysis.formattedNumber(tc.getMaximum()) + "]";
                         case 6:
                             if (!tc.hasGeometricMean()) return "n/a";
                             value = tc.getGeometricMean();
                             break;
                         case 7:
+                            if (!tc.isMinEqualToMax()) return "n/a";
                             return "[" + TraceAnalysis.formattedNumber(tc.getLowerHPD()) + ", " + TraceAnalysis.formattedNumber(tc.getUpperHPD()) + "]";
                         case 8:
                             value = tc.getACT();
@@ -293,31 +317,42 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             value = tc.getESS();
                             break;
                         case 10:
+                            value = tc.getSize();
+                            break;
+                        case 11:
                             return "-";
                     } // END switch
                 } else{
+                    // categorical
                     switch (row) {
                         case 0:
-                        case 1:
-                        case 2:
-                            return "n/a";
-                        case 3:
-                            return tc.printCredibleSet();
-                        case 4:
-                            return tc.printIncredibleSet();
-                        case 5:
                             return tc.getMode();
-                        case 6:
+                        case 1:
                             return tc.getFrequencyOfMode();
-                        case 7:
+                        case 2:
+                            value = tc.getProbabilityOfMode();
+                            break;
+                        case 3:
+                        case 4:
                             return "n/a";
+                        case 5:
+                            return tc.printUniqueValues();
+                        case 6:
+                            return tc.printIncredibleSet();
+                        case 7:
+                            return tc.printCredibleSet();
                         case 8:
                             value = tc.getACT();
+                            if (Double.isNaN(value)) return "n/a";
                             break;
                         case 9:
                             value = tc.getESS();
+                            if (Double.isNaN(value)) return "n/a";
                             break;
                         case 10:
+                            value = tc.getSize();
+                            break;
+                        case 11:
                             return "-";
                     }
                 }
