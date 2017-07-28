@@ -118,18 +118,41 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
             new Color(0x955b6e)
     };
 
-    // paint pallet being used
-    protected static final Paint[] PAINTS = COLORBREWER_DARK2;
-
    protected class Settings {
         // shared settings
         ChartSetupDialog chartSetupDialog = null;
         int legendAlignment = 0;
         ColourByOptions colourBy = ColourByOptions.COLOUR_BY_TRACE;
+        Paint[] palette = RAINBOW;
 
         // this is only used in FrequencyPanel, put here just to reduce code
         int minimumBins = 50;
-    }
+
+       public Settings() {
+
+           // Create a palette with contrasting colors alternating
+           int N = 4;
+           palette = new Paint[N * 3];
+
+           float cycle1 = 0.666F;
+           float cycle2 = 0.333F;
+           float cycle3 = 0.0F;
+           float increment = 0.466F / N;
+
+           for (int i = 0; i < palette.length; i += 3) {
+               palette[i] = new Color(Color.HSBtoRGB(cycle1, 0.7F, 0.7F));
+               palette[i+1] = new Color(Color.HSBtoRGB(cycle2, 0.7F, 0.7F));
+               palette[i+2] = new Color(Color.HSBtoRGB(cycle3, 0.7F, 0.7F));
+
+               cycle1 += increment;
+               if (cycle1 > 1.0) { cycle1 -= 1.0F; }
+               cycle2 += increment;
+               if (cycle2 > 1.0) { cycle2 -= 1.0F; }
+               cycle3 += increment;
+               if (cycle3 > 1.0) { cycle3 -= 1.0F; }
+           }
+       }
+   }
 
     /**
      * <code>traceChart</code> has to be declared either as DiscreteJChart or JIntervalsChart

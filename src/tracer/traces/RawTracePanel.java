@@ -263,7 +263,7 @@ public class RawTracePanel extends NTracesChartPanel {
                                 getTraceChart().getYAxis().setRange(0.0, 1.0);
                             }
                         }
-                        minMax = getTraceChart().addTrace(name, stateStart, stateStep, values, burninValues, PAINTS[i]);
+                        minMax = getTraceChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[i]);
 
                     } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
 
@@ -286,7 +286,7 @@ public class RawTracePanel extends NTracesChartPanel {
                         }
 
                         getTraceChart().setYAxis(false, categoryDataMap);
-                        minMax = getTraceChart().addTrace(name, stateStart, stateStep, doubleData, doubleBurninData, PAINTS[i]);
+                        minMax = getTraceChart().addTrace(name, stateStart, stateStep, doubleData, doubleBurninData, currentSettings.palette[i]);
 
                     } else {
                         throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
@@ -299,7 +299,7 @@ public class RawTracePanel extends NTracesChartPanel {
                     if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_ALL) {
                         i++;
                     }
-                    if (i == PAINTS.length) i = 0;
+                    if (i == currentSettings.palette.length) i = 0;
                 }
             }
             if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
@@ -307,7 +307,7 @@ public class RawTracePanel extends NTracesChartPanel {
             } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
                 i = 0;
             }
-            if (i == PAINTS.length) i = 0;
+            if (i == currentSettings.palette.length) i = 0;
         }// for (TraceList tl : traceLists)
         if (traceLists.length > 1 || traceNames.size() > 1) {
             Variate.D xV = new Variate.D(valuesX);
