@@ -46,13 +46,13 @@ import java.util.List;
  * @author Alexei Drummond
  * @version $Id: CorrelationPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
-public class JointDensityPanel extends NTracesChartPanel {
+public class JointDensityPanel extends TraceChartPanel {
 
     private Settings currentSettings = new Settings();
 
     private TableScrollPane tableScrollPane = new TableScrollPane();
 
-    private JComboBox cateTableProbTypeCombo = new JComboBox(CateTableProbType.values());
+    private JComboBox categoryTableProbabilityCombo = new JComboBox(CategoryTableProbabilityType.values());
     private JCheckBox defaultNumberFormatCheckBox = new JCheckBox("Use default number format");
 
     private JCheckBox sampleCheckBox = new JCheckBox("Sample only");
@@ -67,11 +67,14 @@ public class JointDensityPanel extends NTracesChartPanel {
     private String name1;
     private String name2;
 
-    public enum CateTableProbType {
-        JOINT_PRO("Joint Probability"), COND_PRO_X("Conditional Prob (?|row)"),
-        COND_PRO_Y("Conditional Prob (?|column)"), COUNT("Count");
+    private JChart traceChart;
+    private final JChartPanel chartPanel;
 
-        CateTableProbType(String name) {
+    public enum CategoryTableProbabilityType {
+        JOINT_PROBABILITY("Joint Probability"), CONDITIONAL_PROBABILITY_X("Conditional Probability (?|row)"),
+        CONDITIONAL_PROBABILITY_Y("Conditional Probability (?|column)"), COUNT("Count");
+
+        CategoryTableProbabilityType(String name) {
             this.name = name;
         }
 
@@ -90,12 +93,16 @@ public class JointDensityPanel extends NTracesChartPanel {
         // traceChart only used for Box Plot, ScatterPlot is added by addPlot()
         traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS),
                 new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
-        initJChartPanel("", ""); // xAxisTitle, yAxisTitle
+        chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
         JToolBar toolBar = setupToolBar(frame);
         addMainPanel(toolBar);
     }
 
-    protected BoxPlotChart getTraceChart() {
+    public JChartPanel getChartPanel() {
+        return chartPanel;
+    }
+
+    protected BoxPlotChart getChart() {
         return (BoxPlotChart) traceChart;
     }
 
@@ -116,9 +123,9 @@ public class JointDensityPanel extends NTracesChartPanel {
         translucencyCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
         toolBar.add(translucencyCheckBox);
 
-        cateTableProbTypeCombo.setOpaque(false);
-        cateTableProbTypeCombo.setFont(UIManager.getFont("SmallSystemFont"));
-        toolBar.add(cateTableProbTypeCombo);
+        categoryTableProbabilityCombo.setOpaque(false);
+        categoryTableProbabilityCombo.setFont(UIManager.getFont("SmallSystemFont"));
+        toolBar.add(categoryTableProbabilityCombo);
 
         defaultNumberFormatCheckBox.setOpaque(false);
         defaultNumberFormatCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
@@ -135,7 +142,7 @@ public class JointDensityPanel extends NTracesChartPanel {
                                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK);
                         }
 
-                        currentSettings.chartSetupDialog.showDialog(getTraceChart());
+                        currentSettings.chartSetupDialog.showDialog(getChart());
                         validate();
                         repaint();
                     }
@@ -150,7 +157,7 @@ public class JointDensityPanel extends NTracesChartPanel {
         sampleCheckBox.addActionListener(listener);
         pointsCheckBox.addActionListener(listener);
         translucencyCheckBox.addActionListener(listener);
-        cateTableProbTypeCombo.addActionListener(listener);
+        categoryTableProbabilityCombo.addActionListener(listener);
         defaultNumberFormatCheckBox.addActionListener(listener);
 
         return toolBar;
@@ -192,10 +199,10 @@ public class JointDensityPanel extends NTracesChartPanel {
 
     // it was private void setupChartOrTable()
     protected void setupTraces() {
-        getTraceChart().removeAllIntervals();
+        getChart().removeAllIntervals();
 
         if (tl1 == null || tl2 == null) {
-//            getTraceChart().removeAllPlots();
+//            getChart().removeAllPlots();
             chartPanel.remove(tableScrollPane);
 
             chartPanel.setXAxisTitle("");
@@ -207,7 +214,7 @@ public class JointDensityPanel extends NTracesChartPanel {
         TraceCorrelation td1 = tl1.getCorrelationStatistics(traceIndex1);
         TraceCorrelation td2 = tl2.getCorrelationStatistics(traceIndex2);
         if (td1 == null || td2 == null) {
-//            getTraceChart().removeAllPlots();
+//            getChart().removeAllPlots();
             chartPanel.remove(tableScrollPane);
 
             chartPanel.setXAxisTitle("");
@@ -219,13 +226,13 @@ public class JointDensityPanel extends NTracesChartPanel {
         messageLabel.setText("");
 
         if (!td1.getTraceType().isNumber() && !td2.getTraceType().isNumber()) {
-            chartPanel.remove(getTraceChart());
+            chartPanel.remove(getChart());
             chartPanel.add(tableScrollPane, "Table");
 
             sampleCheckBox.setVisible(false);
             pointsCheckBox.setVisible(false);
             translucencyCheckBox.setVisible(false);
-            cateTableProbTypeCombo.setVisible(true);
+            categoryTableProbabilityCombo.setVisible(true);
             defaultNumberFormatCheckBox.setVisible(true);
 
             Object[] rowNames = td1.getRange().toArray();
@@ -236,9 +243,9 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         } else {
             chartPanel.remove(tableScrollPane);
-            chartPanel.add(getTraceChart(), "Chart");
-//            getTraceChart().removeAllPlots();
-            cateTableProbTypeCombo.setVisible(false);
+            chartPanel.add(getChart(), "Chart");
+//            getChart().removeAllPlots();
+            categoryTableProbabilityCombo.setVisible(false);
             defaultNumberFormatCheckBox.setVisible(false);
 
             if (td1.getTraceType().isCategorical()) {
@@ -282,8 +289,8 @@ public class JointDensityPanel extends NTracesChartPanel {
                 }
             }
         }
-        setXLab(name1);
-        setYLab(name2);
+        setXLabel(name1);
+        setYLabel(name2);
 
         validate();
         repaint();
@@ -334,10 +341,10 @@ public class JointDensityPanel extends NTracesChartPanel {
         }
 
         // set x axis
-        getTraceChart().setXAxis(new DiscreteAxis(true, true));
+        getChart().setXAxis(new DiscreteAxis(true, true));
         if (tdNumerical.getTraceType().isIntegerOrBinary()) {
             // samples1 is not real number
-            getTraceChart().setYAxis(new DiscreteAxis(true, true));
+            getChart().setYAxis(new DiscreteAxis(true, true));
 
             List<Double> intData = tdCategorical.indexingData(samples2);
             ScatterPlot plot;
@@ -345,7 +352,7 @@ public class JointDensityPanel extends NTracesChartPanel {
                 plot  = new TangHuLuPlot(samples1, intData);
             else
                 plot  = new TangHuLuPlot(intData, samples1);
-            getTraceChart().addPlot(plot);
+            getChart().addPlot(plot);
         } else {
             // samples1 is real number
             drawDiscreteBoxPlot(categoryValues, samples1, samples2);
@@ -375,8 +382,8 @@ public class JointDensityPanel extends NTracesChartPanel {
         // categoryTdMap.size <= categoryValues.size because of sampling
         for (Map.Entry<String, TraceDistribution> entry : categoryTdMap.entrySet()) {
             TraceDistribution categoryTd = entry.getValue();
-//                getTraceChart().addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
-            getTraceChart().addBoxPlots(entry.getKey(), categoryTd.getMedian(), categoryTd.getQ1(),
+//                getChart().addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
+            getChart().addBoxPlots(entry.getKey(), categoryTd.getMedian(), categoryTd.getQ1(),
                     categoryTd.getQ3(), categoryTd.getMinimum(), categoryTd.getMaximum());
         }
     }
@@ -425,14 +432,14 @@ public class JointDensityPanel extends NTracesChartPanel {
 
         // set axis
         if (td1.getTraceType().isInteger()) {
-            getTraceChart().setXAxis(new DiscreteAxis(true, true));
+            getChart().setXAxis(new DiscreteAxis(true, true));
         } else {
-            getTraceChart().setXAxis(new LinearAxis());
+            getChart().setXAxis(new LinearAxis());
         }
         if (td2.getTraceType().isInteger()) {
-            getTraceChart().setYAxis(new DiscreteAxis(true, true));
+            getChart().setYAxis(new DiscreteAxis(true, true));
         } else {
-            getTraceChart().setYAxis(new LinearAxis());
+            getChart().setYAxis(new LinearAxis());
         }
 
         // add plot
@@ -440,7 +447,7 @@ public class JointDensityPanel extends NTracesChartPanel {
         if (td1.getTraceType().isIntegerOrBinary() && td2.getTraceType().isIntegerOrBinary()) {
             // samples1 samples2 are both ordinal
             plot = new TangHuLuPlot(samples1, samples2);
-            getTraceChart().addPlot(plot);
+            getChart().addPlot(plot);
 
         } else if (td1.getTraceType().isIntegerOrBinary()) {
             List<String> categoryValues = td1.getRange();
@@ -461,7 +468,7 @@ public class JointDensityPanel extends NTracesChartPanel {
             for (Double ordinal : samples2) {
                 stringList.add(String.valueOf(Math.round(ordinal)));
             }
-            getTraceChart().setXAxis(new DiscreteAxis(true, true));
+            getChart().setXAxis(new DiscreteAxis(true, true));
 
             drawDiscreteBoxPlot(categoryValues, samples1, stringList);
 
@@ -472,7 +479,7 @@ public class JointDensityPanel extends NTracesChartPanel {
                     new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
                     new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
                     new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
-            getTraceChart().addPlot(plot);
+            getChart().addPlot(plot);
         }
     }
 
@@ -530,13 +537,13 @@ public class JointDensityPanel extends NTracesChartPanel {
             }
         }
 
-        if (cateTableProbTypeCombo.getSelectedItem() == CateTableProbType.JOINT_PRO) {
+        if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.JOINT_PROBABILITY) {
             for (int r = 0; r < data.length; r++) {
                 for (int c = 0; c < data[0].length; c++) {
                     data[r][c] = data[r][c] / sampleSize;
                 }
             }
-        } else if (cateTableProbTypeCombo.getSelectedItem() == CateTableProbType.COND_PRO_X) {
+        } else if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.CONDITIONAL_PROBABILITY_X) {
             for (int r = 0; r < data.length; r++) {
                 double count = 0;
                 for (int c = 0; c < data[0].length; c++) {
@@ -548,7 +555,7 @@ public class JointDensityPanel extends NTracesChartPanel {
                 }
             }
 
-        } else if (cateTableProbTypeCombo.getSelectedItem() == CateTableProbType.COND_PRO_Y) {
+        } else if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.CONDITIONAL_PROBABILITY_Y) {
             for (int c = 0; c < data[0].length; c++) {
                 double count = 0;
                 for (int r = 0; r < data.length; r++) {
@@ -585,13 +592,13 @@ public class JointDensityPanel extends NTracesChartPanel {
 //    }
 
     public String toString() {
-        if (getTraceChart().getPlotCount() == 0) {
+        if (getChart().getPlotCount() == 0) {
             return "no plot available";
         }
 
         StringBuffer buffer = new StringBuffer();
 
-        Plot plot = getTraceChart().getPlot(0);
+        Plot plot = getChart().getPlot(0);
         Variate xData = plot.getXData();
         Variate yData = plot.getYData();
 

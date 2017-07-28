@@ -30,13 +30,14 @@ import dr.app.gui.chart.DiscreteJChart;
 import dr.app.gui.chart.JChart;
 import dr.app.gui.chart.JChartPanel;
 import dr.inference.trace.TraceDistribution;
+import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 import jam.framework.Exportable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.List;
+import java.util.*;
 
 /**
  * A shared code for the panel that displays a plot of traces,
@@ -69,7 +70,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
             new Color(239, 255, 34),
             Color.DARK_GRAY
     };
-    
+
     protected static final Paint[] COLORBREWER_PAIRED = new Paint[]{
             new Color(0xa6cee3),
             new Color(0x1f78b4),
@@ -118,7 +119,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
             new Color(0x955b6e)
     };
 
-   protected class Settings {
+    protected class Settings {
         // shared settings
         ChartSetupDialog chartSetupDialog = null;
         int legendAlignment = 0;
@@ -128,37 +129,35 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         // this is only used in FrequencyPanel, put here just to reduce code
         int minimumBins = 50;
 
-       public Settings() {
+        public Settings() {
 
-           // Create a palette with contrasting colors alternating
-           int N = 4;
-           palette = new Paint[N * 3];
+            // Create a palette with contrasting colors alternating
+            int N = 4;
+            palette = new Paint[N * 3];
 
-           float cycle1 = 0.666F;
-           float cycle2 = 0.333F;
-           float cycle3 = 0.0F;
-           float increment = 0.466F / N;
+            float cycle1 = 0.666F;
+            float cycle2 = 0.333F;
+            float cycle3 = 0.0F;
+            float increment = 0.466F / N;
 
-           for (int i = 0; i < palette.length; i += 3) {
-               palette[i] = new Color(Color.HSBtoRGB(cycle1, 0.7F, 0.7F));
-               palette[i+1] = new Color(Color.HSBtoRGB(cycle2, 0.7F, 0.7F));
-               palette[i+2] = new Color(Color.HSBtoRGB(cycle3, 0.7F, 0.7F));
+            for (int i = 0; i < palette.length; i += 3) {
+                palette[i] = new Color(Color.HSBtoRGB(cycle1, 0.7F, 0.7F));
+                palette[i+1] = new Color(Color.HSBtoRGB(cycle2, 0.7F, 0.7F));
+                palette[i+2] = new Color(Color.HSBtoRGB(cycle3, 0.7F, 0.7F));
 
-               cycle1 += increment;
-               if (cycle1 > 1.0) { cycle1 -= 1.0F; }
-               cycle2 += increment;
-               if (cycle2 > 1.0) { cycle2 -= 1.0F; }
-               cycle3 += increment;
-               if (cycle3 > 1.0) { cycle3 -= 1.0F; }
-           }
-       }
-   }
+                cycle1 += increment;
+                if (cycle1 > 1.0) { cycle1 -= 1.0F; }
+                cycle2 += increment;
+                if (cycle2 > 1.0) { cycle2 -= 1.0F; }
+                cycle3 += increment;
+                if (cycle3 > 1.0) { cycle3 -= 1.0F; }
+            }
+        }
+    }
 
-    /**
-     * <code>traceChart</code> has to be declared either as DiscreteJChart or JIntervalsChart
-     */
-    protected JChart traceChart;
-    protected JChartPanel chartPanel;
+    //++++++ setup traces +++++++
+    protected TraceList[] traceLists = null;
+    protected java.util.List<String> traceNames = null;
 
     protected JLabel labelBins;
     protected JComboBox binsCombo = new JComboBox(
@@ -193,35 +192,24 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         //addMainPanel(toolBar);
     }
 
+    public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
+        this.traceLists = traceLists;
+        this.traceNames = traceNames;
+    };
 
 
-    /**
-     * encapsulate <code>traceChart</code>
-     *
-     * @return {@see DiscreteJChart} in {@see tracer.traces.JointDensityPanel},
-     *         or {@see JIntervalsChart} in {@see tracer.traces.FrequencyPanel} and {@see tracer.traces.DensityPanel},
-     *         or {@see JTraceChart} in {@see tracer.traces.RawTracePanel}
-     */
-    protected abstract JChart getTraceChart();
-
-    /**
-     * create panel container to display <code>traceChart</code>.
-     */
-    protected void initJChartPanel(String xAxisTitle, String yAxisTitle){
-        chartPanel = new JChartPanel(getTraceChart(), null, xAxisTitle, yAxisTitle);
-    }
+    protected abstract JChartPanel getChartPanel();
 
     /**
      * add components to main panel
      * @param toolBar get from {@link #setupToolBar(JFrame, Settings) setupToolBar}
      */
     protected void addMainPanel(JToolBar toolBar, boolean addMessageLabel) {
-        if (addMessageLabel)
+        if (addMessageLabel) {
             add(messageLabel, BorderLayout.NORTH);
+        }
         add(toolBar, BorderLayout.SOUTH);
-        if (chartPanel==null)
-            throw new IllegalArgumentException("chartPanel is null, please use initJChartPanel(JChart traceChart) in constructor !");
-        add(chartPanel, BorderLayout.CENTER);
+        add(getChartPanel(), BorderLayout.CENTER);
     }
 
     protected void addMainPanel(JToolBar toolBar) {
@@ -310,35 +298,36 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * @param currentSettings
      */
     protected void setLegend(final Settings currentSettings) {
+        JChart chart = getChartPanel().getChart();
         switch (currentSettings.legendAlignment) {
             case 0:
                 break;
             case 1:
-                getTraceChart().setLegendAlignment(SwingConstants.NORTH_WEST);
+                chart.setLegendAlignment(SwingConstants.NORTH_WEST);
                 break;
             case 2:
-                getTraceChart().setLegendAlignment(SwingConstants.NORTH);
+                chart.setLegendAlignment(SwingConstants.NORTH);
                 break;
             case 3:
-                getTraceChart().setLegendAlignment(SwingConstants.NORTH_EAST);
+                chart.setLegendAlignment(SwingConstants.NORTH_EAST);
                 break;
             case 4:
-                getTraceChart().setLegendAlignment(SwingConstants.WEST);
+                chart.setLegendAlignment(SwingConstants.WEST);
                 break;
             case 5:
-                getTraceChart().setLegendAlignment(SwingConstants.EAST);
+                chart.setLegendAlignment(SwingConstants.EAST);
                 break;
             case 6:
-                getTraceChart().setLegendAlignment(SwingConstants.SOUTH_WEST);
+                chart.setLegendAlignment(SwingConstants.SOUTH_WEST);
                 break;
             case 7:
-                getTraceChart().setLegendAlignment(SwingConstants.SOUTH);
+                chart.setLegendAlignment(SwingConstants.SOUTH);
                 break;
             case 8:
-                getTraceChart().setLegendAlignment(SwingConstants.SOUTH_EAST);
+                chart.setLegendAlignment(SwingConstants.SOUTH_EAST);
                 break;
         }
-        getTraceChart().setShowLegend(currentSettings.legendAlignment != 0);
+        chart.setShowLegend(currentSettings.legendAlignment != 0);
     }
 
     /**
@@ -348,43 +337,16 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      */
     protected void setChartSetupDialog(Settings currentSettings) {
         if (currentSettings.chartSetupDialog != null) {
-            currentSettings.chartSetupDialog.applySettings(getTraceChart());
+            currentSettings.chartSetupDialog.applySettings(getChartPanel().getChart());
         }
     }
 
-    /**
-     *  {@link dr.app.gui.chart.DiscreteJChart#setXAxis(boolean, Map<Integer, String>) setXAxis},
-     *  used in {@see tracer.traces.FrequencyPanel} and {@see tracer.traces.DensityPanel}
-     *
-     * @param td
-     */
-    protected void setXAxis(TraceDistribution td) {
-        if (td != null) {
-            TraceType traceType = td.getTraceType();
-
-            if (!(getTraceChart() instanceof DiscreteJChart))
-                throw new RuntimeException("traceChart has to be instanceof DiscreteJChart, " +
-                        "using setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) !");
-
-            if (!traceType.isCategorical()) {
-                ((DiscreteJChart) getTraceChart()).setXAxis(traceType.isIntegerOrBinary(),
-                        new HashMap<Integer, String>());
-
-            } else if (traceType.isCategorical()) {
-                ((DiscreteJChart) getTraceChart()).setXAxis(false, td.getIndexMap());
-
-            } else {
-                throw new RuntimeException("Trace type is not recognized: " + traceType);
-            }
-        }
+    protected void setXLabel(String xLabel) {
+        getChartPanel().setXAxisTitle(xLabel);
     }
 
-    protected void setXLab(String xLab) {
-        chartPanel.setXAxisTitle(xLab);
-    }
-
-    protected void setYLab(String yLab) {
-        chartPanel.setYAxisTitle(yLab);
+    protected void setYLabel(String yLabel) {
+        getChartPanel().setYAxisTitle(yLabel);
     }
 
     /**
@@ -392,21 +354,21 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * used in {@see tracer.traces.FrequencyPanel} and {@see tracer.traces.DensityPanel}
      *
      * @param traceType
-     * @param yLabs
+     * @param yLabels
      */
-    protected void setYLab(TraceType traceType, String[] yLabs) {
+    protected void setYLabel(TraceType traceType, String[] yLabels) {
         if (traceType != null) {
-            if (yLabs.length != 2)
+            if (yLabels.length != 2)
                 throw new IllegalArgumentException("Y labs array must have 2 element !");
 
             if (traceType.isContinuous()) {
-                chartPanel.setYAxisTitle(yLabs[0]);
+                getChartPanel().setYAxisTitle(yLabels[0]);
 
             } else if (traceType.isIntegerOrBinary()) {
-                chartPanel.setYAxisTitle(yLabs[1]);
+                getChartPanel().setYAxisTitle(yLabels[1]);
 
             } else if (traceType.isCategorical()) {
-                chartPanel.setYAxisTitle(yLabs[1]);
+                getChartPanel().setYAxisTitle(yLabels[1]);
 
             } else {
                 throw new RuntimeException("Trace type is not recognized: " + traceType);
@@ -414,8 +376,62 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         }
     }
 
+    /**
+     * If no traces selected, return false, else return true.
+     * Usage: <code>if (!removeAllPlots()) return;</code>
+     *
+     * @return boolean
+     */
+    protected boolean removeAllPlots(boolean removeMessageLabel) {
+        removeAllPlots();
+
+        if (traceLists == null || traceNames == null || traceNames.size() == 0) {
+            getChartPanel().setXAxisTitle("");
+            getChartPanel().setYAxisTitle("");
+            messageLabel.setText("No traces selected");
+            add(messageLabel, BorderLayout.NORTH);
+            return false;
+        }
+
+        if (removeMessageLabel) remove(messageLabel);
+        return true;
+    }
+
+    /**
+     * to overwrite it to <code>removeAllTraces()</code> in <code>RawTracePanel</code>
+     */
+    protected void removeAllPlots() {
+        getChartPanel().getChart().removeAllPlots();
+
+    }
+
+    /**
+     * set x labs using <code>setXAxisTitle</code> when x-axis allows multiple traces
+     */
+    protected void setXAxisLabel() {
+        if (traceLists.length == 1) {
+            getChartPanel().setXAxisTitle(traceLists[0].getName());
+        } else if (traceNames.size() == 1) {
+            getChartPanel().setXAxisTitle(traceNames.get(0));
+        } else {
+            getChartPanel().setXAxisTitle("Multiple Traces");
+        }
+    }
+    /**
+     * set y labs using <code>setYAxisTitle</code> when y-axis allows multiple traces
+     */
+    protected void setYAxisLabel() {
+        if (traceLists.length == 1) {
+            getChartPanel().setYAxisTitle(traceLists[0].getName());
+        } else if (traceNames.size() == 1) {
+            getChartPanel().setYAxisTitle(traceNames.get(0));
+        } else {
+            getChartPanel().setYAxisTitle("Multiple Traces");
+        }
+    }
+
     public JComponent getExportableComponent() {
-        return chartPanel;
+        return getChartPanel();
     }
 
 }

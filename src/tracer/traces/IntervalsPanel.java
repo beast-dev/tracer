@@ -40,10 +40,10 @@ import java.awt.*;
  * @author Alexei Drummond
  * @version $Id: IntervalsPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
-public class IntervalsPanel extends NTracesChartPanel {
+public class IntervalsPanel extends TraceChartPanel {
 
-//    private JIntervalsChart intervalsChart = new JIntervalsChart(new LinearAxis());
-//    private JChartPanel chartPanel = new JChartPanel(intervalsChart, null, "", "");
+    private final BoxPlotChart traceChart;
+      private final JChartPanel chartPanel;
 
     /**
      * Creates new IntervalsPanel
@@ -51,15 +51,14 @@ public class IntervalsPanel extends NTracesChartPanel {
     public IntervalsPanel(final JFrame frame) {
         super(frame);
         traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
-        initJChartPanel("", ""); // xAxisTitle, yAxisTitle
+        chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
 
         JToolBar toolBar = setupToolBar(frame);
         addMainPanel(toolBar);
     }
 
-    @Override
-    protected BoxPlotChart getTraceChart() {
-        return (BoxPlotChart) traceChart;
+    public JChartPanel getChartPanel() {
+        return chartPanel;
     }
 
     @Override
@@ -77,7 +76,7 @@ public class IntervalsPanel extends NTracesChartPanel {
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
         super.setTraces(traceLists, traceNames);
 
-        getTraceChart().removeAllIntervals();
+        traceChart.removeAllIntervals();
 
         if (traceLists == null || traceNames == null) {
             chartPanel.setXAxisTitle("");
@@ -88,8 +87,7 @@ public class IntervalsPanel extends NTracesChartPanel {
         setupTraces();
     }
 
-    @Override
-    protected void setupTraces() {
+    private void setupTraces() {
         for (TraceList traceList : traceLists) {
             for (String traceName : traceNames) {
                 int index = traceList.getTraceIndex(traceName);
@@ -106,17 +104,17 @@ public class IntervalsPanel extends NTracesChartPanel {
 
                     // TODO: boxplot scale not correct here
 //                    if (td.getTraceType().isIntegerOrBinary())
-//                        getTraceChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
+//                        getChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
 //                                td.getMinimum(), td.getMaximum());
                     if (td.getTraceType().isCategorical())
-                        getTraceChart().addViolins(name, td);
+                        traceChart.addViolins(name, td);
                     else
-                        getTraceChart().addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
+                        traceChart.addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
                 }
             }
         }
 
-        setXLabMultiTraces();
+        setXAxisLabel();
 
         validate();
         repaint();

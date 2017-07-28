@@ -25,10 +25,7 @@
 
 package tracer.traces;
 
-import dr.app.gui.chart.Axis;
-import dr.app.gui.chart.ChartSetupDialog;
-import dr.app.gui.chart.LinearAxis;
-import dr.app.gui.chart.Plot;
+import dr.app.gui.chart.*;
 import dr.inference.trace.Trace;
 import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceList;
@@ -54,7 +51,7 @@ import java.util.Map;
  * @author Alexei Drummond
  * @version $Id: RawTracePanel.java,v 1.2 2006/11/30 17:39:29 rambaut Exp $
  */
-public class RawTracePanel extends NTracesChartPanel {
+public class RawTracePanel extends TraceChartPanel {
 
     private Settings currentSettings = new Settings();
 
@@ -64,6 +61,8 @@ public class RawTracePanel extends NTracesChartPanel {
 
     private JButton listenButton = new JButton("Listen");
 
+    private JChart traceChart;
+    private final JChartPanel chartPanel;
 
     /**
      * Creates new RawTracePanel
@@ -71,12 +70,16 @@ public class RawTracePanel extends NTracesChartPanel {
     public RawTracePanel(final JFrame frame) {
         super(frame);
         traceChart = new JTraceChart(new LinearAxis(Axis.AT_ZERO, Axis.AT_DATA), new LinearAxis());
-        initJChartPanel("", ""); // xAxisTitle, yAxisTitle
+        chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
         JToolBar toolBar = setupToolBar(frame);
         addMainPanel(toolBar);
     }
 
-    protected JTraceChart getTraceChart() {
+    public JChartPanel getChartPanel() {
+        return chartPanel;
+    }
+
+    protected JTraceChart getChart() {
         return (JTraceChart) traceChart;
     }
 
@@ -132,7 +135,7 @@ public class RawTracePanel extends NTracesChartPanel {
         sampleCheckBox.addActionListener(
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent ev) {
-                        getTraceChart().setUseSample(sampleCheckBox.isSelected());
+                        getChart().setUseSample(sampleCheckBox.isSelected());
                         validate();
                         repaint();
                     }
@@ -142,7 +145,7 @@ public class RawTracePanel extends NTracesChartPanel {
         linePlotCheckBox.addActionListener(
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent ev) {
-                        getTraceChart().setIsLinePlot(linePlotCheckBox.isSelected());
+                        getChart().setIsLinePlot(linePlotCheckBox.isSelected());
                         validate();
                         repaint();
                     }
@@ -218,12 +221,12 @@ public class RawTracePanel extends NTracesChartPanel {
 
     @Override
     protected void removeAllPlots() {
-        getTraceChart().removeAllTraces();
+        getChart().removeAllTraces();
     }
 
     protected void setupTraces() {
         // return if no traces selected
-        if (!rmAllPlots(true)) return; // traceChart.removeAllTraces();
+        if (!removeAllPlots(true)) return; // traceChart.removeAllTraces();
 
         int i = 0;
         List valuesX = new ArrayList();
@@ -253,17 +256,17 @@ public class RawTracePanel extends NTracesChartPanel {
                     double[] minMax;
                     if (trace.getTraceType().isNumber()) {
 
-                        getTraceChart().setYAxis(trace.getTraceType().isInteger(), new HashMap<Integer, String>());
+                        getChart().setYAxis(trace.getTraceType().isInteger(), new HashMap<Integer, String>());
                         if (trace.getTraceType().isInteger()) {
-                            getTraceChart().getYAxis().setAxisFlags(Axis.AT_DATA, Axis.AT_DATA);
+                            getChart().getYAxis().setAxisFlags(Axis.AT_DATA, Axis.AT_DATA);
 
                             if (trace.getTraceType().isBinary()) {
-                                getTraceChart().getYAxis().setManualAxis(0, 1.0, 1.0, 0.0);
-                                getTraceChart().getYAxis().setManualRange(0.0, 1.0);
-                                getTraceChart().getYAxis().setRange(0.0, 1.0);
+                                getChart().getYAxis().setManualAxis(0, 1.0, 1.0, 0.0);
+                                getChart().getYAxis().setManualRange(0.0, 1.0);
+                                getChart().getYAxis().setRange(0.0, 1.0);
                             }
                         }
-                        minMax = getTraceChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[i]);
+                        minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[i]);
 
                     } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
 
@@ -285,8 +288,8 @@ public class RawTracePanel extends NTracesChartPanel {
                             }
                         }
 
-                        getTraceChart().setYAxis(false, categoryDataMap);
-                        minMax = getTraceChart().addTrace(name, stateStart, stateStep, doubleData, doubleBurninData, currentSettings.palette[i]);
+                        getChart().setYAxis(false, categoryDataMap);
+                        minMax = getChart().addTrace(name, stateStart, stateStep, doubleData, doubleBurninData, currentSettings.palette[i]);
 
                     } else {
                         throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
@@ -312,11 +315,11 @@ public class RawTracePanel extends NTracesChartPanel {
         if (traceLists.length > 1 || traceNames.size() > 1) {
             Variate.D xV = new Variate.D(valuesX);
             Variate.D yV = new Variate.D(valuesY);
-            getTraceChart().setRange(xV.getMin(), xV.getMax(), yV.getMin(), yV.getMax());
+            getChart().setRange(xV.getMin(), xV.getMax(), yV.getMin(), yV.getMax());
         }
 
-        setXLab("State");
-        setYLabMultiTraces();
+        setXLabel("State");
+        setYAxisLabel();
         setLegend(currentSettings);
         setChartSetupDialog(currentSettings);
 
@@ -394,7 +397,7 @@ public class RawTracePanel extends NTracesChartPanel {
     }
 
     public String toString() {
-        if (getTraceChart().getPlotCount() == 0) {
+        if (getChart().getPlotCount() == 0) {
             return "no plot available";
         }
 
@@ -406,8 +409,8 @@ public class RawTracePanel extends NTracesChartPanel {
         ArrayList<ArrayList> traceValues = new ArrayList<ArrayList>();
         int maxLength = 0;
 
-        for (int i = 0; i < getTraceChart().getPlotCount(); i++) {
-            Plot plot = getTraceChart().getPlot(i);
+        for (int i = 0; i < getChart().getPlotCount(); i++) {
+            Plot plot = getChart().getPlot(i);
             if (i > 0) {
                 buffer.append("\t");
             }
@@ -415,8 +418,8 @@ public class RawTracePanel extends NTracesChartPanel {
             buffer.append("\t");
             buffer.append(plot.getName());
 
-            traceStates.add(i, new ArrayList(getTraceChart().getTraceStates(i)));
-            traceValues.add(i, new ArrayList(getTraceChart().getTraceValues(i)));
+            traceStates.add(i, new ArrayList(getChart().getTraceStates(i)));
+            traceValues.add(i, new ArrayList(getChart().getTraceValues(i)));
             if (traceStates.get(i).size() > maxLength) {
                 maxLength = traceStates.get(i).size();
             }

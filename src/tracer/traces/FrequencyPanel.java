@@ -26,14 +26,13 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.inference.trace.Trace;
-import dr.inference.trace.TraceCorrelation;
-import dr.inference.trace.TraceList;
-import dr.inference.trace.TraceType;
+import dr.inference.trace.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -44,10 +43,13 @@ import java.util.List;
  * @author Alexei Drummond
  * @version $Id: FrequencyPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
-public class FrequencyPanel extends OneTraceChartPanel {
+public class FrequencyPanel extends TraceChartPanel {
 
     public final static Paint BAR_PAINT = new Color(0x2f8aa3);
     public final static  Paint QUANTILE_PAINT = new Color(0xd6bd58);
+
+    private final JChart traceChart;
+    private final JChartPanel traceChartPanel;
 
     private Settings currentSettings = new Settings();
 //    private Map<String, Settings> settingsMap = new HashMap<String, Settings>();
@@ -59,15 +61,14 @@ public class FrequencyPanel extends OneTraceChartPanel {
         super(frame);
         traceChart = new DiscreteJChart(
                 new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
-        initJChartPanel("", "Frequency"); // xAxisTitle, yAxisTitle
+        traceChartPanel = new JChartPanel(traceChart, "","", "Frequency"); // xAxisTitle, yAxisTitle
         JToolBar toolBar = setupToolBar(frame);
         addMainPanel(toolBar, false);
     }
 
-    protected DiscreteJChart getTraceChart() {
-        return (DiscreteJChart) traceChart;
+    public JChartPanel getChartPanel() {
+        return traceChartPanel;
     }
-
     protected JToolBar setupToolBar(final JFrame frame) {
         JToolBar toolBar = super.setupToolBar(frame, currentSettings);
 
@@ -83,7 +84,7 @@ public class FrequencyPanel extends OneTraceChartPanel {
                                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
                         }
 
-                        currentSettings.chartSetupDialog.showDialog(getTraceChart());
+                        currentSettings.chartSetupDialog.showDialog(getChartPanel().getChart());
                         validate();
                         repaint();
                     }
@@ -115,7 +116,8 @@ public class FrequencyPanel extends OneTraceChartPanel {
 
 
     public void setTrace(TraceList traceList, String traceName) {
-        initSettings(traceList, traceName);
+        setTraces(new TraceList[] { traceList },
+                Collections.singletonList(traceName));
         binsCombo.setSelectedItem(currentSettings.minimumBins);
 
         setupTrace();
@@ -124,10 +126,13 @@ public class FrequencyPanel extends OneTraceChartPanel {
 
     protected void setupTrace() {
 
-        if (!rmAllPlots()) return;
+        removeAllPlots();
 
         FrequencyPlot plot = null;
-        int traceIndex = traceList.getTraceIndex(traceName);
+
+        TraceList traceList = traceLists[0];
+
+        int traceIndex = traceList.getTraceIndex(traceNames.get(0));
         Trace trace = traceList.getTrace(traceIndex);
         TraceCorrelation td = traceList.getCorrelationStatistics(traceIndex);
 
@@ -162,14 +167,36 @@ public class FrequencyPanel extends OneTraceChartPanel {
                 throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
             }
 
-            setXAxis(td);
-            setYLab(traceType, new String[]{"Frequency", "Count"});
+//            setXAxis(td);
+            setYLabel(traceType, new String[]{"Frequency", "Count"});
             setBinsComponents(traceType);
             setChartSetupDialog(currentSettings);
 
-            getTraceChart().addPlot(plot);
+            getChartPanel().getChart().addPlot(plot);
         }
-        setXLab(traceIndex);
+        setXLabel(traceList.getTraceName(traceIndex));
+    }
+
+    protected void setBinsComponents(TraceType traceType) {
+
+        if (traceType.isContinuous()) {
+            labelBins.setVisible(true);
+            binsCombo.setVisible(true);
+            showValuesCheckBox.setVisible(false);
+
+        } else if (traceType.isIntegerOrBinary()) {
+            labelBins.setVisible(false);
+            binsCombo.setVisible(false);
+            showValuesCheckBox.setVisible(true);
+
+        } else if (traceType.isCategorical()) {
+            labelBins.setVisible(false);
+            binsCombo.setVisible(false);
+            showValuesCheckBox.setVisible(true);
+
+        } else {
+            throw new RuntimeException("Trace type is not recognized: " + traceType);
+        }
     }
 
 }
