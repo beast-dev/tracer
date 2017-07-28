@@ -32,6 +32,7 @@ import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
@@ -44,6 +45,9 @@ import java.util.List;
  * @version $Id: FrequencyPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
 public class FrequencyPanel extends OneTraceChartPanel {
+
+    public final static Paint BAR_PAINT = new Color(0x2f8aa3);
+    public final static  Paint QUANTILE_PAINT = new Color(0xd6bd58);
 
     private Settings currentSettings = new Settings();
 //    private Map<String, Settings> settingsMap = new HashMap<String, Settings>();
@@ -132,6 +136,8 @@ public class FrequencyPanel extends OneTraceChartPanel {
             TraceType traceType = trace.getTraceType();
             if (traceType.isContinuous()) {
                 plot = new FrequencyPlot(values, currentSettings.minimumBins, td);
+
+                plot.setPaints(BAR_PAINT, QUANTILE_PAINT);
 
                 if (td != null) {
                     plot.setIntervals(td.getUpperHPD(), td.getLowerHPD());
