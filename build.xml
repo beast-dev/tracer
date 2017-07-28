@@ -171,7 +171,7 @@
         <!-- create a jar bundle for the mac -->
         <jarbundler dir="${Mac_package_dir}"
                         name="${name} v${version}"
-                        mainclass="TracerApp"
+                        mainclass="tracer.application.TracerApp"
                         stubfile="${packaging_tools}/mac/universalJavaApplicationStub"
 						useJavaXKey="true"
                         icon="${Mac_dir}/icons/Tracer.icns"
@@ -186,7 +186,7 @@
                 <include name="**/tracer.jar"/>
             </jarfileset>
             <jarfileset dir="${Mac_dir}/lib">
-                <include name="**/quaqua.jar"/>
+                <include name="**/quaqua-filechooser-only.jar"/>
             </jarfileset>
             <jarfileset dir="${Mac_dir}/lib">
                 <include name="libquaqua*.jnilib"/>

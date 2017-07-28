@@ -184,7 +184,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         Toolbar controlPanel1 = new Toolbar();
         reloadButton = new JButton("Reload");
-        reloadButton.putClientProperty("Quaqua.Button.style", "square");
+//        reloadButton.putClientProperty("Quaqua.Button.style", "square");
         reloadButton.setFont(UIManager.getFont("SmallSystemFont"));
         reloadButton.setToolTipText("Reload the selected log file(s)");
 //        Icon refreshIcon = new ImageIcon(IconUtils.getImage(TracerFrame.class, "images/refresh.png"));
@@ -261,14 +261,14 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         realButton = new JButton("(R)eal");
         realButton.setToolTipText(TraceType.REAL.toString());
         // Only affect Mac OS X - nicer GUI
-        realButton.putClientProperty("Quaqua.Button.style", "square");
+//        realButton.putClientProperty("Quaqua.Button.style", "square");
         realButton.setFont(UIManager.getFont("SmallSystemFont"));
         realButton.setEnabled(false);
 
         integerButton = new JButton("(I)nt");
         integerButton.setToolTipText(TraceType.INTEGER.toString());
         // Only affect Mac OS X - nicer GUI
-        integerButton.putClientProperty("Quaqua.Button.style", "square");
+//        integerButton.putClientProperty("Quaqua.Button.style", "square");
         integerButton.setFont(UIManager.getFont("SmallSystemFont"));
         integerButton.setEnabled(false);
 
@@ -282,7 +282,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         categoricalButton = new JButton("(C)at");
         categoricalButton.setToolTipText(TraceType.CATEGORICAL.toString());
         // Only affect Mac OS X - nicer GUI
-        categoricalButton.putClientProperty("Quaqua.Button.style", "square");
+//        categoricalButton.putClientProperty("Quaqua.Button.style", "square");
         categoricalButton.setFont(UIManager.getFont("SmallSystemFont"));
         categoricalButton.setEnabled(false);
 

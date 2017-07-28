@@ -32,7 +32,9 @@ import jam.framework.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 public class TracerApp extends MultiDocApplication {
 
@@ -65,10 +67,8 @@ public class TracerApp extends MultiDocApplication {
                 javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
                         try {
-                            UIManager.setLookAndFeel(
-                                    "ch.randelshofer.quaqua.QuaquaLookAndFeel"
-                            );
-
+                            UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
+//                            UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
                             lafLoaded = true;
                         } catch (Exception e) {
                         }
