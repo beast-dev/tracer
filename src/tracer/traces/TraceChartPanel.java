@@ -57,7 +57,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         COLOUR_BY_ALL
     };
 
-    protected static final Paint[] paints = new Paint[]{
+    protected static final Paint[] LEGACY_PAINTS = new Paint[]{
             Color.BLACK,
             new Color(64, 35, 225),
             new Color(229, 35, 60),
@@ -69,8 +69,59 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
             new Color(239, 255, 34),
             Color.DARK_GRAY
     };
+    
+    protected static final Paint[] COLORBREWER_PAIRED = new Paint[]{
+            new Color(0xa6cee3),
+            new Color(0x1f78b4),
+            new Color(0xb2df8a),
+            new Color(0x33a02c),
+            new Color(0xfb9a99),
+            new Color(0xe31a1c),
+            new Color(0xfdbf6f),
+            new Color(0xff7f00),
+            new Color(0xcab2d6),
+            new Color(0x6a3d9a),
+            new Color(0xffff99),
+            new Color(0xb15928)
+    };
 
-    protected class Settings {
+    protected static final Paint[] COLORBREWER_DARK2 = new Paint[]{
+            new Color(0x1b9e77),
+            new Color(0xd95f02),
+            new Color(0x7570b3),
+            new Color(0xe7298a),
+            new Color(0x66a61e),
+            new Color(0xe6ab02),
+            new Color(0xa6761d),
+            new Color(0x666666)
+    };
+
+    protected static final Paint[] RAINBOW = new Paint[]{
+            new Color(0x46a4d5),
+            new Color(0x3cbeb7),
+            new Color(0xb0be36),
+            new Color(0xfdcb42),
+            new Color(0xf7a139),
+            new Color(0xf4622e),
+            new Color(0xd93a3d),
+            new Color(0xec667c),
+            new Color(0xa267d6)
+    };
+
+    protected static final Paint[] RAINBOW_2 = new Paint[]{
+            new Color(0x394958),
+            new Color(0x5b9586),
+            new Color(0x6f955b),
+            new Color(0xdfbd5d),
+            new Color(0xd17e53),
+            new Color(0xc25553),
+            new Color(0x955b6e)
+    };
+
+    // paint pallet being used
+    protected static final Paint[] PAINTS = COLORBREWER_DARK2;
+
+   protected class Settings {
         // shared settings
         ChartSetupDialog chartSetupDialog = null;
         int legendAlignment = 0;

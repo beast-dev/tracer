@@ -368,9 +368,9 @@ public class DensityPanel extends NTracesChartPanel {
                             Plot plot2 = setupKDEPlot(values, td);
                             plot2.setName(name + " KDE");
                             if (tl instanceof CombinedTraces) {
-                                plot2.setLineStyle(new BasicStroke(2.0f), paints[i]);
+                                plot2.setLineStyle(new BasicStroke(2.0f), PAINTS[i]);
                             } else {
-                                plot2.setLineStyle(new BasicStroke(1.0f), paints[i]);
+                                plot2.setLineStyle(new BasicStroke(1.0f), PAINTS[i]);
                             }
                             traceChart.addPlot(plot2);
                         }
@@ -392,9 +392,9 @@ public class DensityPanel extends NTracesChartPanel {
                     if (plot != null) {
                         plot.setName(name);
                         if (tl instanceof CombinedTraces) {
-                            plot.setLineStyle(new BasicStroke(2.0f), paints[i]);
+                            plot.setLineStyle(new BasicStroke(2.0f), PAINTS[i]);
                         } else {
-                            plot.setLineStyle(new BasicStroke(1.0f), paints[i]);
+                            plot.setLineStyle(new BasicStroke(1.0f), PAINTS[i]);
                         }
 
                         traceChart.addPlot(plot);
@@ -406,7 +406,7 @@ public class DensityPanel extends NTracesChartPanel {
                     if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_ALL) {
                         i++;
                     }
-                    if (i == paints.length) i = 0;
+                    if (i == PAINTS.length) i = 0;
                 }
             }
             if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
@@ -414,7 +414,7 @@ public class DensityPanel extends NTracesChartPanel {
             } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
                 i = 0;
             }
-            if (i == paints.length) i = 0;
+            if (i == PAINTS.length) i = 0;
         }
 
         setXLabMultiTraces();

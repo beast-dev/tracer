@@ -41,7 +41,7 @@ import java.util.ArrayList;
  * @version $Id: TemporalAnalysisPlotPanel.java,v 1.2 2006/12/01 09:36:17 rambaut Exp $
  */
 public class TemporalAnalysisPlotPanel extends JPanel {
-
+    public static final Color AREA_COLOUR = new Color(0x1f78b4);
 
     private JChart demoChart = new JChart(new LinearAxis(Axis.AT_DATA, Axis.AT_DATA), new LogAxis());
     private JChartPanel chartPanel = new JChartPanel(demoChart, null, "", "");
@@ -173,15 +173,15 @@ public class TemporalAnalysisPlotPanel extends JPanel {
             if (solidIntervalCheckBox.isSelected()) {
 
                 AreaPlot areaPlot = new AreaPlot(analysis.xData, analysis.yDataUpper, analysis.xData, analysis.yDataLower);
-                areaPlot.setLineColor(new Color(0x9999FF));
+                areaPlot.setLineColor(AREA_COLOUR);
                 demoChart.addPlot(areaPlot);
             } else {
                 LinePlot plot = new LinePlot(analysis.xData, analysis.yDataLower);
-                plot.setLineStyle(new BasicStroke(1.0F), new Color(0x9999FF));
+                plot.setLineStyle(new BasicStroke(1.0F), AREA_COLOUR);
                 demoChart.addPlot(plot);
 
                 plot = new LinePlot(analysis.xData, analysis.yDataUpper);
-                plot.setLineStyle(new BasicStroke(1.0F), new Color(0x9999FF));
+                plot.setLineStyle(new BasicStroke(1.0F), AREA_COLOUR);
                 demoChart.addPlot(plot);
             }
         }

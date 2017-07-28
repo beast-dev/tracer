@@ -32,6 +32,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+import static tracer.analysis.TemporalAnalysisPlotPanel.AREA_COLOUR;
+
 
 /**
  * A panel that displays demographic plot
@@ -167,15 +169,15 @@ public class DemographicPlotPanel extends JPanel {
         if (solidIntervalCheckBox.isSelected()) {
 
             AreaPlot areaPlot = new AreaPlot(xData, yDataUpper, xData, yDataLower);
-            areaPlot.setLineColor(new Color(0x9999FF));
+            areaPlot.setLineColor(AREA_COLOUR);
             demoChart.addPlot(areaPlot);
         } else {
             LinePlot plot = new LinePlot(xData, yDataLower);
-            plot.setLineStyle(new BasicStroke(1.0F), new Color(0x9999FF));
+            plot.setLineStyle(new BasicStroke(1.0F), AREA_COLOUR);
             demoChart.addPlot(plot);
 
             plot = new LinePlot(xData, yDataUpper);
-            plot.setLineStyle(new BasicStroke(1.0F), new Color(0x9999FF));
+            plot.setLineStyle(new BasicStroke(1.0F), AREA_COLOUR);
             demoChart.addPlot(plot);
 
         }
