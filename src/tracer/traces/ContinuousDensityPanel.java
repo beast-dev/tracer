@@ -95,7 +95,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         densityChart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         densityChartPanel = new JChartPanel(densityChart, "","","");
 
-        violinChart = new JParallelChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS));
+        violinChart = new JParallelChart(false, new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS));
         violinChartPanel = new JChartPanel(violinChart, "","","");
 
         JToolBar toolBar = setupToolBar(frame);
@@ -151,18 +151,20 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                 }
         );
 
-        legendCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
+        legendCombo.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
                         currentSettings.legendAlignment = legendCombo.getSelectedIndex();
                         setupTraces();
                     }
                 }
         );
 
-        colourByCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
+        colourByCombo.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
                         currentSettings.colourBy = ColourByOptions.values()[colourByCombo.getSelectedIndex()];
                         setupTraces();
                     }
@@ -187,9 +189,10 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 //                }
 //        );
 
-        displayCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
+        displayCombo.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
                         switch (displayCombo.getSelectedIndex()) {
                             case 0: currentSettings.type = Type.KDE; break;
                             case 1: currentSettings.type = Type.HISTOGRAM; break;
@@ -297,19 +300,16 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         setupTraces();
     }
 
-    protected Plot setupDensityPlot(List values, TraceCorrelation td) {
-        NumericalDensityPlot plot = new NumericalDensityPlot(values, currentSettings.minimumBins, td);
-        return plot;
+    protected Plot createDensityPlot(List values) {
+        return new NumericalDensityPlot(values, currentSettings.minimumBins);
     }
 
-    protected Plot setupKDEPlot(List values, TraceCorrelation td) {
-        Plot plot = new KDENumericalDensityPlot(values, DEFAULT_KDE_BINS, td);
-        return plot;
+    protected Plot createKDEPlot(List values) {
+        return new KDENumericalDensityPlot(values, DEFAULT_KDE_BINS);
     }
 
-    protected Plot setupViolinPlot(double xOffset, List values, TraceCorrelation td) {
-        Plot plot = new ViolinPlot(xOffset, 0.8, values, DEFAULT_KDE_BINS, td);
-        return plot;
+    protected Plot createViolinPlot(List values) {
+        return new ViolinPlot(0.8, values, DEFAULT_KDE_BINS);
     }
 
 
@@ -317,8 +317,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         // return if no traces selected
         if (!removeAllPlots(false)) return;
 
-
-        int barId = 0;
         int i = 0;
         TraceType traceType = null;
         for (TraceList tl : traceLists) {
@@ -344,7 +342,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
                     switch (currentSettings.type) {
                         case KDE:
-                            plot = setupKDEPlot(values, td);
+                            plot = createKDEPlot(values);
                             plot.setName(name + " KDE");
                             if (tl instanceof CombinedTraces) {
                                 plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
@@ -353,12 +351,13 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                             }
                             break;
                         case HISTOGRAM:
-                            plot = setupDensityPlot(values, td);
+                            plot = createDensityPlot(values);
+                            plot.setName(name);
                             ((NumericalDensityPlot) plot).setRelativeDensity(currentSettings.relativeDensity);
                             break;
                         case VIOLIN:
-                            plot = setupViolinPlot(i + 1, values, td);
-                            plot.setName(name + " KDE");
+                            plot = createViolinPlot(values);
+                            plot.setName(name);
                             if (tl instanceof CombinedTraces) {
                                 plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
                             } else {
@@ -368,7 +367,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                     }
 
                     if (plot != null) {
-                        plot.setName(name);
                         if (tl instanceof CombinedTraces) {
                             plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
                         } else {
@@ -393,13 +391,20 @@ public class ContinuousDensityPanel extends TraceChartPanel {
             if (i >= currentSettings.palette.length) i = 0;
         }
 
+        // swap in the correct chart panel
+        BorderLayout layout = (BorderLayout)getLayout();
+        remove(layout.getLayoutComponent(BorderLayout.CENTER));
+        add(getChartPanel(), BorderLayout.CENTER);
+        validate();
+        repaint();
+
         setXLabelMultipleTraces();
         if (currentSettings.type == Type.VIOLIN) {
             setYLabel("Value");
         } else {
             setYLabel(traceType, new String[]{"Density", "Probability"});
         }
-        setLegend(currentSettings);
+        setLegend(densityChart, currentSettings);
         setChartSetupDialog(currentSettings);
 
         validate();

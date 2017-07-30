@@ -320,7 +320,7 @@ public class RawTracePanel extends TraceChartPanel {
 
         setXLabel("State");
         setYAxisLabel();
-        setLegend(currentSettings);
+        setLegend(getChart(), currentSettings);
         setChartSetupDialog(currentSettings);
 
         validate();

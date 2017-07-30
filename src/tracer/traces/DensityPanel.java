@@ -92,11 +92,11 @@ public class DensityPanel extends JPanel implements Exportable {
     }
 
     private void setDensityPanel(TraceChartPanel panel) {
-        removeAll();
-        if (panel != null) {
-            add(panel, BorderLayout.CENTER);
-        }
         currentPanel = panel;
+        removeAll();
+        if (currentPanel != null) {
+            add(currentPanel, BorderLayout.CENTER);
+        }
     }
 
     public String toString() {

@@ -42,7 +42,7 @@ import java.util.List;
  * @author Alexei Drummond
  * @version $Id: DensityPanel.java,v 1.3 2006/11/29 09:54:30 rambaut Exp $
  */
-public class DiscreteDensityPanel extends   TraceChartPanel {
+public class DiscreteDensityPanel extends TraceChartPanel {
 
     private final DiscreteJChart densityChart;
     private final JChartPanel densityChartPanel;
@@ -189,11 +189,6 @@ public class DiscreteDensityPanel extends   TraceChartPanel {
         setupTraces();
     }
 
-    protected Plot setupDensityPlot(List values, TraceCorrelation td) {
-        NumericalDensityPlot plot = new NumericalDensityPlot(values, currentSettings.minimumBins, td);
-        return plot;
-    }
-
     protected void setupTraces() {
         // return if no traces selected
         if (!removeAllPlots(false)) return;
@@ -264,7 +259,7 @@ public class DiscreteDensityPanel extends   TraceChartPanel {
 
         setXLabelMultipleTraces();
         setYLabel(traceType, new String[]{"Density", "Probability"});
-        setLegend(currentSettings);
+        setLegend(getChart(), currentSettings);
         setChartSetupDialog(currentSettings);
 
         validate();

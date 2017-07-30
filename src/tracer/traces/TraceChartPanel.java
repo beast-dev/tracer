@@ -297,8 +297,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      *
      * @param currentSettings
      */
-    protected void setLegend(final Settings currentSettings) {
-        JChart chart = getChartPanel().getChart();
+    protected void setLegend(final JChart chart, final Settings currentSettings) {
         switch (currentSettings.legendAlignment) {
             case 0:
                 break;

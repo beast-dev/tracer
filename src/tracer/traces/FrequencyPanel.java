@@ -129,8 +129,11 @@ public class FrequencyPanel extends TraceChartPanel {
         removeAllPlots();
 
         FrequencyPlot plot = null;
-
         TraceList traceList = traceLists[0];
+
+        if (traceList == null) {
+            return;
+        }
 
         int traceIndex = traceList.getTraceIndex(traceNames.get(0));
         Trace trace = traceList.getTrace(traceIndex);

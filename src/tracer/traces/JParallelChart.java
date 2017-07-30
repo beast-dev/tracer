@@ -39,12 +39,7 @@ import dr.app.gui.chart.Plot;
 public class JParallelChart extends JChart {
 
     private final boolean horizontal;
-
-    // the axis with the continuous dimension
-    private Axis dimensionAxis;
-
-    // the axis with the parallel plots
-    private Axis parallelAxis;
+    private final DiscreteAxis parallelAxis;
 
     public JParallelChart(Axis dimensionAxis) {
         this(false, dimensionAxis);
@@ -54,11 +49,21 @@ public class JParallelChart extends JChart {
         super(null,null);
 
         this.horizontal = horizontal;
-        this.dimensionAxis = dimensionAxis;
-        this.parallelAxis = new DiscreteAxis(true, true);
 
+        parallelAxis = new DiscreteAxis(true, true);
         setXAxis(horizontal ? dimensionAxis : parallelAxis);
         setYAxis(horizontal ? parallelAxis : dimensionAxis);
+    }
+
+    @Override
+    public void addPlot(Plot plot) {
+        plot.setAxes(xAxis, yAxis);
+        plots.add(plot);
+        parallelAxis.setAxisFlags(Axis.AT_VALUE, Axis.AT_VALUE);
+        parallelAxis.setRange(1.0, getPlotCount());
+//        parallelAxis.setManualAxis(1.0, getPlotCount(), 1, 1);
+        recalibrate();
+        repaint();
     }
 
     @Override
@@ -66,9 +71,7 @@ public class JParallelChart extends JChart {
         if (horizontal) {
             return super.getXAxisLabel(value);
         } else {
-            int index  = (int)value;
-            Plot plot = getPlot(index);
-            return plot.getName();
+            return getPlotName(value);
         }
     }
 
@@ -77,15 +80,20 @@ public class JParallelChart extends JChart {
         if (!horizontal) {
             return super.getYAxisLabel(value);
         } else {
-            int index  = (int)value;
-            Plot plot = getPlot(index);
-            return plot.getName();
+            return getPlotName(value);
         }
     }
 
-    @Override
-    public void addPlot(Plot plot) {
-        super.addPlot(plot);
+
+    private String getPlotName(double value) {
+        int index = (int)(value);
+        if (index >= 1 && index <= getPlotCount()) {
+            Plot plot = getPlot(index - 1);
+            return plot.getName();
+        } else {
+            return "";
+        }
 
     }
+
 }
