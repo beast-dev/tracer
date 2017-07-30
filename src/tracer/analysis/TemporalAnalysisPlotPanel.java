@@ -101,7 +101,7 @@ public class TemporalAnalysisPlotPanel extends JPanel {
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(ActionEvent actionEvent) {
                         if (chartSetupDialog == null) {
-                            chartSetupDialog = new ChartSetupDialog(frame, false, true,
+                            chartSetupDialog = new ChartSetupDialog(frame, false, true, true, true,
                                     Axis.AT_DATA, Axis.AT_DATA, Axis.AT_DATA, Axis.AT_DATA);
                         }
 

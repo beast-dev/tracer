@@ -64,6 +64,8 @@ public class RawTracePanel extends TraceChartPanel {
     private JChart traceChart;
     private final JChartPanel chartPanel;
 
+    private ChartSetupDialog chartSetupDialog = null;
+
     /**
      * Creates new RawTracePanel
      */
@@ -71,20 +73,34 @@ public class RawTracePanel extends TraceChartPanel {
         super(frame);
         traceChart = new JTraceChart(new LinearAxis(Axis.AT_ZERO, Axis.AT_DATA), new LinearAxis());
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
-        JToolBar toolBar = setupToolBar(frame);
-        addMainPanel(toolBar);
+        JToolBar toolBar = createToolBar(frame);
+        setupMainPanel(toolBar);
     }
 
     public JChartPanel getChartPanel() {
         return chartPanel;
     }
 
+    @Override
+    protected ChartSetupDialog getChartSetupDialog() {
+        if (chartSetupDialog == null) {
+            chartSetupDialog = new ChartSetupDialog(frame, false, true, true, true,
+                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
+        }
+        return chartSetupDialog;
+    }
+
+    @Override
+    protected Settings getSettings() {
+        return currentSettings;
+    }
+
     protected JTraceChart getChart() {
         return (JTraceChart) traceChart;
     }
 
-    protected JToolBar setupToolBar(final JFrame frame) {
-        JToolBar toolBar = super.setupToolBar(frame, currentSettings);
+    protected JToolBar createToolBar(final JFrame frame) {
+        JToolBar toolBar = super.createToolBar();
 
         burninCheckBox.setSelected(true);
         burninCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
@@ -102,27 +118,10 @@ public class RawTracePanel extends TraceChartPanel {
         linePlotCheckBox.setOpaque(false);
         toolBar.add(linePlotCheckBox);
 
-        addLegend(toolBar);
+        addLegendCombo(toolBar);
 
         toolBar.add(listenButton);
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
-
-        // +++++++ Listener ++++++++
-        chartSetupButton.addActionListener(
-                new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        if (currentSettings.chartSetupDialog == null) {
-                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, false, true,
-                                    Axis.AT_ZERO, Axis.AT_MAJOR_TICK,
-                                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK);
-                        }
-
-                        currentSettings.chartSetupDialog.showDialog(traceChart);
-                        validate();
-                        repaint();
-                    }
-                }
-        );
 
         burninCheckBox.addActionListener(
                 new java.awt.event.ActionListener() {
@@ -148,26 +147,6 @@ public class RawTracePanel extends TraceChartPanel {
                         getChart().setIsLinePlot(linePlotCheckBox.isSelected());
                         validate();
                         repaint();
-                    }
-                }
-        );
-
-        legendCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-                        currentSettings.legendAlignment = legendCombo.getSelectedIndex();
-                        setupTraces();
-                        validate();
-                        repaint();
-                    }
-                }
-        );
-
-        colourByCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-                        currentSettings.colourBy = ColourByOptions.values()[colourByCombo.getSelectedIndex()];
-                        setupTraces();
                     }
                 }
         );
@@ -214,6 +193,7 @@ public class RawTracePanel extends TraceChartPanel {
         return toolBar;
     }
 
+    @Override
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
         super.setTraces(traceLists, traceNames);
         setupTraces();
@@ -224,6 +204,7 @@ public class RawTracePanel extends TraceChartPanel {
         getChart().removeAllTraces();
     }
 
+    @Override
     protected void setupTraces() {
         // return if no traces selected
         if (!removeAllPlots(true)) return; // traceChart.removeAllTraces();
@@ -320,8 +301,6 @@ public class RawTracePanel extends TraceChartPanel {
 
         setXLabel("State");
         setYAxisLabel();
-        setLegend(getChart(), currentSettings);
-        setChartSetupDialog(currentSettings);
 
         validate();
         repaint();

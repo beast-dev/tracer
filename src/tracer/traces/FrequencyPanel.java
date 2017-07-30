@@ -32,7 +32,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -52,7 +51,8 @@ public class FrequencyPanel extends TraceChartPanel {
     private final JChartPanel traceChartPanel;
 
     private Settings currentSettings = new Settings();
-//    private Map<String, Settings> settingsMap = new HashMap<String, Settings>();
+
+    private ChartSetupDialog chartSetupDialog = null;
 
     /**
      * Creates new FrequencyPanel
@@ -62,78 +62,68 @@ public class FrequencyPanel extends TraceChartPanel {
         traceChart = new DiscreteJChart(
                 new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         traceChartPanel = new JChartPanel(traceChart, "","", "Frequency"); // xAxisTitle, yAxisTitle
-        JToolBar toolBar = setupToolBar(frame);
-        addMainPanel(toolBar, false);
+        JToolBar toolBar = createToolBar(frame);
+        setupMainPanel(toolBar, false);
     }
 
     public JChartPanel getChartPanel() {
         return traceChartPanel;
     }
-    protected JToolBar setupToolBar(final JFrame frame) {
-        JToolBar toolBar = super.setupToolBar(frame, currentSettings);
 
-        addBins(toolBar);
+    @Override
+    protected ChartSetupDialog getChartSetupDialog() {
+        if (chartSetupDialog == null) {
+            chartSetupDialog = new ChartSetupDialog(frame, false, false, true, false,
+                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
+        }
+        return chartSetupDialog;
+    }
+
+    @Override
+    protected Settings getSettings() {
+        return currentSettings;
+    }
+
+    protected JToolBar createToolBar(final JFrame frame) {
+        JToolBar toolBar = super.createToolBar();
+
+        addBinsCombo(toolBar);
         binsCombo.setSelectedItem(currentSettings.minimumBins);
 
-        // +++++++ Listener ++++++++
-        chartSetupButton.addActionListener(
-                new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        if (currentSettings.chartSetupDialog == null) {
-                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, true, false,
-                                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
-                        }
-
-                        currentSettings.chartSetupDialog.showDialog(getChartPanel().getChart());
-                        validate();
-                        repaint();
-                    }
-                }
-        );
-
-        binsCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-                        currentSettings.minimumBins = (Integer) binsCombo.getSelectedItem();
-                        setupTrace();
-                    }
-                }
-        );
-
-        //        toolBar.add(showValuesCheckBox); //todo
-        showValuesCheckBox.addActionListener(
-                new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent actionEvent) {
-
-                        validate();
-                        repaint();
-                    }
-                }
-        );
+//        toolBar.add(showValuesCheckBox); //todo
+//        showValuesCheckBox.addActionListener(
+//                new java.awt.event.ActionListener() {
+//                    public void actionPerformed(ActionEvent actionEvent) {
+//
+//                        validate();
+//                        repaint();
+//                    }
+//                }
+//        );
 
         return toolBar;
     }
-
 
     public void setTrace(TraceList traceList, String traceName) {
         setTraces(new TraceList[] { traceList },
                 Collections.singletonList(traceName));
         binsCombo.setSelectedItem(currentSettings.minimumBins);
 
-        setupTrace();
+        setupTraces();
     }
 
-
-    protected void setupTrace() {
+    @Override
+    protected void setupTraces() {
 
         removeAllPlots();
 
         FrequencyPlot plot = null;
-        TraceList traceList = traceLists[0];
 
-        if (traceList == null) {
+        if (traceLists == null || traceLists[0] == null) {
             return;
         }
+
+        TraceList traceList = traceLists[0];
 
         int traceIndex = traceList.getTraceIndex(traceNames.get(0));
         Trace trace = traceList.getTrace(traceIndex);
@@ -173,7 +163,6 @@ public class FrequencyPanel extends TraceChartPanel {
 //            setXAxis(td);
             setYLabel(traceType, new String[]{"Frequency", "Count"});
             setBinsComponents(traceType);
-            setChartSetupDialog(currentSettings);
 
             getChartPanel().getChart().addPlot(plot);
         }

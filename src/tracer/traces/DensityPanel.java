@@ -50,6 +50,8 @@ public class DensityPanel extends JPanel implements Exportable {
 
     private TraceChartPanel currentPanel;
 
+    protected JLabel messageLabel = new JLabel("No data loaded");
+
     /**
      * Creates new FrequencyPanel
      */
@@ -57,13 +59,15 @@ public class DensityPanel extends JPanel implements Exportable {
         continuousDensityPanel = new ContinuousDensityPanel(frame);
         discreteDensityPanel = new DiscreteDensityPanel(frame);
 
+        setOpaque(false);
         setLayout(new BorderLayout());
+
+        add(messageLabel, BorderLayout.NORTH);
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
 
         if (traceLists != null) {
-//        barCount = 0;
             TraceType traceType = null;
             for (TraceList tl : traceLists) {
                 for (String traceName : traceNames) {
@@ -74,7 +78,7 @@ public class DensityPanel extends JPanel implements Exportable {
                             traceType = trace.getTraceType();
                         }
                         if (trace.getTraceType() != traceType) {
-                            setDensityPanel(null);
+                            setDensityPanel(null, "Statistics must be of the same type to display together");
                             return;
                         }
                     }
@@ -83,19 +87,23 @@ public class DensityPanel extends JPanel implements Exportable {
 
             if (traceType == TraceType.REAL) {
                 continuousDensityPanel.setTraces(traceLists, traceNames);
-                setDensityPanel(continuousDensityPanel);
+                setDensityPanel(continuousDensityPanel, null);
             } else {
                 discreteDensityPanel.setTraces(traceLists, traceNames);
-                setDensityPanel(discreteDensityPanel);
+                setDensityPanel(discreteDensityPanel, null);
             }
         }
     }
 
-    private void setDensityPanel(TraceChartPanel panel) {
+    private void setDensityPanel(TraceChartPanel panel, String message) {
         currentPanel = panel;
         removeAll();
         if (currentPanel != null) {
             add(currentPanel, BorderLayout.CENTER);
+        }
+        if (message != null) {
+            messageLabel.setText(message);
+            add(messageLabel, BorderLayout.NORTH);
         }
     }
 

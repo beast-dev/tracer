@@ -26,23 +26,20 @@
 package tracer.traces;
 
 import dr.app.gui.chart.ChartSetupDialog;
-import dr.app.gui.chart.DiscreteJChart;
 import dr.app.gui.chart.JChart;
 import dr.app.gui.chart.JChartPanel;
-import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 import jam.framework.Exportable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.List;
-import java.util.*;
+import java.awt.event.ActionEvent;
 
 /**
  * A shared code for the panel that displays a plot of traces,
  * such as most part of toolbar, and the chart panel.
- * {@link #setupToolBar(JFrame) abstract setupToolBar} makes sure
+ * {@link #createToolBar(JFrame) abstract createToolBar} makes sure
  * the customized toolbar is implemented in children classes.
  *
  * @author Andrew Rambaut
@@ -121,7 +118,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
     protected class Settings {
         // shared settings
-        ChartSetupDialog chartSetupDialog = null;
         int legendAlignment = 0;
         ColourByOptions colourBy = ColourByOptions.COLOUR_BY_TRACE;
         Paint[] palette = RAINBOW;
@@ -170,7 +166,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     protected JComboBox colourByCombo = new JComboBox(
             new String[]{"Trace", "Trace File", "All"}
     );
-    protected JButton chartSetupButton = new JButton("Axes...");
+    protected JButton chartSetupButton = new JButton("Setup...");
     protected JLabel messageLabel = new JLabel("No data loaded");
 
     protected JCheckBox showValuesCheckBox = new JCheckBox("Show values on above chart");
@@ -188,8 +184,8 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         setMinimumSize(new Dimension(300, 150));
         setLayout(new BorderLayout());
 
-        //JToolBar toolBar = setupToolBar(frame);
-        //addMainPanel(toolBar);
+        //JToolBar toolBar = createToolBar(frame);
+        //setupMainPanel(toolBar);
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
@@ -200,11 +196,14 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
     protected abstract JChartPanel getChartPanel();
 
+    protected abstract ChartSetupDialog getChartSetupDialog();
+
+    protected abstract Settings getSettings();
+
     /**
      * add components to main panel
-     * @param toolBar get from {@link #setupToolBar(JFrame, Settings) setupToolBar}
      */
-    protected void addMainPanel(JToolBar toolBar, boolean addMessageLabel) {
+    protected void setupMainPanel(JToolBar toolBar, boolean addMessageLabel) {
         if (addMessageLabel) {
             add(messageLabel, BorderLayout.NORTH);
         }
@@ -212,37 +211,46 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         add(getChartPanel(), BorderLayout.CENTER);
     }
 
-    protected void addMainPanel(JToolBar toolBar) {
-        addMainPanel(toolBar, true);
+    protected void setupMainPanel(JToolBar toolBar) {
+        setupMainPanel(toolBar, true);
     }
 
     /**
-     * Used in the constructor of the child class to customize toolbar
-     *
-     * @param frame
-     * @return
+     * Create a {@see JToolBar} toolBar
      */
-    protected abstract JToolBar setupToolBar(final JFrame frame);
-
-    /**
-     * Create {@see JToolBar} toolBar and add axes components
-     * @param frame
-     * @param currentSettings
-     * @return
-     */
-    protected JToolBar setupToolBar(final JFrame frame, final Settings currentSettings) {
+    protected JToolBar createToolBar() {
         JToolBar toolBar = new JToolBar();
         toolBar.setOpaque(false);
         toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
         toolBar.setFloatable(false);
+        return toolBar;
+    }
 
+    protected void addSetupButton(final JToolBar toolBar) {
         chartSetupButton.putClientProperty(
-                "Quaqua.Button.style", "placard"
+                "Quaqua.Button.style", "default"
         );
         chartSetupButton.setFont(UIManager.getFont("SmallSystemFont"));
         toolBar.add(chartSetupButton);
 
-        return toolBar;
+        chartSetupButton.addActionListener(
+                new java.awt.event.ActionListener() {
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        showChartSetupDialog();
+                    }
+                }
+        );
+    }
+
+    protected void showChartSetupDialog() {
+        ChartSetupDialog chartSetupDialog = getChartSetupDialog();
+
+        chartSetupDialog.showDialog(getChartPanel().getChart());
+
+        chartSetupDialog.applySettings(getChartPanel().getChart());
+
+        validate();
+        repaint();
     }
 
     /**
@@ -250,7 +258,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * but their listeners have to be added in the child class
      * @param toolBar
      */
-    protected void addBins(final JToolBar toolBar) {
+    protected void addBinsCombo(final JToolBar toolBar) {
         binsCombo.setFont(UIManager.getFont("SmallSystemFont"));
         binsCombo.setOpaque(false);
         labelBins = new JLabel("Bins:");
@@ -258,6 +266,16 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         labelBins.setLabelFor(binsCombo);
         toolBar.add(labelBins);
         toolBar.add(binsCombo);
+
+        binsCombo.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        getSettings().minimumBins = (Integer) binsCombo.getSelectedItem();
+                        setupTraces();
+                    }
+                }
+        );
     }
 
     /**
@@ -267,7 +285,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      *
      * @param toolBar
      */
-    protected void addLegend(final JToolBar toolBar) {
+    protected void addLegendCombo(final JToolBar toolBar) {
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
         JLabel label = new JLabel("Legend:");
@@ -287,18 +305,35 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         colourByCombo.setOpaque(false);
         toolBar.add(colourByCombo);
 
-        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+        legendCombo.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        getSettings().legendAlignment = legendCombo.getSelectedIndex();
+                        setLegend(getSettings().legendAlignment);
+                    }
+                }
+        );
+
+        colourByCombo.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        getSettings().colourBy = ColourByOptions.values()[colourByCombo.getSelectedIndex()];
+                        setupTraces();
+                    }
+                }
+        );
     }
 
-    //++++++ setup chart +++++++
+    protected abstract void setupTraces();
 
     /**
      * set legend given <code>Settings</code> which includes legend position and colours.
-     *
-     * @param currentSettings
      */
-    protected void setLegend(final JChart chart, final Settings currentSettings) {
-        switch (currentSettings.legendAlignment) {
+    private void setLegend( final int legendAlignment) {
+        final JChart chart = getChartPanel().getChart();
+        switch (legendAlignment) {
             case 0:
                 break;
             case 1:
@@ -326,18 +361,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                 chart.setLegendAlignment(SwingConstants.SOUTH_EAST);
                 break;
         }
-        chart.setShowLegend(currentSettings.legendAlignment != 0);
-    }
-
-    /**
-     * set <code>ChartSetupDialog</code> about axes scales.
-     *
-     * @param currentSettings
-     */
-    protected void setChartSetupDialog(Settings currentSettings) {
-        if (currentSettings.chartSetupDialog != null) {
-            currentSettings.chartSetupDialog.applySettings(getChartPanel().getChart());
-        }
+        chart.setShowLegend(legendAlignment != 0);
     }
 
     protected void setXLabel(String xLabel) {

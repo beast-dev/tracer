@@ -47,6 +47,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
     private final DiscreteJChart densityChart;
     private final JChartPanel densityChartPanel;
 
+    private ChartSetupDialog chartSetupDialog = null;
+
     private class Settings extends TraceChartPanel.Settings {
         int barCount = 0;
     }
@@ -60,8 +62,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         super(frame);
         densityChart = new DiscreteJChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         densityChartPanel = new JChartPanel(densityChart, "","","");
-        JToolBar toolBar = setupToolBar(frame);
-        addMainPanel(toolBar);
+        JToolBar toolBar = createToolBar(frame);
+        setupMainPanel(toolBar);
     }
 
     protected JChart getChart() {
@@ -72,55 +74,23 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         return densityChartPanel;
     }
 
-    protected JToolBar setupToolBar(final JFrame frame) {
-        JToolBar toolBar = super.setupToolBar(frame, currentSettings);
+    protected ChartSetupDialog getChartSetupDialog() {
+        if (chartSetupDialog == null) {
+            chartSetupDialog = new ChartSetupDialog(frame, false, false, false, false,
+                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
+        }
+        return chartSetupDialog;
+    }
 
-        addBins(toolBar);
-        binsCombo.setSelectedItem(currentSettings.minimumBins);
+    @Override
+    protected TraceChartPanel.Settings getSettings() {
+        return currentSettings;
+    }
 
-//        JLabel label = new JLabel("Display:");
-//        label.setFont(UIManager.getFont("SmallSystemFont"));
-//        label.setLabelFor(displayCombo);
-//        toolBar.add(label);
-//        displayCombo.setFont(UIManager.getFont("SmallSystemFont"));
-//        displayCombo.setOpaque(false);
-//        toolBar.add(displayCombo);
+    protected JToolBar createToolBar(final JFrame frame) {
+        JToolBar toolBar = super.createToolBar();
 
-        addLegend(toolBar);
-
-        // +++++++ Listener ++++++++
-        chartSetupButton.addActionListener(
-                new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        if (currentSettings.chartSetupDialog == null) {
-                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, true, false,
-                                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
-                        }
-
-                        currentSettings.chartSetupDialog.showDialog(getChart());
-                        validate();
-                        repaint();
-                    }
-                }
-        );
-
-        legendCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-                        currentSettings.legendAlignment = legendCombo.getSelectedIndex();
-                        setupTraces();
-                    }
-                }
-        );
-
-        colourByCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-                        currentSettings.colourBy = ColourByOptions.values()[colourByCombo.getSelectedIndex()];
-                        setupTraces();
-                    }
-                }
-        );
+        addLegendCombo(toolBar);
 
 //        displayCombo.addItemListener(
 //                new java.awt.event.ItemListener() {
@@ -144,15 +114,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
     public void setTraces(TraceList[] traceLists, List<String> traceNames) {
         super.setTraces(traceLists, traceNames);
 
-//        displayCombo.setSelectedIndex(currentSettings.type == Type.KDE ? 0 : (currentSettings.type == Type.HISTOGRAM ? 1 : 2));
-//        binsCombo.setEnabled(currentSettings.showHistogram);
-
-//        binsCombo.setSelectedItem(currentSettings.minimumBins);
-//        relativeDensityCheckBox.setSelected(currentSettings.relativeDensity);
         legendCombo.setSelectedIndex(currentSettings.legendAlignment);
         colourByCombo.setSelectedIndex(currentSettings.colourBy.ordinal());
-//        kdeCheckBox.setSelected(currentSettings.showKDE);
-//        kdeSetupButton.setEnabled(currentSettings.showKDE);
 
 
         if (traceLists != null) {
@@ -179,16 +142,12 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                 }
             }
 
-            // only enable controls relevant to continuous densities...
-//            displayCombo.setEnabled(traceType == TraceType.REAL);
-//
-//            labelBins.setEnabled(traceType == TraceType.REAL);
-//            binsCombo.setEnabled(traceType == TraceType.REAL && currentSettings.type == Type.HISTOGRAM);
         }
 
         setupTraces();
     }
 
+    @Override
     protected void setupTraces() {
         // return if no traces selected
         if (!removeAllPlots(false)) return;
@@ -259,8 +218,6 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
         setXLabelMultipleTraces();
         setYLabel(traceType, new String[]{"Density", "Probability"});
-        setLegend(getChart(), currentSettings);
-        setChartSetupDialog(currentSettings);
 
         validate();
         repaint();

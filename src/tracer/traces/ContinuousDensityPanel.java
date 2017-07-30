@@ -47,11 +47,16 @@ import java.util.List;
 public class ContinuousDensityPanel extends TraceChartPanel {
     private static final int DEFAULT_KDE_BINS = 5000;
 
-    private final JParallelChart violinChart;
-    private final JChartPanel violinChartPanel;
-
     private final JChart densityChart;
     private final JChartPanel densityChartPanel;
+    private final JToolBar densityToolBar;
+    private final ChartSetupDialog densityChartSetupDialog;
+
+    private final JParallelChart violinChart;
+    private final JChartPanel violinChartPanel;
+    private final JToolBar violinToolBar;
+    private final ChartSetupDialog violinChartSetupDialog;
+
 
     private enum Type {
         KDE,
@@ -72,7 +77,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     }
 
     private Settings currentSettings = new Settings();
-//    private Map<String, Settings> settingsMap = new HashMap<String, Settings>();
 
     //+++++ private field +++++
     private JComboBox displayCombo = new JComboBox(
@@ -92,14 +96,34 @@ public class ContinuousDensityPanel extends TraceChartPanel {
      */
     public ContinuousDensityPanel(final JFrame frame) {
         super(frame);
+
+        setOpaque(false);
+        
         densityChart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         densityChartPanel = new JChartPanel(densityChart, "","","");
+        densityToolBar = createDensityToolBar();
+        densityChartSetupDialog = new ChartSetupDialog(frame, true, false, true, false,
+                Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
 
         violinChart = new JParallelChart(false, new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS));
         violinChartPanel = new JChartPanel(violinChart, "","","");
+        violinToolBar = createViolinToolBar();
+        violinChartSetupDialog = new ChartSetupDialog(frame, false, true, false, true,
+                Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK);
 
-        JToolBar toolBar = setupToolBar(frame);
-        addMainPanel(toolBar);
+        JToolBar topToolBar = createTopToolBar();
+        
+        add(topToolBar, BorderLayout.NORTH);
+        add(getToolBar(), BorderLayout.SOUTH);
+        add(getChartPanel(), BorderLayout.CENTER);
+    }
+
+    protected JToolBar getToolBar() {
+        if (currentSettings.type == Type.VIOLIN) {
+            return violinToolBar;
+        } else {
+            return densityToolBar;
+        }
     }
 
     protected JChartPanel getChartPanel() {
@@ -110,125 +134,73 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         }
     }
 
-    protected JToolBar setupToolBar(final JFrame frame) {
-        JToolBar toolBar = super.setupToolBar(frame, currentSettings);
-
-        addBins(toolBar);
-        binsCombo.setSelectedItem(currentSettings.minimumBins);
+    private JToolBar createTopToolBar() {
+        JToolBar topToolBar = createToolBar();
 
         JLabel label = new JLabel("Display:");
         label.setFont(UIManager.getFont("SmallSystemFont"));
         label.setLabelFor(displayCombo);
-        toolBar.add(label);
+        topToolBar.add(label);
         displayCombo.setFont(UIManager.getFont("SmallSystemFont"));
         displayCombo.setOpaque(false);
-        toolBar.add(displayCombo);
-
-        addLegend(toolBar);
-
-        // +++++++ Listener ++++++++
-        binsCombo.addItemListener(
-                new java.awt.event.ItemListener() {
-                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-                        currentSettings.minimumBins = (Integer) binsCombo.getSelectedItem();
-                        setupTraces();
-                    }
-                }
-        );
-
-        chartSetupButton.addActionListener(
-                new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        if (currentSettings.chartSetupDialog == null) {
-                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, true, false,
-                                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
-                        }
-
-                        currentSettings.chartSetupDialog.showDialog(getChartPanel().getChart());
-                        validate();
-                        repaint();
-                    }
-                }
-        );
-
-        legendCombo.addActionListener(
-                new java.awt.event.ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        currentSettings.legendAlignment = legendCombo.getSelectedIndex();
-                        setupTraces();
-                    }
-                }
-        );
-
-        colourByCombo.addActionListener(
-                new java.awt.event.ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        currentSettings.colourBy = ColourByOptions.values()[colourByCombo.getSelectedIndex()];
-                        setupTraces();
-                    }
-                }
-        );
-
-//        relativeDensityCheckBox.addItemListener(
-//                new java.awt.event.ItemListener() {
-//                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-//                        currentSettings.relativeDensity = relativeDensityCheckBox.isSelected();
-//                        setupTraces();
-//                    }
-//                }
-//        );
-//
-//        solidCheckBox.addItemListener(
-//                new java.awt.event.ItemListener() {
-//                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-//                        currentSettings.drawSolid = solidCheckBox.isSelected();
-//                        setupTraces();
-//                    }
-//                }
-//        );
+        topToolBar.add(displayCombo);
 
         displayCombo.addActionListener(
                 new java.awt.event.ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         switch (displayCombo.getSelectedIndex()) {
-                            case 0: currentSettings.type = Type.KDE; break;
-                            case 1: currentSettings.type = Type.HISTOGRAM; break;
-                            case 2: currentSettings.type = Type.VIOLIN; break;
-                            default: throw new RuntimeException("Unknown display type");
+                            case 0:
+                                currentSettings.type = Type.KDE;
+                                break;
+                            case 1:
+                                currentSettings.type = Type.HISTOGRAM;
+                                break;
+                            case 2:
+                                currentSettings.type = Type.VIOLIN;
+                                break;
+                            default:
+                                throw new RuntimeException("Unknown display type");
                         }
                         binsCombo.setEnabled(currentSettings.type == Type.HISTOGRAM);
                         setupTraces();
                     }
                 }
         );
+        return topToolBar;
+    }
 
-//        kdeCheckBox.addItemListener(
-//                new java.awt.event.ItemListener() {
-//                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-//                        currentSettings.showKDE = kdeCheckBox.isSelected();
-//                        kdeSetupButton.setEnabled(currentSettings.showKDE);
-//                        setupTraces();
-//                    }
-//                }
-//        );
-//        kdeSetupButton.addActionListener(
-//                new java.awt.event.ActionListener() {
-//                    public void actionPerformed(ActionEvent actionEvent) {
-//                        if (currentSettings.kdeSetupDialog == null) {
-//                            currentSettings.kdeSetupDialog = new KDESetupDialog(frame, true, false,
-//                                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
-//                        }
-//
-//                        currentSettings.kdeSetupDialog.showDialog(densityChart);
-//                        setupTraces();
-//                    }
-//                }
-//        );
+    private JToolBar createDensityToolBar() {
+        JToolBar toolBar = super.createToolBar();
+
+        addSetupButton(toolBar);
+        addBinsCombo(toolBar);
+        addLegendCombo(toolBar);
 
         return toolBar;
+    }
+
+    private JToolBar createViolinToolBar() {
+        JToolBar toolBar = super.createToolBar();
+
+        addSetupButton(toolBar);
+        addLegendCombo(toolBar);
+
+        return toolBar;
+    }
+
+    @Override
+    protected ChartSetupDialog getChartSetupDialog() {
+        if (currentSettings.type == Type.VIOLIN) {
+            return violinChartSetupDialog;
+        } else {
+            return densityChartSetupDialog;
+        }
+    }
+
+    @Override
+    protected TraceChartPanel.Settings getSettings() {
+        return currentSettings;
     }
 
     public void setTraces(TraceList[] traceLists, List<String> traceNames) {
@@ -288,13 +260,8 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                 }
             }
 
-            // only enable controls relevant to continuous densities...
-            displayCombo.setEnabled(traceType == TraceType.REAL);
-            relativeDensityCheckBox.setEnabled(traceType == TraceType.REAL);
-            labelBins.setEnabled(traceType == TraceType.REAL);
-            binsCombo.setEnabled(traceType == TraceType.REAL && currentSettings.type == Type.HISTOGRAM);
-//        kdeCheckBox.setEnabled(traceType == TraceFactory.TraceType.DOUBLE);
-//        kdeSetupButton.setEnabled(traceType == TraceFactory.TraceType.DOUBLE);
+//            labelBins.setEnabled(currentSettings.type == Type.HISTOGRAM);
+//            binsCombo.setEnabled(currentSettings.type == Type.HISTOGRAM);
         }
 
         setupTraces();
@@ -394,7 +361,9 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         // swap in the correct chart panel
         BorderLayout layout = (BorderLayout)getLayout();
         remove(layout.getLayoutComponent(BorderLayout.CENTER));
+        remove(layout.getLayoutComponent(BorderLayout.SOUTH));
         add(getChartPanel(), BorderLayout.CENTER);
+        add(getToolBar(), BorderLayout.SOUTH);
         validate();
         repaint();
 
@@ -404,8 +373,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         } else {
             setYLabel(traceType, new String[]{"Density", "Probability"});
         }
-        setLegend(densityChart, currentSettings);
-        setChartSetupDialog(currentSettings);
 
         validate();
         repaint();

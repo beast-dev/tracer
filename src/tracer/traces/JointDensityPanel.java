@@ -70,6 +70,8 @@ public class JointDensityPanel extends TraceChartPanel {
     private JChart traceChart;
     private final JChartPanel chartPanel;
 
+    private ChartSetupDialog chartSetupDialog = null;
+
     public enum CategoryTableProbabilityType {
         JOINT_PROBABILITY("Joint Probability"), CONDITIONAL_PROBABILITY_X("Conditional Probability (?|row)"),
         CONDITIONAL_PROBABILITY_Y("Conditional Probability (?|column)"), COUNT("Count");
@@ -94,20 +96,34 @@ public class JointDensityPanel extends TraceChartPanel {
         traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS),
                 new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
-        JToolBar toolBar = setupToolBar(frame);
-        addMainPanel(toolBar);
+        JToolBar toolBar = createToolBar(frame);
+        setupMainPanel(toolBar);
     }
 
     public JChartPanel getChartPanel() {
         return chartPanel;
     }
 
+    @Override
+    protected ChartSetupDialog getChartSetupDialog() {
+        if (chartSetupDialog == null) {
+            chartSetupDialog = new ChartSetupDialog(frame, true, true, true, true,
+                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
+        }
+        return chartSetupDialog;
+    }
+
+    @Override
+    protected TraceChartPanel.Settings getSettings() {
+        return null;
+    }
+
     protected BoxPlotChart getChart() {
         return (BoxPlotChart) traceChart;
     }
 
-    protected JToolBar setupToolBar(final JFrame frame) {
-        JToolBar toolBar = super.setupToolBar(frame, currentSettings);
+    protected JToolBar createToolBar(final JFrame frame) {
+        JToolBar toolBar = super.createToolBar();
 
         sampleCheckBox.setOpaque(false);
         sampleCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
@@ -133,21 +149,6 @@ public class JointDensityPanel extends TraceChartPanel {
         toolBar.add(defaultNumberFormatCheckBox);
 
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
-
-        chartSetupButton.addActionListener(
-                new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        if (currentSettings.chartSetupDialog == null) {
-                            currentSettings.chartSetupDialog = new ChartSetupDialog(frame, true, true,
-                                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK);
-                        }
-
-                        currentSettings.chartSetupDialog.showDialog(getChart());
-                        validate();
-                        repaint();
-                    }
-                }
-        );
 
         ActionListener listener = new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent ev) {

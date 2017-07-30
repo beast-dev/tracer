@@ -43,7 +43,9 @@ import java.awt.*;
 public class IntervalsPanel extends TraceChartPanel {
 
     private final BoxPlotChart traceChart;
-      private final JChartPanel chartPanel;
+    private final JChartPanel chartPanel;
+
+    private ChartSetupDialog chartSetupDialog = null;
 
     /**
      * Creates new IntervalsPanel
@@ -53,8 +55,8 @@ public class IntervalsPanel extends TraceChartPanel {
         traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
 
-        JToolBar toolBar = setupToolBar(frame);
-        addMainPanel(toolBar);
+        JToolBar toolBar = createToolBar();
+        setupMainPanel(toolBar);
     }
 
     public JChartPanel getChartPanel() {
@@ -62,13 +64,27 @@ public class IntervalsPanel extends TraceChartPanel {
     }
 
     @Override
-    protected JToolBar setupToolBar(JFrame frame) {
+    protected ChartSetupDialog getChartSetupDialog() {
+        if (chartSetupDialog == null) {
+            chartSetupDialog = new ChartSetupDialog(frame, false, true, false, true,
+                    Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
+        }
+        return chartSetupDialog;
+    }
+
+    @Override
+    protected TraceChartPanel.Settings getSettings() {
+        return null;
+    }
+
+    @Override
+    protected JToolBar createToolBar() {
         setOpaque(false);
         setMinimumSize(new Dimension(300, 150));
         return null;
     }
 
-    protected void addMainPanel(JToolBar toolBar) {
+    protected void setupMainPanel(JToolBar toolBar) {
         setLayout(new BorderLayout());
         add(chartPanel, BorderLayout.CENTER);
     }
@@ -87,7 +103,7 @@ public class IntervalsPanel extends TraceChartPanel {
         setupTraces();
     }
 
-    private void setupTraces() {
+    protected void setupTraces() {
         for (TraceList traceList : traceLists) {
             for (String traceName : traceNames) {
                 int index = traceList.getTraceIndex(traceName);

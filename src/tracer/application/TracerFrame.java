@@ -204,7 +204,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         controlPanel1.add(reloadButton);
         controlPanel1.setFloatable(false);
         controlPanel1.setBorder(BorderFactory.createEmptyBorder());
-        
+
         topPanel = new JPanel(new BorderLayout(0, 0));
         topPanel.setBorder(new BorderUIResource.EmptyBorderUIResource(new java.awt.Insets(0, 0, 6, 0)));
         topPanel.add(new JLabel("Trace Files:"), BorderLayout.NORTH);
