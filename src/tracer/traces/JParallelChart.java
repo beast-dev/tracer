@@ -59,9 +59,8 @@ public class JParallelChart extends JChart {
     public void addPlot(Plot plot) {
         plot.setAxes(xAxis, yAxis);
         plots.add(plot);
-        parallelAxis.setAxisFlags(Axis.AT_VALUE, Axis.AT_VALUE);
+        // set the range manually to the number of plots
         parallelAxis.setRange(1.0, getPlotCount());
-//        parallelAxis.setManualAxis(1.0, getPlotCount(), 1, 1);
         recalibrate();
         repaint();
     }
