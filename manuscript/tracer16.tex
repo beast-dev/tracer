@@ -62,10 +62,9 @@ and
 
 \section*{Introduction}
 
-Bayesian inference of phylogeny \citep{huelsenbeck2001bayesian, felsenstein2004inferring,yang2006computational} has been a popular approach to reconstruct the evolutionary history and discover the evolutionary relationships among organisms that could come from genes, genomes, individuals or species.
-The statistical framework is based on the posterior probability of phylogenetic trees given the data, and currently takes the advantage of Markov chain Monte Carlo (MCMC) to promote the computational speed of Bayesian estimation to reach an approximated optimisation.
-The posterior summaries, as well as as scientifically relevant marginalisation, %TODO
-are therefore critically important for understanding a Bayesian phylogenetic analysis.
+Bayesian inference of phylogeny \citep{huelsenbeck2001bayesian, yang2006computational, DrummondBouckaert2015} has been a popular approach to reconstruct the evolutionary history and discover the evolutionary relationships among taxa, whether genes, genomes, individuals or species.
+Bayesian inference can be used to produce the posterior probability distribution over the space of phylogenetic trees given the data. Most major software packages currently used employ Markov chain Monte Carlo (MCMC) to produce a sample from the posterior distribution.
+Visualising, summarizing and marginalising these posterior samples is necessary for evaluating and reporting a Bayesian phylogenetic analysis.
 %However, the full posterior distribution is high-dimensional and often difficult to visualise. 
 We then develop a software package Tracer (version 1.6) for this purpose, which analyses Bayesian MCMC log files containing the list of parameters whose values sampled from the chain. 
 It can be used to analyse runs of BEAST \citep{drummond2007beast,drummond2012bayesian}, BEAST2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison},  and possibly other MCMC programs.
