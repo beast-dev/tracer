@@ -67,7 +67,7 @@ Bayesian inference can be used to produce the posterior probability distribution
 Visualising, summarizing and marginalising these posterior samples is necessary for evaluating and reporting a Bayesian phylogenetic analysis.
 %However, the full posterior distribution is high-dimensional and often difficult to visualise.
 We then develop a software package Tracer (version 1.6) for this purpose, which analyses Bayesian MCMC log files containing the list of parameters whose values sampled from the chain.
-It can be used to analyse runs of BEAST \citep{drummond2007beast,drummond2012bayesian}, BEAST2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison},  and possibly other MCMC programs.
+It can be used to analyse runs of BEAST \citep{drummond2012bayesian}, BEAST2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison},  and possibly other MCMC programs.
 In addition, Tracer's demographic reconstruction functions are utilised to redraw the distribution of effective population sizes over time if an available demographic model was involved in the analysis.
 
 
@@ -80,7 +80,9 @@ In addition, Tracer's demographic reconstruction functions are utilised to redra
 \section*{Design and Implementation}
 
 \begin{figure}[ht]
-\includegraphics[width=.38\textwidth]{./figures/tracer.pdf}
+\centerline{
+\includegraphics[width=0.45\textwidth]{./figures/tracer.pdf}
+}
 \caption{The system design of Tracer 1.6}
 \label{fig:tracer}
 \end{figure}
@@ -149,7 +151,7 @@ Tracer recently offers a fairly general solution of looking at conditional poste
 
 \subsection*{Calibrating the tree to estimate TMRCA}
 
-Figure~\ref{fig:4tabs} demonstrates a snapshot of posterior summaries in Tracer for a BEAST \citep{drummond2007beast} run created from a 898 bp alignment of sequences of 12 species of primates (http://beast.bio.ed.ac.uk/tutorials?). %data citation
+Figure~\ref{fig:4tabs} demonstrates a snapshot of posterior summaries in Tracer for a BEAST \citep{drummond2012bayesian} run created from a 898 bp alignment of sequences of 12 species of primates (http://beast.bio.ed.ac.uk/tutorials?). %data citation
 
 %using HKY + $\Gamma_4$ model, uncorrelated lognormal relaxed molecular clock, and Yule prior on the tree.
 In this analysis, we furthermore specified three calibrations on the phylogenetic tree to estimate time to the most recent common ancestor (TMRCA) based on our prior fossil knowledge.
@@ -185,7 +187,7 @@ Figure~\ref{fig:4tabs}.d illustrates the traces of these four parameters against
 
 In the second example, there are two analyses conducted using a H3N2 data set that is the subset of a comprehensive influenza A virus data set spanning several epidemic seasons in the New York state. The data contains a  ?bp alignment of 165 Hemagglutinin genes collected between about 1999 and 2004 \citep{rambaut2008genomic}, explicating H3N2 spreading during three epidemic seasons.
 
-To be able to reconstruct Bayesian coalescent skygrid \citep{minin2008smooth} plot, we exploit Tracer to exact past population dynamics from both MCMC log and tree log produced by a BEAST \citep{drummond2007beast} run.
+To be able to reconstruct Bayesian coalescent skygrid \citep{minin2008smooth} plot, we exploit Tracer to exact past population dynamics from both MCMC log and tree log produced by a BEAST \citep{drummond2012bayesian} run.
 The HKY + $\Gamma_4$ model, strict molecular clock, and Bayesian skygrid tree prior was respectively setup in the run, where a grid of 50 intervals over 5 years estimating 10 population sizes by year was constructed in the skygrid prior.
 
 %What type of dynamics does the H3N2 skyride plot suggest?
@@ -219,77 +221,77 @@ Future development directions for Tracer focus on \ldots
 
 
 
-\section*{Old Text}
-
-%You can also select the "Demographic Analysis" from the Analysis menu - This plots the distribution of demographic population sizes over time for a number of models (constant size, exponential growth \& logistic growth) that are available in BEAST. This involves you selecting the traces for each parameter of the model. You should only select the model that was actually run under BEAST (e.g., if you ran an exponential growth model, you shouldn't plot the constant population size model).
-
-%The "Analysis" menu also contains options for performing Bayesian Skyline reconstructions and for calculating Bayes Factors between runs.
-
-Feature list:
-\begin{itemize}
-\item KDEs
-\item cheap marginal likelihood estimators
-\item demographic trajectory reconstruction
-\end{itemize}
-
-%Model selection HME and AICM have been removed
-New features:
-\begin{itemize}
-\item Three trace types: real, integer, string
-\item Kernel density estimates
-\item Conditional posterior distribution
-%\item HME
-%\item AICM
-\end{itemize}
-
-%\begin{figure}[H]
-%\includegraphics[width=.5\textwidth]{./figures/comp-95HPD.pdf}
-%\caption{The comparison of  95\% HPD intervals from multi-trace}
-%\label{fig:comp95HPD}
-%\end{figure}
-
-%\begin{figure}[H]
-%\includegraphics[width=.5\textwidth]{./figures/jointPrInt.png}
-%\caption{The Joint probability table of two integer traces}
-%\label{fig:int:jointpr}
-%\end{figure}
-
-%\begin{figure}[ht]
-%\includegraphics[width=.5\textwidth]{./figures/frequency.pdf}
-%\caption{A frequency distribution for a continuous trace}
-%\label{fig:freq}
-%\end{figure}
-%\begin{figure}[ht]
-%\includegraphics[width=.5\textwidth]{./figures/multiKDE.pdf}
-%\caption{KDE of multiple traces}
-%\label{fig:multiKDE}
-%\end{figure}
-%\begin{figure}[ht]
-%\includegraphics[width=.5\textwidth]{./figures/joint-marginal.pdf}
-%\caption{The joint-marginal distribution of two selected traces}
-%\label{fig:trace}
-%\end{figure}
-%\begin{figure}[ht]
-%\includegraphics[width=.5\textwidth]{./figures/trace.pdf}
-%\caption{The selected traces against state}
-%\label{fig:trace}
-%\end{figure}
-
-
-\subsubsection*{Diagnostics:} Blah blah
-
-\subsubsection*{Demographic reconstruction:}
-
-%\subsubsection*{Model selection:}
-
-\subsubsection*{Conditional posterior distribution:}
+%\section*{Old Text}
+%
+%%You can also select the "Demographic Analysis" from the Analysis menu - This plots the distribution of demographic population sizes over time for a number of models (constant size, exponential growth \& logistic growth) that are available in BEAST. This involves you selecting the traces for each parameter of the model. You should only select the model that was actually run under BEAST (e.g., if you ran an exponential growth model, you shouldn't plot the constant population size model).
+%
+%%The "Analysis" menu also contains options for performing Bayesian Skyline reconstructions and for calculating Bayes Factors between runs.
+%
+%Feature list:
+%\begin{itemize}
+%\item KDEs
+%\item cheap marginal likelihood estimators
+%\item demographic trajectory reconstruction
+%\end{itemize}
+%
+%%Model selection HME and AICM have been removed
+%New features:
+%\begin{itemize}
+%\item Three trace types: real, integer, string
+%\item Kernel density estimates
+%\item Conditional posterior distribution
+%%\item HME
+%%\item AICM
+%\end{itemize}
+%
+%%\begin{figure}[H]
+%%\includegraphics[width=.5\textwidth]{./figures/comp-95HPD.pdf}
+%%\caption{The comparison of  95\% HPD intervals from multi-trace}
+%%\label{fig:comp95HPD}
+%%\end{figure}
+%
+%%\begin{figure}[H]
+%%\includegraphics[width=.5\textwidth]{./figures/jointPrInt.png}
+%%\caption{The Joint probability table of two integer traces}
+%%\label{fig:int:jointpr}
+%%\end{figure}
+%
+%%\begin{figure}[ht]
+%%\includegraphics[width=.5\textwidth]{./figures/frequency.pdf}
+%%\caption{A frequency distribution for a continuous trace}
+%%\label{fig:freq}
+%%\end{figure}
+%%\begin{figure}[ht]
+%%\includegraphics[width=.5\textwidth]{./figures/multiKDE.pdf}
+%%\caption{KDE of multiple traces}
+%%\label{fig:multiKDE}
+%%\end{figure}
+%%\begin{figure}[ht]
+%%\includegraphics[width=.5\textwidth]{./figures/joint-marginal.pdf}
+%%\caption{The joint-marginal distribution of two selected traces}
+%%\label{fig:trace}
+%%\end{figure}
+%%\begin{figure}[ht]
+%%\includegraphics[width=.5\textwidth]{./figures/trace.pdf}
+%%\caption{The selected traces against state}
+%%\label{fig:trace}
+%%\end{figure}
+%
+%
+%\subsubsection*{Diagnostics:} Blah blah
+%
+%\subsubsection*{Demographic reconstruction:}
+%
+%%\subsubsection*{Model selection:}
+%
+%\subsubsection*{Conditional posterior distribution:}
 
 %Fairly general solution to looking at conditional posterior distributions;
 
 %Specifically, support for BSSVS forms of model averaging, in which some parameters are only in the likelihood when their submodel is "indicated" by some indicator function that is usually a discrete, integer or boolean variable. In that case the posterior of the parameter should not include the states when it was sampled only in the prior because the submodel it belonged to was "turned off". This is relevant for EBSP, Random Local Clocks model, microsatellite model averaging and relaxed clock model averaging methods all from my group in last couple of years. Also relevant for BSSVS in phylogeography as well depending on how the state is logged.
 %\section*{Taken from the Tracer website}
 
-%Tracer is a program for analysing the trace files generated by Bayesian MCMC runs (that is, the continuous parameter values sampled from the chain). It can be used to analyse runs of BEAST \citep{drummond2007beast,drummond2012bayesian}, BEAST2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison} and possibly other MCMC programs.
+%Tracer is a program for analysing the trace files generated by Bayesian MCMC runs (that is, the continuous parameter values sampled from the chain). It can be used to analyse runs of BEAST \citep{drummond2012bayesian,drummond2012bayesian}, BEAST2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison} and possibly other MCMC programs.
 
 %Although Tracer can be used with programs other than BEAST, users may find it useful to join the BEAST users mailing list. This is used to announce new versions and advise users about bugs and problems.
 
