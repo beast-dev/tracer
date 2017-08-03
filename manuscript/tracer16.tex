@@ -62,13 +62,18 @@ and
 
 \section*{Introduction}
 
-Bayesian inference of phylogeny \citep{huelsenbeck2001bayesian, yang2006computational, DrummondBouckaert2015} has been a popular approach to reconstruct the evolutionary history and discover the evolutionary relationships among taxa, whether genes, genomes, individuals or species.
-Bayesian inference can be used to produce the posterior probability distribution over the space of phylogenetic trees given the data. Most major software packages currently used employ Markov chain Monte Carlo (MCMC) to produce a sample from the posterior distribution.
-Visualising, summarizing and marginalising these posterior samples is necessary for evaluating and reporting a Bayesian phylogenetic analysis.
+Bayesian inference of phylogeny using Markov chain Monte Carlo (MCMC) \citep{rannala1996probability,mau1999bayesian} flourishes as a popular approach to uncover the evolutionary relationships among taxa, whether genes, genomes, individuals or species.
+MCMC approaches generate samples of model parameter values including the phylogenetic tree drawn from their posterior distribution given molecular sequence data.
+Visualising, tabulating and marginalising these samples is critical for approximating the posterior quantities of interest that one reports in a Bayesian phylogenetic analysis.
 %However, the full posterior distribution is high-dimensional and often difficult to visualise.
-We then develop a software package Tracer (version 1.6) for this purpose, which analyses Bayesian MCMC log files containing the list of parameters whose values sampled from the chain.
-It can be used to analyse runs of BEAST \citep{drummond2012bayesian}, BEAST2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison},  and possibly other MCMC programs.
-In addition, Tracer's demographic reconstruction functions are utilised to redraw the distribution of effective population sizes over time if an available demographic model was involved in the analysis.
+To facilitate this task, we develop the Tracer (version 1.6) software package that parses MCMC log files of samples to interactively explore the high-dimensional posterior distribution.
+%
+%containing the list of parameters whose values sampled from the chain.
+Tracer works automatically with sample output from
+%It can be used to analyse runs of
+BEAST 1 \citep{drummond2012bayesian}, BEAST 2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison} and possibly other MCMC programs from other domains.
+
+(move to somewhere else) In addition, Tracer's demographic reconstruction functions are utilised to redraw the distribution of effective population sizes over time if an available demographic model was involved in the analysis.
 
 
 %\begin{itemize}
