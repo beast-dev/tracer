@@ -84,13 +84,14 @@ BEAST 1 \citep{drummond2012bayesian}, BEAST 2 \citep{bouckaert2014beast2}, MrBay
 
 \section*{Design and Implementation}
 
-\begin{figure}[ht]
-\centerline{
-\includegraphics[width=0.45\textwidth]{./figures/tracer.pdf}
-}
-\caption{The system design of Tracer 1.6}
-\label{fig:tracer}
-\end{figure}
+% MAS: We need to limit the number of figures
+%\begin{figure}[ht]
+%\centerline{
+%\includegraphics[width=0.45\textwidth]{./figures/tracer.pdf}
+%}
+%\caption{The system design of Tracer 1.6}
+%\label{fig:tracer}
+%\end{figure}
 
 Tracer is able to analyse either a single MCMC log or combine the shared traces from multiple logs as designed in Figure~\ref{fig:tracer}.
 The list of traces in each log are created from the sampling parameters logged during a MCMC process, which include their statistical summaries from their values at all states logged.
@@ -105,7 +106,10 @@ The integer is dealing with quantitative discrete variables, and the categorical
 The multiple traces can be selected as shown in Figure~\ref{fig:multitrace}, which will overlay the plots for the different traces allowing comparisons to be made. The multiple trace files can be similarly selected as well to compare different runs. If multiple trace files have the same trace names,  then a ``Combined'' trace will automatically appear, which can be selected as well as the individual trace files.
 
 \begin{figure}[ht]
-\includegraphics[width=.5\textwidth]{./figures/multitrace.png}
+%\includegraphics[width=.5\textwidth]{./figures/multitrace.png}
+\subfigure[Multiple traces]{\includegraphics[width=0.46\textwidth]{./figures/multitrace.png}}
+\subfigure[TangHuLu chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/tanghulu.pdf}}
+\subfigure[boxplot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/boxplot.pdf}}
 \caption{A comparison of multiple traces}
 \label{fig:multitrace}
 \end{figure}
@@ -129,12 +133,12 @@ In addition to illustrating joint-marginal distribution between two continuous t
 
 Furthermore, box-and-whisker plots are used to display the joint-marginal distribution between one continuous trace and one integer or categorical trace as shown in Figure~\ref{fig:tanghulu}.b.
 
-\begin{figure}[ht]
-\subfigure[TangHuLu chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/tanghulu.pdf}}
-\subfigure[boxplot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/boxplot.pdf}}
-\caption{Visualisation of joint-marginal distribution (a) between two integer or categorical traces using TangHuLu chart, and (b) between one continuous trace and one integer or categorical trace using box-and-whisker plot.}
-\label{fig:tanghulu}
-\end{figure}
+%\begin{figure}[ht]
+%\subfigure[TangHuLu chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/tanghulu.pdf}}
+%\subfigure[boxplot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/boxplot.pdf}}
+%\caption{Visualisation of joint-marginal distribution (a) between two integer or categorical traces using TangHuLu chart, and (b) between one continuous trace and one integer or categorical trace using box-and-whisker plot.}
+%\label{fig:tanghulu}
+%\end{figure}
 
 A key feature of Tracer lies in its ability to link together samples from quantitative random variable log files and tree log files.
 This linkage is not available in other popular post-processing MCMC software, such as coda \citep{plummer2006coda} and AWTY \citep{nylander2007awty}, and enables users to approximate the posterior distribution of scientifically relevant quantities that are functions of both the tree and other quantitative measures.
@@ -205,8 +209,12 @@ According to Tracer's skygrid plot in Figure~\ref{fig:flu}.a, the changing patte
 
 \begin{figure}[ht]
 %\includegraphics[width=.5\textwidth]{./figures/fluBSP.pdf}
-\subfigure[Bayesian coalescent skygrid]{\includegraphics[width = .23\textwidth]{./figures/fig21.png}}
-\subfigure[Lineages through time]{\includegraphics[width = .23\textwidth]{./figures/fluLTT.pdf}}
+%\subfigure[Bayesian coalescent skygrid]{\includegraphics[width = .23\textwidth]{./figures/fig21.png}}
+\centerline{
+\includegraphics[width=0.4\textwidth]{./figures/fig21.png}
+}
+% MAS: Please use vector-graphic format, like PDF
+%\subfigure[Lineages through time]{\includegraphics[width = .23\textwidth]{./figures/fluLTT.pdf}}
 \caption{(a) Bayesian coalescent skygrid plot and (b) lineages through time for the Influenza A/H3N2 virus data.}
 \label{fig:flu}
 \end{figure}
