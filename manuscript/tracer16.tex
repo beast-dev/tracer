@@ -105,15 +105,6 @@ The integer is dealing with quantitative discrete variables, and the categorical
 
 The multiple traces can be selected as shown in Figure~\ref{fig:multitrace}, which will overlay the plots for the different traces allowing comparisons to be made. The multiple trace files can be similarly selected as well to compare different runs. If multiple trace files have the same trace names,  then a ``Combined'' trace will automatically appear, which can be selected as well as the individual trace files.
 
-\begin{figure}[ht]
-%\includegraphics[width=.5\textwidth]{./figures/multitrace.png}
-\subfigure[Multiple traces]{\includegraphics[width=0.46\textwidth]{./figures/multitrace.png}}
-\subfigure[TangHuLu chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/tanghulu.pdf}}
-\subfigure[boxplot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/boxplot.pdf}}
-\caption{A comparison of multiple traces}
-\label{fig:multitrace}
-\end{figure}
-
 There are four analysis tabs to choose from either a selected trace (sampling parameter) or multiple traces:
 
 %TODO simplify, some duplication to 1st example
@@ -132,6 +123,17 @@ There are four analysis tabs to choose from either a selected trace (sampling pa
 In addition to illustrating joint-marginal distribution between two continuous traces, we newly invented a TangHuLu chart to visualise the joint probability between two integer or categorical traces using coloured bubbles, as shown in Figure~\ref{fig:tanghulu}.a. The size of circle is proportional to the joint probability, the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set. The tile background is coloured if there is any circle, in case the very small circle wouldn't be missed out. The coloured background can also help to show the area of the credible set and non-credible set.
 
 Furthermore, box-and-whisker plots are used to display the joint-marginal distribution between one continuous trace and one integer or categorical trace as shown in Figure~\ref{fig:tanghulu}.b.
+
+%
+\begin{figure}[ht]
+%\includegraphics[width=.5\textwidth]{./figures/multitrace.png}
+\subfigure[Multiple traces]{\includegraphics[width=0.46\textwidth]{./figures/multitrace.png}}
+\subfigure[TangHuLu chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/tanghulu.pdf}}
+\subfigure[boxplot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/boxplot.pdf}}
+\caption{A comparison of multiple traces}
+\label{fig:multitrace}
+\end{figure}
+%
 
 %\begin{figure}[ht]
 %\subfigure[TangHuLu chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/tanghulu.pdf}}
