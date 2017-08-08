@@ -68,7 +68,6 @@ public class TracerApp extends MultiDocApplication {
                     public void run() {
                         try {
                             UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
-//                            UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
                             lafLoaded = true;
                         } catch (Exception e) {
                         }

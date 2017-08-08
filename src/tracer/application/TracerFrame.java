@@ -31,6 +31,7 @@ import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import dr.app.beauti.util.PanelUtils;
 import dr.app.gui.FileDrop;
 import dr.app.gui.chart.ChartRuntimeException;
 import dr.app.gui.table.TableEditorStopper;
@@ -184,8 +185,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         Toolbar controlPanel1 = new Toolbar();
         reloadButton = new JButton("Reload");
-//        reloadButton.putClientProperty("Quaqua.Button.style", "square");
-        reloadButton.setFont(UIManager.getFont("SmallSystemFont"));
+        PanelUtils.setupComponent(reloadButton);
+//        reloadButton.setFont(UIManager.getFont("SmallSystemFont"));
         reloadButton.setToolTipText("Reload the selected log file(s)");
 //        Icon refreshIcon = new ImageIcon(IconUtils.getImage(TracerFrame.class, "images/refresh.png"));
 //        reloadButton.setIcon(refreshIcon);
@@ -259,6 +260,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         changeTraceTypePanel.add(new JLabel("Type:"));
 
         realButton = new JButton("(R)eal");
+        PanelUtils.setupComponent(realButton);
         realButton.setToolTipText(TraceType.REAL.toString());
         // Only affect Mac OS X - nicer GUI
 //        realButton.putClientProperty("Quaqua.Button.style", "square");
@@ -266,6 +268,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         realButton.setEnabled(false);
 
         integerButton = new JButton("(I)nt");
+        PanelUtils.setupComponent(integerButton);
         integerButton.setToolTipText(TraceType.INTEGER.toString());
         // Only affect Mac OS X - nicer GUI
 //        integerButton.putClientProperty("Quaqua.Button.style", "square");
@@ -280,6 +283,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 //        binaryButton.setEnabled(false);
 
         categoricalButton = new JButton("(C)at");
+        PanelUtils.setupComponent(categoricalButton);
         categoricalButton.setToolTipText(TraceType.CATEGORICAL.toString());
         // Only affect Mac OS X - nicer GUI
 //        categoricalButton.putClientProperty("Quaqua.Button.style", "square");
