@@ -31,7 +31,6 @@ import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
-import dr.app.beauti.util.PanelUtils;
 import dr.app.gui.FileDrop;
 import dr.app.gui.chart.ChartRuntimeException;
 import dr.app.gui.table.TableEditorStopper;

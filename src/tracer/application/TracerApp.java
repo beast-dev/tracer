@@ -54,6 +54,8 @@ public class TracerApp extends MultiDocApplication {
         Locale.setDefault(Locale.US);
 
         if (OSType.isMac()) {
+            System.setProperty("swing.aatext", "true");
+
             System.setProperty("apple.awt.graphics.UseQuartz", "true");
             System.setProperty("apple.awt.antialiasing", "true");
             System.setProperty("apple.awt.rendering", "VALUE_RENDER_QUALITY");
@@ -106,7 +108,7 @@ public class TracerApp extends MultiDocApplication {
             }
 
             final String nameString = "Tracer";
-            final String versionString = "v1.6.1pre";
+            final String versionString = "v1.7-VEME2017";
             String aboutString = "<html><center><p>MCMC Trace Analysis Tool<br>" +
                     "Version " + versionString + ", 2003-2017</p>" +
                     "<p>by<br>" +
@@ -123,14 +125,14 @@ public class TracerApp extends MultiDocApplication {
                     "<a href=\"mailto:alexei@cs.auckland.ac.nz\">alexei@cs.auckland.ac.nz</a></p>" +
 
                     "<p>Available from the BEAST site:<br>" +
-                    "<a href=\"http://beast.bio.ed.ac.uk/\">http://beast.bio.ed.ac.uk/</a></p>" +
+                    "<a href=\"http://beast.community/tracer\">http://beast.community/</a></p>" +
                     "<p>Source code distributed under the GNU LGPL:<br>" +
-                    "<a href=\"http://github.com/beast-dev/beast-mcmc/\">http://github.com/beast-dev/beast-mcmc/</a></p>" +
+                    "<a href=\"http://github.com/beast-dev/tracer/\">http://github.com/beast-dev/tracer/</a></p>" +
                     "<p>Thanks for contributions to: Joseph Heled, Oliver Pybus & Benjamin Redelings</p>" +
                     "</center></html>";
 
-            String websiteURLString = "http://beast.bio.ed.ac.uk/";
-            String helpURLString = "http://beast.bio.ed.ac.uk/Tracer";
+            String websiteURLString = "http://beast.community/";
+            String helpURLString = "http://beast.community/Tracer";
 
             TracerApp app = new TracerApp(nameString, aboutString, icon, websiteURLString, helpURLString);
             app.setDocumentFrameFactory(new DocumentFrameFactory() {

@@ -3,3 +3,9 @@
 *.blg
 *.log
 tracer16.pdf
+
+*.iml
+
+*.ipr
+
+*.iws

@@ -85,10 +85,11 @@
 
     </target>
 
-    <property name="version" value="1.6.2pre" />
-    <property name="version_number" value="1.6.2" />
+    <property name="version" value="1.7-VEME2017" />
+    <property name="version_number" value="1.7.0" />
     <property name="release_dir" value="release" />
     <property name="name" value="Tracer" />
+    <property name="copyright" value="Copyright 2002-2017"/>
 
     <property name="packaging_tools" value="packaging_tools" />
     <property name="common_dir" value="${release_dir}/common" />
@@ -159,6 +160,9 @@
         <echo message="Linux/Unix version release is finished." />
     </target>
 
+    <!-- this will only work on Andrew's computer -->
+    <property name="AppleSigner" value="Developer ID Application: Andrew Rambaut (9E4WXAQ6SE)" />
+
     <target name="mac" description="release Mac version of Tracer">
         <delete dir="${Mac_package_dir}" />
         <!-- Create the release directory -->
@@ -179,19 +183,28 @@
                         vmoptions="-Xmx2048M"
                         arguments=""
                         version="${version}"
-                        copyright="${name} v${version}, Copyright 2003-2017, Andrew Rambaut, Marc Suchard &amp; Alexei J. Drummond"
+                        copyright="${name} v${version}, ${copyright}, Andrew Rambaut, Marc Suchard &amp; Alexei J. Drummond"
                         bundleid="tracer" >
             <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
             <jarfileset dir="${dist}">
                 <include name="**/tracer.jar"/>
             </jarfileset>
             <jarfileset dir="${Mac_dir}/lib">
-                <include name="**/quaqua-filechooser-only.jar"/>
+                <include name="**/quaqua.jar"/>
             </jarfileset>
             <jarfileset dir="${Mac_dir}/lib">
-                <include name="libquaqua*.jnilib"/>
+                <include name="libquaqua*.*"/>
             </jarfileset>
         </jarbundler>
+
+        <!-- code signing -->
+        <exec executable="codesign">
+            <arg value="--deep"/>
+            <arg value="-s"/>
+            <arg value="${AppleSigner}"/>
+            <arg value="-v"/>
+            <arg value="${Mac_package_dir}/${name} v${version}.app"/>
+        </exec>
 
         <echo message="Building disk image." />
 
@@ -207,6 +220,14 @@
             <arg value="zlib-level=6"/>
             <arg value="${release_dir}/${name} v${version}.dmg"/>
         </exec>
+
+        <exec executable="codesign">
+            <arg value="-s"/>
+            <arg value="${AppleSigner}"/>
+            <arg value="-v"/>
+            <arg value="${release_dir}/${name} v${version}.dmg"/>
+        </exec>
+
 
         <echo message="Mac version release is finished." />
     </target>
