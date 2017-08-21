@@ -448,6 +448,7 @@ public class JointDensityPanel extends TraceChartPanel {
         if (td1.getTraceType().isIntegerOrBinary() && td2.getTraceType().isIntegerOrBinary()) {
             // samples1 samples2 are both ordinal
             plot = new TangHuLuPlot(samples1, samples2);
+            getChart().setOriginStyle(null, null);
             getChart().addPlot(plot);
 
         } else if (td1.getTraceType().isIntegerOrBinary()) {
