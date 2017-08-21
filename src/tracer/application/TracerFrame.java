@@ -804,7 +804,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         realButton.setEnabled(selRows.length > 0);
         integerButton.setEnabled(selRows.length > 0);
-//        binaryButton.setEnabled(selRows.length > 0);
         categoricalButton.setEnabled(selRows.length > 0);
     }
 

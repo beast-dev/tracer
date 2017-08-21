@@ -194,6 +194,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                             plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
                         }
 
+                        getChart().setOriginStyle(null, null);
                         getChart().addPlot(plot);
                     }
                     // change x axis to DiscreteAxis or LinearAxis according TraceType

@@ -359,8 +359,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         remove(layout.getLayoutComponent(BorderLayout.SOUTH));
         add(getChartPanel(), BorderLayout.CENTER);
         add(getToolBar(), BorderLayout.SOUTH);
-        validate();
-        repaint();
 
         setXLabelMultipleTraces();
         if (currentSettings.type == Type.VIOLIN) {
