@@ -94,10 +94,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     private final List<String> commonTraceNames = new ArrayList<String>();
     private boolean homogenousTraceFiles = true;
 
-    private JButton reloadButton;
     private JButton realButton;
     private JButton integerButton;
-    //    private JButton binaryButton;
     private JButton categoricalButton;
 
 //    private final List<FilterListPanel> filterListPanelList = new ArrayList<FilterListPanel>();
@@ -182,20 +180,15 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         getRemoveTraceAction().setEnabled(false);
 
         Toolbar controlPanel1 = new Toolbar();
-        reloadButton = new JButton("Reload");
+        JButton reloadButton = new JButton(getReloadAction());
+        reloadButton.setText("Reload");
         PanelUtils.setupComponent(reloadButton);
-//        reloadButton.setFont(UIManager.getFont("SmallSystemFont"));
         reloadButton.setToolTipText("Reload the selected log file(s)");
-//        Icon refreshIcon = new ImageIcon(IconUtils.getImage(TracerFrame.class, "images/refresh.png"));
-//        reloadButton.setIcon(refreshIcon);
-        //reloadButton.setPreferredSize(new Dimension(22,20));
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 refreshTraceList();
             }
         });
-        // todo how to merge reloadButton to getReloadAction()?
-        reloadButton.setEnabled(false);
         getReloadAction().setEnabled(false);
 
         controlPanel1.add(actionPanel1);
@@ -260,31 +253,18 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         realButton = new JButton("(R)eal");
         PanelUtils.setupComponent(realButton);
         realButton.setToolTipText(TraceType.REAL.toString());
-        // Only affect Mac OS X - nicer GUI
-//        realButton.putClientProperty("Quaqua.Button.style", "square");
         realButton.setFont(UIManager.getFont("SmallSystemFont"));
         realButton.setEnabled(false);
 
         integerButton = new JButton("(I)nt");
         PanelUtils.setupComponent(integerButton);
         integerButton.setToolTipText(TraceType.INTEGER.toString());
-        // Only affect Mac OS X - nicer GUI
-//        integerButton.putClientProperty("Quaqua.Button.style", "square");
         integerButton.setFont(UIManager.getFont("SmallSystemFont"));
         integerButton.setEnabled(false);
-
-//        binaryButton = new JButton("(B)in");
-//        binaryButton.setToolTipText(TraceType.BINARY.toString());
-//        // Only affect Mac OS X - nicer GUI
-//        binaryButton.putClientProperty("Quaqua.Button.style", "square");
-//        binaryButton.setFont(UIManager.getFont("SmallSystemFont"));
-//        binaryButton.setEnabled(false);
 
         categoricalButton = new JButton("(C)at");
         PanelUtils.setupComponent(categoricalButton);
         categoricalButton.setToolTipText(TraceType.CATEGORICAL.toString());
-        // Only affect Mac OS X - nicer GUI
-//        categoricalButton.putClientProperty("Quaqua.Button.style", "square");
         categoricalButton.setFont(UIManager.getFont("SmallSystemFont"));
         categoricalButton.setEnabled(false);
 
@@ -352,7 +332,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         int[] selectedTraceFiles = traceTable.getSelectedRows();
         int[] selectedStatistics = statisticTable.getSelectedRows();
 
-        boolean combinedTracesSelected = selectedTraceFiles[selectedTraceFiles.length - 1] > traceLists.size();
+        boolean combinedTracesSelected = selectedTraceFiles[selectedTraceFiles.length - 1] == traceLists.size();
 
         List<LogFileTraces> selectedTraceLists = new ArrayList<LogFileTraces>();
 
@@ -610,13 +590,15 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     }
 
     public void traceTableSelectionChanged() {
+        if (traceLists.size() == 0) {
+            return;
+        }
+
         int[] selRows = traceTable.getSelectedRows();
 
         if (selRows.length == 0) {
             getRemoveTraceAction().setEnabled(false);
             getReloadAction().setEnabled(false);
-            // todo how to merge reloadButton to getReloadAction()?
-            reloadButton.setEnabled(false);
             setAnalysesEnabled(false);
             return;
         }
@@ -625,7 +607,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         getRemoveTraceAction().setEnabled(true);
         getReloadAction().setEnabled(true);
-        reloadButton.setEnabled(true);
 
         currentTraceLists.clear();
 
@@ -634,7 +615,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 // Combined is include in the selection so disable remove
                 getRemoveTraceAction().setEnabled(false);
                 getReloadAction().setEnabled(false);
-                reloadButton.setEnabled(false);
                 currentTraceLists.add(combinedTraces);
             }
         }
@@ -1830,7 +1810,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
     };
 
-    private final AbstractAction reloadAction = new AbstractAction("Reload Trace File ...") {
+    private final AbstractAction reloadAction = new AbstractAction("Reload Trace File(s)...") {
         public void actionPerformed(ActionEvent ae) {
             refreshTraceList();
         }
