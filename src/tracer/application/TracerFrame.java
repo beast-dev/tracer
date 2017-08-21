@@ -349,18 +349,18 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     }
 
     private void changeTraceType(TraceType newType) {
-        int[] selectedTraces = traceTable.getSelectedRows();
+        int[] selectedTraceFiles = traceTable.getSelectedRows();
         int[] selectedStatistics = statisticTable.getSelectedRows();
 
-        boolean combinedTracesSelected = selectedTraces[selectedTraces.length - 1] > traceLists.size();
+        boolean combinedTracesSelected = selectedTraceFiles[selectedTraceFiles.length - 1] > traceLists.size();
 
         List<LogFileTraces> selectedTraceLists = new ArrayList<LogFileTraces>();
 
         if (combinedTracesSelected) {
             selectedTraceLists.addAll(traceLists);
         } else {
-            for (int row : selectedTraces) {
-                selectedTraceLists.add(traceLists.get(selectedTraces[row]));
+            for (int row : selectedTraceFiles) {
+                selectedTraceLists.add(traceLists.get(row));
             }
         }
 
