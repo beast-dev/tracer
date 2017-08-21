@@ -48,6 +48,7 @@ import tracer.traces.FilterListPanel;
 import tracer.traces.TracePanel;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -60,10 +61,8 @@ import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler, AnalysisMenuHandler, TracerFileExtraMenuHandler {
     private final static boolean CONFIRM_BUTTON_PRESSES = false;
@@ -481,6 +480,32 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         getFullStatistics().setEnabled(enabled);
         getExportPDFAction().setEnabled(enabled);
         getCopyAction().setEnabled(true);
+    }
+
+    public void checkForUniqueNames(LogFileTraces traceList) {
+
+        Map<String, Trace> nameMap = new HashMap<String, Trace>();
+        Map<String, Integer> nameNumberMap = new HashMap<String, Integer>();
+
+        for (int i = 0; i < traceList.getTraceCount(); i++) {
+            Trace trace = traceList.getTrace(i);
+            String name = trace.getName();
+
+            Trace lastTrace = nameMap.get(name);
+
+            if (lastTrace == null) {
+                nameMap.put(name, trace);
+                nameNumberMap.put(name, 1);
+            } else {
+                int number = nameNumberMap.get(name);
+                if (number == 1) {
+                    lastTrace.setName(name + "_" + number);
+                }
+                number += 1;
+                trace.setName(name + "_" + number);
+                nameNumberMap.put(name, number);
+            }
+        }
     }
 
     public void addTraceList(LogFileTraces traceList) {
@@ -1148,6 +1173,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                                     new Runnable() {
                                         public void run() {
                                             analyseTraceList(traces);
+                                            checkForUniqueNames(traces);
                                             addTraceList(traces);
                                         }
                                     });
