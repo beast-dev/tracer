@@ -39,8 +39,6 @@ import java.awt.event.ActionEvent;
 /**
  * A shared code for the panel that displays a plot of traces,
  * such as most part of toolbar, and the chart panel.
- * {@link #createToolBar(JFrame) abstract createToolBar} makes sure
- * the customized toolbar is implemented in children classes.
  *
  * @author Andrew Rambaut
  * @author Alexei Drummond
@@ -155,21 +153,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     protected TraceList[] traceLists = null;
     protected java.util.List<String> traceNames = null;
 
-    protected JLabel labelBins;
-    protected JComboBox binsCombo = new JComboBox(
-            new Integer[]{10, 20, 50, 100, 200, 500, 1000});
-
-    protected JComboBox legendCombo = new JComboBox(
-            new String[]{"None", "Top-Left", "Top", "Top-Right", "Left",
-                    "Right", "Bottom-Left", "Bottom", "Bottom-Right"}
-    );
-    protected JComboBox colourByCombo = new JComboBox(
-            new String[]{"Trace", "Trace File", "All"}
-    );
-    protected JButton chartSetupButton = new JButton("Setup...");
     protected JLabel messageLabel = new JLabel("No data loaded");
-
-    protected JCheckBox showValuesCheckBox = new JCheckBox("Show values on above chart");
 
     protected final JFrame frame;
 
@@ -216,7 +200,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     }
 
     /**
-     * Create a {@see JToolBar} toolBar
+     * Create and return a new JToolBar
      */
     protected JToolBar createToolBar() {
         JToolBar toolBar = new JToolBar();
@@ -226,13 +210,16 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         return toolBar;
     }
 
-    protected void addSetupButton(final JToolBar toolBar) {
+    /**
+     * Create and return a new setup button
+     * @return
+     */
+    protected JButton createSetupButton() {
+        JButton chartSetupButton = new JButton("Setup...");
         chartSetupButton.putClientProperty(
                 "Quaqua.Button.style", "default"
         );
         chartSetupButton.setFont(UIManager.getFont("SmallSystemFont"));
-        toolBar.add(chartSetupButton);
-
         chartSetupButton.addActionListener(
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(ActionEvent actionEvent) {
@@ -240,6 +227,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                     }
                 }
         );
+        return chartSetupButton;
     }
 
     protected void showChartSetupDialog() {
@@ -254,18 +242,17 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     }
 
     /**
-     * Add bins components to {@see JToolBar} toolBar,
-     * but their listeners have to be added in the child class
-     * @param toolBar
+     * Create and return a bins combo and its label.
+     * @returns the label but the combo can be accessed with .getLabelFor() method.
      */
-    protected void addBinsCombo(final JToolBar toolBar) {
+    protected JLabel createBinsComboAndLabel() {
+        JLabel labelBins = new JLabel("Bins:");
+        final JComboBox binsCombo = new JComboBox(
+                new Integer[]{10, 20, 50, 100, 200, 500, 1000});
         binsCombo.setFont(UIManager.getFont("SmallSystemFont"));
         binsCombo.setOpaque(false);
-        labelBins = new JLabel("Bins:");
         labelBins.setFont(UIManager.getFont("SmallSystemFont"));
         labelBins.setLabelFor(binsCombo);
-        toolBar.add(labelBins);
-        toolBar.add(binsCombo);
 
         binsCombo.addActionListener(
                 new java.awt.event.ActionListener() {
@@ -276,44 +263,42 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                     }
                 }
         );
+        return labelBins;
     }
 
     /**
-     * Add legend components to {@see JToolBar} toolBar
-     * between two <code>JToolBar.Separator</code>,
-     * but their listeners have to be added in the child class.
-     *
-     * @param toolBar
+     * Create legend combo and its label.
+     * @returns the label but the combo can be accessed with .getLabelFor() method.
      */
-    protected void addLegendCombo(final JToolBar toolBar) {
-        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+    protected JLabel createLegendComboAndLabel() {
+        final JComboBox legendCombo = new JComboBox(
+                new String[]{"None", "Top-Left", "Top", "Top-Right", "Left",
+                        "Right", "Bottom-Left", "Bottom", "Bottom-Right"}
+        );
+        legendCombo.setFont(UIManager.getFont("SmallSystemFont"));
+        legendCombo.setOpaque(false);
 
         JLabel label = new JLabel("Legend:");
         label.setFont(UIManager.getFont("SmallSystemFont"));
         label.setLabelFor(legendCombo);
-        toolBar.add(label);
-        legendCombo.setFont(UIManager.getFont("SmallSystemFont"));
-        legendCombo.setOpaque(false);
-        toolBar.add(legendCombo);
 
-        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
-        label = new JLabel("Colour by:");
-        label.setFont(UIManager.getFont("SmallSystemFont"));
-        label.setLabelFor(colourByCombo);
-        toolBar.add(label);
+        return label;
+    }
+
+    /**
+     * Create colour by combo and its label.
+     * @returns the label but the combo can be accessed with .getLabelFor() method.
+     */
+    protected JLabel createColourByComboAndLabel() {
+        final JComboBox colourByCombo = new JComboBox(
+                new String[]{"Trace", "Trace File", "All"}
+        );
         colourByCombo.setFont(UIManager.getFont("SmallSystemFont"));
         colourByCombo.setOpaque(false);
-        toolBar.add(colourByCombo);
 
-        legendCombo.addActionListener(
-                new java.awt.event.ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        getSettings().legendAlignment = legendCombo.getSelectedIndex();
-                        setLegend(getSettings().legendAlignment);
-                    }
-                }
-        );
+        JLabel label = new JLabel("Colour by:");
+        label.setFont(UIManager.getFont("SmallSystemFont"));
+        label.setLabelFor(colourByCombo);
 
         colourByCombo.addActionListener(
                 new java.awt.event.ActionListener() {
@@ -324,6 +309,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                     }
                 }
         );
+        return label;
     }
 
     protected abstract void setupTraces();

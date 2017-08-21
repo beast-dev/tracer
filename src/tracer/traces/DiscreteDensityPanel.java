@@ -62,7 +62,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         super(frame);
         densityChart = new DiscreteJChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         densityChartPanel = new JChartPanel(densityChart, "","","");
-        JToolBar toolBar = createToolBar(frame);
+        JToolBar toolBar = createToolBar(currentSettings);
         setupMainPanel(toolBar);
     }
 
@@ -87,26 +87,24 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         return currentSettings;
     }
 
-    protected JToolBar createToolBar(final JFrame frame) {
+    private JToolBar createToolBar(Settings settings) {
         JToolBar toolBar = super.createToolBar();
 
-        addLegendCombo(toolBar);
+        toolBar.add(createSetupButton());
 
-//        displayCombo.addItemListener(
-//                new java.awt.event.ItemListener() {
-//                    public void itemStateChanged(java.awt.event.ItemEvent ev) {
-//                        switch (displayCombo.getSelectedIndex()) {
-//                            case 0: currentSettings.type = Type.KDE; break;
-//                            case 1: currentSettings.type = Type.HISTOGRAM; break;
-//                            case 2: currentSettings.type = Type.VIOLIN; break;
-//                            default: throw new RuntimeException("Unknown display type");
-//                        }
-//                        binsCombo.setEnabled(currentSettings.type == Type.HISTOGRAM);
-//                        setupTraces();
-//                    }
-//                }
-//        );
+        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
+        JLabel label = (JLabel)createLegendComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
+        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.legendAlignment);
+
+        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+
+        label = (JLabel)createColourByComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
+        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.colourBy.ordinal());
 
         return toolBar;
     }
@@ -114,8 +112,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
     public void setTraces(TraceList[] traceLists, List<String> traceNames) {
         super.setTraces(traceLists, traceNames);
 
-        legendCombo.setSelectedIndex(currentSettings.legendAlignment);
-        colourByCombo.setSelectedIndex(currentSettings.colourBy.ordinal());
+//        legendCombo.setSelectedIndex(currentSettings.legendAlignment);
+//        colourByCombo.setSelectedIndex(currentSettings.colourBy.ordinal());
 
 
         if (traceLists != null) {

@@ -62,7 +62,7 @@ public class FrequencyPanel extends TraceChartPanel {
         traceChart = new DiscreteJChart(
                 new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         traceChartPanel = new JChartPanel(traceChart, "","", "Frequency"); // xAxisTitle, yAxisTitle
-        JToolBar toolBar = createToolBar(frame);
+        JToolBar toolBar = createToolBar(currentSettings);
         setupMainPanel(toolBar, false);
     }
 
@@ -84,30 +84,39 @@ public class FrequencyPanel extends TraceChartPanel {
         return currentSettings;
     }
 
-    protected JToolBar createToolBar(final JFrame frame) {
+    private JToolBar createToolBar(Settings settings) {
         JToolBar toolBar = super.createToolBar();
 
-        addBinsCombo(toolBar);
-        binsCombo.setSelectedItem(currentSettings.minimumBins);
 
-//        toolBar.add(showValuesCheckBox); //todo
-//        showValuesCheckBox.addActionListener(
-//                new java.awt.event.ActionListener() {
-//                    public void actionPerformed(ActionEvent actionEvent) {
-//
-//                        validate();
-//                        repaint();
-//                    }
-//                }
-//        );
+        JLabel label = (JLabel)createBinsComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
+
+        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.minimumBins);
+
+        toolBar.add(createShowValuesCheckBox());
 
         return toolBar;
     }
 
+    protected JCheckBox createShowValuesCheckBox() {
+        JCheckBox checkBox = new JCheckBox("Show values");
+        checkBox.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        setupTraces();
+                    }
+                }
+        );
+        return checkBox;
+    }
+
+
     public void setTrace(TraceList traceList, String traceName) {
         setTraces(new TraceList[] { traceList },
                 Collections.singletonList(traceName));
-        binsCombo.setSelectedItem(currentSettings.minimumBins);
+        // binsCombo.setSelectedItem(currentSettings.minimumBins);
 
         setupTraces();
     }
@@ -172,23 +181,24 @@ public class FrequencyPanel extends TraceChartPanel {
     protected void setBinsComponents(TraceType traceType) {
 
         if (traceType.isContinuous()) {
-            labelBins.setVisible(true);
-            binsCombo.setVisible(true);
-            showValuesCheckBox.setVisible(false);
+//            labelBins.setVisible(true);
+//            binsCombo.setVisible(true);
+//            showValuesCheckBox.setVisible(false);
 
         } else if (traceType.isIntegerOrBinary()) {
-            labelBins.setVisible(false);
-            binsCombo.setVisible(false);
-            showValuesCheckBox.setVisible(true);
+//            labelBins.setVisible(false);
+//            binsCombo.setVisible(false);
+//            showValuesCheckBox.setVisible(true);
 
         } else if (traceType.isCategorical()) {
-            labelBins.setVisible(false);
-            binsCombo.setVisible(false);
-            showValuesCheckBox.setVisible(true);
+//            labelBins.setVisible(false);
+//            binsCombo.setVisible(false);
+//            showValuesCheckBox.setVisible(true);
 
         } else {
             throw new RuntimeException("Trace type is not recognized: " + traceType);
         }
     }
+
 
 }
