@@ -83,14 +83,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
             new String[]{"KDE", "Histogram", "Violin"}
     );
 
-//    private JCheckBox kdeCheckBox = new JCheckBox("KDE");
-//    private JButton kdeSetupButton = new JButton("Settings...");
-
-    private JCheckBox relativeDensityCheckBox = new JCheckBox("Relative density");
-    private JCheckBox solidCheckBox = new JCheckBox("Fill plot");
-
-//    private TraceType traceType = null;
-
     /**
      * Creates new FrequencyPanel
      */
@@ -226,14 +218,9 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 //        }
 
         displayCombo.setSelectedIndex(currentSettings.type == Type.KDE ? 0 : (currentSettings.type == Type.HISTOGRAM ? 1 : 2));
-//        binsCombo.setEnabled(currentSettings.showHistogram);
-
         binsCombo.setSelectedItem(currentSettings.minimumBins);
-        relativeDensityCheckBox.setSelected(currentSettings.relativeDensity);
         legendCombo.setSelectedIndex(currentSettings.legendAlignment);
         colourByCombo.setSelectedIndex(currentSettings.colourBy.ordinal());
-//        kdeCheckBox.setSelected(currentSettings.showKDE);
-//        kdeSetupButton.setEnabled(currentSettings.showKDE);
 
 
         if (traceLists != null) {
