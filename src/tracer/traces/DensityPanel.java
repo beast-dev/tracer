@@ -105,6 +105,8 @@ public class DensityPanel extends JPanel implements Exportable {
             messageLabel.setText(message);
             add(messageLabel, BorderLayout.NORTH);
         }
+        validate();
+        repaint();
     }
 
     public String toString() {

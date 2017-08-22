@@ -48,6 +48,7 @@ import tracer.traces.FilterListPanel;
 import tracer.traces.TracePanel;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -60,10 +61,8 @@ import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler, AnalysisMenuHandler, TracerFileExtraMenuHandler {
     private final static boolean CONFIRM_BUTTON_PRESSES = false;
@@ -95,10 +94,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     private final List<String> commonTraceNames = new ArrayList<String>();
     private boolean homogenousTraceFiles = true;
 
-    private JButton reloadButton;
     private JButton realButton;
     private JButton integerButton;
-//    private JButton binaryButton;
     private JButton categoricalButton;
 
 //    private final List<FilterListPanel> filterListPanelList = new ArrayList<FilterListPanel>();
@@ -169,7 +166,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         traceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
 //                if(!evt.getValueIsAdjusting())
-                    traceTableSelectionChanged();
+                traceTableSelectionChanged();
             }
         });
 
@@ -183,20 +180,15 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         getRemoveTraceAction().setEnabled(false);
 
         Toolbar controlPanel1 = new Toolbar();
-        reloadButton = new JButton("Reload");
+        JButton reloadButton = new JButton(getReloadAction());
+        reloadButton.setText("Reload");
         PanelUtils.setupComponent(reloadButton);
-//        reloadButton.setFont(UIManager.getFont("SmallSystemFont"));
         reloadButton.setToolTipText("Reload the selected log file(s)");
-//        Icon refreshIcon = new ImageIcon(IconUtils.getImage(TracerFrame.class, "images/refresh.png"));
-//        reloadButton.setIcon(refreshIcon);
-        //reloadButton.setPreferredSize(new Dimension(22,20));
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 refreshTraceList();
             }
         });
-        // todo how to merge reloadButton to getReloadAction()?
-        reloadButton.setEnabled(false);
         getReloadAction().setEnabled(false);
 
         controlPanel1.add(actionPanel1);
@@ -261,31 +253,18 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         realButton = new JButton("(R)eal");
         PanelUtils.setupComponent(realButton);
         realButton.setToolTipText(TraceType.REAL.toString());
-        // Only affect Mac OS X - nicer GUI
-//        realButton.putClientProperty("Quaqua.Button.style", "square");
         realButton.setFont(UIManager.getFont("SmallSystemFont"));
         realButton.setEnabled(false);
 
         integerButton = new JButton("(I)nt");
         PanelUtils.setupComponent(integerButton);
         integerButton.setToolTipText(TraceType.INTEGER.toString());
-        // Only affect Mac OS X - nicer GUI
-//        integerButton.putClientProperty("Quaqua.Button.style", "square");
         integerButton.setFont(UIManager.getFont("SmallSystemFont"));
         integerButton.setEnabled(false);
-
-//        binaryButton = new JButton("(B)in");
-//        binaryButton.setToolTipText(TraceType.BINARY.toString());
-//        // Only affect Mac OS X - nicer GUI
-//        binaryButton.putClientProperty("Quaqua.Button.style", "square");
-//        binaryButton.setFont(UIManager.getFont("SmallSystemFont"));
-//        binaryButton.setEnabled(false);
 
         categoricalButton = new JButton("(C)at");
         PanelUtils.setupComponent(categoricalButton);
         categoricalButton.setToolTipText(TraceType.CATEGORICAL.toString());
-        // Only affect Mac OS X - nicer GUI
-//        categoricalButton.putClientProperty("Quaqua.Button.style", "square");
         categoricalButton.setFont(UIManager.getFont("SmallSystemFont"));
         categoricalButton.setEnabled(false);
 
@@ -299,11 +278,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 changeTraceType(TraceType.INTEGER);
             }
         });
-//        binaryButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                changeTraceType(TraceType.BINARY);
-//            }
-//        });
         categoricalButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeTraceType(TraceType.CATEGORICAL);
@@ -312,7 +286,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         changeTraceTypePanel.add(realButton);
         changeTraceTypePanel.add(integerButton);
-//        changeTraceTypePanel.add(binaryButton);
         changeTraceTypePanel.add(categoricalButton);
         changeTraceTypePanel.setToolTipText("<html> Change the data type of a selected parameter here. <br>" +
                 "Alternatively use key word real, ordinal, binary, categorical " +
@@ -353,94 +326,47 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         getContentPane().add(splitPane2, BorderLayout.CENTER);
 
         splitPane1.setDividerLocation(2000);
-
     }
 
     private void changeTraceType(TraceType newType) {
-        int[] selectedTraces = traceTable.getSelectedRows();
+        int[] selectedTraceFiles = traceTable.getSelectedRows();
         int[] selectedStatistics = statisticTable.getSelectedRows();
-        String m = "Are you going to change trace type into " + newType.toString() + " for\n";
 
-        if (combinedTraces != null) {
-            if (selectedTraces[0] > traceLists.size()) selectedTraces[0] = 0; // user may only select combinedTraces
-            for (int row : selectedStatistics) {
-                int id = traceLists.get(selectedTraces[0]).getTraceIndex(commonTraceNames.get(row));
-                m += commonTraceNames.get(row) + "(" + traceLists.get(selectedTraces[0]).getTrace(id).getTraceType().toString() + "), ";
-            }
+        boolean combinedTracesSelected = selectedTraceFiles[selectedTraceFiles.length - 1] == traceLists.size();
 
-            int result = JOptionPane.YES_OPTION;
+        List<LogFileTraces> selectedTraceLists = new ArrayList<LogFileTraces>();
 
-            if (CONFIRM_BUTTON_PRESSES) {
-                result = JOptionPane.showConfirmDialog(this, "Because Combined Traces exists, change type function\n" +
-                        "will apply to all files including Combined Traces.\n" + m + "\n in all files including Combined Traces ?",
-                        "Change Trace Type including Combined Traces", JOptionPane.YES_NO_OPTION);
-            }
-
-            if (result == JOptionPane.YES_OPTION) {
-                for (LogFileTraces tl : traceLists) {
-                    for (int row : selectedStatistics) {
-                        int id = tl.getTraceIndex(commonTraceNames.get(row));
-
-                        try {
-                            tl.changeTraceType(id, newType);
-                        } catch (TraceException e) {
-                            JOptionPane.showMessageDialog(this, e,
-                                    "Trace Type Exception in " + tl.getName(), JOptionPane.ERROR_MESSAGE);
-                        }
-                        tl.analyseTrace(id);
-                    }
-                }
-                updateCombinedTraces();
-                statisticTableModel.fireTableDataChanged();
-
-                // selection will be lost by fireTableDataChanged so reselect them
-                for (int row : selectedStatistics) {
-                    statisticTable.getSelectionModel().addSelectionInterval(row, row);
-                }
-            }
-
-        } else if (selectedTraces[selectedTraces.length - 1] >= traceLists.size()) {
-            // I take it this should never happen... why not just throw an exception?
-            JOptionPane.showMessageDialog(this, "Selected traces are more than stored traces.",
-                    "Trace Type Exception", JOptionPane.ERROR_MESSAGE);
+        if (combinedTracesSelected) {
+            selectedTraceLists.addAll(traceLists);
         } else {
-            LogFileTraces selectedTraceList = traceLists.get(selectedTraces[0]);
-            for (int row : selectedStatistics) {
-                int id = selectedTraceList.getTraceIndex(commonTraceNames.get(row));
-                m += commonTraceNames.get(row) + "(" + selectedTraceList.getTrace(id).getTraceType().toString() + "), ";
-            }
-
-            int result = JOptionPane.YES_OPTION;
-
-            if (CONFIRM_BUTTON_PRESSES) {
-                result = JOptionPane.showConfirmDialog(this, m + "\nin file " + selectedTraceList.getName() + " ?",
-                        "Change Trace Type", JOptionPane.YES_NO_OPTION);
-            }
-
-            if (result == JOptionPane.YES_OPTION) {
-                for (int row : selectedStatistics) {
-                    int id = selectedTraceList.getTraceIndex(commonTraceNames.get(row));
-
-                    try {
-                        selectedTraceList.changeTraceType(id, newType);
-                    } catch (TraceException e) {
-                        JOptionPane.showMessageDialog(this, e,
-                                "Trace Type Exception in " + selectedTraceList.getName(), JOptionPane.ERROR_MESSAGE);
-//        } catch (IOException e) {
-//            System.err.println("selRow = " + selRow + "; new type = " + newType);
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-                    selectedTraceList.analyseTrace(id);
-                }
-
-                statisticTableModel.fireTableDataChanged();
-
-                // selection will be lost by fireTableDataChanged so reselect them
-                for (int row : selectedStatistics) {
-                    statisticTable.getSelectionModel().addSelectionInterval(row, row);
-                }
+            for (int row : selectedTraceFiles) {
+                selectedTraceLists.add(traceLists.get(row));
             }
         }
+
+        for (LogFileTraces tl : selectedTraceLists) {
+            for (int row : selectedStatistics) {
+                int id = tl.getTraceIndex(commonTraceNames.get(row));
+
+                try {
+                    tl.changeTraceType(id, newType);
+                } catch (TraceException e) {
+                    JOptionPane.showMessageDialog(this, e,
+                            "Trace Type Exception in " + tl.getName(), JOptionPane.ERROR_MESSAGE);
+                }
+                tl.analyseTrace(id);
+            }
+        }
+
+        updateCombinedTraces();
+        statisticTableModel.fireTableDataChanged();
+
+        // selection will be lost by fireTableDataChanged so reselect them
+        for (int row : selectedStatistics) {
+            statisticTable.getSelectionModel().addSelectionInterval(row, row);
+        }
+
+
     }
 
     public void setVisible(boolean b) {
@@ -481,6 +407,32 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         getFullStatistics().setEnabled(enabled);
         getExportPDFAction().setEnabled(enabled);
         getCopyAction().setEnabled(true);
+    }
+
+    public void checkForUniqueNames(LogFileTraces traceList) {
+
+        Map<String, Trace> nameMap = new HashMap<String, Trace>();
+        Map<String, Integer> nameNumberMap = new HashMap<String, Integer>();
+
+        for (int i = 0; i < traceList.getTraceCount(); i++) {
+            Trace trace = traceList.getTrace(i);
+            String name = trace.getName();
+
+            Trace lastTrace = nameMap.get(name);
+
+            if (lastTrace == null) {
+                nameMap.put(name, trace);
+                nameNumberMap.put(name, 1);
+            } else {
+                int number = nameNumberMap.get(name);
+                if (number == 1) {
+                    lastTrace.setName(name + "_" + number);
+                }
+                number += 1;
+                trace.setName(name + "_" + number);
+                nameNumberMap.put(name, number);
+            }
+        }
     }
 
     public void addTraceList(LogFileTraces traceList) {
@@ -558,6 +510,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     // reload all logs
     private void refreshTraceList() {
+        // TODO: maintain selection of traces, trace type & display settings
 
         int[] statsSelRows = statisticTable.getSelectedRows();
 
@@ -637,13 +590,15 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     }
 
     public void traceTableSelectionChanged() {
+        if (traceLists.size() == 0) {
+            return;
+        }
+
         int[] selRows = traceTable.getSelectedRows();
 
         if (selRows.length == 0) {
             getRemoveTraceAction().setEnabled(false);
             getReloadAction().setEnabled(false);
-            // todo how to merge reloadButton to getReloadAction()?
-            reloadButton.setEnabled(false);
             setAnalysesEnabled(false);
             return;
         }
@@ -652,7 +607,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         getRemoveTraceAction().setEnabled(true);
         getReloadAction().setEnabled(true);
-        reloadButton.setEnabled(true);
 
         currentTraceLists.clear();
 
@@ -661,7 +615,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 // Combined is include in the selection so disable remove
                 getRemoveTraceAction().setEnabled(false);
                 getReloadAction().setEnabled(false);
-                reloadButton.setEnabled(false);
                 currentTraceLists.add(combinedTraces);
             }
         }
@@ -723,10 +676,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         } else {
             statisticTable.getSelectionModel().setSelectionInterval(0, 0);
         }
-
-//        getIntersectionOfSelectedTraceLists();
-
-//        message = "  " + updateStatusMessage(currentTraceLists);
 
         filterStatus.setText(message);
     }
@@ -855,7 +804,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         realButton.setEnabled(selRows.length > 0);
         integerButton.setEnabled(selRows.length > 0);
-//        binaryButton.setEnabled(selRows.length > 0);
         categoricalButton.setEnabled(selRows.length > 0);
     }
 
@@ -1148,6 +1096,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                                     new Runnable() {
                                         public void run() {
                                             analyseTraceList(traces);
+                                            checkForUniqueNames(traces);
                                             addTraceList(traces);
                                         }
                                     });
@@ -1172,15 +1121,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                                                     JOptionPane.ERROR_MESSAGE);
                                         }
                                     });
-//                    } catch (final Exception ex) {
-//                        EventQueue.invokeLater (
-//                                new Runnable () {
-//                                    public void run () {
-//                                        JOptionPane.showMessageDialog(frame, "Fatal exception: " + ex.getMessage(),
-//                                                "Error reading file",
-//                                                JOptionPane.ERROR_MESSAGE);
-//                                    }
-//                                });
                         }
 
                     }
@@ -1190,10 +1130,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             } catch (FileNotFoundException fnfe) {
                 JOptionPane.showMessageDialog(this, "Unable to open file: File not found",
                         "Unable to open file",
-                        JOptionPane.ERROR_MESSAGE);
-            } catch (IOException ioex) {
-                JOptionPane.showMessageDialog(this, "File I/O Error: " + ioex,
-                        "File I/O Error",
                         JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Fatal exception: " + ex,
@@ -1307,7 +1243,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (currentTraceLists.size() != 1) {
             JOptionPane.showMessageDialog(this, "Please select exactly one trace to do\n" +
-                    "this analysis on, or select the Combined trace.",
+                            "this analysis on, or select the Combined trace.",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1335,7 +1271,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (currentTraceLists.size() != 1) {
             JOptionPane.showMessageDialog(this, "Please select exactly one trace to do\n" +
-                    "this analysis on, (but not the Combined trace).",
+                            "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1362,7 +1298,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (currentTraceLists.size() != 1) {
             JOptionPane.showMessageDialog(this, "Please select exactly one trace to do\n" +
-                    "this analysis on, (but not the Combined trace).",
+                            "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1389,7 +1325,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (currentTraceLists.size() != 1) {
             JOptionPane.showMessageDialog(this, "Please select exactly one trace to do\n" +
-                    "this analysis on, (but not the Combined trace).",
+                            "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1417,7 +1353,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (currentTraceLists.size() != 1) {
             JOptionPane.showMessageDialog(this, "Please select exactly one trace to do\n" +
-                    "this analysis on, (but not the Combined trace).",
+                            "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1445,7 +1381,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (currentTraceLists.size() != 1) {
             JOptionPane.showMessageDialog(this, "Please select exactly one trace to do\n" +
-                    "this analysis on, (but not the Combined trace).",
+                            "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1472,7 +1408,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (currentTraceLists.size() != 1) {
             JOptionPane.showMessageDialog(this, "Please select exactly one trace to do\n" +
-                    "this analysis on, (but not the Combined trace).",
+                            "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1499,7 +1435,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         if (currentTraceLists.size() != 1) {
             JOptionPane.showMessageDialog(this, "Please select exactly one trace to do\n" +
-                    "this analysis on, (or the Combined trace).",
+                            "this analysis on, (or the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1873,7 +1809,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
     };
 
-    private final AbstractAction reloadAction = new AbstractAction("Reload Trace File ...") {
+    private final AbstractAction reloadAction = new AbstractAction("Reload Trace File(s)...") {
         public void actionPerformed(ActionEvent ae) {
             refreshTraceList();
         }

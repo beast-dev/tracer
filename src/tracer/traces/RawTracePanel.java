@@ -73,7 +73,7 @@ public class RawTracePanel extends TraceChartPanel {
         super(frame);
         traceChart = new JTraceChart(new LinearAxis(Axis.AT_ZERO, Axis.AT_DATA), new LinearAxis());
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
-        JToolBar toolBar = createToolBar(frame);
+        JToolBar toolBar = createToolBar(currentSettings);
         setupMainPanel(toolBar);
     }
 
@@ -99,7 +99,7 @@ public class RawTracePanel extends TraceChartPanel {
         return (JTraceChart) traceChart;
     }
 
-    protected JToolBar createToolBar(final JFrame frame) {
+    protected JToolBar createToolBar(Settings settings) {
         JToolBar toolBar = super.createToolBar();
 
         burninCheckBox.setSelected(true);
@@ -118,10 +118,22 @@ public class RawTracePanel extends TraceChartPanel {
         linePlotCheckBox.setOpaque(false);
         toolBar.add(linePlotCheckBox);
 
-        addLegendCombo(toolBar);
-
-        toolBar.add(listenButton);
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+
+        JLabel label = (JLabel)createLegendComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
+        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.legendAlignment);
+
+        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+
+        label = (JLabel)createColourByComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
+        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.colourBy.ordinal());
+
+//        toolBar.add(listenButton);
+//        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
         burninCheckBox.addActionListener(
                 new java.awt.event.ActionListener() {
