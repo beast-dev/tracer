@@ -305,7 +305,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                     switch (currentSettings.type) {
                         case KDE:
                             plot = createKDEPlot(values);
-                            plot.setName(name + " KDE");
+                            plot.setName(name);
                             if (tl instanceof CombinedTraces) {
                                 plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
                             } else {
