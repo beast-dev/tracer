@@ -366,6 +366,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         } else {
             setYLabel(traceType, new String[]{"Density", "Probability"});
         }
+        setLegend(currentSettings.legendAlignment);
 
         validate();
         repaint();

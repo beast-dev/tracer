@@ -31,6 +31,7 @@ import dr.app.gui.chart.JChartPanel;
 import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 import jam.framework.Exportable;
+import tracer.application.PanelUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,10 +48,38 @@ import java.awt.event.ActionEvent;
  */
 public abstract class TraceChartPanel extends JPanel implements Exportable {
 
+    protected enum LegendAlignment {
+        NONE("None"),
+        TOP("Top"), TOP_RIGHT("Top-Right"), RIGHT("Right"), BOTTOM_RIGHT("Bottom-Right"),
+        BOTTOM("Bottom"), BOTTOM_LEFT("Bottom-Left"), LEFT("Left"), TOP_LEFT("Top-Left");
+
+        LegendAlignment(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        private String name;
+    };
+
     protected enum ColourByOptions {
-        COLOUR_BY_TRACE,
-        COLOUR_BY_FILE,
-        COLOUR_BY_ALL
+        COLOUR_BY_TRACE("Trace"),
+        COLOUR_BY_FILE("Trace File"),
+        COLOUR_BY_ALL("All");
+
+        ColourByOptions(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        private String name;
     };
 
     protected static final Paint[] LEGACY_PAINTS = new Paint[]{
@@ -116,7 +145,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
     protected class Settings {
         // shared settings
-        int legendAlignment = 0;
+        LegendAlignment legendAlignment = LegendAlignment.NONE;
         ColourByOptions colourBy = ColourByOptions.COLOUR_BY_TRACE;
         Paint[] palette = RAINBOW;
 
@@ -216,10 +245,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      */
     protected JButton createSetupButton() {
         JButton chartSetupButton = new JButton("Setup...");
-        chartSetupButton.putClientProperty(
-                "Quaqua.Button.style", "default"
-        );
-        chartSetupButton.setFont(UIManager.getFont("SmallSystemFont"));
+        PanelUtils.setupComponent(chartSetupButton);
         chartSetupButton.addActionListener(
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(ActionEvent actionEvent) {
@@ -271,16 +297,23 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * @returns the label but the combo can be accessed with .getLabelFor() method.
      */
     protected JLabel createLegendComboAndLabel() {
-        final JComboBox legendCombo = new JComboBox(
-                new String[]{"None", "Top-Left", "Top", "Top-Right", "Left",
-                        "Right", "Bottom-Left", "Bottom", "Bottom-Right"}
-        );
+        final JComboBox<LegendAlignment> legendCombo = new JComboBox<LegendAlignment>(LegendAlignment.values());
         legendCombo.setFont(UIManager.getFont("SmallSystemFont"));
         legendCombo.setOpaque(false);
 
         JLabel label = new JLabel("Legend:");
         label.setFont(UIManager.getFont("SmallSystemFont"));
         label.setLabelFor(legendCombo);
+
+        legendCombo.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        getSettings().legendAlignment = (LegendAlignment)legendCombo.getSelectedItem();
+                        setupTraces();
+                    }
+                }
+        );
 
         return label;
     }
@@ -290,9 +323,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * @returns the label but the combo can be accessed with .getLabelFor() method.
      */
     protected JLabel createColourByComboAndLabel() {
-        final JComboBox colourByCombo = new JComboBox(
-                new String[]{"Trace", "Trace File", "All"}
-        );
+        final JComboBox<ColourByOptions> colourByCombo = new JComboBox<ColourByOptions>(ColourByOptions.values());
         colourByCombo.setFont(UIManager.getFont("SmallSystemFont"));
         colourByCombo.setOpaque(false);
 
@@ -304,7 +335,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                 new java.awt.event.ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        getSettings().colourBy = ColourByOptions.values()[colourByCombo.getSelectedIndex()];
+                        getSettings().colourBy = (ColourByOptions)colourByCombo.getSelectedItem();
                         setupTraces();
                     }
                 }
@@ -317,37 +348,37 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     /**
      * set legend given <code>Settings</code> which includes legend position and colours.
      */
-    private void setLegend( final int legendAlignment) {
+    protected void setLegend(final LegendAlignment legendAlignment) {
         final JChart chart = getChartPanel().getChart();
         switch (legendAlignment) {
-            case 0:
+            case NONE:
                 break;
-            case 1:
-                chart.setLegendAlignment(SwingConstants.NORTH_WEST);
-                break;
-            case 2:
+            case TOP:
                 chart.setLegendAlignment(SwingConstants.NORTH);
                 break;
-            case 3:
+            case TOP_RIGHT:
                 chart.setLegendAlignment(SwingConstants.NORTH_EAST);
                 break;
-            case 4:
-                chart.setLegendAlignment(SwingConstants.WEST);
-                break;
-            case 5:
+            case RIGHT:
                 chart.setLegendAlignment(SwingConstants.EAST);
                 break;
-            case 6:
-                chart.setLegendAlignment(SwingConstants.SOUTH_WEST);
-                break;
-            case 7:
-                chart.setLegendAlignment(SwingConstants.SOUTH);
-                break;
-            case 8:
+            case BOTTOM_RIGHT:
                 chart.setLegendAlignment(SwingConstants.SOUTH_EAST);
                 break;
+            case BOTTOM:
+                chart.setLegendAlignment(SwingConstants.SOUTH);
+                break;
+            case BOTTOM_LEFT:
+                chart.setLegendAlignment(SwingConstants.SOUTH_WEST);
+                break;
+            case LEFT:
+                chart.setLegendAlignment(SwingConstants.WEST);
+                break;
+            case TOP_LEFT:
+                chart.setLegendAlignment(SwingConstants.NORTH_WEST);
+                break;
         }
-        chart.setShowLegend(legendAlignment != 0);
+        chart.setShowLegend(legendAlignment != LegendAlignment.NONE);
     }
 
     protected void setXLabel(String xLabel) {

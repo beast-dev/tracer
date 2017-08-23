@@ -313,6 +313,7 @@ public class RawTracePanel extends TraceChartPanel {
 
         setXLabel("State");
         setYAxisLabel();
+        setLegend(currentSettings.legendAlignment);
 
         validate();
         repaint();

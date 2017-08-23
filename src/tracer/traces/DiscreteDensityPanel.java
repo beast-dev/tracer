@@ -217,6 +217,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
         setXLabelMultipleTraces();
         setYLabel(traceType, new String[]{"Density", "Probability"});
+        setLegend(currentSettings.legendAlignment);
 
         validate();
         repaint();
