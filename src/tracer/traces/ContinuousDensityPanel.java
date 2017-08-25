@@ -50,7 +50,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     private enum Type {
         KDE("KDE"),
         HISTOGRAM("Histogram"),
-        VIOLIN("Vioin");
+        VIOLIN("Violin");
 
         Type(String name) {
             this.name = name;
