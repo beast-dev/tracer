@@ -135,7 +135,7 @@
         <echo message="Windows version release is finished." />
     </target>
 
-    <target name="linux" description="release Linux/Unix version of Tracer">
+    <target name="linux" depends="dist" description="release Linux/Unix version of Tracer">
         <delete dir="${Linux_package_dir}" />
         <!-- Create the release directory -->
         <mkdir dir="${Linux_package_dir}" />
@@ -163,7 +163,7 @@
     <!-- this will only work on Andrew's computer -->
     <property name="AppleSigner" value="Developer ID Application: Andrew Rambaut (9E4WXAQ6SE)" />
 
-    <target name="mac" description="release Mac version of Tracer">
+    <target name="mac" depends="dist" description="release Mac version of Tracer">
         <delete dir="${Mac_package_dir}" />
         <!-- Create the release directory -->
         <mkdir dir="${Mac_package_dir}" />
@@ -232,4 +232,5 @@
         <echo message="Mac version release is finished." />
     </target>
 
+    <target name="build" depends="mac, windows, linux" description="build all the executables" />
 </project>

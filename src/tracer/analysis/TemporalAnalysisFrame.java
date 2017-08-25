@@ -286,12 +286,22 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
         return buffer.toString();
     }
 
+    @Override
+    public Action getReloadAction() {
+        return null;
+    }
+
     public Action getExportDataAction() {
         return exportDataAction;
     }
 
     public Action getExportPDFAction() {
         return exportPDFAction;
+    }
+
+    @Override
+    public Action getExportFullStatisticsAction() {
+        return null;
     }
 
     private AbstractAction exportDataAction = new AbstractAction("Export Data...") {

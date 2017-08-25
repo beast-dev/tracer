@@ -64,7 +64,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
-public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler, AnalysisMenuHandler, TracerFileExtraMenuHandler {
+public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler, AnalysisMenuHandler {
     private final static boolean CONFIRM_BUTTON_PRESSES = false;
 
     private final String[] columnToolTips = {null, null, null,
@@ -404,7 +404,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         getExportAction().setEnabled(enabled);
         getExportDataAction().setEnabled(enabled);
-        getFullStatistics().setEnabled(enabled);
+        getExportFullStatisticsAction().setEnabled(enabled);
         getExportPDFAction().setEnabled(enabled);
         getCopyAction().setEnabled(true);
     }
@@ -1657,7 +1657,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         return reloadAction;
     }
 
-    public Action getFullStatistics() {
+    public Action getExportFullStatisticsAction() {
         return exportFullStatisticsAction;
     }
 

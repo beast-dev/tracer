@@ -73,7 +73,7 @@ public class TracerMacFileMenuFactory implements MenuFactory {
                 menu.add(item);
             }
 
-            action = ((TracerFrame)frame).getReloadAction();
+            action = ((TracerFileMenuHandler)frame).getReloadAction();
             if (action != null) {
                 item = new JMenuItem(action);
                 item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, MenuBarFactory.MENU_MASK + KeyEvent.ALT_MASK));
@@ -85,18 +85,13 @@ public class TracerMacFileMenuFactory implements MenuFactory {
                 menu.add(item);
             }
 
-//            item = new JMenuItem(((TracerFileExtraMenuHandler)frame).getReloadAction());
-//            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MenuBarFactory.MENU_MASK));
-//            item.setEnabled(false);
-//            menu.add(item);
-
             menu.addSeparator();
 
             item = new JMenuItem(((TracerFileMenuHandler)frame).getExportDataAction());
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MenuBarFactory.MENU_MASK));
             menu.add(item);
 
-//            item = new JMenuItem(((TracerFileExtraMenuHandler)frame).getFullStatistics());
+//            item = new JMenuItem(((TracerFileMenuHandler)frame).getExportFullStatisticsAction());
 //            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MenuBarFactory.MENU_MASK + ActionEvent.SHIFT_MASK));
 //            menu.add(item);
 

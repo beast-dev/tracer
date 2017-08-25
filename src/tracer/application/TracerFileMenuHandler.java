@@ -34,8 +34,11 @@ import javax.swing.*;
  */
 public interface TracerFileMenuHandler {
 
+	Action getReloadAction();
+
 	Action getExportDataAction();
 
 	Action getExportPDFAction();
 
+	Action getExportFullStatisticsAction();
 }
