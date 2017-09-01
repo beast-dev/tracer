@@ -91,7 +91,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 //    private final List<TraceList> allTraceLists = new ArrayList<TraceList>();
     private CombinedTraces combinedTraces = null;
 
-    private final List<String> commonTraceNames = new ArrayList<String>();
+    private List<String> commonTraceNames = new ArrayList<String>();
     private boolean homogenousTraceFiles = true;
 
     private JButton realButton;
@@ -1589,7 +1589,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         public Object getValueAt(int row, int col) {
             String traceName = commonTraceNames.get(row);
 
-            if (col == 0) return traceName;
+            if (col == 0) {
+                return traceName;
+            }
 
             if (!homogenousTraceFiles) {
                 return "n/a";
@@ -1635,8 +1637,13 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             if (columnIndex == 0 && currentTraceLists.size() == 1) {
+                //TODO store parameter names in a single object
+                //parameter names are stored both in currentTraceLists and in commonTraceNames
+                //this makes for difficult to maintain code (commented code below fixes issue #101)
                 currentTraceLists.get(0).getTrace(rowIndex).setName(aValue.toString());
                 statisticTableModel.fireTableDataChanged();
+                //commonTraceNames.remove(rowIndex);
+                //commonTraceNames.add(rowIndex, aValue.toString());
             }
         }
 
