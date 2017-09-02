@@ -1639,11 +1639,13 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             if (columnIndex == 0 && currentTraceLists.size() == 1) {
                 //TODO store parameter names in a single object
                 //parameter names are stored both in currentTraceLists and in commonTraceNames
-                //this makes for difficult to maintain code (commented code below fixes issue #101)
+                //this makes for difficult to maintain code (code below fixes issue #101)
                 currentTraceLists.get(0).getTrace(rowIndex).setName(aValue.toString());
                 statisticTableModel.fireTableDataChanged();
-                //commonTraceNames.remove(rowIndex);
-                //commonTraceNames.add(rowIndex, aValue.toString());
+                commonTraceNames.remove(rowIndex);
+                commonTraceNames.add(rowIndex, aValue.toString());
+                //suggest to select the row of which the name has been changed
+                statisticTable.setRowSelectionInterval(rowIndex, rowIndex);
             }
         }
 
