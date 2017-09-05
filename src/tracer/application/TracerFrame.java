@@ -170,7 +170,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             }
         });
 
-        traceTable.setFocusable(false);
         scrollPane1 = new JScrollPane(traceTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -237,8 +236,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         });
 
         TableEditorStopper.ensureEditingStopWhenTableLosesFocus(statisticTable);
-
-        statisticTable.setFocusable(false);
 
         JScrollPane scrollPane2 = new JScrollPane(statisticTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
