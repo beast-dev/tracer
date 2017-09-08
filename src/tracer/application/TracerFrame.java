@@ -506,6 +506,12 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         int[] statsSelRows = statisticTable.getSelectedRows();
 
+        System.out.println("refreshTraceList()");
+        for (int row : statsSelRows) {
+            System.out.print(row + " ");
+        }
+        System.out.println();
+
         LogFileTraces[] tls = removeTraceList();
         if (tls.length > 0) {
             final LogFileTraces[] newTls = new LogFileTraces[tls.length];
@@ -514,10 +520,27 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 newTls[i] = new LogFileTraces(tls[i].getName(), tls[i].getFile());
             }
 
-            // loadTraces(in) and addTraceList
-            processTraces(newTls);
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    processTraces(newTls);
+                    return null;
+                }
 
-            //todo selection not working, wait processTraces finish?
+                @Override
+                protected void done() {
+                    updateCombinedTraces();
+                    statisticTableModel.fireTableDataChanged();
+                    statisticTable.getSelectionModel().clearSelection();
+                    for (int row : statsSelRows) {
+                        statisticTable.getSelectionModel().addSelectionInterval(row, row);
+                    }
+                    traceTableSelectionChanged();
+                    statisticTableSelectionChanged();
+                }
+            };
+            worker.execute();
+
 //            updateCombinedTraces();
 //
 //            statisticTableModel.fireTableDataChanged();
