@@ -183,11 +183,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         reloadButton.setText("Reload");
         PanelUtils.setupComponent(reloadButton);
         reloadButton.setToolTipText("Reload the selected log file(s)");
-        reloadButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                refreshTraceList();
-            }
-        });
         getReloadAction().setEnabled(false);
 
         controlPanel1.add(actionPanel1);
