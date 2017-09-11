@@ -352,12 +352,21 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         updateCombinedTraces();
         statisticTableModel.fireTableDataChanged();
+        traceTableModel.fireTableDataChanged();
 
         // selection will be lost by fireTableDataChanged so reselect them
+        statisticTable.getSelectionModel().clearSelection();
         for (int row : selectedStatistics) {
             statisticTable.getSelectionModel().addSelectionInterval(row, row);
         }
 
+        traceTable.getSelectionModel().clearSelection();
+        for (int row : selectedTraceFiles) {
+            traceTable.getSelectionModel().addSelectionInterval(row, row);
+        }
+
+        //traceTableSelectionChanged();
+        //statisticTableSelectionChanged();
 
     }
 
