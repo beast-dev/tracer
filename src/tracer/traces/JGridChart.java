@@ -83,7 +83,7 @@ public class JGridChart extends JChart {
         //System.out.println("JGridChart: getPlotName = " + index);
         if (index >= 1 && index <= getPlotCount()) {
             Plot plot = getPlot(index - 1);
-            System.out.println("  " + plot.getName());
+            //System.out.println("  " + plot.getName());
             return plot.getName();
         } else {
             return "";
