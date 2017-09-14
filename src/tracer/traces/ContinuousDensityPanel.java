@@ -82,9 +82,13 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     private final JToolBar violinToolBar;
     private final ChartSetupDialog violinChartSetupDialog;
 
+    private JCheckBox sampleCheckBox = new JCheckBox("Sample only");
+    private JCheckBox pointsCheckBox = new JCheckBox("Draw as points");
+    private JCheckBox translucencyCheckBox = new JCheckBox("Use translucency");
+
     private final JChart covariateChart;
     private final JChartPanel covariateChartPanel;
-    private final JToolBar covariateToolBar;
+    private JToolBar covariateToolBar;
     private final CovarianceData covarianceData;
 
     private final JComboBox<Type> displayCombo = new JComboBox<Type>( Type.values() );
@@ -186,6 +190,9 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         currentSettings.type = (Type)displayCombo.getSelectedItem();
+                        if (currentSettings.type == Type.COVARIANCE) {
+                            covariateToolBar = createToolBar(Type.COVARIANCE, currentSettings);
+                        }
                         setupTraces();
                     }
                 }
@@ -196,31 +203,49 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     private JToolBar createToolBar(Type type, Settings settings) {
         JToolBar toolBar = super.createToolBar();
 
-        toolBar.add(createSetupButton());
+        if (currentSettings.type != Type.COVARIANCE) {
+            toolBar.add(createSetupButton());
 
-        if (type == Type.HISTOGRAM) {
+            if (type == Type.HISTOGRAM) {
+                toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+
+                JLabel label = (JLabel) createBinsComboAndLabel();
+                toolBar.add(label);
+                toolBar.add(label.getLabelFor());
+
+                ((JComboBox) label.getLabelFor()).setSelectedItem(settings.minimumBins);
+            }
+
             toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
-            JLabel label = (JLabel)createBinsComboAndLabel();
+            JLabel label = (JLabel) createLegendComboAndLabel();
             toolBar.add(label);
             toolBar.add(label.getLabelFor());
+            ((JComboBox) label.getLabelFor()).setSelectedItem(settings.legendAlignment);
 
-            ((JComboBox)label.getLabelFor()).setSelectedItem(settings.minimumBins);
+            toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+
+            label = (JLabel) createColourByComboAndLabel();
+            toolBar.add(label);
+            toolBar.add(label.getLabelFor());
+            ((JComboBox) label.getLabelFor()).setSelectedItem(settings.colourBy.ordinal());
+        } else {
+            sampleCheckBox.setOpaque(false);
+            sampleCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
+            // todo make 'samples only' unchecked as default for ordinal types
+            sampleCheckBox.setSelected(true);
+            toolBar.add(sampleCheckBox);
+
+            pointsCheckBox.setOpaque(false);
+            pointsCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
+            toolBar.add(pointsCheckBox);
+
+            translucencyCheckBox.setOpaque(false);
+            translucencyCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
+            toolBar.add(translucencyCheckBox);
+
+            toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
         }
-
-        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
-
-        JLabel label = (JLabel)createLegendComboAndLabel();
-        toolBar.add(label);
-        toolBar.add(label.getLabelFor());
-        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.legendAlignment);
-
-        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
-
-        label = (JLabel)createColourByComboAndLabel();
-        toolBar.add(label);
-        toolBar.add(label.getLabelFor());
-        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.colourBy.ordinal());
 
         return toolBar;
     }
@@ -234,6 +259,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
             case VIOLIN:
                 return violinChartSetupDialog;
             case COVARIANCE:
+                return null;
             default:
                 throw new IllegalArgumentException("Unknown chart type");
         }
