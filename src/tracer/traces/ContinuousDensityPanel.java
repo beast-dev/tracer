@@ -424,11 +424,11 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                         }
                     }
                 } else {
-                    covariateChartPanel.removeAll();
-                    covariateChartPanel.setXAxisTitle("");
-                    covariateChartPanel.setYAxisTitle("");
+                    getChartPanel().getChart().removeAllPlots();
+                    setXLabel("");
+                    setYLabel("");
                     messageLabel.setText("Select two statistics or traces from the table to view their correlation");
-                    covariateChartPanel.add(messageLabel);
+                    getChartPanel().getChart().add(messageLabel);
                 }
             }
 
@@ -456,12 +456,12 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         setXLabelMultipleTraces();
         if (currentSettings.type == Type.VIOLIN) {
             setYLabel("Value");
-        } else {
+        } else if (currentSettings.type != Type.COVARIANCE) {
             setYLabel(traceType, new String[]{"Density", "Probability"});
         }
         setLegend(currentSettings.legendAlignment);
 
-        if (currentSettings.type == Type.COVARIANCE) {
+        if (currentSettings.type == Type.COVARIANCE && covarianceData.numberOfEntries() > 1) {
             setXLabel("Trait");
             setYLabel("Trait");
         }
