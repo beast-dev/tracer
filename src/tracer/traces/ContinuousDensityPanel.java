@@ -1,7 +1,7 @@
 /*
  * DensityPanel.java
  *
- * Copyright (c) 2002-2017 Alexei Drummond, Andrew Rambaut and Marc Suchard
+ * Copyright (c) 2002-2015 Alexei Drummond, Andrew Rambaut and Marc Suchard
  *
  * This file is part of BEAST.
  * See the NOTICE file distributed with this work for additional
@@ -26,7 +26,6 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.app.gui.util.CovarianceData;
 import dr.inference.trace.Trace;
 import dr.inference.trace.TraceCorrelation;
 import dr.inference.trace.TraceList;
@@ -43,7 +42,6 @@ import java.util.List;
  *
  * @author Andrew Rambaut
  * @author Alexei Drummond
- * @author Guy Baele
  * @version $Id: DensityPanel.java,v 1.3 2006/11/29 09:54:30 rambaut Exp $
  */
 public class ContinuousDensityPanel extends TraceChartPanel {
@@ -52,8 +50,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     private enum Type {
         KDE("KDE"),
         HISTOGRAM("Histogram"),
-        VIOLIN("Violin"),
-        COVARIANCE("Covariance");
+        VIOLIN("Vioin");
 
         Type(String name) {
             this.name = name;
@@ -81,15 +78,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     private final JChartPanel violinChartPanel;
     private final JToolBar violinToolBar;
     private final ChartSetupDialog violinChartSetupDialog;
-
-    private JCheckBox sampleCheckBox = new JCheckBox("Sample only");
-    private JCheckBox pointsCheckBox = new JCheckBox("Draw as points");
-    private JCheckBox translucencyCheckBox = new JCheckBox("Use translucency");
-
-    private final JChart covariateChart;
-    private final JChartPanel covariateChartPanel;
-    private JToolBar covariateToolBar;
-    private final CovarianceData covarianceData;
 
     private final JComboBox<Type> displayCombo = new JComboBox<Type>( Type.values() );
 
@@ -132,11 +120,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         violinChartSetupDialog = new ChartSetupDialog(frame, false, true, false, true,
                 Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK);
 
-        covariateChart = new JGridChart();
-        covariateChartPanel = new JChartPanel(covariateChart, "", "", "");
-        covariateToolBar = createToolBar(Type.COVARIANCE, currentSettings);
-        covarianceData = new CovarianceData();
-
         JToolBar topToolBar = createTopToolBar();
 
         add(topToolBar, BorderLayout.NORTH);
@@ -152,8 +135,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                 return histogramToolBar;
             case VIOLIN:
                 return violinToolBar;
-            case COVARIANCE:
-                return covariateToolBar;
             default:
                 throw new IllegalArgumentException("Unknown chart type");
         }
@@ -167,8 +148,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                 return histogramChartPanel;
             case VIOLIN:
                 return violinChartPanel;
-            case COVARIANCE:
-                return covariateChartPanel;
             default:
                 throw new IllegalArgumentException("Unknown chart type");
         }
@@ -190,9 +169,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         currentSettings.type = (Type)displayCombo.getSelectedItem();
-                        if (currentSettings.type == Type.COVARIANCE) {
-                            covariateToolBar = createToolBar(Type.COVARIANCE, currentSettings);
-                        }
                         setupTraces();
                     }
                 }
@@ -203,49 +179,31 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     private JToolBar createToolBar(Type type, Settings settings) {
         JToolBar toolBar = super.createToolBar();
 
-        if (currentSettings.type != Type.COVARIANCE) {
-            toolBar.add(createSetupButton());
+        toolBar.add(createSetupButton());
 
-            if (type == Type.HISTOGRAM) {
-                toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
-
-                JLabel label = (JLabel) createBinsComboAndLabel();
-                toolBar.add(label);
-                toolBar.add(label.getLabelFor());
-
-                ((JComboBox) label.getLabelFor()).setSelectedItem(settings.minimumBins);
-            }
-
+        if (type == Type.HISTOGRAM) {
             toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
-            JLabel label = (JLabel) createLegendComboAndLabel();
+            JLabel label = (JLabel)createBinsComboAndLabel();
             toolBar.add(label);
             toolBar.add(label.getLabelFor());
-            ((JComboBox) label.getLabelFor()).setSelectedItem(settings.legendAlignment);
 
-            toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
-
-            label = (JLabel) createColourByComboAndLabel();
-            toolBar.add(label);
-            toolBar.add(label.getLabelFor());
-            ((JComboBox) label.getLabelFor()).setSelectedItem(settings.colourBy.ordinal());
-        } else {
-            sampleCheckBox.setOpaque(false);
-            sampleCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
-            // todo make 'samples only' unchecked as default for ordinal types
-            sampleCheckBox.setSelected(true);
-            toolBar.add(sampleCheckBox);
-
-            pointsCheckBox.setOpaque(false);
-            pointsCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
-            toolBar.add(pointsCheckBox);
-
-            translucencyCheckBox.setOpaque(false);
-            translucencyCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
-            toolBar.add(translucencyCheckBox);
-
-            toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+            ((JComboBox)label.getLabelFor()).setSelectedItem(settings.minimumBins);
         }
+
+        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+
+        JLabel label = (JLabel)createLegendComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
+        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.legendAlignment);
+
+        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+
+        label = (JLabel)createColourByComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
+        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.colourBy.ordinal());
 
         return toolBar;
     }
@@ -258,8 +216,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                 return densityChartSetupDialog;
             case VIOLIN:
                 return violinChartSetupDialog;
-            case COVARIANCE:
-                return null;
             default:
                 throw new IllegalArgumentException("Unknown chart type");
         }
@@ -318,30 +274,17 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         return new ViolinPlot(0.8, values, DEFAULT_KDE_BINS);
     }
 
-    protected Plot createCovariancePlot(List values) {
-        return new CovariancePlot(values, DEFAULT_KDE_BINS);
-    }
-
-    protected Plot createCovariancePlot(List xValues, List yValues) {
-        return new CovariancePlot(xValues, yValues);
-    }
 
     protected void setupTraces() {
         // return if no traces selected
         if (!removeAllPlots(false)) return;
 
-        if (currentSettings.type == Type.COVARIANCE) {
-            covarianceData.clear();
-        }
-
         int i = 0;
         TraceType traceType = null;
         for (TraceList tl : traceLists) {
-            //System.out.println("TraceList: " + tl.getName());
             int n = tl.getStateCount();
 
             for (String traceName : traceNames) {
-                //System.out.println("traceName: " + traceName);
                 int traceIndex = tl.getTraceIndex(traceName);
                 Trace trace = tl.getTrace(traceIndex);
                 TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
@@ -384,10 +327,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                                 plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
                             }
                             break;
-                        case COVARIANCE:
-                            //collect all traceNames and values while looping here
-                            covarianceData.add(name, values);
-                            break;
                     }
 
                     if (plot != null) {
@@ -397,9 +336,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                             plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
                         }
 
-                        if (currentSettings.type != Type.COVARIANCE) {
-                            getChartPanel().getChart().addPlot(plot);
-                        }
+                        getChartPanel().getChart().addPlot(plot);
                     }
 
                     // colourBy
@@ -409,41 +346,12 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                     if (i == currentSettings.palette.length) i = 0;
                 }
             }
-
-            //add another routine here for the COVARIANCE plot, now that all the data has been collected
-            //adding this here and not yet combining data for multiple .log files
-            //TODO combine for multiple .log files once it's working for a single .log file
-            if (currentSettings.type == Type.COVARIANCE) {
-                if (covarianceData.numberOfEntries() > 1) {
-                    for (String one : covarianceData.getTraceNames()) {
-                        for (String two : covarianceData.getTraceNames()) {
-                            //System.out.println("adding CovariancePlot: (" + one + "," + two + ")");
-                            Plot plot = new CovariancePlot(two, covarianceData.getDataForKey(one), covarianceData.getDataForKey(two));
-                            plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
-                            getChartPanel().getChart().addPlot(plot);
-                        }
-                    }
-                } else {
-                    getChartPanel().getChart().removeAllPlots();
-                    setXLabel("");
-                    setYLabel("");
-                    messageLabel.setText("Select two statistics or traces from the table to view their correlation");
-                    getChartPanel().getChart().add(messageLabel);
-                }
-            }
-
             if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
                 i++;
             } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
                 i = 0;
             }
             if (i >= currentSettings.palette.length) i = 0;
-        }
-
-        if (currentSettings.type == Type.COVARIANCE) {
-            for (int p = 0; p < getChartPanel().getChart().getPlotCount(); p++) {
-                ((CovariancePlot)(getChartPanel().getChart().getPlot(p))).setTotalPlotCount(getChartPanel().getChart().getPlotCount());
-            }
         }
 
         // swap in the correct chart panel
@@ -456,15 +364,10 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         setXLabelMultipleTraces();
         if (currentSettings.type == Type.VIOLIN) {
             setYLabel("Value");
-        } else if (currentSettings.type != Type.COVARIANCE) {
+        } else {
             setYLabel(traceType, new String[]{"Density", "Probability"});
         }
         setLegend(currentSettings.legendAlignment);
-
-        if (currentSettings.type == Type.COVARIANCE && covarianceData.numberOfEntries() > 1) {
-            setXLabel("Trait");
-            setYLabel("Trait");
-        }
 
         validate();
         repaint();
