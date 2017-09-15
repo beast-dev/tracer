@@ -1,7 +1,7 @@
 /*
  * JointDensityPanel.java
  *
- * Copyright (c) 2002-2015 Alexei Drummond, Andrew Rambaut and Marc Suchard
+ * Copyright (c) 2002-2017 Alexei Drummond, Andrew Rambaut and Marc Suchard
  *
  * This file is part of BEAST.
  * See the NOTICE file distributed with this work for additional
@@ -26,10 +26,8 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.inference.trace.TraceCorrelation;
-import dr.inference.trace.TraceDistribution;
-import dr.inference.trace.TraceList;
-import dr.inference.trace.TraceType;
+import dr.app.gui.util.CovarianceData;
+import dr.inference.trace.*;
 import dr.stats.Variate;
 
 import javax.swing.*;
@@ -44,11 +42,26 @@ import java.util.List;
  *
  * @author Andrew Rambaut
  * @author Alexei Drummond
+ * @author Guy Baele
  * @version $Id: CorrelationPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
 public class JointDensityPanel extends TraceChartPanel {
 
-    private Settings currentSettings = new Settings();
+    private enum Type {
+        BOXPLOT("Boxplot"),
+        COVARIANCE("Covariance");
+
+        Type(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        private final String name;
+    }
 
     private TableScrollPane tableScrollPane = new TableScrollPane();
 
@@ -67,8 +80,14 @@ public class JointDensityPanel extends TraceChartPanel {
     private String name1;
     private String name2;
 
+    private Type currentType;
+
     private JChart traceChart;
     private final JChartPanel chartPanel;
+
+    private final JChart covariateChart;
+    private final JChartPanel covariateChartPanel;
+    private final CovarianceData covarianceData;
 
     private ChartSetupDialog chartSetupDialog = null;
 
@@ -96,12 +115,25 @@ public class JointDensityPanel extends TraceChartPanel {
         traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS),
                 new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
+
+        covariateChart = new JGridChart();
+        covarianceData = new CovarianceData();
+        covariateChartPanel = new JChartPanel(covariateChart, "", "", "");
+
+        this.currentType = Type.BOXPLOT;
+
         JToolBar toolBar = createToolBar(frame);
         setupMainPanel(toolBar);
     }
 
     public JChartPanel getChartPanel() {
-        return chartPanel;
+        if (currentType == Type.BOXPLOT) {
+            return chartPanel;
+        } else if (currentType == Type.COVARIANCE) {
+            return covariateChartPanel;
+        } else {
+            throw new IllegalArgumentException("Unknown chartpanel type");
+        }
     }
 
     @Override
@@ -118,8 +150,14 @@ public class JointDensityPanel extends TraceChartPanel {
         return null;
     }
 
-    protected BoxPlotChart getChart() {
-        return (BoxPlotChart) traceChart;
+    protected JChart getChart() {
+        if (currentType == Type.BOXPLOT) {
+            return traceChart;
+        } else if (currentType == Type.COVARIANCE) {
+            return covariateChart;
+        } else {
+            throw new IllegalArgumentException("Unknown chart type");
+        }
     }
 
     protected JToolBar createToolBar(final JFrame frame) {
@@ -165,14 +203,13 @@ public class JointDensityPanel extends TraceChartPanel {
     }
 
     public void setCombinedTraces() {
-        chartPanel.setXAxisTitle("");
-        chartPanel.setYAxisTitle("");
+        getChartPanel().setXAxisTitle("");
+        getChartPanel().setYAxisTitle("");
         messageLabel.setText("Can't show correlation of combined traces");
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
-
-//        correlationChart.removeAllPlots();
+        super.setTraces(traceLists, traceNames);
 
         if (traceLists != null && traceNames != null && traceLists.length == 2 && traceNames.size() == 1) {
             tl1 = traceLists[0];
@@ -200,98 +237,183 @@ public class JointDensityPanel extends TraceChartPanel {
 
     // it was private void setupChartOrTable()
     protected void setupTraces() {
-        getChart().removeAllIntervals();
 
-        if (tl1 == null || tl2 == null) {
+        //System.out.println("setupTraces(): " + traceNames.size());
+        //System.out.println("covariance entries = " + covarianceData.numberOfEntries());
+
+        if (traceNames != null && traceNames.size() <= 2) {
+
+            if (currentType == Type.COVARIANCE) {
+                if (!removeAllPlots(false)) return;
+            }
+
+            currentType = Type.BOXPLOT;
+
+            //when the list of selected statistics is shortened
+            /*if (covarianceData.numberOfEntries() > 2 || covarianceData.numberOfEntries() == 0) {
+                getChartPanel().removeAll();
+                getChartPanel().add(traceChart);
+            }*/
+            ((BoxPlotChart) getChart()).removeAllIntervals();
+
+            if (tl1 == null || tl2 == null) {
 //            getChart().removeAllPlots();
-            chartPanel.remove(tableScrollPane);
+                chartPanel.remove(tableScrollPane);
 
-            chartPanel.setXAxisTitle("");
-            chartPanel.setYAxisTitle("");
-            messageLabel.setText("Select two statistics or traces from the table to view their correlation");
-            return;
-        }
+                chartPanel.setXAxisTitle("");
+                chartPanel.setYAxisTitle("");
+                messageLabel.setText("Select two statistics or traces from the table to view their correlation");
+                return;
+            }
 
-        TraceCorrelation td1 = tl1.getCorrelationStatistics(traceIndex1);
-        TraceCorrelation td2 = tl2.getCorrelationStatistics(traceIndex2);
-        if (td1 == null || td2 == null) {
+            TraceCorrelation td1 = tl1.getCorrelationStatistics(traceIndex1);
+            TraceCorrelation td2 = tl2.getCorrelationStatistics(traceIndex2);
+            if (td1 == null || td2 == null) {
 //            getChart().removeAllPlots();
-            chartPanel.remove(tableScrollPane);
+                chartPanel.remove(tableScrollPane);
 
-            chartPanel.setXAxisTitle("");
-            chartPanel.setYAxisTitle("");
-            messageLabel.setText("Waiting for analysis to complete");
-            return;
-        }
+                chartPanel.setXAxisTitle("");
+                chartPanel.setYAxisTitle("");
+                messageLabel.setText("Waiting for analysis to complete");
+                return;
+            }
 
-        messageLabel.setText("");
+            messageLabel.setText("");
 
-        if (!td1.getTraceType().isNumber() && !td2.getTraceType().isNumber()) {
-            chartPanel.remove(getChart());
-            chartPanel.add(tableScrollPane, "Table");
-
-            sampleCheckBox.setVisible(false);
-            pointsCheckBox.setVisible(false);
-            translucencyCheckBox.setVisible(false);
-            categoryTableProbabilityCombo.setVisible(true);
-            defaultNumberFormatCheckBox.setVisible(true);
-
-            Object[] rowNames = td1.getRange().toArray();
-            Object[] colNames = td2.getRange().toArray();
-            double[][] data = categoricalPlot(td1, td2);
-
-            tableScrollPane.setTable(rowNames, colNames, data, defaultNumberFormatCheckBox.isSelected());
-
-        } else {
-            chartPanel.remove(tableScrollPane);
-            chartPanel.add(getChart(), "Chart");
-//            getChart().removeAllPlots();
-            categoryTableProbabilityCombo.setVisible(false);
-            defaultNumberFormatCheckBox.setVisible(false);
-
-            if (td1.getTraceType().isCategorical()) {
-                mixedCategoricalPlot(td1, td2, false); // isFirstTraceListNumerical
+            if (!td1.getTraceType().isNumber() && !td2.getTraceType().isNumber()) {
+                chartPanel.remove(getChart());
+                chartPanel.add(tableScrollPane, "Table");
 
                 sampleCheckBox.setVisible(false);
                 pointsCheckBox.setVisible(false);
                 translucencyCheckBox.setVisible(false);
+                categoryTableProbabilityCombo.setVisible(true);
+                defaultNumberFormatCheckBox.setVisible(true);
 
+                Object[] rowNames = td1.getRange().toArray();
+                Object[] colNames = td2.getRange().toArray();
+                double[][] data = categoricalPlot(td1, td2);
 
-            } else if (td2.getTraceType().isCategorical()) {
-                mixedCategoricalPlot(td2, td1, true); // isFirstTraceListNumerical
-
-                sampleCheckBox.setVisible(false);
-                pointsCheckBox.setVisible(false);
-                translucencyCheckBox.setVisible(false);
-
-                if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
-                    String swapName = name1;
-                    name1 = name2;
-                    name2 = swapName;
-                }
+                tableScrollPane.setTable(rowNames, colNames, data, defaultNumberFormatCheckBox.isSelected());
 
             } else {
-                numericalPlot(td1, td2);
+                chartPanel.remove(tableScrollPane);
+                chartPanel.add(getChart(), "Chart");
+                //getChart().removeAllPlots();
+                categoryTableProbabilityCombo.setVisible(false);
+                defaultNumberFormatCheckBox.setVisible(false);
 
-                if (td1.getTraceType().isContinuous() && td2.getTraceType().isContinuous()) {
-                    sampleCheckBox.setVisible(true);
-                    pointsCheckBox.setVisible(true);
-                    translucencyCheckBox.setVisible(true);
-                } else {
+                if (td1.getTraceType().isCategorical()) {
+                    mixedCategoricalPlot(td1, td2, false); // isFirstTraceListNumerical
+
                     sampleCheckBox.setVisible(false);
                     pointsCheckBox.setVisible(false);
                     translucencyCheckBox.setVisible(false);
-                }
 
-                if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
-                    String swapName = name1;
-                    name1 = name2;
-                    name2 = swapName;
+
+                } else if (td2.getTraceType().isCategorical()) {
+                    mixedCategoricalPlot(td2, td1, true); // isFirstTraceListNumerical
+
+                    sampleCheckBox.setVisible(false);
+                    pointsCheckBox.setVisible(false);
+                    translucencyCheckBox.setVisible(false);
+
+                    if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
+                        String swapName = name1;
+                        name1 = name2;
+                        name2 = swapName;
+                    }
+
+                } else {
+                    numericalPlot(td1, td2);
+
+                    if (td1.getTraceType().isContinuous() && td2.getTraceType().isContinuous()) {
+                        sampleCheckBox.setVisible(true);
+                        pointsCheckBox.setVisible(true);
+                        translucencyCheckBox.setVisible(true);
+                    } else {
+                        sampleCheckBox.setVisible(false);
+                        pointsCheckBox.setVisible(false);
+                        translucencyCheckBox.setVisible(false);
+                    }
+
+                    if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
+                        String swapName = name1;
+                        name1 = name2;
+                        name2 = swapName;
+                    }
                 }
             }
+            setXLabel(name1);
+            setYLabel(name2);
+
+        } else {
+
+            if (currentType == Type.BOXPLOT) {
+                getChartPanel().removeAll();
+            }
+
+            currentType = Type.COVARIANCE;
+
+            if (!removeAllPlots(false)) return;
+
+            //getChartPanel().removeAll();
+            //getChartPanel().add(covariateChart);
+
+            covarianceData.clear();
+
+            //int i = 0;
+            TraceType traceType = null;
+            for (TraceList tl : traceLists) {
+                for (String traceName : traceNames) {
+                    //System.out.println("traceName: " + traceName);
+                    int traceIndex = tl.getTraceIndex(traceName);
+                    Trace trace = tl.getTrace(traceIndex);
+                    TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
+                    Plot plot = null;
+
+                    if (trace != null) {
+                        String name = tl.getTraceName(traceIndex);
+                        if (traceLists.length > 1) {
+                            name = tl.getName() + " - " + name;
+                        }
+
+                        List values = tl.getValues(traceIndex);
+
+                        // set traceType here to avoid Exception from setYLabel
+                        traceType = trace.getTraceType();
+                        assert traceType.isContinuous();
+
+                        //collect all traceNames and values while looping here
+                        covarianceData.add(name, values);
+
+                        //System.out.println("  entry " + covarianceData.numberOfEntries());
+
+                    }
+                }
+
+                //add another routine here for the COVARIANCE plot, now that all the data has been collected
+                //adding this here and not yet combining data for multiple .log files
+                //TODO combine for multiple .log files once it's working for a single .log file
+                for (String one : covarianceData.getTraceNames()) {
+                    for (String two : covarianceData.getTraceNames()) {
+                        //System.out.println("adding CovariancePlot: (" + one + "," + two + ")");
+                        Plot plot = new CovariancePlot(two, covarianceData.getDataForKey(one), covarianceData.getDataForKey(two));
+                        //plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
+                        getChartPanel().getChart().addPlot(plot);
+                    }
+                }
+
+            }
+
+            for (int p = 0; p < getChartPanel().getChart().getPlotCount(); p++) {
+                ((CovariancePlot)(getChartPanel().getChart().getPlot(p))).setTotalPlotCount(getChartPanel().getChart().getPlotCount());
+            }
+
         }
-        setXLabel(name1);
-        setYLabel(name2);
+
+        JToolBar toolBar = createToolBar(frame);
+        setupMainPanel(toolBar);
 
         validate();
         repaint();
@@ -384,7 +506,7 @@ public class JointDensityPanel extends TraceChartPanel {
         for (Map.Entry<String, TraceDistribution> entry : categoryTdMap.entrySet()) {
             TraceDistribution categoryTd = entry.getValue();
 //                getChart().addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
-            getChart().addBoxPlots(entry.getKey(), categoryTd.getMedian(), categoryTd.getQ1(),
+            ((BoxPlotChart)getChart()).addBoxPlots(entry.getKey(), categoryTd.getMedian(), categoryTd.getQ1(),
                     categoryTd.getQ3(), categoryTd.getMinimum(), categoryTd.getMaximum());
         }
     }
