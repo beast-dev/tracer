@@ -165,7 +165,6 @@ public class JointDensityPanel extends TraceChartPanel {
         }
     }
 
-
     protected JChart getChart() {
         if (currentType == Type.BOXPLOT) {
             return traceChart;
@@ -222,7 +221,7 @@ public class JointDensityPanel extends TraceChartPanel {
         JToolBar toolBar = super.createToolBar();
 
         // toolbar empty at the moment...
-        
+
         return toolBar;
     }
 
@@ -262,15 +261,15 @@ public class JointDensityPanel extends TraceChartPanel {
     // it was private void setupChartOrTable()
     protected void setupTraces() {
 
-        //System.out.println("setupTraces(): " + traceNames.size());
-        //System.out.println("covariance entries = " + covarianceData.numberOfEntries());
+        System.out.println("setupTraces(): " + traceNames.size());
+        System.out.println("covariance entries = " + covarianceData.numberOfEntries());
 
         if (traceNames != null && traceNames.size() <= 2) {
 
-            getChartPanel().removeAll();
-//            if (currentType == Type.COVARIANCE) {
-//                if (!removeAllPlots(false)) return;
-//            }
+            //getChartPanel().removeAll();
+            if (currentType == Type.COVARIANCE) {
+                if (!removeAllPlots(false)) return;
+            }
 
             currentType = Type.BOXPLOT;
 
@@ -374,9 +373,9 @@ public class JointDensityPanel extends TraceChartPanel {
 
         } else {
 
-//            if (currentType == Type.BOXPLOT) {
+            if (currentType == Type.BOXPLOT) {
                 getChartPanel().removeAll();
-//            }
+            }
 
             currentType = Type.COVARIANCE;
 
@@ -395,7 +394,7 @@ public class JointDensityPanel extends TraceChartPanel {
                     int traceIndex = tl.getTraceIndex(traceName);
                     Trace trace = tl.getTrace(traceIndex);
                     TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
-                    Plot plot = null;
+                    //Plot plot = null;
 
                     if (trace != null) {
                         String name = tl.getTraceName(traceIndex);
