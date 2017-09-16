@@ -54,6 +54,8 @@ public class FrequencyPanel extends TraceChartPanel {
 
     private ChartSetupDialog chartSetupDialog = null;
 
+    private JToolBar toolBar;
+
     /**
      * Creates new FrequencyPanel
      */
@@ -62,8 +64,9 @@ public class FrequencyPanel extends TraceChartPanel {
         traceChart = new DiscreteJChart(
                 new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         traceChartPanel = new JChartPanel(traceChart, "","", "Frequency"); // xAxisTitle, yAxisTitle
-        JToolBar toolBar = createToolBar(currentSettings);
-        setupMainPanel(toolBar, false);
+        toolBar = createToolBar(currentSettings);
+
+        setupMainPanel(false);
     }
 
     public JChartPanel getChartPanel() {
@@ -82,6 +85,11 @@ public class FrequencyPanel extends TraceChartPanel {
     @Override
     protected Settings getSettings() {
         return currentSettings;
+    }
+
+    @Override
+    protected JToolBar getToolBar() {
+        return toolBar;
     }
 
     private JToolBar createToolBar(Settings settings) {

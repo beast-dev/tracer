@@ -66,6 +66,8 @@ public class RawTracePanel extends TraceChartPanel {
 
     private ChartSetupDialog chartSetupDialog = null;
 
+    private JToolBar toolBar;
+
     /**
      * Creates new RawTracePanel
      */
@@ -73,8 +75,9 @@ public class RawTracePanel extends TraceChartPanel {
         super(frame);
         traceChart = new JTraceChart(new LinearAxis(Axis.AT_ZERO, Axis.AT_DATA), new LinearAxis());
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
-        JToolBar toolBar = createToolBar(currentSettings);
-        setupMainPanel(toolBar);
+        toolBar = createToolBar(currentSettings);
+        
+        setupMainPanel();
     }
 
     public JChartPanel getChartPanel() {
@@ -99,7 +102,12 @@ public class RawTracePanel extends TraceChartPanel {
         return (JTraceChart) traceChart;
     }
 
-    protected JToolBar createToolBar(Settings settings) {
+    @Override
+    protected JToolBar getToolBar() {
+        return toolBar;
+    }
+
+    private JToolBar createToolBar(Settings settings) {
         JToolBar toolBar = super.createToolBar();
 
         burninCheckBox.setSelected(true);

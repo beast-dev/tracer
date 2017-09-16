@@ -32,7 +32,6 @@ import dr.stats.Variate;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
@@ -85,11 +84,14 @@ public class JointDensityPanel extends TraceChartPanel {
     private JChart traceChart;
     private final JChartPanel chartPanel;
 
-    private final JChart covariateChart;
-    private final JChartPanel covariateChartPanel;
+    private final JChart covarianceChart;
+    private final JChartPanel covarianceChartPanel;
     private final CovarianceData covarianceData;
 
     private ChartSetupDialog chartSetupDialog = null;
+
+    private JToolBar covarianceToolBar;
+    private JToolBar boxPlotToolBar;
 
     public enum CategoryTableProbabilityType {
         JOINT_PROBABILITY("Joint Probability"), CONDITIONAL_PROBABILITY_X("Conditional Probability (?|row)"),
@@ -116,21 +118,23 @@ public class JointDensityPanel extends TraceChartPanel {
                 new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
 
-        covariateChart = new JGridChart();
+        covarianceChart = new JGridChart();
         covarianceData = new CovarianceData();
-        covariateChartPanel = new JChartPanel(covariateChart, "", "", "");
+        covarianceChartPanel = new JChartPanel(covarianceChart, "", "", "");
 
         this.currentType = Type.BOXPLOT;
 
-        JToolBar toolBar = createToolBar(frame);
-        setupMainPanel(toolBar);
+        covarianceToolBar = createCovarianceToolBar(frame);
+        boxPlotToolBar = createBoxPlotToolBar(frame);
+
+        setupMainPanel();
     }
 
     public JChartPanel getChartPanel() {
         if (currentType == Type.BOXPLOT) {
             return chartPanel;
         } else if (currentType == Type.COVARIANCE) {
-            return covariateChartPanel;
+            return covarianceChartPanel;
         } else {
             throw new IllegalArgumentException("Unknown chartpanel type");
         }
@@ -150,17 +154,29 @@ public class JointDensityPanel extends TraceChartPanel {
         return null;
     }
 
+    @Override
+    protected JToolBar getToolBar() {
+        if (currentType == Type.BOXPLOT) {
+            return boxPlotToolBar;
+        } else if (currentType == Type.COVARIANCE) {
+            return covarianceToolBar;
+        } else {
+            throw new IllegalArgumentException("Unknown chartpanel type");
+        }
+    }
+
+
     protected JChart getChart() {
         if (currentType == Type.BOXPLOT) {
             return traceChart;
         } else if (currentType == Type.COVARIANCE) {
-            return covariateChart;
+            return covarianceChart;
         } else {
             throw new IllegalArgumentException("Unknown chart type");
         }
     }
 
-    protected JToolBar createToolBar(final JFrame frame) {
+    private JToolBar createCovarianceToolBar(final JFrame frame) {
         JToolBar toolBar = super.createToolBar();
 
         sampleCheckBox.setOpaque(false);
@@ -199,6 +215,14 @@ public class JointDensityPanel extends TraceChartPanel {
         categoryTableProbabilityCombo.addActionListener(listener);
         defaultNumberFormatCheckBox.addActionListener(listener);
 
+        return toolBar;
+    }
+
+    private JToolBar createBoxPlotToolBar(final JFrame frame) {
+        JToolBar toolBar = super.createToolBar();
+
+        // toolbar empty at the moment...
+        
         return toolBar;
     }
 
@@ -243,9 +267,10 @@ public class JointDensityPanel extends TraceChartPanel {
 
         if (traceNames != null && traceNames.size() <= 2) {
 
-            if (currentType == Type.COVARIANCE) {
-                if (!removeAllPlots(false)) return;
-            }
+            getChartPanel().removeAll();
+//            if (currentType == Type.COVARIANCE) {
+//                if (!removeAllPlots(false)) return;
+//            }
 
             currentType = Type.BOXPLOT;
 
@@ -349,9 +374,9 @@ public class JointDensityPanel extends TraceChartPanel {
 
         } else {
 
-            if (currentType == Type.BOXPLOT) {
+//            if (currentType == Type.BOXPLOT) {
                 getChartPanel().removeAll();
-            }
+//            }
 
             currentType = Type.COVARIANCE;
 
@@ -412,8 +437,7 @@ public class JointDensityPanel extends TraceChartPanel {
 
         }
 
-        JToolBar toolBar = createToolBar(frame);
-        setupMainPanel(toolBar);
+        setupMainPanel();
 
         validate();
         repaint();

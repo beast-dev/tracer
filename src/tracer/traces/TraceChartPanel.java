@@ -196,9 +196,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
         setMinimumSize(new Dimension(300, 150));
         setLayout(new BorderLayout());
-
-        //JToolBar toolBar = createToolBar(frame);
-        //setupMainPanel(toolBar);
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
@@ -213,19 +210,23 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
     protected abstract Settings getSettings();
 
+    protected abstract JToolBar getToolBar();
+
+
     /**
      * add components to main panel
      */
-    protected void setupMainPanel(JToolBar toolBar, boolean addMessageLabel) {
+    protected void setupMainPanel(boolean addMessageLabel) {
+        removeAll();
         if (addMessageLabel) {
             add(messageLabel, BorderLayout.NORTH);
         }
-        add(toolBar, BorderLayout.SOUTH);
+        add(getToolBar(), BorderLayout.SOUTH);
         add(getChartPanel(), BorderLayout.CENTER);
     }
 
-    protected void setupMainPanel(JToolBar toolBar) {
-        setupMainPanel(toolBar, true);
+    protected void setupMainPanel() {
+        setupMainPanel(true);
     }
 
     /**

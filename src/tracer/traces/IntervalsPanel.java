@@ -47,6 +47,8 @@ public class IntervalsPanel extends TraceChartPanel {
 
     private ChartSetupDialog chartSetupDialog = null;
 
+    private JToolBar toolBar;
+
     /**
      * Creates new IntervalsPanel
      */
@@ -55,8 +57,9 @@ public class IntervalsPanel extends TraceChartPanel {
         traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
 
-        JToolBar toolBar = createToolBar();
-        setupMainPanel(toolBar);
+        toolBar = createToolBar();
+
+        setupMainPanel();
     }
 
     public JChartPanel getChartPanel() {
@@ -84,7 +87,12 @@ public class IntervalsPanel extends TraceChartPanel {
         return null;
     }
 
-    protected void setupMainPanel(JToolBar toolBar) {
+    @Override
+    protected JToolBar getToolBar() {
+        return toolBar;
+    }
+
+    protected void setupMainPanel() {
         setLayout(new BorderLayout());
         add(chartPanel, BorderLayout.CENTER);
     }

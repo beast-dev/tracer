@@ -55,6 +55,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
     private Settings currentSettings = new Settings();
 
+    private JToolBar toolBar;
+
     /**
      * Creates new FrequencyPanel
      */
@@ -62,8 +64,9 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         super(frame);
         densityChart = new DiscreteJChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         densityChartPanel = new JChartPanel(densityChart, "","","");
-        JToolBar toolBar = createToolBar(currentSettings);
-        setupMainPanel(toolBar);
+        toolBar = createToolBar(currentSettings);
+
+        setupMainPanel();
     }
 
     protected JChart getChart() {
@@ -85,6 +88,11 @@ public class DiscreteDensityPanel extends TraceChartPanel {
     @Override
     protected TraceChartPanel.Settings getSettings() {
         return currentSettings;
+    }
+
+    @Override
+    protected JToolBar getToolBar() {
+        return toolBar;
     }
 
     private JToolBar createToolBar(Settings settings) {
