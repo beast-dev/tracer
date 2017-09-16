@@ -79,7 +79,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     private final JToolBar violinToolBar;
     private final ChartSetupDialog violinChartSetupDialog;
 
-    private final JComboBox<Type> displayCombo = new JComboBox<Type>( Type.values() );
+    private final JComboBox displayCombo = new JComboBox( Type.values() );
 
     private class Settings extends TraceChartPanel.Settings {
         //        ChartSetupDialog chartSetupDialog = null;

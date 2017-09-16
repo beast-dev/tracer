@@ -297,7 +297,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * @returns the label but the combo can be accessed with .getLabelFor() method.
      */
     protected JLabel createLegendComboAndLabel() {
-        final JComboBox<LegendAlignment> legendCombo = new JComboBox<LegendAlignment>(LegendAlignment.values());
+        final JComboBox legendCombo = new JComboBox(LegendAlignment.values());
         legendCombo.setFont(UIManager.getFont("SmallSystemFont"));
         legendCombo.setOpaque(false);
 
@@ -323,7 +323,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      * @returns the label but the combo can be accessed with .getLabelFor() method.
      */
     protected JLabel createColourByComboAndLabel() {
-        final JComboBox<ColourByOptions> colourByCombo = new JComboBox<ColourByOptions>(ColourByOptions.values());
+        final JComboBox colourByCombo = new JComboBox(ColourByOptions.values());
         colourByCombo.setFont(UIManager.getFont("SmallSystemFont"));
         colourByCombo.setOpaque(false);
 
