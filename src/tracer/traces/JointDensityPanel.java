@@ -424,6 +424,7 @@ public class JointDensityPanel extends TraceChartPanel {
                     for (String two : covarianceData.getTraceNames()) {
                         //System.out.println("adding CovariancePlot: (" + one + "," + two + ")");
                         Plot plot = new CovariancePlot(two, covarianceData.getDataForKey(one), covarianceData.getDataForKey(two));
+                        //Plot plot = new CovariancePlot(two, covarianceData.getDataForKey(one), covarianceData.getDataForKey(two), pointsCheckBox.isSelected(), false);
                         //plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
                         getChartPanel().getChart().addPlot(plot);
                     }
