@@ -108,8 +108,8 @@ public class TracerApp extends MultiDocApplication {
             }
 
             final String nameString = "Tracer";
-            final String versionString = "v1.7-VEME2017";
-            String aboutString = "<html><center><p>MCMC Trace Analysis Tool<br>" +
+            final String versionString = "v1.7-Pre20170916";
+            String aboutString = "<html><font face=\"helvetica,san-serif\"><center><p>MCMC Trace Analysis Tool<br>" +
                     "Version " + versionString + ", 2003-2017</p>" +
                     "<p>by<br>" +
 
@@ -129,7 +129,7 @@ public class TracerApp extends MultiDocApplication {
                     "<p>Source code distributed under the GNU LGPL:<br>" +
                     "<a href=\"http://github.com/beast-dev/tracer/\">http://github.com/beast-dev/tracer/</a></p>" +
                     "<p>Thanks for contributions to: Joseph Heled, Oliver Pybus & Benjamin Redelings</p>" +
-                    "</center></html>";
+                    "</center></font></html>";
 
             String websiteURLString = "http://beast.community/";
             String helpURLString = "http://beast.community/Tracer";

@@ -513,7 +513,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     private void refreshTraceList() {
         // TODO: maintain selection of traces, trace type & display settings
 
-        int[] statsSelRows = statisticTable.getSelectedRows();
+        final int[] statsSelRows = statisticTable.getSelectedRows();
 
         System.out.println("refreshTraceList()");
         for (int row : statsSelRows) {
