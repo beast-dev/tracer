@@ -26,7 +26,7 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.app.gui.util.CovarianceData;
+import dr.app.gui.util.CorrelationData;
 import dr.inference.trace.*;
 import dr.stats.Variate;
 
@@ -48,7 +48,7 @@ public class JointDensityPanel extends TraceChartPanel {
 
     private enum Type {
         BOXPLOT("Boxplot"),
-        COVARIANCE("Covariance");
+        CORRELATION("Correlation");
 
         Type(String name) {
             this.name = name;
@@ -84,13 +84,13 @@ public class JointDensityPanel extends TraceChartPanel {
     private JChart traceChart;
     private final JChartPanel chartPanel;
 
-    private final JChart covarianceChart;
-    private final JChartPanel covarianceChartPanel;
-    private final CovarianceData covarianceData;
+    private final JChart correlationChart;
+    private final JChartPanel correlationChartPanel;
+    private final CorrelationData correlationData;
 
     private ChartSetupDialog chartSetupDialog = null;
 
-    private JToolBar covarianceToolBar;
+    private JToolBar correlationToolBar;
     private JToolBar boxPlotToolBar;
 
     public enum CategoryTableProbabilityType {
@@ -118,13 +118,13 @@ public class JointDensityPanel extends TraceChartPanel {
                 new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
 
-        covarianceChart = new JGridChart();
-        covarianceData = new CovarianceData();
-        covarianceChartPanel = new JChartPanel(covarianceChart, "", "", "");
+        correlationChart = new JGridChart();
+        correlationData = new CorrelationData();
+        correlationChartPanel = new JChartPanel(correlationChart, "", "", "");
 
         this.currentType = Type.BOXPLOT;
 
-        covarianceToolBar = createCovarianceToolBar(frame);
+        correlationToolBar = createCorrelationToolBar(frame);
         boxPlotToolBar = createBoxPlotToolBar(frame);
 
         setupMainPanel();
@@ -133,8 +133,8 @@ public class JointDensityPanel extends TraceChartPanel {
     public JChartPanel getChartPanel() {
         if (currentType == Type.BOXPLOT) {
             return chartPanel;
-        } else if (currentType == Type.COVARIANCE) {
-            return covarianceChartPanel;
+        } else if (currentType == Type.CORRELATION) {
+            return correlationChartPanel;
         } else {
             throw new IllegalArgumentException("Unknown chartpanel type");
         }
@@ -158,8 +158,8 @@ public class JointDensityPanel extends TraceChartPanel {
     protected JToolBar getToolBar() {
         if (currentType == Type.BOXPLOT) {
             return boxPlotToolBar;
-        } else if (currentType == Type.COVARIANCE) {
-            return covarianceToolBar;
+        } else if (currentType == Type.CORRELATION) {
+            return correlationToolBar;
         } else {
             throw new IllegalArgumentException("Unknown chartpanel type");
         }
@@ -168,14 +168,14 @@ public class JointDensityPanel extends TraceChartPanel {
     protected JChart getChart() {
         if (currentType == Type.BOXPLOT) {
             return traceChart;
-        } else if (currentType == Type.COVARIANCE) {
-            return covarianceChart;
+        } else if (currentType == Type.CORRELATION) {
+            return correlationChart;
         } else {
             throw new IllegalArgumentException("Unknown chart type");
         }
     }
 
-    private JToolBar createCovarianceToolBar(final JFrame frame) {
+    private JToolBar createCorrelationToolBar(final JFrame frame) {
         JToolBar toolBar = super.createToolBar();
 
         sampleCheckBox.setOpaque(false);
@@ -262,19 +262,19 @@ public class JointDensityPanel extends TraceChartPanel {
     protected void setupTraces() {
 
         //System.out.println("setupTraces(): " + traceNames.size());
-        //System.out.println("covariance entries = " + covarianceData.numberOfEntries());
+        //System.out.println("correlation entries = " + correlationData.numberOfEntries());
 
         if (traceNames != null && traceNames.size() <= 2) {
 
             //getChartPanel().removeAll();
-            if (currentType == Type.COVARIANCE) {
+            if (currentType == Type.CORRELATION) {
                 if (!removeAllPlots(false)) return;
             }
 
             currentType = Type.BOXPLOT;
 
             //when the list of selected statistics is shortened
-            /*if (covarianceData.numberOfEntries() > 2 || covarianceData.numberOfEntries() == 0) {
+            /*if (correlationData.numberOfEntries() > 2 || correlationData.numberOfEntries() == 0) {
                 getChartPanel().removeAll();
                 getChartPanel().add(traceChart);
             }*/
@@ -377,14 +377,14 @@ public class JointDensityPanel extends TraceChartPanel {
                 getChartPanel().removeAll();
             }
 
-            currentType = Type.COVARIANCE;
+            currentType = Type.CORRELATION;
 
             if (!removeAllPlots(false)) return;
 
             //getChartPanel().removeAll();
-            //getChartPanel().add(covariateChart);
+            //getChartPanel().add(correlationChart);
 
-            covarianceData.clear();
+            correlationData.clear();
 
             //int i = 0;
             TraceType traceType = null;
@@ -409,21 +409,21 @@ public class JointDensityPanel extends TraceChartPanel {
                         assert traceType.isContinuous();
 
                         //collect all traceNames and values while looping here
-                        covarianceData.add(name, values);
+                        correlationData.add(name, values);
 
-                        //System.out.println("  entry " + covarianceData.numberOfEntries());
+                        //System.out.println("  entry " + correlationData.numberOfEntries());
 
                     }
                 }
 
-                //add another routine here for the COVARIANCE plot, now that all the data has been collected
+                //add another routine here for the correlation plot, now that all the data has been collected
                 //adding this here and not yet combining data for multiple .log files
                 //TODO combine for multiple .log files once it's working for a single .log file
-                for (String one : covarianceData.getTraceNames()) {
-                    for (String two : covarianceData.getTraceNames()) {
-                        //System.out.println("adding CovariancePlot: (" + one + "," + two + ")");
-                        //Plot plot = new CovariancePlot(two, covarianceData.getDataForKey(one), covarianceData.getDataForKey(two));
-                        Plot plot = new CovariancePlot(two, covarianceData.getDataForKey(one), covarianceData.getDataForKey(two), pointsCheckBox.isSelected(), false);
+                for (String one : correlationData.getTraceNames()) {
+                    for (String two : correlationData.getTraceNames()) {
+                        //System.out.println("adding CorrelationPlot: (" + one + "," + two + ")");
+                        //Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
+                        Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two), pointsCheckBox.isSelected(), false);
                         //plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
                         getChartPanel().getChart().addPlot(plot);
                     }
@@ -432,7 +432,7 @@ public class JointDensityPanel extends TraceChartPanel {
             }
 
             for (int p = 0; p < getChartPanel().getChart().getPlotCount(); p++) {
-                ((CovariancePlot)(getChartPanel().getChart().getPlot(p))).setTotalPlotCount(getChartPanel().getChart().getPlotCount());
+                ((CorrelationPlot)(getChartPanel().getChart().getPlot(p))).setTotalPlotCount(getChartPanel().getChart().getPlotCount());
             }
 
         }
