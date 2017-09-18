@@ -49,6 +49,20 @@ public class JGridChart extends JChart {
         setYAxis(yVariableAxis);
     }
 
+    public JGridChart(double aspectRatio) {
+        super(null, null, aspectRatio);
+
+        //xVariableAxis = new DiscreteAxis(true, true);
+        //yVariableAxis = new DiscreteAxis(true, true);
+
+        xVariableAxis = new CustomAxis(1, 2);
+        yVariableAxis = new CustomAxis(1, 2);
+
+        //this sets the axes on the JGridChart
+        setXAxis(xVariableAxis);
+        setYAxis(yVariableAxis);
+    }
+
     @Override
     public void addPlot(Plot plot) {
         //System.out.println("JGridChart: addPlot");

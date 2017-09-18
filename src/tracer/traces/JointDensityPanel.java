@@ -118,7 +118,8 @@ public class JointDensityPanel extends TraceChartPanel {
                 new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
 
-        correlationChart = new JGridChart();
+        //correlationChart = new JGridChart();
+        correlationChart = new JGridChart(1.0);
         correlationData = new CorrelationData();
         correlationChartPanel = new JChartPanel(correlationChart, "", "", "");
 
