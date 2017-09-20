@@ -376,9 +376,16 @@ public class JointDensityPanel extends TraceChartPanel {
 
             if (currentType == Type.BOXPLOT) {
                 getChartPanel().removeAll();
+                //sampleCheckBox.setSelected(false);
             }
 
             currentType = Type.CORRELATION;
+
+            //TODO double check what the idea is behind these options
+            categoryTableProbabilityCombo.setVisible(false);
+            defaultNumberFormatCheckBox.setVisible(false);
+            //currently not warning against traces with low ESS values
+            messageLabel.setText("");
 
             if (!removeAllPlots(false)) return;
 
@@ -424,7 +431,7 @@ public class JointDensityPanel extends TraceChartPanel {
                     for (String two : correlationData.getTraceNames()) {
                         //System.out.println("adding CorrelationPlot: (" + one + "," + two + ")");
                         //Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
-                        Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two), pointsCheckBox.isSelected(), false);
+                        Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two), pointsCheckBox.isSelected(), sampleCheckBox.isSelected());
                         //plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
                         getChartPanel().getChart().addPlot(plot);
                     }
