@@ -421,7 +421,7 @@ public class JointDensityPanel extends TraceChartPanel {
                 //TODO combine for multiple .log files once it's working for a single .log file
                 for (String one : correlationData.getTraceNames()) {
                     for (String two : correlationData.getTraceNames()) {
-                        Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two), pointsCheckBox.isSelected(), sampleCheckBox.isSelected());
+                        Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two), pointsCheckBox.isSelected(), sampleCheckBox.isSelected(), translucencyCheckBox.isSelected());
                         //plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
                         getChartPanel().getChart().addPlot(plot);
                     }
