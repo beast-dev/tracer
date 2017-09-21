@@ -262,9 +262,6 @@ public class JointDensityPanel extends TraceChartPanel {
     // it was private void setupChartOrTable()
     protected void setupTraces() {
 
-        //System.out.println("setupTraces(): " + traceNames.size());
-        //System.out.println("correlation entries = " + correlationData.numberOfEntries());
-
         if (traceNames != null && traceNames.size() <= 2) {
 
             //getChartPanel().removeAll();
@@ -376,7 +373,6 @@ public class JointDensityPanel extends TraceChartPanel {
 
             if (currentType == Type.BOXPLOT) {
                 getChartPanel().removeAll();
-                //sampleCheckBox.setSelected(false);
             }
 
             currentType = Type.CORRELATION;
@@ -398,11 +394,10 @@ public class JointDensityPanel extends TraceChartPanel {
             TraceType traceType = null;
             for (TraceList tl : traceLists) {
                 for (String traceName : traceNames) {
-                    //System.out.println("traceName: " + traceName);
+
                     int traceIndex = tl.getTraceIndex(traceName);
                     Trace trace = tl.getTrace(traceIndex);
                     TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
-                    //Plot plot = null;
 
                     if (trace != null) {
                         String name = tl.getTraceName(traceIndex);
@@ -418,9 +413,6 @@ public class JointDensityPanel extends TraceChartPanel {
 
                         //collect all traceNames and values while looping here
                         correlationData.add(name, values);
-
-                        //System.out.println("  entry " + correlationData.numberOfEntries());
-
                     }
                 }
 
@@ -429,8 +421,6 @@ public class JointDensityPanel extends TraceChartPanel {
                 //TODO combine for multiple .log files once it's working for a single .log file
                 for (String one : correlationData.getTraceNames()) {
                     for (String two : correlationData.getTraceNames()) {
-                        //System.out.println("adding CorrelationPlot: (" + one + "," + two + ")");
-                        //Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
                         Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two), pointsCheckBox.isSelected(), sampleCheckBox.isSelected());
                         //plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
                         getChartPanel().getChart().addPlot(plot);
@@ -631,10 +621,14 @@ public class JointDensityPanel extends TraceChartPanel {
         } else {
             // either samples1 or samples2 is real
             plot = new ScatterPlot(samples1, samples2);
-            plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
+            /*plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
                     new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
                     new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
-                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
+                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));*/
+            plot.setMarkStyle(Plot.CIRCLE_MARK, 3.0,
+                    new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
+                    new Color(16, 16, 64, 255),
+                    new Color(16, 16, 64, 255));
             getChart().addPlot(plot);
         }
     }
