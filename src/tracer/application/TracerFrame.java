@@ -515,12 +515,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         final int[] statsSelRows = statisticTable.getSelectedRows();
 
-        System.out.println("refreshTraceList()");
-        for (int row : statsSelRows) {
-            System.out.print(row + " ");
-        }
-        System.out.println();
-
         LogFileTraces[] tls = removeTraceList();
         if (tls.length > 0) {
             final LogFileTraces[] newTls = new LogFileTraces[tls.length];
