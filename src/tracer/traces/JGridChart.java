@@ -38,9 +38,6 @@ public class JGridChart extends JChart {
     public JGridChart() {
         super(null, null);
 
-        //xVariableAxis = new DiscreteAxis(true, true);
-        //yVariableAxis = new DiscreteAxis(true, true);
-
         xVariableAxis = new CustomAxis(1, 2);
         yVariableAxis = new CustomAxis(1, 2);
 
@@ -52,9 +49,6 @@ public class JGridChart extends JChart {
     public JGridChart(double aspectRatio) {
         super(null, null, aspectRatio);
 
-        //xVariableAxis = new DiscreteAxis(true, true);
-        //yVariableAxis = new DiscreteAxis(true, true);
-
         xVariableAxis = new CustomAxis(1, 2);
         yVariableAxis = new CustomAxis(1, 2);
 
@@ -65,18 +59,13 @@ public class JGridChart extends JChart {
 
     @Override
     public void addPlot(Plot plot) {
-        //System.out.println("JGridChart: addPlot");
 
         plot.setAxes(xAxis, yAxis);
-
         plots.add(plot);
-        //System.out.println("getPlotCount() = " + getPlotCount());
+
         // set the range manually to the square root of the number of plots
         xVariableAxis.setRange(1.0, Math.sqrt(getPlotCount()));
         yVariableAxis.setRange(1.0, Math.sqrt(getPlotCount()));
-
-        //System.out.println("xVariableAxis: (" + xVariableAxis.getMinAxis() + "," + xVariableAxis.getMaxAxis() + ")");
-        //System.out.println("yVariableAxis: (" + yVariableAxis.getMinAxis() + "," + yVariableAxis.getMaxAxis() + ")");
 
         recalibrate();
         repaint();
@@ -94,10 +83,8 @@ public class JGridChart extends JChart {
 
     private String getPlotName(double value) {
         int index = (int)(value);
-        //System.out.println("JGridChart: getPlotName = " + index);
         if (index >= 1 && index <= getPlotCount()) {
             Plot plot = getPlot(index - 1);
-            //System.out.println("  " + plot.getName());
             return plot.getName();
         } else {
             return "";
