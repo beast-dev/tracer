@@ -187,7 +187,9 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                         barId++;
 
                     } else if (traceType.isCategorical()) {
-                        plot = new CategoryDensityPlot(values, td, currentSettings.barCount, barId);
+//                        plot = new CategoryDensityPlot(values, td, currentSettings.barCount, barId);
+                        List<String> categoryList = trace.getCategoricalValues();
+                        plot = new CategoryDensityPlot(values, categoryList, td, currentSettings.barCount, barId);
                         barId++;
 
                     } else {

@@ -41,6 +41,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * @author Walter Xie
@@ -168,7 +169,7 @@ public class FilterListPanel extends JPanel {
 
                 FilterAbstractPanel panel;
                 if (trace.getTraceType() == TraceType.CATEGORICAL) {
-                    panel = new FilterDiscretePanel(trace.getCategoricalValues(), filter);
+                    panel = new FilterDiscretePanel(new TreeSet<String>(trace.getCategoricalValues()), filter);
                 } else {// integer and double
                     panel = new FilterNumericPanel(trace.getRange(), filter);
                 }

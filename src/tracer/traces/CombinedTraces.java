@@ -142,19 +142,19 @@ public class CombinedTraces extends FilteredTraceList { //implements TraceList {
         return getStateCount() * getStepSize() - traceLists.length * getStepSize();
     }
 
-    public List<Number> getValues(int index, int fromIndex, int toIndex) {
+    public List<Double> getValues(int index, int fromIndex, int toIndex) {
         throw new UnsupportedOperationException("not available");
     }
 
-    public List<Number> getValues(int index) {
-        List<Number> valuesList = new ArrayList<Number>();
+    public List<Double> getValues(int index) {
+        List<Double> valuesList = new ArrayList<Double>();
         for (LogFileTraces traceList : traceLists) {
             valuesList.addAll(traceList.getValues(index));
         }
         return valuesList;
     }
 
-    public List<Number> getBurninValues(int index) {
+    public List<Double> getBurninValues(int index) {
         throw new UnsupportedOperationException("getBurninValues is not a valid operation on CombinedTracers");
     }
 
