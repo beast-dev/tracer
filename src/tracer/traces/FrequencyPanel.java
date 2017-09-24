@@ -34,6 +34,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -158,6 +159,7 @@ public class FrequencyPanel extends TraceChartPanel {
                 if (td != null) {
                     plot.setIntervals(td.getUpperHPD(), td.getLowerHPD());
                 }
+                getChartPanel().getChart().setXAxis(new LinearAxis());
 
             } else if (traceType.isIntegerOrBinary()) {
                 plot = new FrequencyPlot(values, -1, td);
@@ -167,9 +169,19 @@ public class FrequencyPanel extends TraceChartPanel {
                     plot.setIntervals(td.getUpperHPD(), td.getLowerHPD()); // Integer coloured by HPD not Credible set
                 }
 
+                getChartPanel().getChart().setXAxis(new DiscreteAxis(true, true));
+
             } else if (traceType.isCategorical()) {
 
-                plot = new FrequencyPlot(values, td);
+                List<Integer> intValues = new ArrayList<Integer>();
+                Map<Integer, Integer> categoryOrderMap = trace.getCategoryOrderMap();
+                for (Double value : values) {
+                    intValues.add(categoryOrderMap.get(value.intValue()));
+                }
+
+                plot = new FrequencyPlot(intValues, td);
+
+                getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
 
                 if (td != null) {
                     plot.setInCredibleSet(td);
@@ -183,6 +195,7 @@ public class FrequencyPanel extends TraceChartPanel {
             setBinsComponents(traceType);
 
             getChartPanel().getChart().addPlot(plot);
+            getChartPanel().getChart().setOriginStyle(null, null);
         }
         setXLabel(traceList.getTraceName(traceIndex));
     }

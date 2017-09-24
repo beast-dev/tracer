@@ -31,9 +31,7 @@ import dr.stats.Variate;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -186,6 +184,16 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                         throw new IllegalArgumentException("DiscreteDensityPanel is not for continous variables");
                     }
 
+                    Map<Integer, String> categoryMap = trace.getCategoryLabelMap();
+                    Map<Integer, Integer> categoryOrderMap = new TreeMap<Integer, Integer>();
+                    List<String> labels = new ArrayList<String>(categoryMap.values());
+                    Collections.sort(labels);
+                    for (Integer index : categoryMap.keySet()) {
+                        String l = categoryMap.get(index);
+                        categoryOrderMap.put(labels.indexOf(l), index);
+                    }
+                    trace.setCategoryOrderMap(categoryOrderMap);
+                    
 //                    plot = new CategoryDensityPlot(values, td, currentSettings.barCount, barId);
                     plot = new CategoryDensityPlot(values, td, barId);
                     barId++;
@@ -240,7 +248,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                 ((DiscreteJChart) getChart()).setXAxis(traceType.isIntegerOrBinary());
 
             } else if (traceType.isCategorical()) {
-                ((DiscreteJChart) getChart()).setXAxis(trace.getCategoricalValueMap());
+                ((DiscreteJChart) getChart()).setXAxis(trace.getCategoryLabelMap(), trace.getCategoryOrderMap());
 
             } else {
                 throw new RuntimeException("Trace type is not recognized: " + traceType);

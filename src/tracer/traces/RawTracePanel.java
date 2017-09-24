@@ -38,11 +38,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A panel that displays information about traces
@@ -269,9 +266,7 @@ public class RawTracePanel extends TraceChartPanel {
                         minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[i]);
 
                     } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
-                        Map<Integer, String> categoryDataMap = trace.getCategoricalValueMap();
-
-                        getChart().setYAxis(categoryDataMap);
+                        getChart().setYAxis(trace.getCategoryLabelMap(), trace.getCategoryOrderMap());
                         minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[i]);
 
                     } else {
