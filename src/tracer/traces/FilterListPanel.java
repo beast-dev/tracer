@@ -169,7 +169,7 @@ public class FilterListPanel extends JPanel {
 
                 FilterAbstractPanel panel;
                 if (trace.getTraceType() == TraceType.CATEGORICAL) {
-                    panel = new FilterDiscretePanel(new TreeSet<String>(trace.getCategoricalValues()), filter);
+                    panel = new FilterDiscretePanel(new TreeSet<String>(trace.getCategoricalValueMap().values()), filter);
                 } else {// integer and double
                     panel = new FilterNumericPanel(trace.getRange(), filter);
                 }

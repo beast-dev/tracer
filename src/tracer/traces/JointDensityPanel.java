@@ -444,65 +444,82 @@ public class JointDensityPanel extends TraceChartPanel {
     // td is categorical
     private void mixedCategoricalPlot(TraceDistribution tdCategorical, TraceDistribution tdNumerical,
                                       boolean isFirstTraceListNumerical) {
-        List<String> categoryValues = tdCategorical.getRange();
 
-        if (categoryValues == null || categoryValues.size() < 1) return;
+        // Not sure I understand this just now.. will revisit.
 
-//        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
-//        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
-        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
-        List values1 = tl1.getValues(traceIndex1);
-        List values2 = tl2.getValues(traceIndex2);
-        int maxCount = Math.max(values1.size(), values2.size());
-        int minCount = Math.min(values1.size(), values2.size());
-
-        int sampleSize = minCount;
-
-        List<Double> samples1 = new ArrayList<Double>(sampleSize);
-        int k = 0;
-
-        if (!isFirstTraceListNumerical) {
-//            values1 = tl1.getValues(traceIndex1);
+        throw new UnsupportedOperationException("mixedCategoricalPlot");
+//        List<String> categoryValues = tdCategorical.getRange();
+//
+//        if (categoryValues == null || categoryValues.size() < 1) return;
+//
+////        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
+////        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
+//        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
+//        List values1 = tl1.getValues(traceIndex1);
+//        List values2 = tl2.getValues(traceIndex2);
+//        int maxCount = Math.max(values1.size(), values2.size());
+//        int minCount = Math.min(values1.size(), values2.size());
+//
+//        int sampleSize = minCount;
+//
+//        List<Double> samples1 = new ArrayList<Double>(sampleSize);
+//        int k = 0;
+//
+//        if (!isFirstTraceListNumerical) {
+////            values1 = tl1.getValues(traceIndex1);
+////        } else {
+//            values1 = tl2.getValues(traceIndex2);
+//        }
+//
+//        for (int i = 0; i < sampleSize; i++) {
+//            samples1.add(i, ((Number) values1.get(k)).doubleValue());
+//            k += minCount / sampleSize;
+//        }
+//
+//        List<String> samples2 = new ArrayList<String>(sampleSize);
+//        k = 0;
+//
+//        if (!isFirstTraceListNumerical) {
+////            values2 = tl2.getValues(traceIndex2);
+////        } else {
+//            values2 = tl1.getValues(traceIndex1);
+//        }
+//        for (int i = 0; i < sampleSize; i++) {
+//            samples2.add(i, values2.get(k).toString());
+//            k += minCount / sampleSize;
+//        }
+//
+//        // set x axis
+//        getChart().setXAxis(new DiscreteAxis(true, true));
+//        if (tdNumerical.getTraceType().isCategorical()) {
+//            Map<Integer, String> categoryMap = tl1.getTrace(traceIndex1).getCategoricalValue();
+//
+//            getChart().setYAxis(new DiscreteAxis(true, true));
+//
+//            ScatterPlot plot;
+//            if (isFirstTraceListNumerical) {
+//                plot = new TangHuLuPlot(samples1, intData);
+//            } else {
+//                plot = new TangHuLuPlot(intData, samples1);
+//            }
+//
+//            getChart().addPlot(plot);
+//        } if (tdNumerical.getTraceType().isIntegerOrBinary()) {
+//            // samples1 is not real number
+//            getChart().setYAxis(new DiscreteAxis(true, true));
+//
+//            List<Double> intData = tdCategorical.indexingData(samples2);
+//            ScatterPlot plot;
+//            if (isFirstTraceListNumerical)
+//                plot  = new TangHuLuPlot(samples1, intData);
+//            else
+//                plot  = new TangHuLuPlot(intData, samples1);
+//            getChart().addPlot(plot);
 //        } else {
-            values1 = tl2.getValues(traceIndex2);
-        }
-
-        for (int i = 0; i < sampleSize; i++) {
-            samples1.add(i, ((Number) values1.get(k)).doubleValue());
-            k += minCount / sampleSize;
-        }
-
-        List<String> samples2 = new ArrayList<String>(sampleSize);
-        k = 0;
-
-        if (!isFirstTraceListNumerical) {
-//            values2 = tl2.getValues(traceIndex2);
-//        } else {
-            values2 = tl1.getValues(traceIndex1);
-        }
-        for (int i = 0; i < sampleSize; i++) {
-            samples2.add(i, values2.get(k).toString());
-            k += minCount / sampleSize;
-        }
-
-        // set x axis
-        getChart().setXAxis(new DiscreteAxis(true, true));
-        if (tdNumerical.getTraceType().isIntegerOrBinary()) {
-            // samples1 is not real number
-            getChart().setYAxis(new DiscreteAxis(true, true));
-
-            List<Double> intData = tdCategorical.indexingData(samples2);
-            ScatterPlot plot;
-            if (isFirstTraceListNumerical)
-                plot  = new TangHuLuPlot(samples1, intData);
-            else
-                plot  = new TangHuLuPlot(intData, samples1);
-            getChart().addPlot(plot);
-        } else {
-            // samples1 is real number
-            drawDiscreteBoxPlot(categoryValues, samples1, samples2);
-
-        }
+//            // samples1 is real number
+//            drawDiscreteBoxPlot(categoryValues, samples1, samples2);
+//
+//        }
 
     }
 

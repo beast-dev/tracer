@@ -148,7 +148,7 @@ public class FrequencyPanel extends TraceChartPanel {
         TraceCorrelation td = traceList.getCorrelationStatistics(traceIndex);
 
         if (trace != null) {
-            List values = traceList.getValues(traceIndex);
+            List<Double> values = traceList.getValues(traceIndex);
             TraceType traceType = trace.getTraceType();
             if (traceType.isContinuous()) {
                 plot = new FrequencyPlot(values, currentSettings.minimumBins, td);
@@ -169,7 +169,7 @@ public class FrequencyPanel extends TraceChartPanel {
 
             } else if (traceType.isCategorical()) {
 
-                plot = new FrequencyPlot(values, td); // convert into index inside constructor
+                plot = new FrequencyPlot(values, td);
 
                 if (td != null) {
                     plot.setInCredibleSet(td);

@@ -32,6 +32,7 @@ import dr.stats.Variate;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -180,21 +181,14 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
                     // set traceType here to avoid Exception from setYLabel
                     traceType = trace.getTraceType();
-                    if (traceType.isContinuous()) {
+
+                    if (!traceType.isCategorical()) {
                         throw new IllegalArgumentException("DiscreteDensityPanel is not for continous variables");
-                    } else if (traceType.isInteger()) {
-                        plot = new CategoryDensityPlot(values, -1, td, currentSettings.barCount, barId);
-                        barId++;
-
-                    } else if (traceType.isCategorical()) {
-//                        plot = new CategoryDensityPlot(values, td, currentSettings.barCount, barId);
-                        List<String> categoryList = trace.getCategoricalValues();
-                        plot = new CategoryDensityPlot(values, categoryList, td, currentSettings.barCount, barId);
-                        barId++;
-
-                    } else {
-                        throw new RuntimeException("Trace type is not recognized: " + traceType);
                     }
+
+//                    plot = new CategoryDensityPlot(values, td, currentSettings.barCount, barId);
+                    plot = new CategoryDensityPlot(values, td, barId);
+                    barId++;
 
                     if (plot != null) {
                         plot.setName(name);
@@ -208,7 +202,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                         getChart().addPlot(plot);
                     }
                     // change x axis to DiscreteAxis or LinearAxis according TraceType
-                    setXAxis(td);
+                    setXAxis(trace, td);
 
                     // colourBy
                     if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_ALL) {
@@ -233,7 +227,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         repaint();
     }
 
-    protected void setXAxis(TraceDistribution td) {
+    protected void setXAxis(Trace trace, TraceDistribution td) {
         if (td != null) {
             TraceType traceType = td.getTraceType();
 
@@ -243,11 +237,10 @@ public class DiscreteDensityPanel extends TraceChartPanel {
             }
 
             if (!traceType.isCategorical()) {
-                ((DiscreteJChart) getChart()).setXAxis(traceType.isIntegerOrBinary(),
-                        new HashMap<Integer, String>());
+                ((DiscreteJChart) getChart()).setXAxis(traceType.isIntegerOrBinary());
 
             } else if (traceType.isCategorical()) {
-                ((DiscreteJChart) getChart()).setXAxis(false, td.getIndexMap());
+                ((DiscreteJChart) getChart()).setXAxis(trace.getCategoricalValueMap());
 
             } else {
                 throw new RuntimeException("Trace type is not recognized: " + traceType);

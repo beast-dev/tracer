@@ -248,7 +248,6 @@ public class RawTracePanel extends TraceChartPanel {
                 TraceDistribution td = tl.getCorrelationStatistics(traceIndex);
 
                 if (trace != null) {
-                    Map<Integer, String> categoryDataMap = new HashMap<Integer, String>();
                     List values = tl.getValues(traceIndex);
                     List burninValues = null;
                     if (burninCheckBox.isSelected() && tl.getBurninStateCount() > 0) {
@@ -257,7 +256,7 @@ public class RawTracePanel extends TraceChartPanel {
                     double[] minMax;
                     if (trace.getTraceType().isNumber()) {
 
-                        getChart().setYAxis(trace.getTraceType().isInteger(), new HashMap<Integer, String>());
+                        getChart().setYAxis(trace.getTraceType().isInteger());
                         if (trace.getTraceType().isInteger()) {
                             getChart().getYAxis().setAxisFlags(Axis.AT_DATA, Axis.AT_DATA);
 
@@ -270,27 +269,10 @@ public class RawTracePanel extends TraceChartPanel {
                         minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[i]);
 
                     } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
+                        Map<Integer, String> categoryDataMap = trace.getCategoricalValueMap();
 
-                        List<Double> doubleData = new ArrayList<Double>();
-                        for (int v = 0; v < values.size(); v++) {
-                            Integer index = td.getIndex(values.get(v).toString());
-                            doubleData.add(v, index.doubleValue());
-                            categoryDataMap.put(index, values.get(v).toString());
-                        }
-
-                        List<Double> doubleBurninData = null;
-                        if (burninCheckBox.isSelected() && tl.getBurninStateCount() > 0) {
-                            doubleBurninData = new ArrayList<Double>();
-                            categoryDataMap.clear();
-                            for (int v = 0; v < burninValues.size(); v++) {
-                                Integer index = td.getIndex(burninValues.get(v).toString());
-                                doubleBurninData.add(v, index.doubleValue());
-                                categoryDataMap.put(index, burninValues.get(v).toString());
-                            }
-                        }
-
-                        getChart().setYAxis(false, categoryDataMap);
-                        minMax = getChart().addTrace(name, stateStart, stateStep, doubleData, doubleBurninData, currentSettings.palette[i]);
+                        getChart().setYAxis(categoryDataMap);
+                        minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[i]);
 
                     } else {
                         throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
