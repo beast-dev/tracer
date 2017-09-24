@@ -685,12 +685,17 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         commonTraceNames.retainAll(commonSet);
 
         int[] rows = statisticTable.getSelectedRows();
+
+        //Rectangle rect = statisticTable.getVisibleRect();
+        //int firstRow = statisticTable.rowAtPoint(rect.getLocation());
+
         statisticTableModel.fireTableDataChanged();
 
         if (rows.length > 0) {
             for (int row : rows) {
                 statisticTable.getSelectionModel().addSelectionInterval(row, row);
             }
+            statisticTable.scrollRectToVisible(statisticTable.getCellRect(rows[rows.length-1], 0, true));
         } else {
             statisticTable.getSelectionModel().setSelectionInterval(0, 0);
         }
@@ -800,11 +805,13 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         java.util.List<String> selectedTraces = new ArrayList<String>();
         for (int selRow : selRows) {
-            if (selRow < commonTraceNames.size())
+            if (selRow < commonTraceNames.size()) {
                 selectedTraces.add(commonTraceNames.get(selRow));
+            }
         }
-        if (selectedTraces.size() < 1)
+        if (selectedTraces.size() < 1) {
             selectedTraces.add(commonTraceNames.get(0));
+        }
 
         if (currentTraceLists.size() == 0 || isIncomplete) {
             tracePanel.setTraces(null, selectedTraces);
