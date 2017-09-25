@@ -81,6 +81,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     private StatisticTableModel statisticTableModel = null;
 
     private JScrollPane scrollPane1 = null;
+    private JScrollPane scrollPane2 = null;
 
     private JLabel progressLabel;
     private JProgressBar progressBar;
@@ -232,7 +233,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         TableEditorStopper.ensureEditingStopWhenTableLosesFocus(statisticTable);
 
-        JScrollPane scrollPane2 = new JScrollPane(statisticTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+        scrollPane2 = new JScrollPane(statisticTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         JPanel bottomPanel = new JPanel(new BorderLayout(0, 0));
@@ -515,6 +516,14 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         final int[] statsSelRows = statisticTable.getSelectedRows();
 
+        Rectangle rect = statisticTable.getVisibleRect();
+        int firstRow = statisticTable.rowAtPoint(rect.getLocation());
+        double numberOfRows = rect.getHeight()/statisticTable.getRowHeight();
+        int lastRow = firstRow + (int)Math.floor(numberOfRows);
+
+        statisticTableModel.setFirstVisibleRow(firstRow);
+        statisticTableModel.setLastVisibleRow(lastRow);
+
         LogFileTraces[] tls = removeTraceList();
         if (tls.length > 0) {
             final LogFileTraces[] newTls = new LogFileTraces[tls.length];
@@ -608,6 +617,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     }
 
     public void traceTableSelectionChanged() {
+
         if (traceLists.size() == 0) {
             return;
         }
@@ -686,16 +696,14 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         int[] rows = statisticTable.getSelectedRows();
 
-        //Rectangle rect = statisticTable.getVisibleRect();
-        //int firstRow = statisticTable.rowAtPoint(rect.getLocation());
-
         statisticTableModel.fireTableDataChanged();
 
         if (rows.length > 0) {
             for (int row : rows) {
                 statisticTable.getSelectionModel().addSelectionInterval(row, row);
             }
-            statisticTable.scrollRectToVisible(statisticTable.getCellRect(rows[rows.length-1], 0, true));
+            //statisticTable.scrollRectToVisible(statisticTable.getCellRect(rows[rows.length-1], 0, true));
+            statisticTable.scrollRectToVisible(statisticTable.getCellRect(statisticTableModel.getLastVisibleRow(), 0, true));
         } else {
             statisticTable.getSelectionModel().setSelectionInterval(0, 0);
         }
@@ -1598,6 +1606,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         private final DecimalFormat formatter = new DecimalFormat("0.###E0");
         private final DecimalFormat formatter2 = new DecimalFormat("####0.###");
 
+        private int firstVisibleRow = 0;
+        private int lastVisibleRow = 0;
+
         public int getColumnCount() {
             return columnNames.length;
         }
@@ -1684,6 +1695,22 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 return Object.class;
             }
             return getValueAt(0, c).getClass();
+        }
+
+        public void setFirstVisibleRow(int row) {
+            firstVisibleRow = row;
+        }
+
+        public void setLastVisibleRow(int row) {
+            lastVisibleRow = row;
+        }
+
+        public int getFirstVisibleRow() {
+            return firstVisibleRow;
+        }
+
+        public int getLastVisibleRow() {
+            return lastVisibleRow;
         }
     }
 
