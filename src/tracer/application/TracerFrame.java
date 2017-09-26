@@ -512,7 +512,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     // reload all logs
     private void refreshTraceList() {
-        // TODO: maintain selection of traces, trace type & display settings
 
         final int[] statsSelRows = statisticTable.getSelectedRows();
 
