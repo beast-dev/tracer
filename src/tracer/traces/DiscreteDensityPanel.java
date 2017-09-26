@@ -166,7 +166,9 @@ public class DiscreteDensityPanel extends TraceChartPanel {
             for (String traceName : traceNames) {
                 int traceIndex = tl.getTraceIndex(traceName);
                 Trace trace = tl.getTrace(traceIndex);
+
                 TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
+
                 Plot plot = null;
 
                 if (trace != null) {
@@ -180,10 +182,11 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                     // set traceType here to avoid Exception from setYLabel
                     traceType = trace.getTraceType();
 
-                    if (!traceType.isCategorical()) {
+                    if (!traceType.isDiscrete()) {
                         throw new IllegalArgumentException("DiscreteDensityPanel is not for continous variables");
                     }
 
+                    // @todo put this somewhere controlled by settings (order alphabetically or by frequency)
                     Map<Integer, String> categoryMap = trace.getCategoryLabelMap();
                     Map<Integer, Integer> categoryOrderMap = new TreeMap<Integer, Integer>();
                     List<String> labels = new ArrayList<String>(categoryMap.values());
@@ -193,7 +196,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                         categoryOrderMap.put(labels.indexOf(l), index);
                     }
                     trace.setCategoryOrderMap(categoryOrderMap);
-                    
+                    td.setCategoryOrderMap(trace.getCategoryOrderMap());
+
 //                    plot = new CategoryDensityPlot(values, td, currentSettings.barCount, barId);
                     plot = new CategoryDensityPlot(values, td, barId);
                     barId++;

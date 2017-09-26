@@ -31,10 +31,8 @@ import dr.inference.trace.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -164,6 +162,8 @@ public class FrequencyPanel extends TraceChartPanel {
             } else if (traceType.isIntegerOrBinary()) {
                 plot = new FrequencyPlot(values, -1, td);
 
+                plot.setPaints(BAR_PAINT, QUANTILE_PAINT);
+
                 if (td != null) {
 //                    plot.setInCredibleSet(td);
                     plot.setIntervals(td.getUpperHPD(), td.getLowerHPD()); // Integer coloured by HPD not Credible set
@@ -174,14 +174,32 @@ public class FrequencyPanel extends TraceChartPanel {
             } else if (traceType.isCategorical()) {
 
                 List<Integer> intValues = new ArrayList<Integer>();
-                Map<Integer, Integer> categoryOrderMap = trace.getCategoryOrderMap();
+
+                // TODO: order by frequency
+//                Map<Integer, Integer> categoryOrderMap = trace.getCategoryOrderMap();
+//                for (Double value : values) {
+//                    intValues.add(categoryOrderMap.get(value.intValue()));
+//                }
+                Map<Integer, String> categoryMap = trace.getCategoryLabelMap();
+                Map<Integer, Integer> categoryOrderMap = new TreeMap<Integer, Integer>();
+                List<String> labels = new ArrayList<String>(categoryMap.values());
+                Collections.sort(labels);
+                for (Integer index : categoryMap.keySet()) {
+                    String l = categoryMap.get(index);
+                    categoryOrderMap.put(labels.indexOf(l), index);
+                }
+                trace.setCategoryOrderMap(categoryOrderMap);
+                td.setCategoryOrderMap(trace.getCategoryOrderMap());
+
                 for (Double value : values) {
                     intValues.add(categoryOrderMap.get(value.intValue()));
                 }
 
                 plot = new FrequencyPlot(intValues, td);
 
-                getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
+                plot.setPaints(BAR_PAINT, QUANTILE_PAINT);
+
+                getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), trace.getCategoryOrderMap(), true, true));
 
                 if (td != null) {
                     plot.setInCredibleSet(td);
