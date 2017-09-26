@@ -36,6 +36,7 @@ import tracer.application.PanelUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
 
 /**
  * A shared code for the panel that displays a plot of traces,
@@ -149,6 +150,8 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         ColourByOptions colourBy = ColourByOptions.COLOUR_BY_TRACE;
         Paint[] palette = RAINBOW;
 
+        ColourManager cm;
+
         // this is only used in FrequencyPanel, put here just to reduce code
         int minimumBins = 50;
 
@@ -157,6 +160,8 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
             // Create a palette with contrasting colors alternating
             int N = 4;
             palette = new Paint[N * 3];
+
+            cm = new ColourManager(palette.length);
 
             float cycle1 = 0.666F;
             float cycle2 = 0.333F;
@@ -176,6 +181,119 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                 if (cycle3 > 1.0) { cycle3 -= 1.0F; }
             }
         }
+    }
+
+    protected class ColourManager {
+
+        private HashMap<String, Integer> traceFileMap;
+        private HashMap<String, Integer> statisticMap;
+        private HashMap<MultiKeyString, Integer> traceStatisticMap;
+
+        private int paletteLength;
+
+        private int traceFileCounter = 0;
+        private int statisticCounter = 0;
+        private int traceStatisticCounter = 0;
+
+        public ColourManager(int paletteLength) {
+            this.paletteLength = paletteLength;
+            this.traceFileMap = new HashMap<String, Integer>();
+            this.statisticMap = new HashMap<String, Integer>();
+            this.traceStatisticMap = new HashMap<MultiKeyString, Integer>();
+        }
+
+        public void clear() {
+            this.traceFileCounter = 0;
+            this.statisticCounter = 0;
+            this.traceStatisticCounter = 0;
+
+            this.traceFileMap.clear();
+            this.statisticMap.clear();
+            this.traceStatisticMap.clear();
+        }
+
+        public int addTraceColour(String traceFileName, String traceName, ColourByOptions option) {
+            if (option == ColourByOptions.COLOUR_BY_FILE) {
+                if (traceFileMap.containsKey(traceFileName)) {
+                    return traceFileMap.get(traceFileName);
+                } else {
+                    int tmp = traceFileCounter;
+                    traceFileMap.put(traceFileName, traceFileCounter);
+                    traceFileCounter = (traceFileCounter+1)%paletteLength;
+                    return tmp;
+                }
+            } else if (option == ColourByOptions.COLOUR_BY_TRACE) {
+                if (statisticMap.containsKey(traceName)) {
+                    return statisticMap.get(traceName);
+                } else {
+                    int tmp = statisticCounter;
+                    statisticMap.put(traceName, statisticCounter);
+                    statisticCounter = (statisticCounter+1)%paletteLength;
+                    return tmp;
+                }
+            } else if (option == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
+                MultiKeyString keyString = new MultiKeyString(traceFileName, traceName);
+                if (traceStatisticMap.containsKey(keyString)) {
+                    return traceStatisticMap.get(keyString);
+                } else {
+                    int tmp = traceStatisticCounter;
+                    traceStatisticMap.put(keyString, traceStatisticCounter);
+                    traceStatisticCounter = (traceStatisticCounter+1)%paletteLength;
+                    return tmp;
+                }
+            } else {
+                throw new RuntimeException("Invalid trace coloring scheme.");
+            }
+        }
+
+        private class MultiKeyString {
+
+            private String keyOne;
+            private String keyTwo;
+
+            public MultiKeyString(String keyOne, String keyTwo) {
+                this.keyOne = keyOne;
+                this.keyTwo = keyTwo;
+            }
+
+            public String getKeyOne() {
+                return this.keyOne;
+            }
+
+            public String getKeyTwo() {
+                return this.keyTwo;
+            }
+
+            /**
+             * override hash code behaviour to force a call to equals()
+             */
+            @Override
+            public int hashCode() {
+                return this.keyTwo.hashCode();
+            }
+
+            // check for String equality when comparing these objects
+            @Override
+            public boolean equals(Object obj) {
+                if (this == obj) {
+                    return true;
+                }
+                if (obj == null) {
+                    return false;
+                }
+                if (getClass() != obj.getClass()) {
+                    return false;
+                }
+                MultiKeyString castObject = (MultiKeyString)obj;
+                if (castObject.getKeyOne().equals(keyOne) && castObject.getKeyTwo().equals(keyTwo)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+        }
+
     }
 
     //++++++ setup traces +++++++
