@@ -67,8 +67,8 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
     protected enum ColourByOptions {
         COLOUR_BY_TRACE("Trace"),
-        COLOUR_BY_FILE("Trace File"),
-        COLOUR_BY_ALL("All");
+        COLOUR_BY_FILE("Trace file"),
+        COLOUR_BY_FILE_AND_TRACE("Trace and Trace File");
 
         ColourByOptions(String name) {
             this.name = name;

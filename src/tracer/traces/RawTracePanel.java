@@ -277,10 +277,12 @@ public class RawTracePanel extends TraceChartPanel {
                     valuesY.add(minMax[2]);
                     valuesY.add(minMax[3]);
 
-                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_ALL) {
+                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
                         i++;
                     }
-                    if (i == currentSettings.palette.length) i = 0;
+                    if (i == currentSettings.palette.length) {
+                        i = 0;
+                    }
                 }
             }
             if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
@@ -288,7 +290,10 @@ public class RawTracePanel extends TraceChartPanel {
             } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
                 i = 0;
             }
-            if (i == currentSettings.palette.length) i = 0;
+            //rotating colour list
+            if (i == currentSettings.palette.length) {
+                i = 0;
+            }
         }// for (TraceList tl : traceLists)
         if (traceLists.length > 1 || traceNames.size() > 1) {
             Variate.D xV = new Variate.D(valuesX);
