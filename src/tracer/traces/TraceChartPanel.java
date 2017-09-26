@@ -36,6 +36,7 @@ import tracer.application.PanelUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -189,6 +190,8 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         private HashMap<String, Integer> statisticMap;
         private HashMap<MultiKeyString, Integer> traceStatisticMap;
 
+        private ArrayList<String> traceFiles;
+
         private int paletteLength;
 
         private int traceFileCounter = 0;
@@ -197,6 +200,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
         public ColourManager(int paletteLength) {
             this.paletteLength = paletteLength;
+            this.traceFiles = new ArrayList<String>();
             this.traceFileMap = new HashMap<String, Integer>();
             this.statisticMap = new HashMap<String, Integer>();
             this.traceStatisticMap = new HashMap<MultiKeyString, Integer>();
@@ -207,12 +211,22 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
             this.statisticCounter = 0;
             this.traceStatisticCounter = 0;
 
+            this.traceFiles.clear();
+
             this.traceFileMap.clear();
             this.statisticMap.clear();
             this.traceStatisticMap.clear();
         }
 
+        public boolean containsTraceFile(String fileName) {
+            return traceFiles.contains(fileName);
+        }
+
         public int addTraceColour(String traceFileName, String traceName, ColourByOptions option) {
+            if (!traceFiles.contains(traceFileName)) {
+                traceFiles.add(traceFileName);
+            }
+
             if (option == ColourByOptions.COLOUR_BY_FILE) {
                 if (traceFileMap.containsKey(traceFileName)) {
                     return traceFileMap.get(traceFileName);

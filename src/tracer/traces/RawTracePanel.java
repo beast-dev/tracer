@@ -223,12 +223,25 @@ public class RawTracePanel extends TraceChartPanel {
 
     @Override
     protected void setupTraces() {
+
         // return if no traces selected
         if (!removeAllPlots(true)) return; // traceChart.removeAllTraces();
+
+        //TODO clear colour manager when a trace is removed
+        /*for (TraceList tl : traceLists) {
+            if (!currentSettings.cm.containsTraceFile(tl.getName())) {
+                currentSettings.cm.clear();
+                System.out.println("Resetting colour manager (" + traceLists.length + ")");
+                for (TraceList tls : traceLists) {
+                    System.out.println("  " + tl.getName());
+                }
+            }
+        }*/
 
         int i = 0;
         List valuesX = new ArrayList();
         List valuesY = new ArrayList();
+
         for (TraceList tl : traceLists) {
             long stateStart = tl.getBurnIn();
             long stateStep = tl.getStepSize();
@@ -263,12 +276,14 @@ public class RawTracePanel extends TraceChartPanel {
                                 getChart().getYAxis().setRange(0.0, 1.0);
                             }
                         }
-                        minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[i]);
-
+                        int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
+                        System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
+                        minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
                     } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
                         getChart().setYAxis(trace.getCategoryLabelMap(), trace.getCategoryOrderMap());
-                        minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[i]);
-
+                        int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
+                        System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
+                        minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
                     } else {
                         throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
                     }
@@ -277,23 +292,23 @@ public class RawTracePanel extends TraceChartPanel {
                     valuesY.add(minMax[2]);
                     valuesY.add(minMax[3]);
 
-                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
+                    /*if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
                         i++;
                     }
                     if (i == currentSettings.palette.length) {
                         i = 0;
-                    }
+                    }*/
                 }
             }
-            if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
+            /*if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
                 i++;
             } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
                 i = 0;
-            }
+            }*/
             //rotating colour list
-            if (i == currentSettings.palette.length) {
+            /*if (i == currentSettings.palette.length) {
                 i = 0;
-            }
+            }*/
         }// for (TraceList tl : traceLists)
         if (traceLists.length > 1 || traceNames.size() > 1) {
             Variate.D xV = new Variate.D(valuesX);
@@ -307,6 +322,11 @@ public class RawTracePanel extends TraceChartPanel {
 
         validate();
         repaint();
+    }
+
+    public void traceRemoved() {
+        currentSettings.cm.clear();
+        System.out.println("Resetting colour manager");
     }
 
 //    public JComponent getExportableComponent() {
