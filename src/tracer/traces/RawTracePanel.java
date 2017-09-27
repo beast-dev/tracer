@@ -277,12 +277,12 @@ public class RawTracePanel extends TraceChartPanel {
                             }
                         }
                         int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
-                        System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
+                        //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
                         minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
                     } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
                         getChart().setYAxis(trace.getCategoryLabelMap(), trace.getCategoryOrderMap());
                         int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
-                        System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
+                        //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
                         minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
                     } else {
                         throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
@@ -326,7 +326,7 @@ public class RawTracePanel extends TraceChartPanel {
 
     public void traceRemoved() {
         currentSettings.cm.clear();
-        System.out.println("Resetting colour manager");
+        //System.out.println("Resetting colour manager");
     }
 
 //    public JComponent getExportableComponent() {
