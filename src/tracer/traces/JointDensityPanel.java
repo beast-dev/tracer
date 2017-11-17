@@ -81,7 +81,7 @@ public class JointDensityPanel extends TraceChartPanel {
 
     private Type currentType;
 
-    private JChart traceChart;
+    private JChart intervalsChart;
     private final JChartPanel chartPanel;
 
     private final JChart correlationChart;
@@ -113,10 +113,12 @@ public class JointDensityPanel extends TraceChartPanel {
      */
     public JointDensityPanel(final JFrame frame) {
         super(frame);
-        // traceChart only used for Box Plot, ScatterPlot is added by addPlot()
-        traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS),
-                new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
-        chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
+
+        // AR - removing BoxPlotChart replacing with a JParallelChart
+//        intervalsChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS),
+//                new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        intervalsChart = new JParallelChart(true, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        chartPanel = new JChartPanel(intervalsChart, "", "", ""); // xAxisTitle, yAxisTitle
 
         //correlationChart = new JGridChart();
         correlationChart = new JGridChart(1.0);
@@ -168,7 +170,7 @@ public class JointDensityPanel extends TraceChartPanel {
 
     protected JChart getChart() {
         if (currentType == Type.BOXPLOT) {
-            return traceChart;
+            return intervalsChart;
         } else if (currentType == Type.CORRELATION) {
             return correlationChart;
         } else {
@@ -276,10 +278,10 @@ public class JointDensityPanel extends TraceChartPanel {
                 getChartPanel().removeAll();
                 getChartPanel().add(traceChart);
             }*/
-            ((BoxPlotChart) getChart()).removeAllIntervals();
+
+            // ((BoxPlotChart) getChart()).removeAllIntervals();
 
             if (tl1 == null || tl2 == null) {
-//            getChart().removeAllPlots();
                 chartPanel.remove(tableScrollPane);
 
                 chartPanel.setXAxisTitle("");
@@ -301,6 +303,8 @@ public class JointDensityPanel extends TraceChartPanel {
             }
 
             messageLabel.setText("");
+
+            getChart().removeAllPlots();
 
             if (!td1.getTraceType().isNumber() && !td2.getTraceType().isNumber()) {
                 chartPanel.remove(getChart());
@@ -545,8 +549,10 @@ public class JointDensityPanel extends TraceChartPanel {
         for (Map.Entry<String, TraceDistribution> entry : categoryTdMap.entrySet()) {
             TraceDistribution categoryTd = entry.getValue();
 //                getChart().addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
-            ((BoxPlotChart)getChart()).addBoxPlots(entry.getKey(), categoryTd.getMedian(), categoryTd.getQ1(),
-                    categoryTd.getQ3(), categoryTd.getMinimum(), categoryTd.getMaximum());
+
+            // TODO: add plots to a JParallelChart
+//            ((BoxPlotChart)getChart()).addBoxPlots(entry.getKey(), categoryTd.getMedian(), categoryTd.getQ1(),
+//                    categoryTd.getQ3(), categoryTd.getMinimum(), categoryTd.getMaximum());
         }
     }
 

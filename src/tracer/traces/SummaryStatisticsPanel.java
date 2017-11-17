@@ -336,11 +336,11 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                         case 4:
                             return "n/a";
                         case 5:
-                            return tc.printUniqueValues();
+                            return tc.setToString(tc.getValueSet());
                         case 6:
-                            return tc.printIncredibleSet();
+                            return tc.setToString(tc.getIncredibleSet());
                         case 7:
-                            return tc.printCredibleSet();
+                            return tc.setToString(tc.getCredibleSet());
                         case 8:
                             value = tc.getACT();
                             if (Double.isNaN(value)) return "n/a";

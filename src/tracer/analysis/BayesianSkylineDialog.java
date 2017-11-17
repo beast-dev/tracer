@@ -536,7 +536,7 @@ public class BayesianSkylineDialog {
 
         public Object doWork() {
 
-            List heights = traceList.getValues(traceList.getTraceIndex(rootHeightTrace));
+            List<Double> heights = traceList.getValues(traceList.getTraceIndex(rootHeightTrace));
 
             TraceDistribution distribution = new TraceDistribution(heights,
                     traceList.getTrace(traceList.getTraceIndex(rootHeightTrace)).getTraceType());

@@ -176,10 +176,6 @@ public class FrequencyPanel extends TraceChartPanel {
                 List<Integer> intValues = new ArrayList<Integer>();
 
                 // TODO: order by frequency
-//                Map<Integer, Integer> categoryOrderMap = trace.getCategoryOrderMap();
-//                for (Double value : values) {
-//                    intValues.add(categoryOrderMap.get(value.intValue()));
-//                }
                 Map<Integer, String> categoryMap = trace.getCategoryLabelMap();
                 Map<Integer, Integer> categoryOrderMap = new TreeMap<Integer, Integer>();
                 List<String> labels = new ArrayList<String>(categoryMap.values());
@@ -189,7 +185,7 @@ public class FrequencyPanel extends TraceChartPanel {
                     categoryOrderMap.put(labels.indexOf(l), index);
                 }
                 trace.setCategoryOrderMap(categoryOrderMap);
-                td.setCategoryOrderMap(trace.getCategoryOrderMap());
+                // td.setCategoryOrderMap(trace.getCategoryOrderMap());
 
                 for (Double value : values) {
                     intValues.add(categoryOrderMap.get(value.intValue()));
@@ -202,7 +198,7 @@ public class FrequencyPanel extends TraceChartPanel {
                 getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), trace.getCategoryOrderMap(), true, true));
 
                 if (td != null) {
-                    plot.setInCredibleSet(td);
+                    plot.setIncredibleSet(td);
                 }
             } else {
                 throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());

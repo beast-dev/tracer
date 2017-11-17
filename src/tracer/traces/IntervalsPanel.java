@@ -42,7 +42,7 @@ import java.awt.*;
  */
 public class IntervalsPanel extends TraceChartPanel {
 
-    private final BoxPlotChart traceChart;
+    private final JParallelChart intervalsChart;
     private final JChartPanel chartPanel;
 
     private ChartSetupDialog chartSetupDialog = null;
@@ -54,8 +54,8 @@ public class IntervalsPanel extends TraceChartPanel {
      */
     public IntervalsPanel(final JFrame frame) {
         super(frame);
-        traceChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
-        chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
+        intervalsChart = new JParallelChart(true, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        chartPanel = new JChartPanel(intervalsChart, "", "", ""); // xAxisTitle, yAxisTitle
 
         toolBar = createToolBar();
 
@@ -100,7 +100,7 @@ public class IntervalsPanel extends TraceChartPanel {
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
         super.setTraces(traceLists, traceNames);
 
-        traceChart.removeAllIntervals();
+        intervalsChart.removeAllPlots();
 
         if (traceLists == null || traceNames == null) {
             chartPanel.setXAxisTitle("");
@@ -130,10 +130,12 @@ public class IntervalsPanel extends TraceChartPanel {
 //                    if (td.getTraceType().isIntegerOrBinary())
 //                        getChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
 //                                td.getMinimum(), td.getMaximum());
-                    if (td.getTraceType().isCategorical())
-                        traceChart.addViolins(name, td);
-                    else
-                        traceChart.addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
+
+                    // TODO: add plots here
+//                    if (td.getTraceType().isCategorical())
+//                        traceChart.addViolins(name, td);
+//                    else
+//                        traceChart.addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
                 }
             }
         }

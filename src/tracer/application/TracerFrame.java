@@ -65,10 +65,9 @@ import java.util.*;
 import java.util.List;
 
 public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler, AnalysisMenuHandler {
-    private final static boolean CONFIRM_BUTTON_PRESSES = false;
 
     private final String[] columnToolTips = {null, null, null,
-            "Trace Type: real(R), ordinal(O) or categorical(C), binary(B)"};
+            "Trace Type: real(R), ordinal(O) or categorical(C)"};
 
     private TracePanel tracePanel = null;
 

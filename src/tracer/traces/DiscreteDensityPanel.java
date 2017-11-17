@@ -27,7 +27,9 @@ package tracer.traces;
 
 import dr.app.gui.chart.*;
 import dr.inference.trace.*;
+import dr.stats.FrequencyCounter;
 import dr.stats.Variate;
+import jebl.evolution.treesimulation.IntervalGenerator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -172,13 +174,6 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                 Plot plot = null;
 
                 if (trace != null) {
-                    String name = tl.getTraceName(traceIndex);
-                    if (traceLists.length > 1) {
-                        name = tl.getName() + " - " + name;
-                    }
-
-                    List values = tl.getValues(traceIndex);
-
                     // set traceType here to avoid Exception from setYLabel
                     traceType = trace.getTraceType();
 
@@ -186,9 +181,21 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                         throw new IllegalArgumentException("DiscreteDensityPanel is not for continous variables");
                     }
 
+                    String name = tl.getTraceName(traceIndex);
+                    if (traceLists.length > 1) {
+                        name = tl.getName() + " - " + name;
+                    }
+
+                    List<Double> values = tl.getValues(traceIndex);
+                    List<Integer> discreteValues = new ArrayList<Integer>();
+                    for (double value : values) {
+                        discreteValues.add((int)value);
+                    }
+
                     // @todo put this somewhere controlled by settings (order alphabetically or by frequency)
                     Map<Integer, String> categoryMap = trace.getCategoryLabelMap();
                     Map<Integer, Integer> categoryOrderMap = new TreeMap<Integer, Integer>();
+                    FrequencyCounter<Integer> frequencyCounter = new FrequencyCounter<Integer>(discreteValues);
                     List<String> labels = new ArrayList<String>(categoryMap.values());
                     Collections.sort(labels);
                     for (Integer index : categoryMap.keySet()) {
@@ -196,10 +203,9 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                         categoryOrderMap.put(labels.indexOf(l), index);
                     }
                     trace.setCategoryOrderMap(categoryOrderMap);
-                    td.setCategoryOrderMap(trace.getCategoryOrderMap());
 
 //                    plot = new CategoryDensityPlot(values, td, currentSettings.barCount, barId);
-                    plot = new CategoryDensityPlot(values, td, barId);
+                    plot = new DiscreteDensityPlot(frequencyCounter);
                     barId++;
 
                     if (plot != null) {
