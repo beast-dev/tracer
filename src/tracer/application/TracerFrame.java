@@ -40,7 +40,6 @@ import jam.framework.DocumentFrame;
 import jam.panels.ActionPanel;
 import jam.table.TableRenderer;
 import jam.toolbar.Toolbar;
-import jam.toolbar.ToolbarOptions;
 import tracer.analysis.*;
 import tracer.traces.CombinedTraces;
 import tracer.traces.FilterDialog;
@@ -48,7 +47,6 @@ import tracer.traces.FilterListPanel;
 import tracer.traces.TracePanel;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -496,6 +494,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             tracePanel.setTraces(null, null);
         }
 
+        tracePanel.traceRemoved();
 
         if (traceLists.size() > 0) {
             int row = selRows[0];
@@ -511,7 +510,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     // reload all logs
     private void refreshTraceList() {
-        // TODO: maintain selection of traces, trace type & display settings
 
         final int[] statsSelRows = statisticTable.getSelectedRows();
 
@@ -701,7 +699,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             for (int row : rows) {
                 statisticTable.getSelectionModel().addSelectionInterval(row, row);
             }
-            //statisticTable.scrollRectToVisible(statisticTable.getCellRect(rows[rows.length-1], 0, true));
             statisticTable.scrollRectToVisible(statisticTable.getCellRect(statisticTableModel.getLastVisibleRow(), 0, true));
         } else {
             statisticTable.getSelectionModel().setSelectionInterval(0, 0);

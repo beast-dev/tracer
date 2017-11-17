@@ -223,10 +223,12 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                     setXAxis(trace, td);
 
                     // colourBy
-                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_ALL) {
+                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
                         i++;
                     }
-                    if (i == currentSettings.palette.length) i = 0;
+                    if (i == currentSettings.palette.length) {
+                        i = 0;
+                    }
                 }
             }
             if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
@@ -234,7 +236,9 @@ public class DiscreteDensityPanel extends TraceChartPanel {
             } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
                 i = 0;
             }
-            if (i >= currentSettings.palette.length) i = 0;
+            if (i >= currentSettings.palette.length) {
+                i = 0;
+            }
         }
 
         setXLabelMultipleTraces();
