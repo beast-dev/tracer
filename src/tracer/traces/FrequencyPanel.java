@@ -95,7 +95,6 @@ public class FrequencyPanel extends TraceChartPanel {
     private JToolBar createToolBar(Settings settings) {
         JToolBar toolBar = super.createToolBar();
 
-
         JLabel label = (JLabel)createBinsComboAndLabel();
         toolBar.add(label);
         toolBar.add(label.getLabelFor());

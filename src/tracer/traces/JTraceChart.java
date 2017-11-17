@@ -35,6 +35,11 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Todo: Multiple levels of inheritence should be discouraged.
+ * This should probably be changed to plots being added to a standard
+ * JChart (or DiscreteJChart).
+ */
 public class JTraceChart extends DiscreteJChart {
 
     private static final int SAMPLE_POINTS = 1000;

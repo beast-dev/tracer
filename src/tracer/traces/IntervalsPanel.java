@@ -26,11 +26,11 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.inference.trace.TraceDistribution;
-import dr.inference.trace.TraceList;
+import dr.inference.trace.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 
 
 /**
@@ -41,6 +41,7 @@ import java.awt.*;
  * @version $Id: IntervalsPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
 public class IntervalsPanel extends TraceChartPanel {
+    private static final int DEFAULT_KDE_BINS = 5000;
 
     private final JParallelChart intervalsChart;
     private final JChartPanel chartPanel;
@@ -49,12 +50,14 @@ public class IntervalsPanel extends TraceChartPanel {
 
     private JToolBar toolBar;
 
+    private TraceChartPanel.Settings currentSettings = new TraceChartPanel.Settings();
+
     /**
      * Creates new IntervalsPanel
      */
     public IntervalsPanel(final JFrame frame) {
         super(frame);
-        intervalsChart = new JParallelChart(true, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        intervalsChart = new JParallelChart(false, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(intervalsChart, "", "", ""); // xAxisTitle, yAxisTitle
 
         toolBar = createToolBar();
@@ -82,9 +85,15 @@ public class IntervalsPanel extends TraceChartPanel {
 
     @Override
     protected JToolBar createToolBar() {
-        setOpaque(false);
-        setMinimumSize(new Dimension(300, 150));
-        return null;
+        JToolBar toolBar = super.createToolBar();
+
+        toolBar.add(createSetupButton());
+        
+        JLabel label = createColourByComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
+
+        return toolBar;
     }
 
     @Override
@@ -95,6 +104,7 @@ public class IntervalsPanel extends TraceChartPanel {
     protected void setupMainPanel() {
         setLayout(new BorderLayout());
         add(chartPanel, BorderLayout.CENTER);
+        add(getToolBar(), BorderLayout.SOUTH);
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
@@ -110,41 +120,81 @@ public class IntervalsPanel extends TraceChartPanel {
 
         setupTraces();
     }
-
+    
     protected void setupTraces() {
-        for (TraceList traceList : traceLists) {
+        // return if no traces selected
+        if (!removeAllPlots(false)) return;
+
+        int i = 0;
+        TraceType traceType = null;
+        for (TraceList tl : traceLists) {
             for (String traceName : traceNames) {
-                int index = traceList.getTraceIndex(traceName);
-                TraceDistribution td = traceList.getCorrelationStatistics(index);
-                if (td != null) {
-                    String name = "";
+                int traceIndex = tl.getTraceIndex(traceName);
+                Trace trace = tl.getTrace(traceIndex);
+                Plot plot = null;
+
+                if (trace != null) {
+                    String name = tl.getTraceName(traceIndex);
                     if (traceLists.length > 1) {
-                        name = traceList.getName();
-                        if (traceNames.size() > 1) {
-                            name += ": ";
-                        }
+                        name = tl.getName() + " - " + name;
                     }
-                    name += traceName;
 
-                    // TODO: boxplot scale not correct here
-//                    if (td.getTraceType().isIntegerOrBinary())
-//                        getChart().addBoxPlots(name, td.getMedian(), td.getQ1(), td.getQ3(),
-//                                td.getMinimum(), td.getMaximum());
+                    java.util.List values = tl.getValues(traceIndex);
 
-                    // TODO: add plots here
-//                    if (td.getTraceType().isCategorical())
-//                        traceChart.addViolins(name, td);
-//                    else
-//                        traceChart.addIntervals(name, td.getMean(), td.getUpperHPD(), td.getLowerHPD(), false);
+                    // set traceType here to avoid Exception from setYLabel
+                    traceType = trace.getTraceType();
+                    assert traceType.isContinuous();
+
+//                    switch (currentSettings.type) {
+//                        case VIOLIN:
+                    plot = new ViolinPlot(0.8, values, DEFAULT_KDE_BINS);
+                    plot.setName(name);
+                    plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
+//                    break;
+//                    }
+
+                    if (plot != null) {
+                        getChartPanel().getChart().addPlot(plot);
+                    }
+
+                    // colourBy
+                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
+                        i++;
+                    }
+                    if (i == currentSettings.palette.length) {
+                        i = 0;
+                    }
                 }
+            }
+            if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
+                i++;
+            } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
+                i = 0;
+            }
+            if (i >= currentSettings.palette.length) {
+                i = 0;
             }
         }
 
-        setXAxisLabel();
+        // swap in the correct chart panel
+        BorderLayout layout = (BorderLayout)getLayout();
+        remove(layout.getLayoutComponent(BorderLayout.CENTER));
+        remove(layout.getLayoutComponent(BorderLayout.SOUTH));
+        add(getChartPanel(), BorderLayout.CENTER);
+        add(getToolBar(), BorderLayout.SOUTH);
+
+//        setXLabelMultipleTraces();
+//        if (currentSettings.type == ContinuousDensityPanel.Type.VIOLIN) {
+            setYLabel("Value");
+//        } else {
+//            setYLabel(traceType, new String[]{"Density", "Probability"});
+//        }
+//        setLegend(currentSettings.legendAlignment);
 
         validate();
         repaint();
     }
+
 
 
 //    public JComponent getExportableComponent() {
