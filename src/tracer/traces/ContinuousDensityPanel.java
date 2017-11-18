@@ -271,7 +271,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     }
 
     protected Plot createViolinPlot(List values, double lower, double upper) {
-        return new ViolinPlot(true, 0.8, lower, upper, values, DEFAULT_KDE_BINS);
+        return new ViolinPlot(true, 0.8, lower, upper, false, values, DEFAULT_KDE_BINS);
     }
 
 

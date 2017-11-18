@@ -149,7 +149,7 @@ public class IntervalsPanel extends TraceChartPanel {
 //                        case VIOLIN:
                     double lower = trace.getTraceStatistics().getLowerHPD();
                     double upper = trace.getTraceStatistics().getUpperHPD();
-                    plot = new ViolinPlot(true, 0.8, lower, upper, values, DEFAULT_KDE_BINS);
+                    plot = new ViolinPlot(true, 0.8, lower, upper, false, values, DEFAULT_KDE_BINS);
 //                    plot = new ViolinPlot(0.8, values, DEFAULT_KDE_BINS);
                     plot.setName(name);
                     plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
