@@ -270,8 +270,8 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         return new KDENumericalDensityPlot(values, DEFAULT_KDE_BINS);
     }
 
-    protected Plot createViolinPlot(List values) {
-        return new ViolinPlot(0.8, values, DEFAULT_KDE_BINS);
+    protected Plot createViolinPlot(List values, double lower, double upper) {
+        return new ViolinPlot(true, 0.8, lower, upper, values, DEFAULT_KDE_BINS);
     }
 
 
@@ -319,7 +319,9 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                             ((NumericalDensityPlot) plot).setRelativeDensity(currentSettings.relativeDensity);
                             break;
                         case VIOLIN:
-                            plot = createViolinPlot(values);
+                            double lower = trace.getTraceStatistics().getLowerHPD();
+                            double upper = trace.getTraceStatistics().getUpperHPD();
+                            plot = createViolinPlot(values, lower, upper);
                             plot.setName(name);
                             if (tl instanceof CombinedTraces) {
                                 plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
