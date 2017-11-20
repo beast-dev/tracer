@@ -59,11 +59,11 @@ public class DiscreteDensityPanel extends TraceChartPanel {
     private JToolBar toolBar;
 
     /**
-     * Creates new FrequencyPanel
+     * Creates new DiscreteDensityPanel
      */
     public DiscreteDensityPanel(final JFrame frame) {
         super(frame);
-        densityChart = new DiscreteJChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
+        densityChart = new DiscreteJChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis(Axis.AT_ZERO, Axis.AT_MAJOR_TICK_PLUS));
         densityChartPanel = new JChartPanel(densityChart, "","","");
         toolBar = createToolBar(currentSettings);
 
@@ -204,8 +204,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                     }
                     trace.setCategoryOrderMap(categoryOrderMap);
 
-//                    plot = new CategoryDensityPlot(values, td, currentSettings.barCount, barId);
-                    plot = new DiscreteDensityPlot(frequencyCounter);
+                    plot = new ColumnPlot(frequencyCounter, false);
                     barId++;
 
                     if (plot != null) {

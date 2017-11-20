@@ -27,6 +27,7 @@ package tracer.traces;
 
 import dr.app.gui.chart.*;
 import dr.inference.trace.*;
+import dr.stats.FrequencyCounter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -133,7 +134,7 @@ public class FrequencyPanel extends TraceChartPanel {
 
         removeAllPlots();
 
-        FrequencyPlot plot = null;
+        Plot plot = null;
 
         if (traceLists == null || traceLists[0] == null) {
             return;
@@ -149,56 +150,64 @@ public class FrequencyPanel extends TraceChartPanel {
             List<Double> values = traceList.getValues(traceIndex);
             TraceType traceType = trace.getTraceType();
             if (traceType.isContinuous()) {
-                plot = new FrequencyPlot(values, currentSettings.minimumBins, td);
+                HistogramPlot histogramPlot = new HistogramPlot(values, currentSettings.minimumBins, td);
 
-                plot.setPaints(BAR_PAINT, QUANTILE_PAINT);
+                histogramPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
 
                 if (td != null) {
-                    plot.setIntervals(td.getUpperHPD(), td.getLowerHPD());
+                    histogramPlot.setIntervals(td.getUpperHPD(), td.getLowerHPD());
                 }
                 getChartPanel().getChart().setXAxis(new LinearAxis());
 
-            } else if (traceType.isIntegerOrBinary()) {
-                plot = new FrequencyPlot(values, -1, td);
-
-                plot.setPaints(BAR_PAINT, QUANTILE_PAINT);
-
-                if (td != null) {
-//                    plot.setInCredibleSet(td);
-                    plot.setIntervals(td.getUpperHPD(), td.getLowerHPD()); // Integer coloured by HPD not Credible set
-                }
-
-                getChartPanel().getChart().setXAxis(new DiscreteAxis(true, true));
-
-            } else if (traceType.isCategorical()) {
-
+                plot = histogramPlot;
+//            } else if (traceType.isIntegerOrBinary()) {
+//                HistogramPlot histogramPlot = new HistogramPlot(values, -1, td);
+//
+//                histogramPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
+//
+//                if (td != null) {
+////                    plot.setInCredibleSet(td);
+//                    histogramPlot.setIntervals(td.getUpperHPD(), td.getLowerHPD()); // Integer coloured by HPD not Credible set
+//                }
+//
+//                getChartPanel().getChart().setXAxis(new DiscreteAxis(true, true));
+//
+//                plot = histogramPlot;
+            } else if (traceType.isDiscrete()) {
                 List<Integer> intValues = new ArrayList<Integer>();
 
-                // TODO: order by frequency
-                Map<Integer, String> categoryMap = trace.getCategoryLabelMap();
-                Map<Integer, Integer> categoryOrderMap = new TreeMap<Integer, Integer>();
-                List<String> labels = new ArrayList<String>(categoryMap.values());
-                Collections.sort(labels);
-                for (Integer index : categoryMap.keySet()) {
-                    String l = categoryMap.get(index);
-                    categoryOrderMap.put(labels.indexOf(l), index);
+                if (traceType.isCategorical()) {
+
+
+                    // TODO: order by frequency
+                    Map<Integer, String> categoryMap = trace.getCategoryLabelMap();
+                    Map<Integer, Integer> categoryOrderMap = new TreeMap<Integer, Integer>();
+                    List<String> labels = new ArrayList<String>(categoryMap.values());
+                    Collections.sort(labels);
+                    for (Integer index : categoryMap.keySet()) {
+                        String l = categoryMap.get(index);
+                        categoryOrderMap.put(labels.indexOf(l), index);
+                    }
+                    trace.setCategoryOrderMap(categoryOrderMap);
                 }
-                trace.setCategoryOrderMap(categoryOrderMap);
-                // td.setCategoryOrderMap(trace.getCategoryOrderMap());
 
                 for (Double value : values) {
-                    intValues.add(categoryOrderMap.get(value.intValue()));
+                    intValues.add(value.intValue());
+//                    intValues.add(categoryOrderMap.get(value.intValue()));
                 }
 
-                plot = new FrequencyPlot(intValues, td);
+                FrequencyCounter<Integer> frequencyCounter = new FrequencyCounter<Integer>(intValues);
 
-                plot.setPaints(BAR_PAINT, QUANTILE_PAINT);
+                ColumnPlot columnPlot = new ColumnPlot(frequencyCounter, true);
+
+                columnPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
 
                 getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), trace.getCategoryOrderMap(), true, true));
 
-                if (td != null) {
-                    plot.setIncredibleSet(td);
-                }
+                Set<Integer> incredibleSet = trace.getTraceStatistics().getIncredibleSet();
+                columnPlot.setIntervals(Collections.min(incredibleSet), Collections.max(incredibleSet));
+
+                plot = columnPlot;
             } else {
                 throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
             }
