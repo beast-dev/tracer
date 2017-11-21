@@ -215,7 +215,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
         String[] rowNamesNumbers = {MEAN_ROW, STDEV_ROW, STDEV, VARIANCE_ROW, MEDIAN_ROW, MIN_MAX,
                 GEOMETRIC_MEAN_ROW, LOWER_UPPER_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
         String[] rowNamesCategorical = {MODE_ROW, MODE_FREQ_ROW, MODE_PROB_ROW, VARIANCE_ROW, MEDIAN_ROW, UNIQUE_VALUES,
-                INCRED_SET_ROW, CRED_SET_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
+                CRED_SET_ROW, INCRED_SET_ROW, ACT_ROW, ESS_ROW, NUM_SAMPLES};
 
         public StatisticsModel() {
         }
@@ -338,9 +338,9 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                         case 5:
                             return tc.setToString(tc.getValueSet());
                         case 6:
-                            return tc.setToString(tc.getIncredibleSet());
-                        case 7:
                             return tc.setToString(tc.getCredibleSet());
+                        case 7:
+                            return tc.setToString(tc.getIncredibleSet());
                         case 8:
                             value = tc.getACT();
                             if (Double.isNaN(value)) return "n/a";

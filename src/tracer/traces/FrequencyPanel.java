@@ -96,13 +96,11 @@ public class FrequencyPanel extends TraceChartPanel {
     private JToolBar createToolBar(Settings settings) {
         JToolBar toolBar = super.createToolBar();
 
-        JLabel label = (JLabel)createBinsComboAndLabel();
-        toolBar.add(label);
-        toolBar.add(label.getLabelFor());
+        toolBar.add(createSetupButton());
 
-        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.minimumBins);
-
-        toolBar.add(createShowValuesCheckBox());
+//        JLabel label = createColourByComboAndLabel();
+//        toolBar.add(label);
+//        toolBar.add(label.getLabelFor());
 
         return toolBar;
     }
@@ -174,38 +172,18 @@ public class FrequencyPanel extends TraceChartPanel {
 //
 //                plot = histogramPlot;
             } else if (traceType.isDiscrete()) {
-                List<Integer> intValues = new ArrayList<Integer>();
-
                 if (traceType.isCategorical()) {
-
-
-                    // TODO: order by frequency
-                    Map<Integer, String> categoryMap = trace.getCategoryLabelMap();
-                    Map<Integer, Integer> categoryOrderMap = new TreeMap<Integer, Integer>();
-                    List<String> labels = new ArrayList<String>(categoryMap.values());
-                    Collections.sort(labels);
-                    for (Integer index : categoryMap.keySet()) {
-                        String l = categoryMap.get(index);
-                        categoryOrderMap.put(labels.indexOf(l), index);
-                    }
-                    trace.setCategoryOrderMap(categoryOrderMap);
+                    trace.setOrderType(Trace.OrderType.FREQUENCY);
                 }
 
-                for (Double value : values) {
-                    intValues.add(value.intValue());
-//                    intValues.add(categoryOrderMap.get(value.intValue()));
-                }
-
-                FrequencyCounter<Integer> frequencyCounter = new FrequencyCounter<Integer>(intValues);
-
-                ColumnPlot columnPlot = new ColumnPlot(frequencyCounter, true);
+                ColumnPlot columnPlot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), true);
 
                 columnPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
 
-                getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), trace.getCategoryOrderMap(), true, true));
+                getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), trace.getCategoryOrder(), true, true));
 
-                Set<Integer> incredibleSet = trace.getTraceStatistics().getIncredibleSet();
-                columnPlot.setIntervals(Collections.min(incredibleSet), Collections.max(incredibleSet));
+                Set<Integer> credibleSet = trace.getTraceStatistics().getCredibleSet();
+                columnPlot.setIntervals(0, credibleSet.size());
 
                 plot = columnPlot;
             } else {

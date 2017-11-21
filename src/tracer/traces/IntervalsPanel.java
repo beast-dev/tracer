@@ -41,7 +41,9 @@ import java.util.*;
  * @version $Id: IntervalsPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
 public class IntervalsPanel extends TraceChartPanel {
-    private static final int DEFAULT_KDE_BINS = 5000;
+
+    public final static Paint BAR_PAINT = new Color(0x2f8aa3);
+    public final static  Paint TAIL_PAINT = new Color(0xd6bd58);
 
     private final JParallelChart intervalsChart;
     private final JChartPanel chartPanel;
@@ -89,9 +91,9 @@ public class IntervalsPanel extends TraceChartPanel {
 
         toolBar.add(createSetupButton());
         
-        JLabel label = createColourByComboAndLabel();
-        toolBar.add(label);
-        toolBar.add(label.getLabelFor());
+//        JLabel label = createColourByComboAndLabel();
+//        toolBar.add(label);
+//        toolBar.add(label.getLabelFor());
 
         return toolBar;
     }
@@ -154,9 +156,12 @@ public class IntervalsPanel extends TraceChartPanel {
                     double mean = trace.getTraceStatistics().getMean();
 
 //                    plot = new ViolinPlot(true, 0.8, lower, upper, false, values, DEFAULT_KDE_BINS);
-                    plot = new BoxPlot(true, 0.8, lower, upper, lowerTail, upperTail, mean);
-                    plot.setName(name);
-                    plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
+                    BoxPlot boxPlot = new BoxPlot(true, 0.6, lower, upper, lowerTail, upperTail, mean);
+                    boxPlot.setName(name);
+                    boxPlot.setLineStyle(new BasicStroke(1.0f), BAR_PAINT);
+                    boxPlot.setMeanLineStyle(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), BAR_PAINT);
+
+                    plot = boxPlot;
 //                    break;
 //                    }
 
@@ -165,22 +170,22 @@ public class IntervalsPanel extends TraceChartPanel {
                     }
 
                     // colourBy
-                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
-                        i++;
-                    }
-                    if (i == currentSettings.palette.length) {
-                        i = 0;
-                    }
+//                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
+//                        i++;
+//                    }
+//                    if (i == currentSettings.palette.length) {
+//                        i = 0;
+//                    }
                 }
             }
-            if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
-                i++;
-            } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
-                i = 0;
-            }
-            if (i >= currentSettings.palette.length) {
-                i = 0;
-            }
+//            if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
+//                i++;
+//            } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
+//                i = 0;
+//            }
+//            if (i >= currentSettings.palette.length) {
+//                i = 0;
+//            }
         }
 
         // swap in the correct chart panel

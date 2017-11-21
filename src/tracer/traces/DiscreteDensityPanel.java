@@ -192,19 +192,14 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                         discreteValues.add((int)value);
                     }
 
-                    // @todo put this somewhere controlled by settings (order alphabetically or by frequency)
-                    Map<Integer, String> categoryMap = trace.getCategoryLabelMap();
-                    Map<Integer, Integer> categoryOrderMap = new TreeMap<Integer, Integer>();
-                    FrequencyCounter<Integer> frequencyCounter = new FrequencyCounter<Integer>(discreteValues);
-                    List<String> labels = new ArrayList<String>(categoryMap.values());
-                    Collections.sort(labels);
-                    for (Integer index : categoryMap.keySet()) {
-                        String l = categoryMap.get(index);
-                        categoryOrderMap.put(labels.indexOf(l), index);
+                    if (traceType == TraceType.CATEGORICAL) {
+                        trace.setOrderType(Trace.OrderType.FREQUENCY);
+                    } else {
+                        trace.setOrderType(Trace.OrderType.NATURAL);
                     }
-                    trace.setCategoryOrderMap(categoryOrderMap);
 
-                    plot = new ColumnPlot(frequencyCounter, false);
+                    plot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), false);
+
                     barId++;
 
                     if (plot != null) {
@@ -261,7 +256,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                 ((DiscreteJChart) getChart()).setXAxis(traceType.isIntegerOrBinary());
 
             } else if (traceType.isCategorical()) {
-                ((DiscreteJChart) getChart()).setXAxis(trace.getCategoryLabelMap(), trace.getCategoryOrderMap());
+                ((DiscreteJChart) getChart()).setXAxis(trace.getCategoryLabelMap(), trace.getCategoryOrder());
 
             } else {
                 throw new RuntimeException("Trace type is not recognized: " + traceType);
