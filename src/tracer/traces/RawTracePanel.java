@@ -280,7 +280,7 @@ public class RawTracePanel extends TraceChartPanel {
                         //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
                         minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
                     } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
-                        getChart().setYAxis(trace.getCategoryLabelMap(), trace.getCategoryOrder());
+                        getChart().setYAxis(trace.getCategoryLabelMap());
                         int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
                         //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
                         minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
