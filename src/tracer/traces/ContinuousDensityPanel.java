@@ -247,10 +247,8 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
                             getChartPanel().setXAxisTitle("");
                             getChartPanel().setYAxisTitle("");
-                            messageLabel.setText("Unable to display a mixture statistics types.");
                             return;
                         }
-                        messageLabel.setText("");
                     }
                 }
             }
@@ -277,14 +275,16 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
     protected void setupTraces() {
         // return if no traces selected
-        if (!removeAllPlots(false)) return;
+        if (!removeAllPlots()) {
+            return;
+        }
 
         int i = 0;
         TraceType traceType = null;
-        for (TraceList tl : traceLists) {
+        for (TraceList tl : getTraceLists()) {
             int n = tl.getStateCount();
 
-            for (String traceName : traceNames) {
+            for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
                 Trace trace = tl.getTrace(traceIndex);
                 TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
@@ -292,7 +292,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
                 if (trace != null) {
                     String name = tl.getTraceName(traceIndex);
-                    if (traceLists.length > 1) {
+                    if (getTraceLists().length > 1) {
                         name = tl.getName() + " - " + name;
                     }
 
@@ -384,10 +384,10 @@ public class ContinuousDensityPanel extends TraceChartPanel {
      * set x labs using <code>setXAxisTitle</code> when x-axis allows multiple traces
      */
     protected void setXLabelMultipleTraces() {
-        if (traceLists.length == 1) {
-            getChartPanel().setXAxisTitle(traceLists[0].getName());
-        } else if (traceNames.size() == 1) {
-            getChartPanel().setXAxisTitle(traceNames.get(0));
+        if (getTraceLists().length == 1) {
+            getChartPanel().setXAxisTitle(getTraceLists()[0].getName());
+        } else if (getTraceNames().size() == 1) {
+            getChartPanel().setXAxisTitle(getTraceNames().get(0));
         } else {
             getChartPanel().setXAxisTitle("Multiple Traces");
         }
@@ -396,10 +396,10 @@ public class ContinuousDensityPanel extends TraceChartPanel {
      * set y labs using <code>setYAxisTitle</code> when y-axis allows multiple traces
      */
     protected void setYLabelMultipleTraces() {
-        if (traceLists.length == 1) {
-            getChartPanel().setYAxisTitle(traceLists[0].getName());
-        } else if (traceNames.size() == 1) {
-            getChartPanel().setYAxisTitle(traceNames.get(0));
+        if (getTraceLists().length == 1) {
+            getChartPanel().setYAxisTitle(getTraceLists()[0].getName());
+        } else if (getTraceNames().size() == 1) {
+            getChartPanel().setYAxisTitle(getTraceNames().get(0));
         } else {
             getChartPanel().setYAxisTitle("Multiple Traces");
         }

@@ -36,8 +36,7 @@ import tracer.application.PanelUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * A shared code for the panel that displays a plot of traces,
@@ -311,12 +310,10 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     }
 
     //++++++ setup traces +++++++
-    protected TraceList[] traceLists = null;
-    protected java.util.List<String> traceNames = null;
-
-    protected JLabel messageLabel = new JLabel("No data loaded");
-
-    protected final JFrame frame;
+    private TraceList[] traceLists = null;
+    private java.util.List<String> traceNames = null;
+    private JLabel messageLabel = new JLabel();
+    private final JFrame frame;
 
     /**
      * main panel
@@ -344,21 +341,26 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
     protected abstract JToolBar getToolBar();
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public TraceList[] getTraceLists() {
+        return traceLists;
+    }
+
+    public java.util.List<String> getTraceNames() {
+        return traceNames;
+    }
 
     /**
      * add components to main panel
      */
-    protected void setupMainPanel(boolean addMessageLabel) {
+    protected void setupMainPanel() {
         removeAll();
-        if (addMessageLabel) {
-            add(messageLabel, BorderLayout.NORTH);
-        }
+        add(messageLabel, BorderLayout.NORTH);
         add(getToolBar(), BorderLayout.SOUTH);
         add(getChartPanel(), BorderLayout.CENTER);
-    }
-
-    protected void setupMainPanel() {
-        setupMainPanel(true);
     }
 
     /**
@@ -478,6 +480,11 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
     protected abstract void setupTraces();
 
+    public void setMessage(String message) {
+        this.messageLabel.setText(message);
+    }
+
+
     /**
      * set legend given <code>Settings</code> which includes legend position and colours.
      */
@@ -555,27 +562,17 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      *
      * @return boolean
      */
-    protected boolean removeAllPlots(boolean removeMessageLabel) {
-        removeAllPlots();
-
-        if (traceLists == null || traceNames == null || traceNames.size() == 0) {
-            getChartPanel().setXAxisTitle("");
-            getChartPanel().setYAxisTitle("");
-            messageLabel.setText("No traces selected");
-            add(messageLabel, BorderLayout.NORTH);
-            return false;
-        }
-
-        if (removeMessageLabel) remove(messageLabel);
-        return true;
-    }
-
-    /**
-     * to overwrite it to <code>removeAllTraces()</code> in <code>RawTracePanel</code>
-     */
-    protected void removeAllPlots() {
+    protected boolean removeAllPlots() {
         getChartPanel().getChart().removeAllPlots();
 
+        if (traceLists == null || traceLists[0] == null || traceNames == null || traceNames.size() == 0) {
+            getChartPanel().setXAxisTitle("");
+            getChartPanel().setYAxisTitle("");
+            setMessage("No traces selected");
+            return false;
+        }
+        setMessage("");
+        return true;
     }
 
     /**

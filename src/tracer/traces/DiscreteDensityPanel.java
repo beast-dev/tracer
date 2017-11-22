@@ -80,7 +80,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
     protected ChartSetupDialog getChartSetupDialog() {
         if (chartSetupDialog == null) {
-            chartSetupDialog = new ChartSetupDialog(frame, false, false, false, false,
+            chartSetupDialog = new ChartSetupDialog(getFrame(), false, false, false, false,
                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
         }
         return chartSetupDialog;
@@ -141,14 +141,12 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
                             getChartPanel().setXAxisTitle("");
                             getChartPanel().setYAxisTitle("");
-                            messageLabel.setText("Unable to display a mixture statistics types.");
+                            //messageLabel = new JLabel("<html><div style='text-align: center;'>Traces must be of the same type to visualize here</div></html>");
                             return;
                         }
-                        messageLabel.setText("");
                     }
                 }
             }
-
         }
 
         setupTraces();
@@ -157,72 +155,86 @@ public class DiscreteDensityPanel extends TraceChartPanel {
     @Override
     protected void setupTraces() {
         // return if no traces selected
-        if (!removeAllPlots(false)) return;
+        if (!removeAllPlots()) {
+            return;
+        }
 
-        int barId = 0;
-        int i = 0;
         TraceType traceType = null;
-        for (TraceList tl : traceLists) {
+
+        int i = 0;
+        for (TraceList tl : getTraceLists()) {
             int n = tl.getStateCount();
 
-            for (String traceName : traceNames) {
+            for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
                 Trace trace = tl.getTrace(traceIndex);
+                traceType = trace.getTraceType();
 
                 TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
 
-                Plot plot = null;
+                Plot plot;
 
-                if (trace != null) {
-                    // set traceType here to avoid Exception from setYLabel
-                    traceType = trace.getTraceType();
+                // set traceType here to avoid Exception from setYLabel
+                traceType = trace.getTraceType();
 
-                    if (!traceType.isDiscrete()) {
-                        throw new IllegalArgumentException("DiscreteDensityPanel is not for continous variables");
+                if (!traceType.isDiscrete()) {
+                    throw new IllegalArgumentException("DiscreteDensityPanel is not for continous variables");
+                }
+
+                String name = tl.getTraceName(traceIndex);
+                if (getTraceLists().length > 1) {
+                    name = tl.getName() + " - " + name;
+                }
+
+                ColumnPlot columnPlot;
+
+                if (traceType.isCategorical()) {
+                    trace.setOrderType(Trace.OrderType.FREQUENCY);
+                    columnPlot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), true);
+
+                    Set<Integer> credibleSet = trace.getTraceStatistics().getCredibleSet();
+                    columnPlot.setIntervals(0, credibleSet.size());
+                    columnPlot.setColumnWidth(0.9);
+
+                    getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
+
+                } else {
+                    columnPlot = new ColumnPlot(trace.getFrequencyCounter(),  null, true);
+
+                    columnPlot.setIntervals(trace.getTraceStatistics().getLowerHPD(), trace.getTraceStatistics().getUpperHPD());
+                    columnPlot.setColumnWidth(0.5);
+
+                    Axis xAxis = new DiscreteAxis(true, true);
+                    getChartPanel().getChart().setXAxis(xAxis);
+
+                    if (trace.getUniqueValueCount() == 1) {
+                        xAxis.addRange(0, 1);
                     }
+                }
 
-                    String name = tl.getTraceName(traceIndex);
-                    if (traceLists.length > 1) {
-                        name = tl.getName() + " - " + name;
-                    }
+                plot = columnPlot;
 
-                    List<Double> values = tl.getValues(traceIndex);
-                    List<Integer> discreteValues = new ArrayList<Integer>();
-                    for (double value : values) {
-                        discreteValues.add((int)value);
-                    }
 
-                    if (traceType == TraceType.CATEGORICAL) {
-                        trace.setOrderType(Trace.OrderType.FREQUENCY);
+                if (plot != null) {
+                    plot.setName(name);
+                    if (tl instanceof CombinedTraces) {
+                        plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
                     } else {
-                        trace.setOrderType(Trace.OrderType.NATURAL);
+                        plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
                     }
 
-                    plot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), false);
+                    getChart().setOriginStyle(null, null);
+                    getChart().addPlot(plot);
+                }
+                // change x axis to DiscreteAxis or LinearAxis according TraceType
+                setXAxis(trace, td);
 
-                    barId++;
-
-                    if (plot != null) {
-                        plot.setName(name);
-                        if (tl instanceof CombinedTraces) {
-                            plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
-                        } else {
-                            plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
-                        }
-
-                        getChart().setOriginStyle(null, null);
-                        getChart().addPlot(plot);
-                    }
-                    // change x axis to DiscreteAxis or LinearAxis according TraceType
-                    setXAxis(trace, td);
-
-                    // colourBy
-                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
-                        i++;
-                    }
-                    if (i == currentSettings.palette.length) {
-                        i = 0;
-                    }
+                // colourBy
+                if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
+                    i++;
+                }
+                if (i == currentSettings.palette.length) {
+                    i = 0;
                 }
             }
             if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
@@ -268,10 +280,10 @@ public class DiscreteDensityPanel extends TraceChartPanel {
      * set x labs using <code>setXAxisTitle</code> when x-axis allows multiple traces
      */
     protected void setXLabelMultipleTraces() {
-        if (traceLists.length == 1) {
-            getChartPanel().setXAxisTitle(traceLists[0].getName());
-        } else if (traceNames.size() == 1) {
-            getChartPanel().setXAxisTitle(traceNames.get(0));
+        if (getTraceLists().length == 1) {
+            getChartPanel().setXAxisTitle(getTraceLists()[0].getName());
+        } else if (getTraceNames().size() == 1) {
+            getChartPanel().setXAxisTitle(getTraceNames().get(0));
         } else {
             getChartPanel().setXAxisTitle("Multiple Traces");
         }
@@ -280,10 +292,10 @@ public class DiscreteDensityPanel extends TraceChartPanel {
      * set y labs using <code>setYAxisTitle</code> when y-axis allows multiple traces
      */
     protected void setYLabelMultipleTraces() {
-        if (traceLists.length == 1) {
-            getChartPanel().setYAxisTitle(traceLists[0].getName());
-        } else if (traceNames.size() == 1) {
-            getChartPanel().setYAxisTitle(traceNames.get(0));
+        if (getTraceLists().length == 1) {
+            getChartPanel().setYAxisTitle(getTraceLists()[0].getName());
+        } else if (getTraceNames().size() == 1) {
+            getChartPanel().setYAxisTitle(getTraceNames().get(0));
         } else {
             getChartPanel().setYAxisTitle("Multiple Traces");
         }

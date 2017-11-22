@@ -84,7 +84,7 @@ public class RawTracePanel extends TraceChartPanel {
     @Override
     protected ChartSetupDialog getChartSetupDialog() {
         if (chartSetupDialog == null) {
-            chartSetupDialog = new ChartSetupDialog(frame, false, true, true, true,
+            chartSetupDialog = new ChartSetupDialog(getFrame(), false, true, true, true,
                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
         }
         return chartSetupDialog;
@@ -172,8 +172,8 @@ public class RawTracePanel extends TraceChartPanel {
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent ev) {
                         int n = 0;
-                        for (TraceList tl : traceLists) {
-                            for (String traceName : traceNames) {
+                        for (TraceList tl : getTraceLists()) {
+                            for (String traceName : getTraceNames()) {
                                 int traceIndex = tl.getTraceIndex(traceName);
 
                                 Trace trace = tl.getTrace(traceIndex);
@@ -186,8 +186,8 @@ public class RawTracePanel extends TraceChartPanel {
                         }
                         Double[][] valueArrays = new Double[n][];
                         int k = 0;
-                        for (TraceList tl : traceLists) {
-                            for (String traceName : traceNames) {
+                        for (TraceList tl : getTraceLists()) {
+                            for (String traceName : getTraceNames()) {
                                 int traceIndex = tl.getTraceIndex(traceName);
 
                                 Trace trace = tl.getTrace(traceIndex);
@@ -217,15 +217,14 @@ public class RawTracePanel extends TraceChartPanel {
     }
 
     @Override
-    protected void removeAllPlots() {
-        getChart().removeAllTraces();
-    }
-
-    @Override
     protected void setupTraces() {
 
+        getChart().removeAllTraces();
+
         // return if no traces selected
-        if (!removeAllPlots(true)) return; // traceChart.removeAllTraces();
+        if (!removeAllPlots()) {
+            return;
+        }
 
         //TODO clear colour manager when a trace is removed
         /*for (TraceList tl : traceLists) {
@@ -242,15 +241,15 @@ public class RawTracePanel extends TraceChartPanel {
         List valuesX = new ArrayList();
         List valuesY = new ArrayList();
 
-        for (TraceList tl : traceLists) {
+        for (TraceList tl : getTraceLists()) {
             long stateStart = tl.getBurnIn();
             long stateStep = tl.getStepSize();
 
-            for (String traceName : traceNames) {
+            for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
 
                 String name = tl.getTraceName(traceIndex);
-                if (traceLists.length > 1) {
+                if (getTraceLists().length > 1) {
                     name = tl.getName() + " - " + name;
                 }
 
@@ -310,7 +309,7 @@ public class RawTracePanel extends TraceChartPanel {
                 i = 0;
             }*/
         }// for (TraceList tl : traceLists)
-        if (traceLists.length > 1 || traceNames.size() > 1) {
+        if (getTraceLists().length > 1 || getTraceNames().size() > 1) {
             Variate.D xV = new Variate.D(valuesX);
             Variate.D yV = new Variate.D(valuesY);
             getChart().setRange(xV.getMin(), xV.getMax(), yV.getMin(), yV.getMax());

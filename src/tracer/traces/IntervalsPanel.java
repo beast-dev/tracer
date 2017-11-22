@@ -74,7 +74,7 @@ public class IntervalsPanel extends TraceChartPanel {
     @Override
     protected ChartSetupDialog getChartSetupDialog() {
         if (chartSetupDialog == null) {
-            chartSetupDialog = new ChartSetupDialog(frame, false, true, false, true,
+            chartSetupDialog = new ChartSetupDialog(getFrame(), false, true, false, true,
                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
         }
         return chartSetupDialog;
@@ -125,45 +125,77 @@ public class IntervalsPanel extends TraceChartPanel {
     
     protected void setupTraces() {
         // return if no traces selected
-        if (!removeAllPlots(false)) return;
+        if (!removeAllPlots()) {
+            return;
+        }
 
-        int i = 0;
+        JLabel messageLabel = null;
+
         TraceType traceType = null;
-        for (TraceList tl : traceLists) {
-            for (String traceName : traceNames) {
+        for (TraceList tl : getTraceLists()) {
+            for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
                 Trace trace = tl.getTrace(traceIndex);
-                Plot plot = null;
 
-                if (trace != null) {
-                    String name = tl.getTraceName(traceIndex);
-                    if (traceLists.length > 1) {
-                        name = tl.getName() + " - " + name;
-                    }
-
-                    java.util.List values = tl.getValues(traceIndex);
-
-                    // set traceType here to avoid Exception from setYLabel
+                if (traceType == null) {
                     traceType = trace.getTraceType();
-                    assert traceType.isContinuous();
+                }
 
+                if (traceType != trace.getTraceType()) {
+                    messageLabel = new JLabel("<html><div style='text-align: center;'>Traces must be of the same type to visualize here</div></html>");
+                }
+            }
+        }
+
+        BorderLayout layout = (BorderLayout) getLayout();
+        remove(layout.getLayoutComponent(BorderLayout.CENTER));
+        remove(layout.getLayoutComponent(BorderLayout.SOUTH));
+
+        if (messageLabel == null) {
+            for (TraceList tl : getTraceLists()) {
+                for (String traceName : getTraceNames()) {
+                    int traceIndex = tl.getTraceIndex(traceName);
+                    Trace trace = tl.getTrace(traceIndex);
+                    Plot plot = null;
+
+                    if (trace != null) {
+                        String name = tl.getTraceName(traceIndex);
+                        if (getTraceLists().length > 1) {
+                            name = tl.getName() + " - " + name;
+                        }
+
+                        if (traceType.isContinuous()) {
 //                    switch (currentSettings.type) {
 //                        case VIOLIN:
-                    double lower = trace.getTraceStatistics().getLowerHPD();
-                    double upper = trace.getTraceStatistics().getUpperHPD();
-                    double lowerTail = trace.getTraceStatistics().getMinimum();
-                    double upperTail = trace.getTraceStatistics().getMaximum();
-                    double mean = trace.getTraceStatistics().getMean();
+                            double lower = trace.getTraceStatistics().getLowerHPD();
+                            double upper = trace.getTraceStatistics().getUpperHPD();
+                            double lowerTail = trace.getTraceStatistics().getMinimum();
+                            double upperTail = trace.getTraceStatistics().getMaximum();
+                            double mean = trace.getTraceStatistics().getMean();
 
 //                    plot = new ViolinPlot(true, 0.8, lower, upper, false, values, DEFAULT_KDE_BINS);
-                    BoxPlot boxPlot = new BoxPlot(true, 0.6, lower, upper, lowerTail, upperTail, mean);
-                    boxPlot.setName(name);
-                    boxPlot.setLineStyle(new BasicStroke(1.0f), BAR_PAINT);
-                    boxPlot.setMeanLineStyle(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), BAR_PAINT);
+                            BoxPlot boxPlot = new BoxPlot(true, 0.6, lower, upper, lowerTail, upperTail, mean);
+                            boxPlot.setName(name);
+                            boxPlot.setLineStyle(new BasicStroke(1.0f), BAR_PAINT);
+                            boxPlot.setMeanLineStyle(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), BAR_PAINT);
 
-                    plot = boxPlot;
+                            plot = boxPlot;
 //                    break;
 //                    }
+                        } else if (traceType.isDiscrete()) {
+
+                            // TODO: how to show multiple discrete traces?
+                            // Stacked column charts?
+                            // Histogram violins for integers?
+                            if (traceType.isCategorical()) {
+                            } else {
+                            }
+
+                            plot = null;
+                        } else {
+                            throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
+                        }
+                    }
 
                     if (plot != null) {
                         getChartPanel().getChart().addPlot(plot);
@@ -177,7 +209,6 @@ public class IntervalsPanel extends TraceChartPanel {
 //                        i = 0;
 //                    }
                 }
-            }
 //            if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
 //                i++;
 //            } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
@@ -186,14 +217,11 @@ public class IntervalsPanel extends TraceChartPanel {
 //            if (i >= currentSettings.palette.length) {
 //                i = 0;
 //            }
-        }
+            }
 
-        // swap in the correct chart panel
-        BorderLayout layout = (BorderLayout)getLayout();
-        remove(layout.getLayoutComponent(BorderLayout.CENTER));
-        remove(layout.getLayoutComponent(BorderLayout.SOUTH));
-        add(getChartPanel(), BorderLayout.CENTER);
-        add(getToolBar(), BorderLayout.SOUTH);
+            // swap in the correct chart panel
+            add(getChartPanel(), BorderLayout.CENTER);
+            add(getToolBar(), BorderLayout.SOUTH);
 
 //        setXLabelMultipleTraces();
 //        if (currentSettings.type == ContinuousDensityPanel.Type.VIOLIN) {
@@ -202,6 +230,9 @@ public class IntervalsPanel extends TraceChartPanel {
 //            setYLabel(traceType, new String[]{"Density", "Probability"});
 //        }
 //        setLegend(currentSettings.legendAlignment);
+        } else {
+            add(messageLabel, BorderLayout.CENTER);
+        }
 
         validate();
         repaint();

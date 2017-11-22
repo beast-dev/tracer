@@ -50,8 +50,6 @@ public class DensityPanel extends JPanel implements Exportable {
 
     private TraceChartPanel currentPanel;
 
-    protected JLabel messageLabel = new JLabel("No data loaded");
-
     /**
      * Creates new FrequencyPanel
      */
@@ -62,7 +60,7 @@ public class DensityPanel extends JPanel implements Exportable {
         setOpaque(false);
         setLayout(new BorderLayout());
 
-        add(messageLabel, BorderLayout.NORTH);
+        add(new JLabel("No data loaded"), BorderLayout.NORTH);
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
@@ -102,8 +100,7 @@ public class DensityPanel extends JPanel implements Exportable {
             add(currentPanel, BorderLayout.CENTER);
         }
         if (message != null) {
-            messageLabel.setText(message);
-            add(messageLabel, BorderLayout.NORTH);
+            add(new JLabel(message), BorderLayout.NORTH);
         }
         validate();
         repaint();

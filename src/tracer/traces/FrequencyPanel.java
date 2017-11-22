@@ -67,7 +67,7 @@ public class FrequencyPanel extends TraceChartPanel {
         traceChartPanel = new JChartPanel(traceChart, "","", "Frequency"); // xAxisTitle, yAxisTitle
         toolBar = createToolBar(currentSettings);
 
-        setupMainPanel(false);
+        setupMainPanel();
     }
 
     public JChartPanel getChartPanel() {
@@ -77,7 +77,7 @@ public class FrequencyPanel extends TraceChartPanel {
     @Override
     protected ChartSetupDialog getChartSetupDialog() {
         if (chartSetupDialog == null) {
-            chartSetupDialog = new ChartSetupDialog(frame, false, false, true, false,
+            chartSetupDialog = new ChartSetupDialog(getFrame(), false, false, true, false,
                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
         }
         return chartSetupDialog;
@@ -130,25 +130,23 @@ public class FrequencyPanel extends TraceChartPanel {
     @Override
     protected void setupTraces() {
 
-        removeAllPlots();
-
-        Plot plot = null;
-
-        if (traceLists == null || traceLists[0] == null) {
+        // return if no traces selected
+        if (!removeAllPlots()) {
             return;
         }
 
-        TraceList traceList = traceLists[0];
+        Plot plot = null;
 
-        int traceIndex = traceList.getTraceIndex(traceNames.get(0));
+        TraceList traceList = getTraceLists()[0];
+
+        int traceIndex = traceList.getTraceIndex(getTraceNames().get(0));
         Trace trace = traceList.getTrace(traceIndex);
         TraceCorrelation td = traceList.getCorrelationStatistics(traceIndex);
 
         if (trace != null) {
-            List<Double> values = traceList.getValues(traceIndex);
             TraceType traceType = trace.getTraceType();
             if (traceType.isContinuous()) {
-                HistogramPlot histogramPlot = new HistogramPlot(values, currentSettings.minimumBins, td);
+                HistogramPlot histogramPlot = new HistogramPlot(traceList.getValues(traceIndex), currentSettings.minimumBins, td);
 
                 histogramPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
 
@@ -176,7 +174,10 @@ public class FrequencyPanel extends TraceChartPanel {
                     columnPlot = new ColumnPlot(trace.getFrequencyCounter(),  null, true);
 
                     columnPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
-                    columnPlot.setIntervals(trace.getTraceStatistics().getLowerHPD(), trace.getTraceStatistics().getUpperHPD());
+                    if (trace.getUniqueValueCount() > 2) {
+                        // don't show hpds for binary traces...
+                        columnPlot.setIntervals(trace.getTraceStatistics().getLowerHPD(), trace.getTraceStatistics().getUpperHPD());
+                    }
                     columnPlot.setColumnWidth(0.5);
 
                     Axis xAxis = new DiscreteAxis(true, true);

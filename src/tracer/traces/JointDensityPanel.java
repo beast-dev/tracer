@@ -62,7 +62,7 @@ public class JointDensityPanel extends TraceChartPanel {
         private final String name;
     }
 
-    private TableScrollPane tableScrollPane = new TableScrollPane();
+//    private TableScrollPane tableScrollPane = new TableScrollPane();
 
     private JComboBox categoryTableProbabilityCombo = new JComboBox(CategoryTableProbabilityType.values());
     private JCheckBox defaultNumberFormatCheckBox = new JCheckBox("Use default number format");
@@ -146,7 +146,7 @@ public class JointDensityPanel extends TraceChartPanel {
     @Override
     protected ChartSetupDialog getChartSetupDialog() {
         if (chartSetupDialog == null) {
-            chartSetupDialog = new ChartSetupDialog(frame, true, true, true, true,
+            chartSetupDialog = new ChartSetupDialog(getFrame(), true, true, true, true,
                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
         }
         return chartSetupDialog;
@@ -228,12 +228,6 @@ public class JointDensityPanel extends TraceChartPanel {
         return toolBar;
     }
 
-    public void setCombinedTraces() {
-        getChartPanel().setXAxisTitle("");
-        getChartPanel().setYAxisTitle("");
-        messageLabel.setText("Can't show correlation of combined traces");
-    }
-
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
         super.setTraces(traceLists, traceNames);
 
@@ -264,66 +258,54 @@ public class JointDensityPanel extends TraceChartPanel {
     // it was private void setupChartOrTable()
     protected void setupTraces() {
 
-        if (traceNames != null && traceNames.size() <= 2) {
+        if (getTraceNames() != null && getTraceNames().size() <= 2) {
 
-            //getChartPanel().removeAll();
-            if (currentType == Type.CORRELATION) {
-                if (!removeAllPlots(false)) return;
-            }
+            getChartPanel().getChart().removeAllPlots();
 
             currentType = Type.BOXPLOT;
 
-            //when the list of selected statistics is shortened
-            /*if (correlationData.numberOfEntries() > 2 || correlationData.numberOfEntries() == 0) {
-                getChartPanel().removeAll();
-                getChartPanel().add(traceChart);
-            }*/
-
-            // ((BoxPlotChart) getChart()).removeAllIntervals();
-
             if (tl1 == null || tl2 == null) {
-                chartPanel.remove(tableScrollPane);
+//                chartPanel.remove(tableScrollPane);
 
                 chartPanel.setXAxisTitle("");
                 chartPanel.setYAxisTitle("");
-                messageLabel.setText("Select two statistics or traces from the table to view their correlation");
+                setMessage("Select two statistics or traces from the table to view their correlation");
                 return;
             }
 
             TraceCorrelation td1 = tl1.getCorrelationStatistics(traceIndex1);
             TraceCorrelation td2 = tl2.getCorrelationStatistics(traceIndex2);
             if (td1 == null || td2 == null) {
-//            getChart().removeAllPlots();
-                chartPanel.remove(tableScrollPane);
+//                chartPanel.remove(tableScrollPane);
 
                 chartPanel.setXAxisTitle("");
                 chartPanel.setYAxisTitle("");
-                messageLabel.setText("Waiting for analysis to complete");
+                setMessage("Waiting for analysis to complete");
                 return;
             }
 
-            messageLabel.setText("");
+            setMessage("");
 
             getChart().removeAllPlots();
 
             if (!td1.getTraceType().isNumber() && !td2.getTraceType().isNumber()) {
-                chartPanel.remove(getChart());
-                chartPanel.add(tableScrollPane, "Table");
-
-                sampleCheckBox.setVisible(false);
-                pointsCheckBox.setVisible(false);
-                translucencyCheckBox.setVisible(false);
-                categoryTableProbabilityCombo.setVisible(true);
-                defaultNumberFormatCheckBox.setVisible(true);
-
-                Object[] rowNames = td1.getRange().toArray();
-                Object[] colNames = td2.getRange().toArray();
-                double[][] data = categoricalPlot(td1, td2);
-
-                tableScrollPane.setTable(rowNames, colNames, data, defaultNumberFormatCheckBox.isSelected());
+//                chartPanel.remove(getChart());
+//                chartPanel.add(tableScrollPane, "Table");
+//
+//                sampleCheckBox.setVisible(false);
+//                pointsCheckBox.setVisible(false);
+//                translucencyCheckBox.setVisible(false);
+//                categoryTableProbabilityCombo.setVisible(true);
+//                defaultNumberFormatCheckBox.setVisible(true);
+//
+//                Object[] rowNames = td1.getRange().toArray();
+//                Object[] colNames = td2.getRange().toArray();
+//                double[][] data = categoricalPlot(td1, td2);
+//
+//                tableScrollPane.setTable(rowNames, colNames, data, defaultNumberFormatCheckBox.isSelected());
 
             } else {
-                chartPanel.remove(tableScrollPane);
+//                chartPanel.remove(tableScrollPane);
                 chartPanel.add(getChart(), "Chart");
                 //getChart().removeAllPlots();
                 categoryTableProbabilityCombo.setVisible(false);
@@ -385,19 +367,19 @@ public class JointDensityPanel extends TraceChartPanel {
             categoryTableProbabilityCombo.setVisible(false);
             defaultNumberFormatCheckBox.setVisible(false);
             //currently not warning against traces with low ESS values
-            messageLabel.setText("");
+            setMessage("");
 
-            if (!removeAllPlots(false)) return;
-
-            //getChartPanel().removeAll();
-            //getChartPanel().add(correlationChart);
+            // return if no traces selected
+            if (!removeAllPlots()) {
+                return;
+            }
 
             correlationData.clear();
 
             //int i = 0;
             TraceType traceType = null;
-            for (TraceList tl : traceLists) {
-                for (String traceName : traceNames) {
+            for (TraceList tl : getTraceLists()) {
+                for (String traceName : getTraceNames()) {
 
                     int traceIndex = tl.getTraceIndex(traceName);
                     Trace trace = tl.getTrace(traceIndex);
@@ -405,7 +387,7 @@ public class JointDensityPanel extends TraceChartPanel {
 
                     if (trace != null) {
                         String name = tl.getTraceName(traceIndex);
-                        if (traceLists.length > 1) {
+                        if (getTraceLists().length > 1) {
                             name = tl.getName() + " - " + name;
                         }
 
@@ -576,10 +558,10 @@ public class JointDensityPanel extends TraceChartPanel {
             }
             if (sampleSize < 20) {
                 sampleSize = 20;
-                messageLabel.setText("One of the traces has an ESS < 20 so a sample size of 20 will be used");
+                setMessage("One of the traces has an ESS < 20 so a sample size of 20 will be used");
             }
             if (sampleSize > 500) {
-                messageLabel.setText("This plot has been sampled down to 500 points");
+                setMessage("This plot has been sampled down to 500 points");
                 sampleSize = 500;
             }
         }
