@@ -158,39 +158,40 @@ public class FrequencyPanel extends TraceChartPanel {
                 getChartPanel().getChart().setXAxis(new LinearAxis());
 
                 plot = histogramPlot;
-//            } else if (traceType.isIntegerOrBinary()) {
-//                HistogramPlot histogramPlot = new HistogramPlot(values, -1, td);
-//
-//                histogramPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
-//
-//                if (td != null) {
-////                    plot.setInCredibleSet(td);
-//                    histogramPlot.setIntervals(td.getUpperHPD(), td.getLowerHPD()); // Integer coloured by HPD not Credible set
-//                }
-//
-//                getChartPanel().getChart().setXAxis(new DiscreteAxis(true, true));
-//
-//                plot = histogramPlot;
             } else if (traceType.isDiscrete()) {
+                ColumnPlot columnPlot;
+
                 if (traceType.isCategorical()) {
                     trace.setOrderType(Trace.OrderType.FREQUENCY);
+                    columnPlot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), true);
+
+                        columnPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
+                        Set<Integer> credibleSet = trace.getTraceStatistics().getCredibleSet();
+                        columnPlot.setIntervals(0, credibleSet.size());
+                        columnPlot.setColumnWidth(0.9);
+
+                        getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
+
+                } else {
+                    columnPlot = new ColumnPlot(trace.getFrequencyCounter(),  null, true);
+
+                    columnPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
+                    columnPlot.setIntervals(trace.getTraceStatistics().getLowerHPD(), trace.getTraceStatistics().getUpperHPD());
+                    columnPlot.setColumnWidth(0.5);
+
+                    Axis xAxis = new DiscreteAxis(true, true);
+                    getChartPanel().getChart().setXAxis(xAxis);
+
+                    if (trace.getUniqueValueCount() == 1) {
+                        xAxis.addRange(0, 1);
+                    }
                 }
-
-                ColumnPlot columnPlot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), true);
-
-                columnPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
-
-                getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), trace.getCategoryOrder(), true, true));
-
-                Set<Integer> credibleSet = trace.getTraceStatistics().getCredibleSet();
-                columnPlot.setIntervals(0, credibleSet.size());
 
                 plot = columnPlot;
             } else {
                 throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
             }
 
-//            setXAxis(td);
             setYLabel(traceType, new String[]{"Frequency", "Count"});
             setBinsComponents(traceType);
 

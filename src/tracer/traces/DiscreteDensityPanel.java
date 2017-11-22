@@ -256,7 +256,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                 ((DiscreteJChart) getChart()).setXAxis(traceType.isIntegerOrBinary());
 
             } else if (traceType.isCategorical()) {
-                ((DiscreteJChart) getChart()).setXAxis(trace.getCategoryLabelMap(), trace.getCategoryOrder());
+                ((DiscreteJChart) getChart()).setXAxis(trace.getCategoryLabelMap());
 
             } else {
                 throw new RuntimeException("Trace type is not recognized: " + traceType);
