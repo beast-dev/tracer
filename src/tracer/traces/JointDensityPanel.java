@@ -47,8 +47,8 @@ import java.util.List;
 public class JointDensityPanel extends TraceChartPanel {
 
     private enum Type {
-        BOXPLOT("Boxplot"),
-        CORRELATION("Correlation");
+        SINGLE("single"),
+        GRID("grid");
 
         Type(String name) {
             this.name = name;
@@ -90,8 +90,8 @@ public class JointDensityPanel extends TraceChartPanel {
 
     private ChartSetupDialog chartSetupDialog = null;
 
-    private JToolBar correlationToolBar;
-    private JToolBar boxPlotToolBar;
+    private JToolBar gridPlotToolBar;
+    private JToolBar singlePlotToolBar;
 
     public enum CategoryTableProbabilityType {
         JOINT_PROBABILITY("Joint Probability"), CONDITIONAL_PROBABILITY_X("Conditional Probability (?|row)"),
@@ -114,29 +114,25 @@ public class JointDensityPanel extends TraceChartPanel {
     public JointDensityPanel(final JFrame frame) {
         super(frame);
 
-        // AR - removing BoxPlotChart replacing with a JParallelChart
-//        intervalsChart = new BoxPlotChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS),
-//                new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         intervalsChart = new JParallelChart(true, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(intervalsChart, "", "", ""); // xAxisTitle, yAxisTitle
 
-        //correlationChart = new JGridChart();
         correlationChart = new JGridChart(1.0);
         correlationData = new CorrelationData();
         correlationChartPanel = new JChartPanel(correlationChart, "", "", "");
 
-        this.currentType = Type.BOXPLOT;
+        this.currentType = Type.SINGLE;
 
-        correlationToolBar = createCorrelationToolBar(frame);
-        boxPlotToolBar = createBoxPlotToolBar(frame);
+        gridPlotToolBar = createCorrelationToolBar(frame);
+        singlePlotToolBar = createBoxPlotToolBar(frame);
 
         setupMainPanel();
     }
 
     public JChartPanel getChartPanel() {
-        if (currentType == Type.BOXPLOT) {
+        if (currentType == Type.SINGLE) {
             return chartPanel;
-        } else if (currentType == Type.CORRELATION) {
+        } else if (currentType == Type.GRID) {
             return correlationChartPanel;
         } else {
             throw new IllegalArgumentException("Unknown chartpanel type");
@@ -159,19 +155,19 @@ public class JointDensityPanel extends TraceChartPanel {
 
     @Override
     protected JToolBar getToolBar() {
-        if (currentType == Type.BOXPLOT) {
-            return boxPlotToolBar;
-        } else if (currentType == Type.CORRELATION) {
-            return correlationToolBar;
+        if (currentType == Type.SINGLE) {
+            return singlePlotToolBar;
+        } else if (currentType == Type.GRID) {
+            return gridPlotToolBar;
         } else {
             throw new IllegalArgumentException("Unknown chartpanel type");
         }
     }
 
     protected JChart getChart() {
-        if (currentType == Type.BOXPLOT) {
+        if (currentType == Type.SINGLE) {
             return intervalsChart;
-        } else if (currentType == Type.CORRELATION) {
+        } else if (currentType == Type.GRID) {
             return correlationChart;
         } else {
             throw new IllegalArgumentException("Unknown chart type");
@@ -262,7 +258,7 @@ public class JointDensityPanel extends TraceChartPanel {
 
             getChartPanel().getChart().removeAllPlots();
 
-            currentType = Type.BOXPLOT;
+            currentType = Type.SINGLE;
 
             if (tl1 == null || tl2 == null) {
 //                chartPanel.remove(tableScrollPane);
@@ -288,7 +284,9 @@ public class JointDensityPanel extends TraceChartPanel {
 
             getChart().removeAllPlots();
 
-            if (!td1.getTraceType().isNumber() && !td2.getTraceType().isNumber()) {
+            if (td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete()) {
+                chartPanel.add(getChart(), "Chart");
+                createDiscreteBubblePlot(td1, td2);
 //                chartPanel.remove(getChart());
 //                chartPanel.add(tableScrollPane, "Table");
 //
@@ -304,52 +302,57 @@ public class JointDensityPanel extends TraceChartPanel {
 //
 //                tableScrollPane.setTable(rowNames, colNames, data, defaultNumberFormatCheckBox.isSelected());
 
-            } else {
+
+            } else if (td1.getTraceType().isDiscrete() && !td2.getTraceType().isDiscrete() ||
+                    !td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete() ) {
+
 //                chartPanel.remove(tableScrollPane);
                 chartPanel.add(getChart(), "Chart");
                 //getChart().removeAllPlots();
                 categoryTableProbabilityCombo.setVisible(false);
                 defaultNumberFormatCheckBox.setVisible(false);
 
-                if (td1.getTraceType().isCategorical()) {
-                    mixedCategoricalPlot(td1, td2, false); // isFirstTraceListNumerical
-
-                    sampleCheckBox.setVisible(false);
-                    pointsCheckBox.setVisible(false);
-                    translucencyCheckBox.setVisible(false);
-
-
-                } else if (td2.getTraceType().isCategorical()) {
-                    mixedCategoricalPlot(td2, td1, true); // isFirstTraceListNumerical
-
-                    sampleCheckBox.setVisible(false);
-                    pointsCheckBox.setVisible(false);
-                    translucencyCheckBox.setVisible(false);
-
-                    if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
-                        String swapName = name1;
-                        name1 = name2;
-                        name2 = swapName;
-                    }
-
+                if (td1.getTraceType().isDiscrete()) {
+                    createDiscreteContinuousPlot(td1, td2);
                 } else {
-                    numericalPlot(td1, td2);
+                    createDiscreteContinuousPlot(td2, td1);
+                }
+                sampleCheckBox.setVisible(false);
+                pointsCheckBox.setVisible(false);
+                translucencyCheckBox.setVisible(false);
 
-                    if (td1.getTraceType().isContinuous() && td2.getTraceType().isContinuous()) {
-                        sampleCheckBox.setVisible(true);
-                        pointsCheckBox.setVisible(true);
-                        translucencyCheckBox.setVisible(true);
-                    } else {
-                        sampleCheckBox.setVisible(false);
-                        pointsCheckBox.setVisible(false);
-                        translucencyCheckBox.setVisible(false);
-                    }
 
-                    if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
-                        String swapName = name1;
-                        name1 = name2;
-                        name2 = swapName;
-                    }
+//                } else if (td2.getTraceType().isCategorical()) {
+//                    mixedCategoricalPlot(td2, td1, true); // isFirstTraceListNumerical
+//
+//                    sampleCheckBox.setVisible(false);
+//                    pointsCheckBox.setVisible(false);
+//                    translucencyCheckBox.setVisible(false);
+//
+//                    if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
+//                        String swapName = name1;
+//                        name1 = name2;
+//                        name2 = swapName;
+//                    }
+//
+            } else {
+                // both are continous
+                createContinuousPlot(td1, td2);
+
+                if (td1.getTraceType().isContinuous() && td2.getTraceType().isContinuous()) {
+                    sampleCheckBox.setVisible(true);
+                    pointsCheckBox.setVisible(true);
+                    translucencyCheckBox.setVisible(true);
+                } else {
+                    sampleCheckBox.setVisible(false);
+                    pointsCheckBox.setVisible(false);
+                    translucencyCheckBox.setVisible(false);
+                }
+
+                if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
+                    String swapName = name1;
+                    name1 = name2;
+                    name2 = swapName;
                 }
             }
             setXLabel(name1);
@@ -357,11 +360,11 @@ public class JointDensityPanel extends TraceChartPanel {
 
         } else {
 
-            if (currentType == Type.BOXPLOT) {
+            if (currentType == Type.SINGLE) {
                 getChartPanel().removeAll();
             }
 
-            currentType = Type.CORRELATION;
+            currentType = Type.GRID;
 
             //TODO double check what the idea is behind these options
             categoryTableProbabilityCombo.setVisible(false);
@@ -427,13 +430,11 @@ public class JointDensityPanel extends TraceChartPanel {
         repaint();
     }
 
-    // td is categorical
-    private void mixedCategoricalPlot(TraceDistribution tdCategorical, TraceDistribution tdNumerical,
-                                      boolean isFirstTraceListNumerical) {
+    private void createDiscreteContinuousPlot(TraceDistribution tdDiscrete, TraceDistribution tdContinuous) {
 
         // Not sure I understand this just now.. will revisit.
 
-        throw new UnsupportedOperationException("mixedCategoricalPlot");
+        throw new UnsupportedOperationException("createDiscreteContinuousPlot");
 //        List<String> categoryValues = tdCategorical.getRange();
 //
 //        if (categoryValues == null || categoryValues.size() < 1) return;
@@ -538,7 +539,7 @@ public class JointDensityPanel extends TraceChartPanel {
         }
     }
 
-    private void numericalPlot(TraceCorrelation td1, TraceCorrelation td2) {
+    private void createContinuousPlot(TraceCorrelation td1, TraceCorrelation td2) {
 //        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
 //        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
         // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
@@ -638,95 +639,173 @@ public class JointDensityPanel extends TraceChartPanel {
         }
     }
 
-
-    private double[][] categoricalPlot(TraceDistribution td1, TraceDistribution td2) {
-        List<String> rowNames = td1.getRange();
-        List<String> colNames = td2.getRange();
-
-        double[][] data = new double[rowNames.size()][colNames.size()];
-
-//        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
-//        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
-        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
-        List values1 = tl1.getValues(traceIndex1);
-        List values2 = tl2.getValues(traceIndex2);
+    private void createDiscreteBubblePlot(TraceCorrelation td1, TraceCorrelation td2) {
+        List<Double> values1 = tl1.getValues(traceIndex1);
+        List<Double> values2 = tl2.getValues(traceIndex2);
         int maxCount = Math.max(values1.size(), values2.size());
         int minCount = Math.min(values1.size(), values2.size());
 
         int sampleSize = minCount;
 
-        if (sampleSize <= 0) System.err.println("sampleSize cannot be 0. sampleSize = " + sampleSize);
-
-        String samples1[] = new String[sampleSize];
         int k = 0;
-
-        TraceType type = tl1.getTrace(traceIndex1).getTraceType();
+        List<Double> samples1 = new ArrayList<Double>();
         for (int i = 0; i < sampleSize; i++) {
-            if (type.isInteger()) { // as Integer is stored as Double in Trace
-                samples1[i] = Integer.toString( ((Number) values1.get(k)).intValue() );
-            } else {
-                samples1[i] = values1.get(k).toString();
-            }
-            k += minCount / sampleSize; // = 1 for non-continous vs non-continous
-        }
-
-        String samples2[] = new String[sampleSize];
-        k = 0;
-
-        type = tl2.getTrace(traceIndex2).getTraceType();
-        for (int i = 0; i < sampleSize; i++) {
-            if (type.isInteger()) { // as Integer is stored as Double in Trace
-                samples2[i] = Integer.toString( ((Number) values2.get(k)).intValue() );
-            } else {
-                samples2[i] = values2.get(k).toString();
-            }
+            samples1.add(i, ((Number) values1.get(k)).doubleValue());
             k += minCount / sampleSize;
         }
 
-        // calculate count
+        k = 0;
+        List<Double> samples2 = new ArrayList<Double>();
         for (int i = 0; i < sampleSize; i++) {
-            if (rowNames.contains(samples1[i]) && colNames.contains(samples2[i])) {
-                data[rowNames.indexOf(samples1[i])][colNames.indexOf(samples2[i])] += 1;
-            } else {
-//                System.err.println("Not find row or column name. i = " + i);
-            }
+            samples2.add(i, ((Number) values2.get(k)).doubleValue());
+            k += minCount / sampleSize;
         }
 
-        if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.JOINT_PROBABILITY) {
-            for (int r = 0; r < data.length; r++) {
-                for (int c = 0; c < data[0].length; c++) {
-                    data[r][c] = data[r][c] / sampleSize;
-                }
-            }
-        } else if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.CONDITIONAL_PROBABILITY_X) {
-            for (int r = 0; r < data.length; r++) {
-                double count = 0;
-                for (int c = 0; c < data[0].length; c++) {
-                    count = count + data[r][c];
-                }
-                for (int c = 0; c < data[0].length; c++) {
-                    if (count != 0)
-                        data[r][c] = data[r][c] / count;
-                }
-            }
-
-        } else if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.CONDITIONAL_PROBABILITY_Y) {
-            for (int c = 0; c < data[0].length; c++) {
-                double count = 0;
-                for (int r = 0; r < data.length; r++) {
-                    count = count + data[r][c];
-                }
-                for (int r = 0; r < data.length; r++) {
-                    if (count != 0)
-                        data[r][c] = data[r][c] / count;
-                }
-            }
-
+        // set axis
+        if (td1.getTraceType().isCategorical()) {
+            getChart().setXAxis(new DiscreteAxis(true, true));
+        } else {
+            getChart().setXAxis(new DiscreteAxis(true, true));
         }
-        // else COUNT
+        if (td2.getTraceType().isCategorical()) {
+            getChart().setYAxis(new DiscreteAxis(true, true));
+        } else {
+            getChart().setYAxis(new DiscreteAxis(true, true));
+        }
 
-        return data;
+        // add plot
+        Plot plot;
+        // samples1 samples2 are both ordinal
+        plot = new TangHuLuPlot(samples1, samples2);
+        getChart().setOriginStyle(null, null);
+        getChart().addPlot(plot);
+
+//} else if (td1.getTraceType().isIntegerOrBinary()) {
+//        List<String> categoryValues = td1.getRange();
+//        if (categoryValues == null || categoryValues.size() < 1) return;
+//
+//        List<String> stringList = new ArrayList<String>(samples1.size());
+//        for (Double ordinal : samples1) {
+//        stringList.add(String.valueOf(Math.round(ordinal)));
+//        }
+//
+//        drawDiscreteBoxPlot(categoryValues, samples2, stringList);
+//
+//        } else if (td2.getTraceType().isIntegerOrBinary()) {
+//        List<String> categoryValues = td2.getRange();
+//        if (categoryValues == null || categoryValues.size() < 1) return;
+//
+//        List<String> stringList = new ArrayList<String>(samples2.size());
+//        for (Double ordinal : samples2) {
+//        stringList.add(String.valueOf(Math.round(ordinal)));
+//        }
+//        getChart().setXAxis(new DiscreteAxis(true, true));
+//
+//        drawDiscreteBoxPlot(categoryValues, samples1, stringList);
+//
+//        } else {
+//        // either samples1 or samples2 is real
+//        plot = new ScatterPlot(samples1, samples2);
+//            /*plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
+//                    new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
+//                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
+//                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));*/
+//        plot.setMarkStyle(Plot.CIRCLE_MARK, 3.0,
+//        new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
+//        new Color(16, 16, 64, 255),
+//        new Color(16, 16, 64, 255));
+//        getChart().addPlot(plot);
+//        }
     }
+
+//    private double[][] categoricalPlot(TraceDistribution td1, TraceDistribution td2) {
+//        List<String> rowNames = td1.getRange();
+//        List<String> colNames = td2.getRange();
+//
+//        double[][] data = new double[rowNames.size()][colNames.size()];
+//
+////        int maxCount = Math.max(tl1.getStateCount(), tl2.getStateCount());
+////        int minCount = Math.min(tl1.getStateCount(), tl2.getStateCount());
+//        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
+//        List values1 = tl1.getValues(traceIndex1);
+//        List values2 = tl2.getValues(traceIndex2);
+//        int maxCount = Math.max(values1.size(), values2.size());
+//        int minCount = Math.min(values1.size(), values2.size());
+//
+//        int sampleSize = minCount;
+//
+//        if (sampleSize <= 0) System.err.println("sampleSize cannot be 0. sampleSize = " + sampleSize);
+//
+//        String samples1[] = new String[sampleSize];
+//        int k = 0;
+//
+//        TraceType type = tl1.getTrace(traceIndex1).getTraceType();
+//        for (int i = 0; i < sampleSize; i++) {
+//            if (type.isInteger()) { // as Integer is stored as Double in Trace
+//                samples1[i] = Integer.toString( ((Number) values1.get(k)).intValue() );
+//            } else {
+//                samples1[i] = values1.get(k).toString();
+//            }
+//            k += minCount / sampleSize; // = 1 for non-continous vs non-continous
+//        }
+//
+//        String samples2[] = new String[sampleSize];
+//        k = 0;
+//
+//        type = tl2.getTrace(traceIndex2).getTraceType();
+//        for (int i = 0; i < sampleSize; i++) {
+//            if (type.isInteger()) { // as Integer is stored as Double in Trace
+//                samples2[i] = Integer.toString( ((Number) values2.get(k)).intValue() );
+//            } else {
+//                samples2[i] = values2.get(k).toString();
+//            }
+//            k += minCount / sampleSize;
+//        }
+//
+//        // calculate count
+//        for (int i = 0; i < sampleSize; i++) {
+//            if (rowNames.contains(samples1[i]) && colNames.contains(samples2[i])) {
+//                data[rowNames.indexOf(samples1[i])][colNames.indexOf(samples2[i])] += 1;
+//            } else {
+////                System.err.println("Not find row or column name. i = " + i);
+//            }
+//        }
+//
+//        if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.JOINT_PROBABILITY) {
+//            for (int r = 0; r < data.length; r++) {
+//                for (int c = 0; c < data[0].length; c++) {
+//                    data[r][c] = data[r][c] / sampleSize;
+//                }
+//            }
+//        } else if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.CONDITIONAL_PROBABILITY_X) {
+//            for (int r = 0; r < data.length; r++) {
+//                double count = 0;
+//                for (int c = 0; c < data[0].length; c++) {
+//                    count = count + data[r][c];
+//                }
+//                for (int c = 0; c < data[0].length; c++) {
+//                    if (count != 0)
+//                        data[r][c] = data[r][c] / count;
+//                }
+//            }
+//
+//        } else if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.CONDITIONAL_PROBABILITY_Y) {
+//            for (int c = 0; c < data[0].length; c++) {
+//                double count = 0;
+//                for (int r = 0; r < data.length; r++) {
+//                    count = count + data[r][c];
+//                }
+//                for (int r = 0; r < data.length; r++) {
+//                    if (count != 0)
+//                        data[r][c] = data[r][c] / count;
+//                }
+//            }
+//
+//        }
+//        // else COUNT
+//
+//        return data;
+//    }
 
 
 //    private double[] removeNaN(double[] sample) {
