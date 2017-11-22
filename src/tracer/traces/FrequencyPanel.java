@@ -165,12 +165,12 @@ public class FrequencyPanel extends TraceChartPanel {
                     trace.setOrderType(Trace.OrderType.FREQUENCY);
                     columnPlot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), true);
 
-                        columnPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
-                        Set<Integer> credibleSet = trace.getTraceStatistics().getCredibleSet();
-                        columnPlot.setIntervals(0, credibleSet.size());
-                        columnPlot.setColumnWidth(0.9);
+                    columnPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
+                    Set<Integer> credibleSet = trace.getTraceStatistics().getCredibleSet();
+                    columnPlot.setIntervals(0, credibleSet.size());
+                    columnPlot.setColumnWidth(0.9);
 
-                        getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
+                    getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
 
                 } else {
                     columnPlot = new ColumnPlot(trace.getFrequencyCounter(),  null, true);
