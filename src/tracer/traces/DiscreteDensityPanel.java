@@ -27,9 +27,7 @@ package tracer.traces;
 
 import dr.app.gui.chart.*;
 import dr.inference.trace.*;
-import dr.stats.FrequencyCounter;
 import dr.stats.Variate;
-import jebl.evolution.treesimulation.IntervalGenerator;
 
 import javax.swing.*;
 import java.awt.*;

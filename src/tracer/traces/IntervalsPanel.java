@@ -30,7 +30,6 @@ import dr.inference.trace.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 
 
 /**

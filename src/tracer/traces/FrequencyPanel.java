@@ -27,13 +27,11 @@ package tracer.traces;
 
 import dr.app.gui.chart.*;
 import dr.inference.trace.*;
-import dr.stats.FrequencyCounter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
-import java.util.List;
 
 
 /**
