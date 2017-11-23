@@ -54,14 +54,6 @@ public class GridJointDensityPanel extends TraceChartPanel {
     private JCheckBox pointsCheckBox = new JCheckBox("Draw as points");
     private JCheckBox translucencyCheckBox = new JCheckBox("Use translucency");
 
-    private TraceList traceList1 = null;
-    private TraceList traceList2 = null;
-    private int traceIndex1 = -1;
-    private int traceIndex2 = -1;
-
-    private String traceName1;
-    private String traceName2;
-
     private final JChart correlationChart;
     private final JChartPanel chartPanel;
     private final CorrelationData correlationData;
@@ -152,44 +144,12 @@ public class GridJointDensityPanel extends TraceChartPanel {
     public void setTraces(TraceList[] traceLists, List<String> traceNames) {
         super.setTraces(traceLists, traceNames);
 
-        if (traceLists != null && traceNames != null && traceLists.length == 2 && traceNames.size() == 1) {
-            traceList1 = traceLists[0];
-            traceName1 = traceList1.getName();
-            traceList2 = traceLists[1];
-            traceName2 = traceList2.getName();
-            traceIndex1 = traceList1.getTraceIndex(traceNames.get(0));
-            traceIndex2 = traceList2.getTraceIndex(traceNames.get(0));
-            traceName1 = traceName1 + " - " + traceList1.getTraceName(traceIndex1);
-            traceName2 = traceName2 + " - " + traceList2.getTraceName(traceIndex2);
-        } else if (traceLists != null && traceNames != null && traceLists.length == 1 && traceNames.size() == 2) {
-            traceList1 = traceLists[0];
-            traceList2 = traceLists[0];
-            traceIndex1 = traceList1.getTraceIndex(traceNames.get(0));
-            traceIndex2 = traceList2.getTraceIndex(traceNames.get(1));
-            traceName1 = traceList1.getTraceName(traceIndex1);
-            traceName2 = traceList2.getTraceName(traceIndex2);
-        } else {
-            traceList1 = null;
-            traceList2 = null;
-        }
-
         setupTraces();
     }
 
     protected void setupTraces() {
 
         getChartPanel().getChart().removeAllPlots();
-
-        TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
-        TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
-        if (td1 == null || td2 == null) {
-            // TraceCorrelations not generated yet so must be still computing ESSs etc.
-
-            getChartPanel().setXAxisTitle("");
-            getChartPanel().setYAxisTitle("");
-            setMessage("Waiting for analysis of traces to complete");
-            return;
-        }
 
         setMessage("");
 
@@ -208,6 +168,15 @@ public class GridJointDensityPanel extends TraceChartPanel {
                 int traceIndex = tl.getTraceIndex(traceName);
                 Trace trace = tl.getTrace(traceIndex);
                 TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
+
+                if (td == null) {
+                    // TraceCorrelations not generated yet so must be still computing ESSs etc.
+
+                    getChartPanel().setXAxisTitle("");
+                    getChartPanel().setYAxisTitle("");
+                    setMessage("Waiting for analysis of traces to complete");
+                    return;
+                }
 
                 if (trace != null) {
                     String name = tl.getTraceName(traceIndex);

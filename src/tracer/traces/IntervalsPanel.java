@@ -238,35 +238,15 @@ public class IntervalsPanel extends TraceChartPanel {
                         getChartPanel().getChart().addPlot(plot);
                     }
 
-                    // colourBy
-//                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
-//                        i++;
-//                    }
-//                    if (i == currentSettings.palette.length) {
-//                        i = 0;
-//                    }
                 }
-//            if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
-//                i++;
-//            } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
-//                i = 0;
-//            }
-//            if (i >= currentSettings.palette.length) {
-//                i = 0;
-//            }
             }
 
             // swap in the correct chart panel
             add(getChartPanel(), BorderLayout.CENTER);
             add(getToolBar(), BorderLayout.SOUTH);
 
-//        setXLabelMultipleTraces();
-//        if (currentSettings.type == ContinuousDensityPanel.Type.VIOLIN) {
             setYLabel("Value");
-//        } else {
-//            setYLabel(traceType, new String[]{"Density", "Probability"});
-//        }
-//        setLegend(currentSettings.legendAlignment);
+
         } else {
             add(messageLabel, BorderLayout.CENTER);
         }
