@@ -201,14 +201,34 @@ public class IntervalsPanel extends TraceChartPanel {
 //                    }
                         } else if (traceType.isDiscrete()) {
 
-                            // TODO: how to show multiple discrete traces?
-                            // Stacked column charts?
-                            // Histogram violins for integers?
                             if (traceType.isCategorical()) {
+                                // TODO: how to show multiple categorical traces?
+                                // Stacked column charts?
+                                plot = null;
                             } else {
+                                double lower = trace.getTraceStatistics().getLowerHPD();
+                                double upper = trace.getTraceStatistics().getUpperHPD();
+                                IntegerViolinPlot violinPlot = new IntegerViolinPlot(true, 0.6, lower, upper, false, trace.getFrequencyCounter());
+
+                                if (trace.getUniqueValueCount() > 2) {
+                                    // don't show hpds for binary traces...
+                                    violinPlot.setIntervals(trace.getTraceStatistics().getLowerHPD(), trace.getTraceStatistics().getUpperHPD());
+                                }
+
+                                violinPlot.setName(name);
+                                violinPlot.setLineStyle(new BasicStroke(0.5f), Color.black);
+                                violinPlot.setPaints(BAR_PAINT, TAIL_PAINT);
+
+                                Axis yAxis = new DiscreteAxis(true, true);
+                                getChartPanel().getChart().setYAxis(yAxis);
+
+                                if (trace.getUniqueValueCount() == 1) {
+                                    yAxis.addRange(0, 1);
+                                }
+
+                                plot = violinPlot;
                             }
 
-                            plot = null;
                         } else {
                             throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
                         }

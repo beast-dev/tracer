@@ -226,7 +226,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                     } else {
                         columnPlot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
                     }
-                    columnPlot.setPaints(createTranslucentColor((Color)currentSettings.palette[i], 128), createTranslucentColor((Color)currentSettings.palette[i], 16));
+                    columnPlot.setPaints(createTranslucentColor((Color)currentSettings.palette[i], 128), createTranslucentColor((Color)currentSettings.palette[i], 32));
 
 
                     plot = columnPlot;
