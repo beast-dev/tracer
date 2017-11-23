@@ -82,7 +82,7 @@ public class JointDensityPanel extends JPanel implements Exportable {
 
             }
         } else {
-            setDensityPanel(null, "Statistics must be of the same type to display together");
+            setDensityPanel(null, "Traces must be of the same type to display together");
         }
     }
 

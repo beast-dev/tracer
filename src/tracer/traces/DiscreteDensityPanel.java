@@ -119,29 +119,35 @@ public class DiscreteDensityPanel extends TraceChartPanel {
     public void setTraces(TraceList[] traceLists, List<String> traceNames) {
         super.setTraces(traceLists, traceNames);
 
-//        legendCombo.setSelectedIndex(currentSettings.legendAlignment);
-//        colourByCombo.setSelectedIndex(currentSettings.colourBy.ordinal());
-
+        Set<String> categoryLabels = null;
 
         if (traceLists != null) {
-//        barCount = 0;
             TraceType traceType = null;
-            for (TraceList tl : traceLists) {
-                for (String traceName : traceNames) {
+            for (TraceList tl : getTraceLists()) {
+                for (String traceName : getTraceNames()) {
                     int traceIndex = tl.getTraceIndex(traceName);
                     Trace trace = tl.getTrace(traceIndex);
-                    if (trace != null) {
-                        if (traceType == null) {
-                            traceType = trace.getTraceType();
-                        }
-                        if (trace.getTraceType() != traceType) {
-                            getChart().removeAllPlots();
 
-                            getChartPanel().setXAxisTitle("");
-                            getChartPanel().setYAxisTitle("");
-                            //messageLabel = new JLabel("<html><div style='text-align: center;'>Traces must be of the same type to visualize here</div></html>");
+                    if (traceType == null) {
+                        traceType = trace.getTraceType();
+                    }
+
+                    if (traceType == TraceType.CATEGORICAL) {
+                        Set<String> labels = new HashSet<String>(trace.getCategoryLabelMap().values());
+                        if (categoryLabels == null) {
+                            categoryLabels = labels;
+                        }
+                        labels.retainAll(categoryLabels);
+                        if (labels.size() == 0) {
+                            setMessage("Categorical traces must have common values to visualize here.");
                             return;
                         }
+                        categoryLabels.addAll(trace.getCategoryLabelMap().values());
+                    }
+
+                    if (traceType != trace.getTraceType()) {
+                        setMessage("Traces must be of the same type to visualize here.");
+                        return;
                     }
                 }
             }
@@ -188,19 +194,20 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
                 if (traceType.isCategorical()) {
                     trace.setOrderType(Trace.OrderType.FREQUENCY);
-                    columnPlot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), true);
+                    columnPlot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), false);
 
                     Set<Integer> credibleSet = trace.getTraceStatistics().getCredibleSet();
                     columnPlot.setIntervals(0, credibleSet.size());
-                    columnPlot.setColumnWidth(0.9);
+
+                    columnPlot.setColumnWidth(0.95);
 
                     getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
 
                 } else {
-                    columnPlot = new ColumnPlot(trace.getFrequencyCounter(),  null, true);
+                    columnPlot = new ColumnPlot(trace.getFrequencyCounter(),  null, false);
 
                     columnPlot.setIntervals(trace.getTraceStatistics().getLowerHPD(), trace.getTraceStatistics().getUpperHPD());
-                    columnPlot.setColumnWidth(0.5);
+                    columnPlot.setColumnWidth(0.75);
 
                     Axis xAxis = new DiscreteAxis(true, true);
                     getChartPanel().getChart().setXAxis(xAxis);
@@ -210,20 +217,24 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                     }
                 }
 
-                plot = columnPlot;
 
 
-                if (plot != null) {
-                    plot.setName(name);
+                if (columnPlot != null) {
+                    columnPlot.setName(name);
                     if (tl instanceof CombinedTraces) {
-                        plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
+                        columnPlot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
                     } else {
-                        plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
+                        columnPlot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
                     }
+                    columnPlot.setPaints(createTranslucentColor((Color)currentSettings.palette[i], 128), createTranslucentColor((Color)currentSettings.palette[i], 16));
+
+
+                    plot = columnPlot;
 
                     getChart().setOriginStyle(null, null);
                     getChart().addPlot(plot);
                 }
+
                 // change x axis to DiscreteAxis or LinearAxis according TraceType
                 setXAxis(trace, td);
 
@@ -251,6 +262,13 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
         validate();
         repaint();
+    }
+
+    private Color createTranslucentColor(Color source, int alpha) {
+        return new Color(
+                ((Color) source).getRed(),
+                ((Color) source).getGreen(),
+                ((Color) source).getBlue(), alpha);
     }
 
     protected void setXAxis(Trace trace, TraceDistribution td) {

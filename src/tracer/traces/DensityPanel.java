@@ -65,6 +65,8 @@ public class DensityPanel extends JPanel implements Exportable {
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
 
+        removeAll();
+
         if (traceLists != null) {
             TraceType traceType = null;
             for (TraceList tl : traceLists) {
@@ -76,7 +78,7 @@ public class DensityPanel extends JPanel implements Exportable {
                             traceType = trace.getTraceType();
                         }
                         if (trace.getTraceType() != traceType) {
-                            setDensityPanel(null, "Statistics must be of the same type to display together");
+                            setDensityPanel(null, "Traces must be of the same type to display together.");
                             return;
                         }
                     }

@@ -36,7 +36,8 @@ import tracer.application.PanelUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A shared code for the panel that displays a plot of traces,
@@ -312,7 +313,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     //++++++ setup traces +++++++
     private TraceList[] traceLists = null;
     private java.util.List<String> traceNames = null;
-    private JLabel messageLabel = new JLabel();
     private final JFrame frame;
 
     /**
@@ -358,7 +358,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
      */
     protected void setupMainPanel() {
         removeAll();
-        add(messageLabel, BorderLayout.NORTH);
         add(getToolBar(), BorderLayout.SOUTH);
         add(getChartPanel(), BorderLayout.CENTER);
     }
@@ -481,7 +480,14 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     protected abstract void setupTraces();
 
     public void setMessage(String message) {
-        this.messageLabel.setText(message);
+        BorderLayout layout = (BorderLayout) getLayout();
+        if (layout.getLayoutComponent(BorderLayout.NORTH) != null) {
+            remove(layout.getLayoutComponent(BorderLayout.NORTH));
+        }
+
+        if (message != null || message.length() > 0) {
+            add(new JLabel(message), BorderLayout.NORTH);
+        }
     }
 
 

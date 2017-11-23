@@ -30,6 +30,8 @@ import dr.inference.trace.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -89,7 +91,7 @@ public class IntervalsPanel extends TraceChartPanel {
         JToolBar toolBar = super.createToolBar();
 
         toolBar.add(createSetupButton());
-        
+
 //        JLabel label = createColourByComboAndLabel();
 //        toolBar.add(label);
 //        toolBar.add(label.getLabelFor());
@@ -121,7 +123,7 @@ public class IntervalsPanel extends TraceChartPanel {
 
         setupTraces();
     }
-    
+
     protected void setupTraces() {
         // return if no traces selected
         if (!removeAllPlots()) {
@@ -131,6 +133,8 @@ public class IntervalsPanel extends TraceChartPanel {
         JLabel messageLabel = null;
 
         TraceType traceType = null;
+        Set<String> categoryLabels = null;
+
         for (TraceList tl : getTraceLists()) {
             for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
@@ -140,8 +144,22 @@ public class IntervalsPanel extends TraceChartPanel {
                     traceType = trace.getTraceType();
                 }
 
+                if (traceType == TraceType.CATEGORICAL) {
+                    Set<String> labels = new HashSet<String>(trace.getCategoryLabelMap().values());
+                    if (categoryLabels == null) {
+                        categoryLabels = labels;
+                    }
+                    labels.retainAll(categoryLabels);
+                    if (labels.size() == 0) {
+                        setMessage("Categorical traces must have common values to visualize here.");
+                        return;
+                    }
+                    categoryLabels.addAll(trace.getCategoryLabelMap().values());
+                }
+
                 if (traceType != trace.getTraceType()) {
-                    messageLabel = new JLabel("<html><div style='text-align: center;'>Traces must be of the same type to visualize here</div></html>");
+                    setMessage("Traces must be of the same type to visualize here.");
+                    return;
                 }
             }
         }
@@ -237,9 +255,4 @@ public class IntervalsPanel extends TraceChartPanel {
         repaint();
     }
 
-
-
-//    public JComponent getExportableComponent() {
-//        return chartPanel;
-//    }
 }
