@@ -78,7 +78,7 @@ public class DensityPanel extends JPanel implements Exportable {
                             traceType = trace.getTraceType();
                         }
                         if (trace.getTraceType() != traceType) {
-                            setDensityPanel(null, "Traces must be of the same type to display together.");
+                            currentPanel.setMessage("Traces must be of the same type to display together.");
                             return;
                         }
                     }
@@ -87,22 +87,19 @@ public class DensityPanel extends JPanel implements Exportable {
 
             if (traceType == TraceType.REAL) {
                 continuousDensityPanel.setTraces(traceLists, traceNames);
-                setDensityPanel(continuousDensityPanel, null);
+                setDensityPanel(continuousDensityPanel);
             } else {
                 discreteDensityPanel.setTraces(traceLists, traceNames);
-                setDensityPanel(discreteDensityPanel, null);
+                setDensityPanel(discreteDensityPanel);
             }
         }
     }
 
-    private void setDensityPanel(TraceChartPanel panel, String message) {
+    private void setDensityPanel(TraceChartPanel panel) {
         currentPanel = panel;
         removeAll();
         if (currentPanel != null) {
             add(currentPanel, BorderLayout.CENTER);
-        }
-        if (message != null) {
-            add(new JLabel(message), BorderLayout.NORTH);
         }
         validate();
         repaint();

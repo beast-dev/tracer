@@ -151,16 +151,16 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
 
         TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
         TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
-        if (td1 == null || td2 == null) {
-            // TraceCorrelations not generated yet so must be still computing ESSs etc.
-
-            chartPanel.setXAxisTitle("");
-            chartPanel.setYAxisTitle("");
-            setMessage("Waiting for analysis of traces to complete");
-            return;
-        }
-
-        setMessage("");
+//        if (td1 == null || td2 == null) {
+//            // TraceCorrelations not generated yet so must be still computing ESSs etc.
+//
+//            chartPanel.setXAxisTitle("");
+//            chartPanel.setYAxisTitle("");
+//            setMessage("Waiting for analysis of traces to complete");
+//            return;
+//        }
+//
+//        setMessage("");
 
         if (td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete()) {
             chartPanel.add(getChart(), "Chart");

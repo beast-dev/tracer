@@ -361,9 +361,10 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         }
 
         // swap in the correct chart panel
-        BorderLayout layout = (BorderLayout)getLayout();
-        remove(layout.getLayoutComponent(BorderLayout.CENTER));
-        remove(layout.getLayoutComponent(BorderLayout.SOUTH));
+//        BorderLayout layout = (BorderLayout)getLayout();
+//        remove(layout.getLayoutComponent(BorderLayout.CENTER));
+//        remove(layout.getLayoutComponent(BorderLayout.SOUTH));
+        removeAll();
         add(getChartPanel(), BorderLayout.CENTER);
         add(getToolBar(), BorderLayout.SOUTH);
 

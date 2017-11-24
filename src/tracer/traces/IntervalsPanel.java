@@ -130,7 +130,7 @@ public class IntervalsPanel extends TraceChartPanel {
             return;
         }
 
-        JLabel messageLabel = null;
+        removeAll();
 
         TraceType traceType = null;
         Set<String> categoryLabels = null;
@@ -164,81 +164,79 @@ public class IntervalsPanel extends TraceChartPanel {
             }
         }
 
-        BorderLayout layout = (BorderLayout) getLayout();
-        remove(layout.getLayoutComponent(BorderLayout.CENTER));
-        remove(layout.getLayoutComponent(BorderLayout.SOUTH));
+//        BorderLayout layout = (BorderLayout) getLayout();
+//        remove(layout.getLayoutComponent(BorderLayout.CENTER));
+//        remove(layout.getLayoutComponent(BorderLayout.SOUTH));
 
-        if (messageLabel == null) {
-            for (TraceList tl : getTraceLists()) {
-                for (String traceName : getTraceNames()) {
-                    int traceIndex = tl.getTraceIndex(traceName);
-                    Trace trace = tl.getTrace(traceIndex);
-                    Plot plot = null;
+        for (TraceList tl : getTraceLists()) {
+            for (String traceName : getTraceNames()) {
+                int traceIndex = tl.getTraceIndex(traceName);
+                Trace trace = tl.getTrace(traceIndex);
+                Plot plot = null;
 
-                    if (trace != null) {
-                        String name = tl.getTraceName(traceIndex);
-                        if (getTraceLists().length > 1) {
-                            name = tl.getName() + " - " + name;
-                        }
+                if (trace != null) {
+                    String name = tl.getTraceName(traceIndex);
+                    if (getTraceLists().length > 1) {
+                        name = tl.getName() + " - " + name;
+                    }
 
-                        if (traceType.isContinuous()) {
+                    if (traceType.isContinuous()) {
 //                    switch (currentSettings.type) {
 //                        case VIOLIN:
-                            double lower = trace.getTraceStatistics().getLowerHPD();
-                            double upper = trace.getTraceStatistics().getUpperHPD();
-                            double lowerTail = trace.getTraceStatistics().getMinimum();
-                            double upperTail = trace.getTraceStatistics().getMaximum();
-                            double mean = trace.getTraceStatistics().getMean();
+                        double lower = trace.getTraceStatistics().getLowerHPD();
+                        double upper = trace.getTraceStatistics().getUpperHPD();
+                        double lowerTail = trace.getTraceStatistics().getMinimum();
+                        double upperTail = trace.getTraceStatistics().getMaximum();
+                        double mean = trace.getTraceStatistics().getMean();
 
 //                    plot = new ViolinPlot(true, 0.8, lower, upper, false, values, DEFAULT_KDE_BINS);
-                            BoxPlot boxPlot = new BoxPlot(true, 0.6, lower, upper, lowerTail, upperTail, mean);
-                            boxPlot.setName(name);
-                            boxPlot.setLineStyle(new BasicStroke(1.0f), BAR_PAINT);
-                            boxPlot.setMeanLineStyle(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), BAR_PAINT);
+                        BoxPlot boxPlot = new BoxPlot(true, 0.6, lower, upper, lowerTail, upperTail, mean);
+                        boxPlot.setName(name);
+                        boxPlot.setLineStyle(new BasicStroke(1.0f), BAR_PAINT);
+                        boxPlot.setMeanLineStyle(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), BAR_PAINT);
 
-                            plot = boxPlot;
+                        plot = boxPlot;
 //                    break;
 //                    }
-                        } else if (traceType.isDiscrete()) {
+                    } else if (traceType.isDiscrete()) {
 
-                            if (traceType.isCategorical()) {
-                                // TODO: how to show multiple categorical traces?
-                                // Stacked column charts?
-                                plot = null;
-                            } else {
-                                double lower = trace.getTraceStatistics().getLowerHPD();
-                                double upper = trace.getTraceStatistics().getUpperHPD();
-                                IntegerViolinPlot violinPlot = new IntegerViolinPlot(true, 0.6, lower, upper, false, trace.getFrequencyCounter());
+                        if (traceType.isCategorical()) {
+                            // TODO: how to show multiple categorical traces?
+                            // Stacked column charts?
+                            plot = null;
+                        } else {
+                            double lower = trace.getTraceStatistics().getLowerHPD();
+                            double upper = trace.getTraceStatistics().getUpperHPD();
+                            IntegerViolinPlot violinPlot = new IntegerViolinPlot(true, 0.6, lower, upper, false, trace.getFrequencyCounter());
 
-                                if (trace.getUniqueValueCount() > 2) {
-                                    // don't show hpds for binary traces...
-                                    violinPlot.setIntervals(trace.getTraceStatistics().getLowerHPD(), trace.getTraceStatistics().getUpperHPD());
-                                }
-
-                                violinPlot.setName(name);
-                                violinPlot.setLineStyle(new BasicStroke(0.5f), Color.black);
-                                violinPlot.setPaints(BAR_PAINT, TAIL_PAINT);
-
-                                Axis yAxis = new DiscreteAxis(true, true);
-                                getChartPanel().getChart().setYAxis(yAxis);
-
-                                if (trace.getUniqueValueCount() == 1) {
-                                    yAxis.addRange(0, 1);
-                                }
-
-                                plot = violinPlot;
+                            if (trace.getUniqueValueCount() > 2) {
+                                // don't show hpds for binary traces...
+                                violinPlot.setIntervals(trace.getTraceStatistics().getLowerHPD(), trace.getTraceStatistics().getUpperHPD());
                             }
 
-                        } else {
-                            throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
+                            violinPlot.setName(name);
+                            violinPlot.setLineStyle(new BasicStroke(0.5f), Color.black);
+                            violinPlot.setPaints(BAR_PAINT, TAIL_PAINT);
+
+                            Axis yAxis = new DiscreteAxis(true, true);
+                            getChartPanel().getChart().setYAxis(yAxis);
+
+                            if (trace.getUniqueValueCount() == 1) {
+                                yAxis.addRange(0, 1);
+                            }
+
+                            plot = violinPlot;
                         }
-                    }
 
-                    if (plot != null) {
-                        getChartPanel().getChart().addPlot(plot);
+                    } else {
+                        throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
                     }
-
                 }
+
+                if (plot != null) {
+                    getChartPanel().getChart().addPlot(plot);
+                }
+
             }
 
             // swap in the correct chart panel
@@ -246,9 +244,6 @@ public class IntervalsPanel extends TraceChartPanel {
             add(getToolBar(), BorderLayout.SOUTH);
 
             setYLabel("Value");
-
-        } else {
-            add(messageLabel, BorderLayout.CENTER);
         }
 
         validate();

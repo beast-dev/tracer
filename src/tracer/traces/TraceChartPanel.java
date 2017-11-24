@@ -480,13 +480,9 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     protected abstract void setupTraces();
 
     public void setMessage(String message) {
-        BorderLayout layout = (BorderLayout) getLayout();
-        if (layout.getLayoutComponent(BorderLayout.NORTH) != null) {
-            remove(layout.getLayoutComponent(BorderLayout.NORTH));
-        }
-
+        removeAll();
         if (message != null || message.length() > 0) {
-            add(new JLabel(message), BorderLayout.NORTH);
+            add(new JLabel(message), BorderLayout.CENTER);
         }
     }
 
@@ -577,7 +573,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
             setMessage("No traces selected");
             return false;
         }
-        setMessage("");
         return true;
     }
 
