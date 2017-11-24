@@ -113,7 +113,7 @@ public class TracerApp extends MultiDocApplication {
                     "Version " + versionString + ", 2003-2017</p>" +
                     "<p>by<br>" +
 
-                    "Andrew Rambaut, Guy Baele, Marc A. Suchard, Walter Xie and Alexei J. Drummond</p>" +
+                    "Andrew Rambaut, Guy Baele, Walter Xie, Marc A. Suchard and Alexei J. Drummond</p>" +
 
                     "<p>Institute of Evolutionary Biology, University of Edinburgh<br>" +
                     "<a href=\"mailto:a.rambaut@ed.ac.uk\">a.rambaut@ed.ac.uk</a></p>" +
