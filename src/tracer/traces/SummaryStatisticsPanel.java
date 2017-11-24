@@ -326,7 +326,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                     // categorical
                     switch (row) {
                         case 0:
-                            return tc.getMode();
+                            return tc.valueToString(tc.getMode());
                         case 1:
                             return tc.getFrequencyOfMode();
                         case 2:

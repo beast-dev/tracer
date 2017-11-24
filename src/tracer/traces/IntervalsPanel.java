@@ -30,8 +30,8 @@ import dr.inference.trace.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.awt.event.ActionEvent;
+import java.util.*;
 
 
 /**
@@ -46,6 +46,24 @@ public class IntervalsPanel extends TraceChartPanel {
     public final static Paint BAR_PAINT = new Color(0x2f8aa3);
     public final static  Paint TAIL_PAINT = new Color(0xd6bd58);
 
+    private static final int DEFAULT_KDE_BINS = 5000;
+
+    private enum ShowType {
+        BOX_AND_WHISKER("box and whisker"),
+        VIOLIN("violin");
+
+        ShowType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        private String name;
+    }
+
     private final JParallelChart intervalsChart;
     private final JChartPanel chartPanel;
 
@@ -53,7 +71,11 @@ public class IntervalsPanel extends TraceChartPanel {
 
     private JToolBar toolBar;
 
-    private TraceChartPanel.Settings currentSettings = new TraceChartPanel.Settings();
+    class Settings extends TraceChartPanel.Settings {
+        ShowType show = ShowType.BOX_AND_WHISKER;
+    }
+
+    private Settings currentSettings = new Settings();
 
     /**
      * Creates new IntervalsPanel
@@ -83,7 +105,7 @@ public class IntervalsPanel extends TraceChartPanel {
 
     @Override
     protected TraceChartPanel.Settings getSettings() {
-        return null;
+        return currentSettings;
     }
 
     @Override
@@ -92,12 +114,33 @@ public class IntervalsPanel extends TraceChartPanel {
 
         toolBar.add(createSetupButton());
 
-//        JLabel label = createColourByComboAndLabel();
-//        toolBar.add(label);
-//        toolBar.add(label.getLabelFor());
+        JLabel label = createShowComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
 
         return toolBar;
     }
+
+    private JLabel createShowComboAndLabel() {
+        JLabel labelShow = new JLabel("Show:");
+        final JComboBox<ShowType> showCombo = new JComboBox<ShowType>(ShowType.values());
+        showCombo.setFont(UIManager.getFont("SmallSystemFont"));
+        showCombo.setOpaque(false);
+        labelShow.setFont(UIManager.getFont("SmallSystemFont"));
+        labelShow.setLabelFor(showCombo);
+
+        showCombo.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        currentSettings.show = (ShowType)showCombo.getSelectedItem();
+                        setupTraces();
+                    }
+                }
+        );
+        return labelShow;
+    }
+
 
     @Override
     protected JToolBar getToolBar() {
@@ -181,23 +224,29 @@ public class IntervalsPanel extends TraceChartPanel {
                     }
 
                     if (traceType.isContinuous()) {
-//                    switch (currentSettings.type) {
-//                        case VIOLIN:
                         double lower = trace.getTraceStatistics().getLowerHPD();
                         double upper = trace.getTraceStatistics().getUpperHPD();
-                        double lowerTail = trace.getTraceStatistics().getMinimum();
-                        double upperTail = trace.getTraceStatistics().getMaximum();
-                        double mean = trace.getTraceStatistics().getMean();
 
-//                    plot = new ViolinPlot(true, 0.8, lower, upper, false, values, DEFAULT_KDE_BINS);
-                        BoxPlot boxPlot = new BoxPlot(true, 0.6, lower, upper, lowerTail, upperTail, mean);
-                        boxPlot.setName(name);
-                        boxPlot.setLineStyle(new BasicStroke(1.0f), BAR_PAINT);
-                        boxPlot.setMeanLineStyle(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), BAR_PAINT);
+                        switch (currentSettings.show) {
+                            case VIOLIN:
+                                plot = new ViolinPlot(true, 0.6, lower, upper, true, tl.getValues(traceIndex), DEFAULT_KDE_BINS);
+                                plot.setLineStyle(new BasicStroke(1.0f), BAR_PAINT);
+                                break;
+                            case BOX_AND_WHISKER:
+                                double lowerTail = trace.getTraceStatistics().getMinimum();
+                                double upperTail = trace.getTraceStatistics().getMaximum();
+                                double mean = trace.getTraceStatistics().getMean();
 
-                        plot = boxPlot;
-//                    break;
-//                    }
+                                BoxPlot boxPlot = new BoxPlot(true, 0.6, lower, upper, lowerTail, upperTail, mean);
+                                boxPlot.setLineStyle(new BasicStroke(1.0f), BAR_PAINT);
+                                boxPlot.setMeanLineStyle(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), BAR_PAINT);
+
+                                plot = boxPlot;
+                                break;
+                        }
+
+                        plot.setName(name);
+
                     } else if (traceType.isDiscrete()) {
 
                         if (traceType.isCategorical()) {
