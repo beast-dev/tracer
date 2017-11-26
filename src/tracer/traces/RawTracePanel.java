@@ -73,8 +73,6 @@ public class RawTracePanel extends TraceChartPanel {
         traceChart = new JTraceChart(new LinearAxis(Axis.AT_ZERO, Axis.AT_DATA), new LinearAxis());
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
         toolBar = createToolBar(currentSettings);
-        
-        setupMainPanel();
     }
 
     public JChartPanel getChartPanel() {
@@ -218,13 +216,6 @@ public class RawTracePanel extends TraceChartPanel {
 
     @Override
     protected void setupTraces() {
-
-        getChart().removeAllTraces();
-
-        // return if no traces selected
-        if (!removeAllPlots()) {
-            return;
-        }
 
         //TODO clear colour manager when a trace is removed
         /*for (TraceList tl : traceLists) {

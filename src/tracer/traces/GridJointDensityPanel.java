@@ -73,8 +73,6 @@ public class GridJointDensityPanel extends TraceChartPanel {
         chartPanel = new JChartPanel(correlationChart, "", "", "");
 
         toolBar = createToolBar(frame);
-
-        setupMainPanel();
     }
 
     public JChartPanel getChartPanel() {
@@ -151,13 +149,6 @@ public class GridJointDensityPanel extends TraceChartPanel {
 
         getChartPanel().getChart().removeAllPlots();
 
-        setMessage("");
-
-        // return if no traces selected
-        if (!removeAllPlots()) {
-            return;
-        }
-
         correlationData.clear();
 
         //int i = 0;
@@ -212,11 +203,6 @@ public class GridJointDensityPanel extends TraceChartPanel {
             ((CorrelationPlot)(getChartPanel().getChart().getPlot(p))).setTotalPlotCount(getChartPanel().getChart().getPlotCount());
         }
 
-
-        setupMainPanel();
-
-        validate();
-        repaint();
     }
 
     public String toString() {

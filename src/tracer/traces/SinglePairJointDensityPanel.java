@@ -26,13 +26,11 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.app.gui.util.CorrelationData;
 import dr.inference.trace.*;
 import dr.stats.Variate;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,14 +52,6 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
     private JCheckBox pointsCheckBox = new JCheckBox("Draw as points");
     private JCheckBox translucencyCheckBox = new JCheckBox("Use translucency");
 
-    private TraceList traceList1 = null;
-    private TraceList traceList2 = null;
-    private int traceIndex1 = -1;
-    private int traceIndex2 = -1;
-
-    private String traceName1;
-    private String traceName2;
-
     private JChart intervalsChart;
     private final JChartPanel chartPanel;
 
@@ -79,8 +69,6 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
         chartPanel = new JChartPanel(intervalsChart, "", "", ""); // xAxisTitle, yAxisTitle
 
         toolBar = createSinglePairToolBar(frame);
-
-        setupMainPanel();
     }
 
     public JChartPanel getChartPanel() {
@@ -120,67 +108,52 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
 
     public void setTraces(TraceList[] traceLists, List<String> traceNames) {
         super.setTraces(traceLists, traceNames);
-
-        if (traceLists != null && traceNames != null && traceLists.length == 2 && traceNames.size() == 1) {
-            traceList1 = traceLists[0];
-            traceName1 = traceList1.getName();
-            traceList2 = traceLists[1];
-            traceName2 = traceList2.getName();
-            traceIndex1 = traceList1.getTraceIndex(traceNames.get(0));
-            traceIndex2 = traceList2.getTraceIndex(traceNames.get(0));
-            traceName1 = traceName1 + " - " + traceList1.getTraceName(traceIndex1);
-            traceName2 = traceName2 + " - " + traceList2.getTraceName(traceIndex2);
-        } else if (traceLists != null && traceNames != null && traceLists.length == 1 && traceNames.size() == 2) {
-            traceList1 = traceLists[0];
-            traceList2 = traceLists[0];
-            traceIndex1 = traceList1.getTraceIndex(traceNames.get(0));
-            traceIndex2 = traceList2.getTraceIndex(traceNames.get(1));
-            traceName1 = traceList1.getTraceName(traceIndex1);
-            traceName2 = traceList2.getTraceName(traceIndex2);
-        } else {
-            traceList1 = null;
-            traceList2 = null;
-        }
-
-        setupTraces();
     }
 
     protected void setupTraces() {
 
         getChartPanel().getChart().removeAllPlots();
 
+        TraceList traceList1 = null;
+        TraceList traceList2 = null;
+        int traceIndex1 = -1;
+        int traceIndex2 = -1;
+
+        String traceName1;
+        String traceName2;
+
+        if (getTraceLists().length == 2 && getTraceNames().size() == 1) {
+            // two trace files and one trace
+            traceList1 = getTraceLists()[0];
+            traceList2 = getTraceLists()[1];
+            traceName1 = traceList1.getName();
+            traceName2 = traceList2.getName();
+            traceIndex1 = traceList1.getTraceIndex(getTraceNames().get(0));
+            traceIndex2 = traceList2.getTraceIndex(getTraceNames().get(0));
+            traceName1 = traceName1 + " - " + traceList1.getTraceName(traceIndex1);
+            traceName2 = traceName2 + " - " + traceList2.getTraceName(traceIndex2);
+        } else if (getTraceLists().length == 1 && getTraceNames().size() == 2) {
+            // one trace files and two trace
+            traceList1 = getTraceLists()[0];
+            traceList2 = getTraceLists()[0];
+            traceIndex1 = traceList1.getTraceIndex(getTraceNames().get(0));
+            traceIndex2 = traceList2.getTraceIndex(getTraceNames().get(1));
+            traceName1 = traceList1.getTraceName(traceIndex1);
+            traceName2 = traceList2.getTraceName(traceIndex2);
+        } else {
+            throw new RuntimeException("Should not reach here");
+        }
+
         TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
         TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
-//        if (td1 == null || td2 == null) {
-//            // TraceCorrelations not generated yet so must be still computing ESSs etc.
-//
-//            chartPanel.setXAxisTitle("");
-//            chartPanel.setYAxisTitle("");
-//            setMessage("Waiting for analysis of traces to complete");
-//            return;
-//        }
-//
-//        setMessage("");
 
         if (td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete()) {
             chartPanel.add(getChart(), "Chart");
-            createDiscreteBubblePlot(td1, td2);
-//                singlePairChartPanel.remove(getChart());
-//                singlePairChartPanel.add(tableScrollPane, "Table");
-//
-//                sampleCheckBox.setVisible(false);
-//                pointsCheckBox.setVisible(false);
-//                translucencyCheckBox.setVisible(false);
-//                categoryTableProbabilityCombo.setVisible(true);
-//                defaultNumberFormatCheckBox.setVisible(true);
-//
-//                Object[] rowNames = td1.getRange().toArray();
-//                Object[] colNames = td2.getRange().toArray();
-//                double[][] data = categoricalPlot(td1, td2);
-//
-//                tableScrollPane.setTable(rowNames, colNames, data, defaultNumberFormatCheckBox.isSelected());
+            createDiscreteBubblePlot(traceList1, traceIndex1, traceList2, traceIndex2);
 
-
+            sampleCheckBox.setVisible(false);
+            pointsCheckBox.setVisible(false);
+            translucencyCheckBox.setVisible(false);
         } else if (td1.getTraceType().isDiscrete() && !td2.getTraceType().isDiscrete() ||
                 !td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete()) {
 
@@ -190,170 +163,74 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
             defaultNumberFormatCheckBox.setVisible(false);
 
             if (td1.getTraceType().isDiscrete()) {
-                createDiscreteContinuousPlot(td1, td2);
+                createDiscreteContinuousPlot(traceList1, traceIndex1, traceList2, traceIndex2);
             } else {
-                createDiscreteContinuousPlot(td2, td1);
-            }
-            sampleCheckBox.setVisible(false);
-            pointsCheckBox.setVisible(false);
-            translucencyCheckBox.setVisible(false);
-
-
-//                } else if (td2.getTraceType().isCategorical()) {
-//                    mixedCategoricalPlot(td2, td1, true); // isFirstTraceListNumerical
-//
-//                    sampleCheckBox.setVisible(false);
-//                    pointsCheckBox.setVisible(false);
-//                    translucencyCheckBox.setVisible(false);
-//
-//                    if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
-//                        String swapName = traceName1;
-//                        traceName1 = traceName2;
-//                        traceName2 = swapName;
-//                    }
-//
-        } else {
-            // both are continous
-            createContinuousPlot(td1, td2);
-
-            if (td1.getTraceType().isContinuous() && td2.getTraceType().isContinuous()) {
-                sampleCheckBox.setVisible(true);
-                pointsCheckBox.setVisible(true);
-                translucencyCheckBox.setVisible(true);
-            } else {
-                sampleCheckBox.setVisible(false);
-                pointsCheckBox.setVisible(false);
-                translucencyCheckBox.setVisible(false);
-            }
-
-            if (!td1.getTraceType().isIntegerOrBinary()) { // do not swap name for TangHuLu plot
                 String swapName = traceName1;
                 traceName1 = traceName2;
                 traceName2 = swapName;
+
+                createDiscreteContinuousPlot(traceList2, traceIndex2, traceList1, traceIndex1);
             }
+
+            sampleCheckBox.setVisible(false);
+            pointsCheckBox.setVisible(false);
+            translucencyCheckBox.setVisible(false);
+        } else {
+            // both are continous
+            createContinuousScatterPlot(traceList1, traceIndex1, traceList2, traceIndex2);
+
+            sampleCheckBox.setVisible(true);
+            pointsCheckBox.setVisible(true);
+            translucencyCheckBox.setVisible(true);
+
         }
         setXLabel(traceName1);
         setYLabel(traceName2);
 
     }
 
-    private void createDiscreteContinuousPlot(TraceDistribution tdDiscrete, TraceDistribution tdContinuous) {
+    private void createDiscreteContinuousPlot(TraceList discreteTraceList, int discreteTraceIndex,
+                                              TraceList continuousTraceList, int continuousTraceIndex) {
 
-        // Not sure I understand this just now.. will revisit.
+        Map<Integer, List<Double>> valueMap = new HashMap<Integer, List<Double>>();
 
-        throw new UnsupportedOperationException("createDiscreteContinuousPlot");
-//        List<String> categoryValues = tdCategorical.getRange();
-//
-//        if (categoryValues == null || categoryValues.size() < 1) return;
-//
-////        int maxCount = Math.max(traceList1.getStateCount(), traceList2.getStateCount());
-////        int minCount = Math.min(traceList1.getStateCount(), traceList2.getStateCount());
-//        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
-//        List values1 = traceList1.getValues(traceIndex1);
-//        List values2 = traceList2.getValues(traceIndex2);
-//        int maxCount = Math.max(values1.size(), values2.size());
-//        int minCount = Math.min(values1.size(), values2.size());
-//
-//        int sampleSize = minCount;
-//
-//        List<Double> samples1 = new ArrayList<Double>(sampleSize);
-//        int k = 0;
-//
-//        if (!isFirstTraceListNumerical) {
-////            values1 = traceList1.getValues(traceIndex1);
-////        } else {
-//            values1 = traceList2.getValues(traceIndex2);
-//        }
-//
-//        for (int i = 0; i < sampleSize; i++) {
-//            samples1.add(i, ((Number) values1.get(k)).doubleValue());
-//            k += minCount / sampleSize;
-//        }
-//
-//        List<String> samples2 = new ArrayList<String>(sampleSize);
-//        k = 0;
-//
-//        if (!isFirstTraceListNumerical) {
-////            values2 = traceList2.getValues(traceIndex2);
-////        } else {
-//            values2 = traceList1.getValues(traceIndex1);
-//        }
-//        for (int i = 0; i < sampleSize; i++) {
-//            samples2.add(i, values2.get(k).toString());
-//            k += minCount / sampleSize;
-//        }
-//
-//        // set x axis
-//        getChart().setXAxis(new DiscreteAxis(true, true));
-//        if (tdNumerical.getTraceType().isCategorical()) {
-//            Map<Integer, String> categoryMap = traceList1.getTrace(traceIndex1).getCategoricalValue();
-//
-//            getChart().setYAxis(new DiscreteAxis(true, true));
-//
-//            ScatterPlot plot;
-//            if (isFirstTraceListNumerical) {
-//                plot = new TangHuLuPlot(samples1, intData);
-//            } else {
-//                plot = new TangHuLuPlot(intData, samples1);
-//            }
-//
-//            getChart().addPlot(plot);
-//        } if (tdNumerical.getTraceType().isIntegerOrBinary()) {
-//            // samples1 is not real number
-//            getChart().setYAxis(new DiscreteAxis(true, true));
-//
-//            List<Double> intData = tdCategorical.indexingData(samples2);
-//            ScatterPlot plot;
-//            if (isFirstTraceListNumerical)
-//                plot  = new TangHuLuPlot(samples1, intData);
-//            else
-//                plot  = new TangHuLuPlot(intData, samples1);
-//            getChart().addPlot(plot);
-//        } else {
-//            // samples1 is real number
-//            drawDiscreteBoxPlot(categoryValues, samples1, samples2);
-//
-//        }
+        TraceCorrelation tc = discreteTraceList.getCorrelationStatistics(discreteTraceIndex);
+
+        for (int value : tc.getFrequencyCounter().getUniqueValues()) {
+            valueMap.put(value, new ArrayList<Double>());
+        }
+
+        List<Double> discreteValues = discreteTraceList.getValues(discreteTraceIndex);
+        List<Double> continuousValues = continuousTraceList.getValues(continuousTraceIndex);
+
+        int i = 0;
+        for (double value : discreteValues) {
+            valueMap.get((int)value).add(continuousValues.get(i));
+            i++;
+        }
+
+        for (int discreteValue : tc.getFrequencyCounter().getUniqueValues()) {
+            List<Double> values = valueMap.get(discreteValue);
+            TraceDistribution td = new TraceDistribution(values, TraceType.REAL);
+
+            ViolinPlot violinPlot = new ViolinPlot(true, 0.8, td.getLowerHPD(), td.getUpperHPD(), true, values);
+            violinPlot.setName(discreteTraceList.getTrace(discreteTraceIndex).getCategoryLabelMap().get(discreteValue));
+
+            getChart().addPlot(violinPlot);
+        }
 
     }
 
-    private void drawDiscreteBoxPlot(List<String> categoryValues, List<Double> samples1, List<String> samples2) {
-        // separate samples into categoryTdMap
-        Map<String, TraceDistribution> categoryTdMap = new HashMap<String, TraceDistribution>();
-        ArrayList[] sepValues = new ArrayList[categoryValues.size()];
-        for (int i = 0; i < categoryValues.size(); i++) {
-            sepValues[i] = new ArrayList<Double>();
-            for (int j = 0; j < samples2.size(); j++) {
-                if (categoryValues.get(i).equals(samples2.get(j))) {
-                    sepValues[i].add(samples1.get(j));
-                }
-            }
+    private void createContinuousScatterPlot(TraceList traceList1, int traceIndex1, TraceList traceList2, int traceIndex2) {
 
-            if (sepValues[i].size() > 0) { // avoid RuntimeException: no value sent to statistics calculation
-                TraceDistribution categoryTd = new TraceDistribution(sepValues[i], TraceType.REAL); // todo ?
-                categoryTdMap.put(categoryValues.get(i), categoryTd);
-            }
-        }
-
-        // categoryTdMap.size <= categoryValues.size because of sampling
-        for (Map.Entry<String, TraceDistribution> entry : categoryTdMap.entrySet()) {
-            TraceDistribution categoryTd = entry.getValue();
-//                getChart().addIntervals(categoryValue, categoryTd.getMean(), categoryTd.getUpperHPD(), categoryTd.getLowerHPD(), false);
-
-            // TODO: add plots to a JParallelChart
-//            ((BoxPlotChart)getChart()).addBoxPlots(entry.getKey(), categoryTd.getMedian(), categoryTd.getQ1(),
-//                    categoryTd.getQ3(), categoryTd.getMinimum(), categoryTd.getMaximum());
-        }
-    }
-
-    private void createContinuousPlot(TraceCorrelation td1, TraceCorrelation td2) {
-//        int maxCount = Math.max(traceList1.getStateCount(), traceList2.getStateCount());
-//        int minCount = Math.min(traceList1.getStateCount(), traceList2.getStateCount());
-        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
         List values1 = traceList1.getValues(traceIndex1);
         List values2 = traceList2.getValues(traceIndex2);
+
         int maxCount = Math.max(values1.size(), values2.size());
         int minCount = Math.min(values1.size(), values2.size());
+
+        TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
+        TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
 
         int sampleSize = minCount;
 
@@ -388,65 +265,23 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
             k += minCount / sampleSize;
         }
 
-        // set axis
-        if (td1.getTraceType().isInteger()) {
-            getChart().setXAxis(new DiscreteAxis(true, true));
-        } else {
-            getChart().setXAxis(new LinearAxis());
-        }
-        if (td2.getTraceType().isInteger()) {
-            getChart().setYAxis(new DiscreteAxis(true, true));
-        } else {
-            getChart().setYAxis(new LinearAxis());
-        }
+        getChart().setXAxis(new LinearAxis());
+        getChart().setYAxis(new LinearAxis());
 
         // add plot
-        ScatterPlot plot;
-        if (td1.getTraceType().isIntegerOrBinary() && td2.getTraceType().isIntegerOrBinary()) {
-            // samples1 samples2 are both ordinal
-            plot = new TangHuLuPlot(samples1, samples2);
-            getChart().setOriginStyle(null, null);
-            getChart().addPlot(plot);
-
-        } else if (td1.getTraceType().isIntegerOrBinary()) {
-            List<String> categoryValues = td1.getRange();
-            if (categoryValues == null || categoryValues.size() < 1) return;
-
-            List<String> stringList = new ArrayList<String>(samples1.size());
-            for (Double ordinal : samples1) {
-                stringList.add(String.valueOf(Math.round(ordinal)));
-            }
-
-            drawDiscreteBoxPlot(categoryValues, samples2, stringList);
-
-        } else if (td2.getTraceType().isIntegerOrBinary()) {
-            List<String> categoryValues = td2.getRange();
-            if (categoryValues == null || categoryValues.size() < 1) return;
-
-            List<String> stringList = new ArrayList<String>(samples2.size());
-            for (Double ordinal : samples2) {
-                stringList.add(String.valueOf(Math.round(ordinal)));
-            }
-            getChart().setXAxis(new DiscreteAxis(true, true));
-
-            drawDiscreteBoxPlot(categoryValues, samples1, stringList);
-
-        } else {
-            // either samples1 or samples2 is real
-            plot = new ScatterPlot(samples1, samples2);
+        ScatterPlot plot = new ScatterPlot(samples1, samples2);
             /*plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
                     new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
                     new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
                     new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));*/
-            plot.setMarkStyle(Plot.CIRCLE_MARK, 3.0,
-                    new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-                    new Color(16, 16, 64, 255),
-                    new Color(16, 16, 64, 255));
-            getChart().addPlot(plot);
-        }
+        plot.setMarkStyle(Plot.CIRCLE_MARK, 3.0,
+                new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
+                new Color(16, 16, 64, 255),
+                new Color(16, 16, 64, 255));
+        getChart().addPlot(plot);
     }
 
-    private void createDiscreteBubblePlot(TraceCorrelation td1, TraceCorrelation td2) {
+    private void createDiscreteBubblePlot(TraceList traceList1, int traceIndex1, TraceList traceList2, int traceIndex2) {
         List<Double> values1 = traceList1.getValues(traceIndex1);
         List<Double> values2 = traceList2.getValues(traceIndex2);
         int maxCount = Math.max(values1.size(), values2.size());
@@ -468,6 +303,9 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
             k += minCount / sampleSize;
         }
 
+        TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
+        TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
+
         // set axis
         if (td1.getTraceType().isCategorical()) {
             getChart().setXAxis(new DiscreteAxis(true, true));
@@ -487,150 +325,7 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
         getChart().setOriginStyle(null, null);
         getChart().addPlot(plot);
 
-//} else if (td1.getTraceType().isIntegerOrBinary()) {
-//        List<String> categoryValues = td1.getRange();
-//        if (categoryValues == null || categoryValues.size() < 1) return;
-//
-//        List<String> stringList = new ArrayList<String>(samples1.size());
-//        for (Double ordinal : samples1) {
-//        stringList.add(String.valueOf(Math.round(ordinal)));
-//        }
-//
-//        drawDiscreteBoxPlot(categoryValues, samples2, stringList);
-//
-//        } else if (td2.getTraceType().isIntegerOrBinary()) {
-//        List<String> categoryValues = td2.getRange();
-//        if (categoryValues == null || categoryValues.size() < 1) return;
-//
-//        List<String> stringList = new ArrayList<String>(samples2.size());
-//        for (Double ordinal : samples2) {
-//        stringList.add(String.valueOf(Math.round(ordinal)));
-//        }
-//        getChart().setXAxis(new DiscreteAxis(true, true));
-//
-//        drawDiscreteBoxPlot(categoryValues, samples1, stringList);
-//
-//        } else {
-//        // either samples1 or samples2 is real
-//        plot = new ScatterPlot(samples1, samples2);
-//            /*plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
-//                    new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-//                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
-//                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));*/
-//        plot.setMarkStyle(Plot.CIRCLE_MARK, 3.0,
-//        new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-//        new Color(16, 16, 64, 255),
-//        new Color(16, 16, 64, 255));
-//        getChart().addPlot(plot);
-//        }
     }
-
-//    private double[][] categoricalPlot(TraceDistribution td1, TraceDistribution td2) {
-//        List<String> rowNames = td1.getRange();
-//        List<String> colNames = td2.getRange();
-//
-//        double[][] data = new double[rowNames.size()][colNames.size()];
-//
-////        int maxCount = Math.max(traceList1.getStateCount(), traceList2.getStateCount());
-////        int minCount = Math.min(traceList1.getStateCount(), traceList2.getStateCount());
-//        // cannot use getStateCount(), because values.size() < getStateCount() if filter is applied
-//        List values1 = traceList1.getValues(traceIndex1);
-//        List values2 = traceList2.getValues(traceIndex2);
-//        int maxCount = Math.max(values1.size(), values2.size());
-//        int minCount = Math.min(values1.size(), values2.size());
-//
-//        int sampleSize = minCount;
-//
-//        if (sampleSize <= 0) System.err.println("sampleSize cannot be 0. sampleSize = " + sampleSize);
-//
-//        String samples1[] = new String[sampleSize];
-//        int k = 0;
-//
-//        TraceType type = traceList1.getTrace(traceIndex1).getTraceType();
-//        for (int i = 0; i < sampleSize; i++) {
-//            if (type.isInteger()) { // as Integer is stored as Double in Trace
-//                samples1[i] = Integer.toString( ((Number) values1.get(k)).intValue() );
-//            } else {
-//                samples1[i] = values1.get(k).toString();
-//            }
-//            k += minCount / sampleSize; // = 1 for non-continous vs non-continous
-//        }
-//
-//        String samples2[] = new String[sampleSize];
-//        k = 0;
-//
-//        type = traceList2.getTrace(traceIndex2).getTraceType();
-//        for (int i = 0; i < sampleSize; i++) {
-//            if (type.isInteger()) { // as Integer is stored as Double in Trace
-//                samples2[i] = Integer.toString( ((Number) values2.get(k)).intValue() );
-//            } else {
-//                samples2[i] = values2.get(k).toString();
-//            }
-//            k += minCount / sampleSize;
-//        }
-//
-//        // calculate count
-//        for (int i = 0; i < sampleSize; i++) {
-//            if (rowNames.contains(samples1[i]) && colNames.contains(samples2[i])) {
-//                data[rowNames.indexOf(samples1[i])][colNames.indexOf(samples2[i])] += 1;
-//            } else {
-////                System.err.println("Not find row or column name. i = " + i);
-//            }
-//        }
-//
-//        if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.JOINT_PROBABILITY) {
-//            for (int r = 0; r < data.length; r++) {
-//                for (int c = 0; c < data[0].length; c++) {
-//                    data[r][c] = data[r][c] / sampleSize;
-//                }
-//            }
-//        } else if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.CONDITIONAL_PROBABILITY_X) {
-//            for (int r = 0; r < data.length; r++) {
-//                double count = 0;
-//                for (int c = 0; c < data[0].length; c++) {
-//                    count = count + data[r][c];
-//                }
-//                for (int c = 0; c < data[0].length; c++) {
-//                    if (count != 0)
-//                        data[r][c] = data[r][c] / count;
-//                }
-//            }
-//
-//        } else if (categoryTableProbabilityCombo.getSelectedItem() == CategoryTableProbabilityType.CONDITIONAL_PROBABILITY_Y) {
-//            for (int c = 0; c < data[0].length; c++) {
-//                double count = 0;
-//                for (int r = 0; r < data.length; r++) {
-//                    count = count + data[r][c];
-//                }
-//                for (int r = 0; r < data.length; r++) {
-//                    if (count != 0)
-//                        data[r][c] = data[r][c] / count;
-//                }
-//            }
-//
-//        }
-//        // else COUNT
-//
-//        return data;
-//    }
-
-
-//    private double[] removeNaN(double[] sample) {
-//        List<Double> selectedValuesList = new ArrayList<Double>();
-//
-//        for (int i = 0; i < sample.length; i++) {
-//            if (sample[i] != Double.NaN) {
-//                selectedValuesList.add(sample[i]);
-//            }
-//        }
-//
-//        double[] dest = new double[selectedValuesList.size()];
-//        for (int i = 0; i < dest.length; i++) {
-//            dest[i] = selectedValuesList.get(i).doubleValue();
-//        }
-//
-//        return dest;
-//    }
 
     public String toString() {
         if (getChart().getPlotCount() == 0) {

@@ -315,6 +315,8 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     private java.util.List<String> traceNames = null;
     private final JFrame frame;
 
+    private String message = null;
+
     /**
      * main panel
      */
@@ -330,8 +332,29 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
         this.traceLists = traceLists;
         this.traceNames = traceNames;
-    };
 
+        setupMainPanel();
+    }
+
+    protected void setupMainPanel() {
+        if (traceLists == null || traceLists[0] == null || traceNames == null || traceNames.size() == 0) {
+            setMessage("No traces selected.");
+        } else {
+            setMessage("");
+            setupTraces();
+        }
+
+        removeAll();
+        if (message != null && message.length() > 0) {
+            add(new JLabel(message), BorderLayout.CENTER);
+            return;
+        }
+        add(getToolBar(), BorderLayout.SOUTH);
+        add(getChartPanel(), BorderLayout.CENTER);
+
+        validate();
+        repaint();
+    }
 
     protected abstract JChartPanel getChartPanel();
 
@@ -353,13 +376,8 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         return traceNames;
     }
 
-    /**
-     * add components to main panel
-     */
-    protected void setupMainPanel() {
-        removeAll();
-        add(getToolBar(), BorderLayout.SOUTH);
-        add(getChartPanel(), BorderLayout.CENTER);
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /**
@@ -419,7 +437,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         getSettings().minimumBins = (Integer) binsCombo.getSelectedItem();
-                        setupTraces();
+                        setupMainPanel();
                     }
                 }
         );
@@ -444,7 +462,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         getSettings().legendAlignment = (LegendAlignment)legendCombo.getSelectedItem();
-                        setupTraces();
+                        setupMainPanel();
                     }
                 }
         );
@@ -470,7 +488,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         getSettings().colourBy = (ColourByOptions)colourByCombo.getSelectedItem();
-                        setupTraces();
+                        setupMainPanel();
                     }
                 }
         );
@@ -478,14 +496,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     }
 
     protected abstract void setupTraces();
-
-    public void setMessage(String message) {
-        removeAll();
-        if (message != null || message.length() > 0) {
-            add(new JLabel(message), BorderLayout.CENTER);
-        }
-    }
-
 
     /**
      * set legend given <code>Settings</code> which includes legend position and colours.
@@ -556,24 +566,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
                 throw new RuntimeException("Trace type is not recognized: " + traceType);
             }
         }
-    }
-
-    /**
-     * If no traces selected, return false, else return true.
-     * Usage: <code>if (!removeAllPlots()) return;</code>
-     *
-     * @return boolean
-     */
-    protected boolean removeAllPlots() {
-        getChartPanel().getChart().removeAllPlots();
-
-        if (traceLists == null || traceLists[0] == null || traceNames == null || traceNames.size() == 0) {
-            getChartPanel().setXAxisTitle("");
-            getChartPanel().setYAxisTitle("");
-            setMessage("No traces selected");
-            return false;
-        }
-        return true;
     }
 
     /**

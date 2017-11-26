@@ -123,7 +123,7 @@ public class IntervalsPanel extends TraceChartPanel {
 
     private JLabel createShowComboAndLabel() {
         JLabel labelShow = new JLabel("Show:");
-        final JComboBox<ShowType> showCombo = new JComboBox<ShowType>(ShowType.values());
+        final JComboBox showCombo = new JComboBox(ShowType.values());
         showCombo.setFont(UIManager.getFont("SmallSystemFont"));
         showCombo.setOpaque(false);
         labelShow.setFont(UIManager.getFont("SmallSystemFont"));
@@ -168,13 +168,6 @@ public class IntervalsPanel extends TraceChartPanel {
     }
 
     protected void setupTraces() {
-        // return if no traces selected
-        if (!removeAllPlots()) {
-            return;
-        }
-
-        removeAll();
-
         TraceType traceType = null;
         Set<String> categoryLabels = null;
 

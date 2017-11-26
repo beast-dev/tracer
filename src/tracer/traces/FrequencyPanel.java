@@ -64,8 +64,6 @@ public class FrequencyPanel extends TraceChartPanel {
                 new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         traceChartPanel = new JChartPanel(traceChart, "","", "Frequency"); // xAxisTitle, yAxisTitle
         toolBar = createToolBar(currentSettings);
-
-        setupMainPanel();
     }
 
     public JChartPanel getChartPanel() {
@@ -116,24 +114,10 @@ public class FrequencyPanel extends TraceChartPanel {
         return checkBox;
     }
 
-
-    public void setTrace(TraceList traceList, String traceName) {
-        setTraces(new TraceList[] { traceList },
-                Collections.singletonList(traceName));
-        // binsCombo.setSelectedItem(currentSettings.minimumBins);
-
-        setupTraces();
-    }
-
     @Override
     protected void setupTraces() {
 
-        // return if no traces selected
-        if (!removeAllPlots()) {
-            return;
-        }
-
-        Plot plot = null;
+        getChartPanel().getChart().removeAllPlots();
 
         TraceList traceList = getTraceLists()[0];
 
@@ -142,6 +126,8 @@ public class FrequencyPanel extends TraceChartPanel {
         TraceCorrelation td = traceList.getCorrelationStatistics(traceIndex);
 
         if (trace != null) {
+            Plot plot;
+
             TraceType traceType = trace.getTraceType();
             if (traceType.isContinuous()) {
                 HistogramPlot histogramPlot = new HistogramPlot(traceList.getValues(traceIndex), currentSettings.minimumBins, td);

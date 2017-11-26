@@ -163,7 +163,7 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                 statisticsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
                 currentPanel = frequencyPanel;
-                frequencyPanel.setTrace(traceLists[0], traceNames.get(0));
+                frequencyPanel.setTraces(traceLists, traceNames);
                 intervalsPanel.setTraces(null, null);
                 splitPane1.setBottomComponent(frequencyPanel);
             } else {
@@ -174,13 +174,13 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                 }
 
                 currentPanel = intervalsPanel;
-                frequencyPanel.setTrace(null, null);
+                frequencyPanel.setTraces(null, null);
                 intervalsPanel.setTraces(traceLists, traceNames);
                 splitPane1.setBottomComponent(intervalsPanel);
             }
         } else {
             currentPanel = statisticsTable;
-            frequencyPanel.setTrace(null, null);
+            frequencyPanel.setTraces(null, null);
             splitPane1.setBottomComponent(frequencyPanel);
         }
 

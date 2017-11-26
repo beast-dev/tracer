@@ -45,7 +45,6 @@ import java.util.List;
  * @version $Id: DensityPanel.java,v 1.3 2006/11/29 09:54:30 rambaut Exp $
  */
 public class ContinuousDensityPanel extends TraceChartPanel {
-    private static final int DEFAULT_KDE_BINS = 5000;
 
     private enum Type {
         KDE("KDE"),
@@ -169,7 +168,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         currentSettings.type = (Type)displayCombo.getSelectedItem();
-                        setupTraces();
+                        setupMainPanel();
                     }
                 }
         );
@@ -227,7 +226,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     }
 
     public void setTraces(TraceList[] traceLists, List<String> traceNames) {
-        super.setTraces(traceLists, traceNames);
 
         displayCombo.setSelectedItem(currentSettings.type);
 
@@ -243,11 +241,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                             traceType = trace.getTraceType();
                         }
                         if (trace.getTraceType() != traceType) {
-                            getChartPanel().getChart().removeAllPlots();
-
-                            getChartPanel().setXAxisTitle("");
-                            getChartPanel().setYAxisTitle("");
-                            return;
+                            setMessage("Traces must be of the same type to visualize here.");
                         }
                     }
                 }
@@ -257,7 +251,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 //            binsCombo.setEnabled(currentSettings.type == Type.HISTOGRAM);
         }
 
-        setupTraces();
+        super.setTraces(traceLists, traceNames);
     }
 
     protected Plot createHistogramPlot(List values) {
@@ -265,29 +259,27 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     }
 
     protected Plot createKDEPlot(List values) {
-        return new KDENumericalDensityPlot(values, DEFAULT_KDE_BINS);
+        return new KDENumericalDensityPlot(values);
     }
 
     protected Plot createViolinPlot(List values, double lower, double upper) {
-        return new ViolinPlot(true, 0.8, lower, upper, false, values, DEFAULT_KDE_BINS);
+        return new ViolinPlot(true, 0.8, lower, upper, false, values);
     }
 
 
     protected void setupTraces() {
-        // return if no traces selected
-        if (!removeAllPlots()) {
-            return;
-        }
 
         int i = 0;
         TraceType traceType = null;
+
+        getChartPanel().getChart().removeAllPlots();
+        
         for (TraceList tl : getTraceLists()) {
             int n = tl.getStateCount();
 
             for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
                 Trace trace = tl.getTrace(traceIndex);
-                TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
                 Plot plot = null;
 
                 if (trace != null) {

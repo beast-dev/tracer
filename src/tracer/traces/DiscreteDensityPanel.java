@@ -64,8 +64,6 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         densityChart = new DiscreteJChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis(Axis.AT_ZERO, Axis.AT_MAJOR_TICK_PLUS));
         densityChartPanel = new JChartPanel(densityChart, "","","");
         toolBar = createToolBar(currentSettings);
-
-        setupMainPanel();
     }
 
     protected JChart getChart() {
@@ -117,14 +115,13 @@ public class DiscreteDensityPanel extends TraceChartPanel {
     }
 
     public void setTraces(TraceList[] traceLists, List<String> traceNames) {
-        super.setTraces(traceLists, traceNames);
 
         Set<String> categoryLabels = null;
 
         if (traceLists != null) {
             TraceType traceType = null;
-            for (TraceList tl : getTraceLists()) {
-                for (String traceName : getTraceNames()) {
+            for (TraceList tl : traceLists) {
+                for (String traceName : traceNames) {
                     int traceIndex = tl.getTraceIndex(traceName);
                     Trace trace = tl.getTrace(traceIndex);
 
@@ -153,18 +150,16 @@ public class DiscreteDensityPanel extends TraceChartPanel {
             }
         }
 
-        setupTraces();
+        super.setTraces(traceLists, traceNames);
     }
 
     @Override
     protected void setupTraces() {
-        // return if no traces selected
-        if (!removeAllPlots()) {
-            return;
-        }
 
         TraceType traceType = null;
 
+        getChart().removeAllPlots();
+        
         int i = 0;
         for (TraceList tl : getTraceLists()) {
             int n = tl.getStateCount();
@@ -216,8 +211,6 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                         xAxis.addRange(0, 1);
                     }
                 }
-
-
 
                 if (columnPlot != null) {
                     columnPlot.setName(name);
