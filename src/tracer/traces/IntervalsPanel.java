@@ -48,32 +48,12 @@ public class IntervalsPanel extends TraceChartPanel {
 
     private static final int DEFAULT_KDE_BINS = 5000;
 
-    private enum ShowType {
-        BOX_AND_WHISKER("box and whisker"),
-        VIOLIN("violin");
-
-        ShowType(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-
-        private String name;
-    }
-
     private final JParallelChart intervalsChart;
     private final JChartPanel chartPanel;
 
     private ChartSetupDialog chartSetupDialog = null;
 
     private JToolBar toolBar;
-
-    class Settings extends TraceChartPanel.Settings {
-        ShowType show = ShowType.BOX_AND_WHISKER;
-    }
 
     private Settings currentSettings = new Settings();
 
@@ -120,27 +100,6 @@ public class IntervalsPanel extends TraceChartPanel {
 
         return toolBar;
     }
-
-    private JLabel createShowComboAndLabel() {
-        JLabel labelShow = new JLabel("Show:");
-        final JComboBox showCombo = new JComboBox(ShowType.values());
-        showCombo.setFont(UIManager.getFont("SmallSystemFont"));
-        showCombo.setOpaque(false);
-        labelShow.setFont(UIManager.getFont("SmallSystemFont"));
-        labelShow.setLabelFor(showCombo);
-
-        showCombo.addActionListener(
-                new java.awt.event.ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        currentSettings.show = (ShowType)showCombo.getSelectedItem();
-                        setupTraces();
-                    }
-                }
-        );
-        return labelShow;
-    }
-
 
     @Override
     protected JToolBar getToolBar() {

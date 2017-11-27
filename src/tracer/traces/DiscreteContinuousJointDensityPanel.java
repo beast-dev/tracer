@@ -44,15 +44,10 @@ import java.util.Map;
  * @author Guy Baele
  * @version $Id: CorrelationPanel.java,v 1.1.1.2 2006/04/25 23:00:09 rambaut Exp $
  */
-public class SinglePairJointDensityPanel extends TraceChartPanel {
+public class DiscreteContinuousJointDensityPanel extends TraceChartPanel {
 
     private JCheckBox defaultNumberFormatCheckBox = new JCheckBox("Use default number format");
 
-    private JCheckBox sampleCheckBox = new JCheckBox("Sample only");
-    private JCheckBox pointsCheckBox = new JCheckBox("Draw as points");
-    private JCheckBox translucencyCheckBox = new JCheckBox("Use translucency");
-
-    private JChart chart;
     private JParallelChart parallelChart;
     private final JChartPanel chartPanel;
 
@@ -60,17 +55,18 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
 
     private JToolBar toolBar;
 
+    private Settings currentSettings = new Settings();
+
     /**
      * Creates new CorrelationPanel
      */
-    public SinglePairJointDensityPanel(final JFrame frame) {
+    public DiscreteContinuousJointDensityPanel(final JFrame frame) {
         super(frame);
 
-        chart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         parallelChart = new JParallelChart(false, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(parallelChart, "", "", ""); // xAxisTitle, yAxisTitle
 
-        toolBar = createSinglePairToolBar(frame);
+        toolBar = createToolBar(frame);
     }
 
     public JChartPanel getChartPanel() {
@@ -84,7 +80,7 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
     @Override
     protected ChartSetupDialog getChartSetupDialog() {
         if (chartSetupDialog == null) {
-            chartSetupDialog = new ChartSetupDialog(getFrame(), true, true, true, true,
+            chartSetupDialog = new ChartSetupDialog(getFrame(), false, false, true, true,
                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
         }
         return chartSetupDialog;
@@ -92,7 +88,7 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
 
     @Override
     protected Settings getSettings() {
-        return null;
+        return currentSettings;
     }
 
     @Override
@@ -100,10 +96,14 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
         return toolBar;
     }
 
-    private JToolBar createSinglePairToolBar(final JFrame frame) {
+    private JToolBar createToolBar(final JFrame frame) {
         JToolBar toolBar = super.createToolBar();
 
-        // toolbar empty at the moment...
+        toolBar.add(createSetupButton());
+
+        JLabel label = createShowComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
 
         return toolBar;
     }
@@ -112,6 +112,8 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
     protected void setupTraces() {
 
         getChartPanel().getChart().removeAllPlots();
+
+        assert getTraceCount() == 2;
 
         TraceList traceList1 = null;
         TraceList traceList2 = null;
@@ -146,21 +148,8 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
         TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
         TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
 
-        if (td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete()) {
-
-            // both are discrete
-            chartPanel.add(chart, "Chart");
-            createDiscreteBubblePlot(traceList1, traceIndex1, traceList2, traceIndex2);
-
-            sampleCheckBox.setVisible(false);
-            pointsCheckBox.setVisible(false);
-            translucencyCheckBox.setVisible(false);
-
-        } else if (td1.getTraceType().isDiscrete() && !td2.getTraceType().isDiscrete() ||
+        if (td1.getTraceType().isDiscrete() && !td2.getTraceType().isDiscrete() ||
                 !td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete()) {
-
-            // one discrete, one continuous
-            chartPanel.add(parallelChart, "Chart");
 
             defaultNumberFormatCheckBox.setVisible(false);
 
@@ -174,20 +163,10 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
                 createDiscreteContinuousPlot(traceList2, traceIndex2, traceList1, traceIndex1);
             }
 
-            sampleCheckBox.setVisible(false);
-            pointsCheckBox.setVisible(false);
-            translucencyCheckBox.setVisible(false);
         } else {
-            // both are continous
-
-            chartPanel.add(chart, "Chart");
-            createContinuousScatterPlot(traceList1, traceIndex1, traceList2, traceIndex2);
-
-            sampleCheckBox.setVisible(true);
-            pointsCheckBox.setVisible(true);
-            translucencyCheckBox.setVisible(true);
-
+            throw new RuntimeException("This panel only works with one discrete vs one continuous trace");
         }
+
         setXLabel(traceName1);
         setYLabel(traceName2);
 
@@ -222,126 +201,43 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
             i++;
         }
 
+        Plot plot;
+
         for (int discreteValue : tc.getFrequencyCounter().getUniqueValues()) {
             List<Double> values = valueMap.get(discreteValue);
             TraceDistribution td = new TraceDistribution(values, TraceType.REAL);
 
-            ViolinPlot violinPlot = new ViolinPlot(true, 0.8, td.getLowerHPD(), td.getUpperHPD(), true, values);
+            switch (currentSettings.show) {
+                case VIOLIN:
+                    ViolinPlot violinPlot = new ViolinPlot(true, 0.8, td.getLowerHPD(), td.getUpperHPD(), true, values);
+                    violinPlot.setLineStyle(new BasicStroke(1.0f), getSettings().palette[0]);
+                    plot = violinPlot;
+
+                    break;
+                case BOX_AND_WHISKER:
+                    double lowerTail = td.getMinimum();
+                    double upperTail = td.getMaximum();
+                    double mean = td.getMean();
+
+                    BoxPlot boxPlot = new BoxPlot(true, 0.6, td.getLowerHPD(), td.getUpperHPD(), lowerTail, upperTail, mean);
+                    boxPlot.setLineStyle(new BasicStroke(1.0f), getSettings().palette[0]);
+                    boxPlot.setMeanLineStyle(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), getSettings().palette[0]);
+
+                    plot = boxPlot;
+                    break;
+                default:
+                    throw new RuntimeException("Unknown plot type");
+            }
+
 
             if (discreteTraceList.getTrace(discreteTraceIndex).getTraceType() == TraceType.CATEGORICAL) {
-                violinPlot.setName(discreteTraceList.getTrace(discreteTraceIndex).getCategoryLabelMap().get(discreteValue));
+                plot.setName(discreteTraceList.getTrace(discreteTraceIndex).getCategoryLabelMap().get(discreteValue));
             } else {
-                violinPlot.setName(Integer.toString(discreteValue));
+                plot.setName(Integer.toString(discreteValue));
             }
 
-            getChart().addPlot(violinPlot);
+            getChart().addPlot(plot);
         }
-
-    }
-
-    private void createContinuousScatterPlot(TraceList traceList1, int traceIndex1, TraceList traceList2, int traceIndex2) {
-
-        List values1 = traceList1.getValues(traceIndex1);
-        List values2 = traceList2.getValues(traceIndex2);
-
-        int maxCount = Math.max(values1.size(), values2.size());
-        int minCount = Math.min(values1.size(), values2.size());
-
-        TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
-        TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
-
-        int sampleSize = minCount;
-
-        // sampling only required by scatter plot
-        if (sampleCheckBox.isSelected() && td1.getTraceType().isContinuous() && td2.getTraceType().isContinuous()) {
-            if (td1.getESS() < td2.getESS()) {
-                sampleSize = (int) td1.getESS();
-            } else {
-                sampleSize = (int) td2.getESS();
-            }
-            if (sampleSize < 20) {
-                sampleSize = 20;
-                setMessage("One of the traces has an ESS < 20 so a sample size of 20 will be used");
-            }
-            if (sampleSize > 500) {
-                setMessage("This plot has been sampled down to 500 points");
-                sampleSize = 500;
-            }
-        }
-
-        int k = 0;
-        List<Double> samples1 = new ArrayList<Double>();
-        for (int i = 0; i < sampleSize; i++) {
-            samples1.add(i, ((Number) values1.get(k)).doubleValue());
-            k += minCount / sampleSize;
-        }
-
-        k = 0;
-        List<Double> samples2 = new ArrayList<Double>();
-        for (int i = 0; i < sampleSize; i++) {
-            samples2.add(i, ((Number) values2.get(k)).doubleValue());
-            k += minCount / sampleSize;
-        }
-
-        getChart().setXAxis(new LinearAxis());
-        getChart().setYAxis(new LinearAxis());
-
-        // add plot
-        ScatterPlot plot = new ScatterPlot(samples1, samples2);
-            /*plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
-                    new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
-                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));*/
-        plot.setMarkStyle(Plot.CIRCLE_MARK, 3.0,
-                new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-                new Color(16, 16, 64, 255),
-                new Color(16, 16, 64, 255));
-        getChart().addPlot(plot);
-    }
-
-    private void createDiscreteBubblePlot(TraceList traceList1, int traceIndex1, TraceList traceList2, int traceIndex2) {
-        List<Double> values1 = traceList1.getValues(traceIndex1);
-        List<Double> values2 = traceList2.getValues(traceIndex2);
-        int maxCount = Math.max(values1.size(), values2.size());
-        int minCount = Math.min(values1.size(), values2.size());
-
-        int sampleSize = minCount;
-
-        int k = 0;
-        List<Double> samples1 = new ArrayList<Double>();
-        for (int i = 0; i < sampleSize; i++) {
-            samples1.add(i, ((Number) values1.get(k)).doubleValue());
-            k += minCount / sampleSize;
-        }
-
-        k = 0;
-        List<Double> samples2 = new ArrayList<Double>();
-        for (int i = 0; i < sampleSize; i++) {
-            samples2.add(i, ((Number) values2.get(k)).doubleValue());
-            k += minCount / sampleSize;
-        }
-
-        TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
-        TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
-
-        // set axis
-        if (td1.getTraceType().isCategorical()) {
-            getChart().setXAxis(new DiscreteAxis(true, true));
-        } else {
-            getChart().setXAxis(new DiscreteAxis(true, true));
-        }
-        if (td2.getTraceType().isCategorical()) {
-            getChart().setYAxis(new DiscreteAxis(true, true));
-        } else {
-            getChart().setYAxis(new DiscreteAxis(true, true));
-        }
-
-        // add plot
-        Plot plot;
-        // samples1 samples2 are both ordinal
-        plot = new TangHuLuPlot(samples1, samples2);
-        getChart().setOriginStyle(null, null);
-        getChart().addPlot(plot);
 
     }
 

@@ -25,17 +25,11 @@
 
 package tracer.traces;
 
-import dr.app.gui.chart.*;
-import dr.app.gui.util.CorrelationData;
 import dr.inference.trace.*;
-import dr.stats.Variate;
 import jam.framework.Exportable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.*;
-import java.util.List;
 
 /**
  * A panel that displays correlation plots of 2 traces
@@ -47,7 +41,9 @@ import java.util.List;
  */
 public class JointDensityPanel extends JPanel implements Exportable {
 
-    private final SinglePairJointDensityPanel singlePairJointDensityPanel;
+    private final ContinuousJointDensityPanel continuousJointDensityPanel;
+    private final DiscreteJointDensityPanel discreteJointDensityPanel;
+    private final DiscreteContinuousJointDensityPanel discreteContinuousJointDensityPanel;
     private final GridJointDensityPanel gridJointDensityPanel;
 
     private TraceChartPanel currentPanel;
@@ -58,7 +54,9 @@ public class JointDensityPanel extends JPanel implements Exportable {
     public JointDensityPanel(final JFrame frame) {
         super();
 
-        singlePairJointDensityPanel = new SinglePairJointDensityPanel(frame);
+        continuousJointDensityPanel = new ContinuousJointDensityPanel(frame);
+        discreteJointDensityPanel = new DiscreteJointDensityPanel(frame);
+        discreteContinuousJointDensityPanel = new DiscreteContinuousJointDensityPanel(frame);
         gridJointDensityPanel = new GridJointDensityPanel(frame);
 
         setOpaque(false);
@@ -69,22 +67,41 @@ public class JointDensityPanel extends JPanel implements Exportable {
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
         if (traceLists != null && traceNames != null) {
-            if ((traceLists.length == 2 && traceNames.size() == 1) ||
-                    traceLists.length == 1 && traceNames.size() == 2) {
+            if (traceLists.length * traceNames.size() == 2) {
+                if ((getTrace(0, traceLists, traceNames).getTraceType().isDiscrete() && getTrace(1, traceLists, traceNames).getTraceType().isContinuous()) ||
+                        (getTrace(1, traceLists, traceNames).getTraceType().isDiscrete() && getTrace(0, traceLists, traceNames).getTraceType().isContinuous())) {
 
-                singlePairJointDensityPanel.setTraces(traceLists, traceNames);
-                setDensityPanel(singlePairJointDensityPanel, null);
+                    discreteContinuousJointDensityPanel.setTraces(traceLists, traceNames);
+                    setDensityPanel(discreteContinuousJointDensityPanel, null);
 
+                } else if (getTrace(0, traceLists, traceNames).getTraceType().isDiscrete() && getTrace(1, traceLists, traceNames).getTraceType().isDiscrete()) {
+
+                    discreteJointDensityPanel.setTraces(traceLists, traceNames);
+                    setDensityPanel(discreteJointDensityPanel, null);
+
+                } else if (getTrace(0, traceLists, traceNames).getTraceType().isContinuous() && getTrace(1, traceLists, traceNames).getTraceType().isContinuous()) {
+
+                    continuousJointDensityPanel.setTraces(traceLists, traceNames);
+                    setDensityPanel(continuousJointDensityPanel, null);
+
+                }
             } else if (traceLists.length > 2 || traceNames.size() > 2) {
 
                 gridJointDensityPanel.setTraces(traceLists, traceNames);
                 setDensityPanel(gridJointDensityPanel, null);
 
             }
-        } else {
-            setDensityPanel(null, "Traces must be of the same type to display together");
         }
     }
+
+    protected Trace getTrace(int index, TraceList[] traceLists, java.util.List<String> traceNames) {
+        int i = index / traceNames.size();
+        int j = index % traceNames.size();
+
+        TraceList traceList = traceLists[i];
+        return traceList.getTrace(traceList.getTraceIndex(traceNames.get(j)));
+    }
+
 
     private void setDensityPanel(TraceChartPanel panel, String message) {
         currentPanel = panel;

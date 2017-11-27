@@ -28,6 +28,7 @@ package tracer.traces;
 import dr.app.gui.chart.ChartSetupDialog;
 import dr.app.gui.chart.JChart;
 import dr.app.gui.chart.JChartPanel;
+import dr.inference.trace.Trace;
 import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 import jam.framework.Exportable;
@@ -83,6 +84,22 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
 
         private String name;
     };
+
+    public enum ShowType {
+        BOX_AND_WHISKER("box and whisker"),
+        VIOLIN("violin");
+
+        ShowType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        private String name;
+    }
 
     protected static final Paint[] LEGACY_PAINTS = new Paint[]{
             Color.BLACK,
@@ -150,6 +167,7 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         LegendAlignment legendAlignment = LegendAlignment.NONE;
         ColourByOptions colourBy = ColourByOptions.COLOUR_BY_TRACE;
         Paint[] palette = RAINBOW;
+        ShowType show = ShowType.BOX_AND_WHISKER;
 
         ColourManager cm;
 
@@ -459,6 +477,27 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         return labelBins;
     }
 
+    protected JLabel createShowComboAndLabel() {
+        JLabel labelShow = new JLabel("Show:");
+        final JComboBox showCombo = new JComboBox(ShowType.values());
+        showCombo.setFont(UIManager.getFont("SmallSystemFont"));
+        showCombo.setOpaque(false);
+        labelShow.setFont(UIManager.getFont("SmallSystemFont"));
+        labelShow.setLabelFor(showCombo);
+
+        showCombo.addActionListener(
+                new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        getSettings().show = (ShowType)showCombo.getSelectedItem();
+                        setupMainPanel();
+                    }
+                }
+        );
+        return labelShow;
+    }
+
+
     /**
      * Create legend combo and its label.
      * @returns the label but the combo can be accessed with .getLabelFor() method.
@@ -511,6 +550,19 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     }
 
     protected abstract void setupTraces();
+
+    protected int getTraceCount() {
+        return getTraceLists().length * getTraceNames().size();
+    }
+
+    protected Trace getTrace(int index) {
+        int i = index / getTraceNames().size();
+        int j = index % getTraceNames().size();
+
+        TraceList traceList = getTraceLists()[i];
+        return traceList.getTrace(traceList.getTraceIndex(getTraceNames().get(j)));
+    }
+
 
     /**
      * set legend given <code>Settings</code> which includes legend position and colours.
