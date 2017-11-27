@@ -147,26 +147,6 @@ public class IntervalsPanel extends TraceChartPanel {
         return toolBar;
     }
 
-    protected void setupMainPanel() {
-        setLayout(new BorderLayout());
-        add(chartPanel, BorderLayout.CENTER);
-        add(getToolBar(), BorderLayout.SOUTH);
-    }
-
-    public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
-        super.setTraces(traceLists, traceNames);
-
-        intervalsChart.removeAllPlots();
-
-        if (traceLists == null || traceNames == null) {
-            chartPanel.setXAxisTitle("");
-            chartPanel.setYAxisTitle("");
-            return;
-        }
-
-        setupTraces();
-    }
-
     protected void setupTraces() {
         TraceType traceType = null;
         Set<String> categoryLabels = null;
@@ -287,9 +267,6 @@ public class IntervalsPanel extends TraceChartPanel {
 
             setYLabel("Value");
         }
-
-        validate();
-        repaint();
     }
 
 }

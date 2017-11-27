@@ -65,34 +65,23 @@ public class DensityPanel extends JPanel implements Exportable {
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
 
-        removeAll();
+        TraceType traceType = TraceType.REAL;
 
         if (traceLists != null) {
-            TraceType traceType = null;
-            for (TraceList tl : traceLists) {
-                for (String traceName : traceNames) {
-                    int traceIndex = tl.getTraceIndex(traceName);
-                    Trace trace = tl.getTrace(traceIndex);
-                    if (trace != null) {
-                        if (traceType == null) {
-                            traceType = trace.getTraceType();
-                        }
-                        if (trace.getTraceType() != traceType) {
-                            currentPanel.setMessage("Traces must be of the same type to display together.");
-                            return;
-                        }
-                    }
-                }
-            }
+            TraceList traceList = traceLists[0];
+            String traceName = traceNames.get(0);
 
-            if (traceType == TraceType.REAL) {
-                continuousDensityPanel.setTraces(traceLists, traceNames);
-                setDensityPanel(continuousDensityPanel);
-            } else {
-                discreteDensityPanel.setTraces(traceLists, traceNames);
-                setDensityPanel(discreteDensityPanel);
-            }
+            traceType = traceList.getTrace(traceList.getTraceIndex(traceName)).getTraceType();
         }
+
+        if (traceType == TraceType.REAL) {
+            setDensityPanel(continuousDensityPanel);
+            continuousDensityPanel.setTraces(traceLists, traceNames);
+        } else {
+            setDensityPanel(discreteDensityPanel);
+            discreteDensityPanel.setTraces(traceLists, traceNames);
+        }
+
     }
 
     private void setDensityPanel(TraceChartPanel panel) {
@@ -101,8 +90,6 @@ public class DensityPanel extends JPanel implements Exportable {
         if (currentPanel != null) {
             add(currentPanel, BorderLayout.CENTER);
         }
-        validate();
-        repaint();
     }
 
     public String toString() {

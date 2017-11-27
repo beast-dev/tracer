@@ -230,7 +230,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         displayCombo.setSelectedItem(currentSettings.type);
 
         if (traceLists != null) {
-//        barCount = 0;
             TraceType traceType = null;
             for (TraceList tl : traceLists) {
                 for (String traceName : traceNames) {
@@ -246,9 +245,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                     }
                 }
             }
-
-//            labelBins.setEnabled(currentSettings.type == Type.HISTOGRAM);
-//            binsCombo.setEnabled(currentSettings.type == Type.HISTOGRAM);
         }
 
         super.setTraces(traceLists, traceNames);
