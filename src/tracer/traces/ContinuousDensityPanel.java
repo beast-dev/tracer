@@ -63,6 +63,8 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         private final String name;
     }
 
+    private final JToolBar topToolBar;
+
     private final JChart kdeChart;
     private final JChartPanel kdeChartPanel;
     private final JToolBar kdeToolBar;
@@ -119,11 +121,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         violinChartSetupDialog = new ChartSetupDialog(frame, false, true, false, true,
                 Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK);
 
-        JToolBar topToolBar = createTopToolBar();
-
-        add(topToolBar, BorderLayout.NORTH);
-        add(getToolBar(), BorderLayout.SOUTH);
-        add(getChartPanel(), BorderLayout.CENTER);
+        topToolBar = createTopToolBar();
     }
 
     protected JToolBar getToolBar() {
@@ -138,6 +136,11 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                 throw new IllegalArgumentException("Unknown chart type");
         }
     }
+
+    protected JToolBar getTopToolBar() {
+        return topToolBar;
+    }
+
 
     protected JChartPanel getChartPanel() {
         switch (currentSettings.type) {
@@ -236,7 +239,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     protected Plot createViolinPlot(List values, double lower, double upper) {
         return new ViolinPlot(true, 0.8, lower, upper, false, values);
     }
-    
+
     protected void setupTraces() {
 
         int i = 0;
@@ -245,7 +248,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         displayCombo.setSelectedItem(currentSettings.type);
 
         getChartPanel().getChart().removeAllPlots();
-        
+
         for (TraceList tl : getTraceLists()) {
             int n = tl.getStateCount();
 

@@ -826,7 +826,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 tracePanel.setTraces(tl, selectedTraces);
             } catch (ChartRuntimeException cre) {
                 JOptionPane.showMessageDialog(this, "One or more traces contain invalid values and \rare not able to be displayed.",
-                        "Problem with trace file",
+                        "Problem reading trace file",
                         JOptionPane.ERROR_MESSAGE);
             }
         }

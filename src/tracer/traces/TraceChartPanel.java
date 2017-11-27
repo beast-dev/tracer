@@ -351,7 +351,12 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
             repaint();
             return;
         }
-        add(getToolBar(), BorderLayout.SOUTH);
+        if (getTopToolBar() != null) {
+            add(getTopToolBar(), BorderLayout.NORTH);
+        }
+        if (getToolBar() != null) {
+            add(getToolBar(), BorderLayout.SOUTH);
+        }
         add(getChartPanel(), BorderLayout.CENTER);
 
         validate();
@@ -365,6 +370,14 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
     protected abstract Settings getSettings();
 
     protected abstract JToolBar getToolBar();
+
+    /**
+     * override to provide a toolbar for the top of the panel
+     * @return
+     */
+    protected JToolBar getTopToolBar() {
+        return null;
+    }
 
     public JFrame getFrame() {
         return frame;

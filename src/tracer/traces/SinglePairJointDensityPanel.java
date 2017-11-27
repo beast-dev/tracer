@@ -52,7 +52,8 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
     private JCheckBox pointsCheckBox = new JCheckBox("Draw as points");
     private JCheckBox translucencyCheckBox = new JCheckBox("Use translucency");
 
-    private JChart intervalsChart;
+    private JChart chart;
+    private JParallelChart parallelChart;
     private final JChartPanel chartPanel;
 
     private ChartSetupDialog chartSetupDialog = null;
@@ -65,14 +66,19 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
     public SinglePairJointDensityPanel(final JFrame frame) {
         super(frame);
 
-        intervalsChart = new JParallelChart(true, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
-        chartPanel = new JChartPanel(intervalsChart, "", "", ""); // xAxisTitle, yAxisTitle
+        chart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        parallelChart = new JParallelChart(false, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        chartPanel = new JChartPanel(parallelChart, "", "", ""); // xAxisTitle, yAxisTitle
 
         toolBar = createSinglePairToolBar(frame);
     }
 
     public JChartPanel getChartPanel() {
         return chartPanel;
+    }
+
+    public JChart getChart() {
+        return getChartPanel().getChart();
     }
 
     @Override
@@ -92,10 +98,6 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
     @Override
     protected JToolBar getToolBar() {
         return toolBar;
-    }
-
-    protected JChart getChart() {
-        return intervalsChart;
     }
 
     private JToolBar createSinglePairToolBar(final JFrame frame) {
@@ -145,18 +147,21 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
         TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
 
         if (td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete()) {
-            chartPanel.add(getChart(), "Chart");
+
+            // both are discrete
+            chartPanel.add(chart, "Chart");
             createDiscreteBubblePlot(traceList1, traceIndex1, traceList2, traceIndex2);
 
             sampleCheckBox.setVisible(false);
             pointsCheckBox.setVisible(false);
             translucencyCheckBox.setVisible(false);
+
         } else if (td1.getTraceType().isDiscrete() && !td2.getTraceType().isDiscrete() ||
                 !td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete()) {
 
-//                singlePairChartPanel.remove(tableScrollPane);
-            chartPanel.add(getChart(), "Chart");
-            //getChart().removeAllPlots();
+            // one discrete, one continuous
+            chartPanel.add(parallelChart, "Chart");
+
             defaultNumberFormatCheckBox.setVisible(false);
 
             if (td1.getTraceType().isDiscrete()) {
@@ -174,6 +179,8 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
             translucencyCheckBox.setVisible(false);
         } else {
             // both are continous
+
+            chartPanel.add(chart, "Chart");
             createContinuousScatterPlot(traceList1, traceIndex1, traceList2, traceIndex2);
 
             sampleCheckBox.setVisible(true);
@@ -220,7 +227,12 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
             TraceDistribution td = new TraceDistribution(values, TraceType.REAL);
 
             ViolinPlot violinPlot = new ViolinPlot(true, 0.8, td.getLowerHPD(), td.getUpperHPD(), true, values);
-            violinPlot.setName(discreteTraceList.getTrace(discreteTraceIndex).getCategoryLabelMap().get(discreteValue));
+
+            if (discreteTraceList.getTrace(discreteTraceIndex).getTraceType() == TraceType.CATEGORICAL) {
+                violinPlot.setName(discreteTraceList.getTrace(discreteTraceIndex).getCategoryLabelMap().get(discreteValue));
+            } else {
+                violinPlot.setName(Integer.toString(discreteValue));
+            }
 
             getChart().addPlot(violinPlot);
         }

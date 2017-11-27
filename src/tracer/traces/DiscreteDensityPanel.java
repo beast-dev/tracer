@@ -48,6 +48,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
     private ChartSetupDialog chartSetupDialog = null;
 
+    private JButton setupButton;
+
     private class Settings extends TraceChartPanel.Settings {
         int barCount = 0;
     }
@@ -76,7 +78,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
     protected ChartSetupDialog getChartSetupDialog() {
         if (chartSetupDialog == null) {
-            chartSetupDialog = new ChartSetupDialog(getFrame(), false, false, false, false,
+            chartSetupDialog = new ChartSetupDialog(getFrame(), false, false, true, false,
                     Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
         }
         return chartSetupDialog;
@@ -95,7 +97,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
     private JToolBar createToolBar(Settings settings) {
         JToolBar toolBar = super.createToolBar();
 
-        toolBar.add(createSetupButton());
+        setupButton = createSetupButton();
+        toolBar.add(setupButton);
 
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
@@ -226,6 +229,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                 i = 0;
             }
         }
+
+        setupButton.setEnabled(traceType != TraceType.CATEGORICAL);
 
         setXLabelMultipleTraces();
         setYLabel(traceType, new String[]{"Density", "Probability"});

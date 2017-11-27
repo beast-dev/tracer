@@ -69,7 +69,7 @@ public class TracePanel extends javax.swing.JPanel implements Exportable {
         tracePanel = new RawTracePanel(parent);
 
         tabbedPane.addTab("Estimates", summaryIcon, summaryPanel);
-        tabbedPane.addTab("Marginal Prob Distribution", densityIcon, densityPanel);
+        tabbedPane.addTab("Marginal Density", densityIcon, densityPanel);
         tabbedPane.addTab("Joint-Marginal", correlationIcon, jointDensityPanel);
         tabbedPane.addTab("Trace", traceIcon, tracePanel);
 
