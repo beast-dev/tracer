@@ -329,14 +329,14 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         setLayout(new BorderLayout());
     }
 
-    public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
+    protected final void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
         this.traceLists = traceLists;
         this.traceNames = traceNames;
 
         setupMainPanel();
     }
 
-    protected void setupMainPanel() {
+    protected final void setupMainPanel() {
         if (traceLists == null || traceLists[0] == null || traceNames == null || traceNames.size() == 0) {
             setMessage("No traces selected.");
         } else {
@@ -347,6 +347,8 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         removeAll();
         if (message != null && message.length() > 0) {
             add(new JLabel(message), BorderLayout.CENTER);
+            validate();
+            repaint();
             return;
         }
         add(getToolBar(), BorderLayout.SOUTH);

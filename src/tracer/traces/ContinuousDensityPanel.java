@@ -225,31 +225,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         return currentSettings;
     }
 
-    public void setTraces(TraceList[] traceLists, List<String> traceNames) {
-
-        displayCombo.setSelectedItem(currentSettings.type);
-
-        if (traceLists != null) {
-            TraceType traceType = null;
-            for (TraceList tl : traceLists) {
-                for (String traceName : traceNames) {
-                    int traceIndex = tl.getTraceIndex(traceName);
-                    Trace trace = tl.getTrace(traceIndex);
-                    if (trace != null) {
-                        if (traceType == null) {
-                            traceType = trace.getTraceType();
-                        }
-                        if (trace.getTraceType() != traceType) {
-                            setMessage("Traces must be of the same type to visualize here.");
-                        }
-                    }
-                }
-            }
-        }
-
-        super.setTraces(traceLists, traceNames);
-    }
-
     protected Plot createHistogramPlot(List values) {
         return new NumericalDensityPlot(values, currentSettings.minimumBins);
     }
@@ -261,12 +236,13 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     protected Plot createViolinPlot(List values, double lower, double upper) {
         return new ViolinPlot(true, 0.8, lower, upper, false, values);
     }
-
-
+    
     protected void setupTraces() {
 
         int i = 0;
         TraceType traceType = null;
+
+        displayCombo.setSelectedItem(currentSettings.type);
 
         getChartPanel().getChart().removeAllPlots();
         
@@ -286,9 +262,12 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
                     List values = tl.getValues(traceIndex);
 
+                    if (traceType != null && trace.getTraceType() != traceType) {
+                        setMessage("Traces must be of the same type to visualize here.");
+                    }
+
                     // set traceType here to avoid Exception from setYLabel
                     traceType = trace.getTraceType();
-                    assert traceType.isContinuous();
 
                     switch (currentSettings.type) {
                         case KDE:

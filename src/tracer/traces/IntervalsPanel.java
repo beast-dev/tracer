@@ -151,6 +151,8 @@ public class IntervalsPanel extends TraceChartPanel {
         TraceType traceType = null;
         Set<String> categoryLabels = null;
 
+        getChartPanel().getChart().removeAllPlots();
+
         for (TraceList tl : getTraceLists()) {
             for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);

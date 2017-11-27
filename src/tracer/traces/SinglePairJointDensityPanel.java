@@ -106,10 +106,7 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
         return toolBar;
     }
 
-    public void setTraces(TraceList[] traceLists, List<String> traceNames) {
-        super.setTraces(traceLists, traceNames);
-    }
-
+    @Override
     protected void setupTraces() {
 
         getChartPanel().getChart().removeAllPlots();
@@ -189,6 +186,15 @@ public class SinglePairJointDensityPanel extends TraceChartPanel {
 
     }
 
+    /**
+     * This plot creates a continuous parameter density, conditioned on the state of a discrete
+     * trace.
+     *
+     * @param discreteTraceList
+     * @param discreteTraceIndex
+     * @param continuousTraceList
+     * @param continuousTraceIndex
+     */
     private void createDiscreteContinuousPlot(TraceList discreteTraceList, int discreteTraceIndex,
                                               TraceList continuousTraceList, int continuousTraceIndex) {
 

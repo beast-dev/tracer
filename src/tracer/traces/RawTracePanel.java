@@ -39,7 +39,9 @@ import javax.sound.sampled.SourceDataLine;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A panel that displays information about traces
@@ -209,26 +211,13 @@ public class RawTracePanel extends TraceChartPanel {
     }
 
     @Override
-    public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
-        super.setTraces(traceLists, traceNames);
-        setupTraces();
-    }
-
-    @Override
     protected void setupTraces() {
 
-        //TODO clear colour manager when a trace is removed
-        /*for (TraceList tl : traceLists) {
-            if (!currentSettings.cm.containsTraceFile(tl.getName())) {
-                currentSettings.cm.clear();
-                System.out.println("Resetting colour manager (" + traceLists.length + ")");
-                for (TraceList tls : traceLists) {
-                    System.out.println("  " + tl.getName());
-                }
-            }
-        }*/
+        getChart().removeAllTraces();
+                     
+        TraceType traceType = null;
+        Set<String> categoryLabels = null;
 
-        int i = 0;
         List valuesX = new ArrayList();
         List valuesY = new ArrayList();
 
@@ -247,40 +236,61 @@ public class RawTracePanel extends TraceChartPanel {
                 Trace trace = tl.getTrace(traceIndex);
                 TraceDistribution td = tl.getCorrelationStatistics(traceIndex);
 
-                if (trace != null) {
-                    List values = tl.getValues(traceIndex);
-                    List burninValues = null;
-                    if (burninCheckBox.isSelected() && tl.getBurninStateCount() > 0) {
-                        burninValues = tl.getBurninValues(traceIndex);
+                if (traceType == null) {
+                    traceType = trace.getTraceType();
+                }
+
+                if (traceType != trace.getTraceType()) {
+                    setMessage("Traces must be of the same type to visualize here.");
+                    return;
+                }
+
+                if (traceType == TraceType.CATEGORICAL) {
+                    Set<String> labels = new HashSet<String>(trace.getCategoryLabelMap().values());
+                    if (categoryLabels == null) {
+                        categoryLabels = labels;
                     }
-                    double[] minMax;
-                    if (trace.getTraceType().isNumber()) {
+                    labels.retainAll(categoryLabels);
+                    if (labels.size() == 0) {
+                        setMessage("Categorical traces must have common values to visualize here.");
+                        return;
+                    }
+                    categoryLabels.addAll(trace.getCategoryLabelMap().values());
+                }
 
-                        getChart().setYAxis(trace.getTraceType().isInteger());
-                        if (trace.getTraceType().isInteger()) {
-                            getChart().getYAxis().setAxisFlags(Axis.AT_DATA, Axis.AT_DATA);
+                List values = tl.getValues(traceIndex);
+                List burninValues = null;
+                if (burninCheckBox.isSelected() && tl.getBurninStateCount() > 0) {
+                    burninValues = tl.getBurninValues(traceIndex);
+                }
+                double[] minMax;
+                if (trace.getTraceType().isNumber()) {
 
-                            if (trace.getTraceType().isBinary()) {
-                                getChart().getYAxis().setManualAxis(0, 1.0, 1.0, 0.0);
-                                getChart().getYAxis().setManualRange(0.0, 1.0);
-                                getChart().getYAxis().setRange(0.0, 1.0);
-                            }
+                    getChart().setYAxis(trace.getTraceType().isInteger());
+                    if (trace.getTraceType().isInteger()) {
+                        getChart().getYAxis().setAxisFlags(Axis.AT_DATA, Axis.AT_DATA);
+
+                        if (trace.getTraceType().isBinary()) {
+                            getChart().getYAxis().setManualAxis(0, 1.0, 1.0, 0.0);
+                            getChart().getYAxis().setManualRange(0.0, 1.0);
+                            getChart().getYAxis().setRange(0.0, 1.0);
                         }
-                        int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
-                        //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
-                        minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
-                    } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
-                        getChart().setYAxis(trace.getCategoryLabelMap());
-                        int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
-                        //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
-                        minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
-                    } else {
-                        throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
                     }
-                    valuesX.add(minMax[0]);
-                    valuesX.add(minMax[1]);
-                    valuesY.add(minMax[2]);
-                    valuesY.add(minMax[3]);
+                    int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
+                    //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
+                    minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
+                } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
+                    getChart().setYAxis(trace.getCategoryLabelMap());
+                    int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
+                    //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
+                    minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
+                } else {
+                    throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
+                }
+                valuesX.add(minMax[0]);
+                valuesX.add(minMax[1]);
+                valuesY.add(minMax[2]);
+                valuesY.add(minMax[3]);
 
                     /*if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
                         i++;
@@ -288,7 +298,6 @@ public class RawTracePanel extends TraceChartPanel {
                     if (i == currentSettings.palette.length) {
                         i = 0;
                     }*/
-                }
             }
             /*if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
                 i++;

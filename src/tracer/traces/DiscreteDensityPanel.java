@@ -114,52 +114,15 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         return toolBar;
     }
 
-    public void setTraces(TraceList[] traceLists, List<String> traceNames) {
-
-        Set<String> categoryLabels = null;
-
-        if (traceLists != null) {
-            TraceType traceType = null;
-            for (TraceList tl : traceLists) {
-                for (String traceName : traceNames) {
-                    int traceIndex = tl.getTraceIndex(traceName);
-                    Trace trace = tl.getTrace(traceIndex);
-
-                    if (traceType == null) {
-                        traceType = trace.getTraceType();
-                    }
-
-                    if (traceType == TraceType.CATEGORICAL) {
-                        Set<String> labels = new HashSet<String>(trace.getCategoryLabelMap().values());
-                        if (categoryLabels == null) {
-                            categoryLabels = labels;
-                        }
-                        labels.retainAll(categoryLabels);
-                        if (labels.size() == 0) {
-                            setMessage("Categorical traces must have common values to visualize here.");
-                            return;
-                        }
-                        categoryLabels.addAll(trace.getCategoryLabelMap().values());
-                    }
-
-                    if (traceType != trace.getTraceType()) {
-                        setMessage("Traces must be of the same type to visualize here.");
-                        return;
-                    }
-                }
-            }
-        }
-
-        super.setTraces(traceLists, traceNames);
-    }
-
     @Override
     protected void setupTraces() {
 
-        TraceType traceType = null;
 
         getChart().removeAllPlots();
-        
+
+        TraceType traceType = null;
+        Set<String> categoryLabels = null;
+
         int i = 0;
         for (TraceList tl : getTraceLists()) {
             int n = tl.getStateCount();
@@ -173,11 +136,26 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
                 Plot plot;
 
-                // set traceType here to avoid Exception from setYLabel
-                traceType = trace.getTraceType();
+                if (traceType == null) {
+                    traceType = trace.getTraceType();
+                }
 
-                if (!traceType.isDiscrete()) {
-                    throw new IllegalArgumentException("DiscreteDensityPanel is not for continous variables");
+                if (traceType != trace.getTraceType()) {
+                    setMessage("Traces must be of the same type to visualize here.");
+                    return;
+                }
+
+                if (traceType == TraceType.CATEGORICAL) {
+                    Set<String> labels = new HashSet<String>(trace.getCategoryLabelMap().values());
+                    if (categoryLabels == null) {
+                        categoryLabels = labels;
+                    }
+                    labels.retainAll(categoryLabels);
+                    if (labels.size() == 0) {
+                        setMessage("Categorical traces must have common values to visualize here.");
+                        return;
+                    }
+                    categoryLabels.addAll(trace.getCategoryLabelMap().values());
                 }
 
                 String name = tl.getTraceName(traceIndex);

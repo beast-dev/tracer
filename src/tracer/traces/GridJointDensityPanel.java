@@ -139,12 +139,7 @@ public class GridJointDensityPanel extends TraceChartPanel {
         return toolBar;
     }
 
-    public void setTraces(TraceList[] traceLists, List<String> traceNames) {
-        super.setTraces(traceLists, traceNames);
-
-        setupTraces();
-    }
-
+    @Override
     protected void setupTraces() {
 
         getChartPanel().getChart().removeAllPlots();
