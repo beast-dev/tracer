@@ -188,12 +188,12 @@ public class DiscreteJointDensityPanel extends TraceChartPanel {
 
         // set axis
         if (td1.getTraceType().isCategorical()) {
-            getChart().setXAxis(new DiscreteAxis(true, true));
+            getChart().setXAxis(new DiscreteAxis(traceList1.getTrace(traceIndex1).getCategoryLabelMap(), true, true));
         } else {
             getChart().setXAxis(new DiscreteAxis(true, true));
         }
         if (td2.getTraceType().isCategorical()) {
-            getChart().setYAxis(new DiscreteAxis(true, true));
+            getChart().setYAxis(new DiscreteAxis(traceList2.getTrace(traceIndex2).getCategoryLabelMap(), true, true));
         } else {
             getChart().setYAxis(new DiscreteAxis(true, true));
         }

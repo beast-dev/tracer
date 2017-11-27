@@ -211,10 +211,10 @@ public class ContinuousJointDensityPanel extends TraceChartPanel {
             }
             if (sampleSize < 20) {
                 sampleSize = 20;
-                setMessage("One of the traces has an ESS < 20 so a sample size of 20 will be used");
+//                setMessage("One of the traces has an ESS < 20 so a sample size of 20 will be used");
             }
             if (sampleSize > 500) {
-                setMessage("This plot has been sampled down to 500 points");
+//                setMessage("This plot has been sampled down to 500 points");
                 sampleSize = 500;
             }
         }
@@ -238,14 +238,10 @@ public class ContinuousJointDensityPanel extends TraceChartPanel {
 
         // add plot
         ScatterPlot plot = new ScatterPlot(samples1, samples2);
-            /*plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
+        plot.setMarkStyle(pointsCheckBox.isSelected() ? Plot.POINT_MARK : Plot.CIRCLE_MARK, pointsCheckBox.isSelected() ? 1.0 : 3.0,
                     new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
                     new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
-                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));*/
-        plot.setMarkStyle(Plot.CIRCLE_MARK, 3.0,
-                new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-                new Color(16, 16, 64, 255),
-                new Color(16, 16, 64, 255));
+                    new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
         getChart().addPlot(plot);
     }
 

@@ -66,31 +66,36 @@ public class JointDensityPanel extends JPanel implements Exportable {
     }
 
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
-        if (traceLists != null && traceNames != null) {
+        removeAll();
+
+        if (traceLists != null && traceNames != null && traceLists.length * traceNames.size() > 1) {
             if (traceLists.length * traceNames.size() == 2) {
                 if ((getTrace(0, traceLists, traceNames).getTraceType().isDiscrete() && getTrace(1, traceLists, traceNames).getTraceType().isContinuous()) ||
                         (getTrace(1, traceLists, traceNames).getTraceType().isDiscrete() && getTrace(0, traceLists, traceNames).getTraceType().isContinuous())) {
 
                     discreteContinuousJointDensityPanel.setTraces(traceLists, traceNames);
-                    setDensityPanel(discreteContinuousJointDensityPanel, null);
+                    setDensityPanel(discreteContinuousJointDensityPanel);
 
                 } else if (getTrace(0, traceLists, traceNames).getTraceType().isDiscrete() && getTrace(1, traceLists, traceNames).getTraceType().isDiscrete()) {
 
                     discreteJointDensityPanel.setTraces(traceLists, traceNames);
-                    setDensityPanel(discreteJointDensityPanel, null);
+                    setDensityPanel(discreteJointDensityPanel);
 
                 } else if (getTrace(0, traceLists, traceNames).getTraceType().isContinuous() && getTrace(1, traceLists, traceNames).getTraceType().isContinuous()) {
 
                     continuousJointDensityPanel.setTraces(traceLists, traceNames);
-                    setDensityPanel(continuousJointDensityPanel, null);
+                    setDensityPanel(continuousJointDensityPanel);
 
                 }
-            } else if (traceLists.length > 2 || traceNames.size() > 2) {
+            } else if (traceLists.length * traceNames.size() > 2) {
 
                 gridJointDensityPanel.setTraces(traceLists, traceNames);
-                setDensityPanel(gridJointDensityPanel, null);
-
+                setDensityPanel(gridJointDensityPanel);
             }
+        } else {
+            add(new JLabel("Selected two traces to visualize the joint density."), BorderLayout.CENTER);
+            validate();
+            repaint();
         }
     }
 
@@ -103,14 +108,11 @@ public class JointDensityPanel extends JPanel implements Exportable {
     }
 
 
-    private void setDensityPanel(TraceChartPanel panel, String message) {
+    private void setDensityPanel(TraceChartPanel panel) {
         currentPanel = panel;
         removeAll();
         if (currentPanel != null) {
             add(currentPanel, BorderLayout.CENTER);
-        }
-        if (message != null) {
-            add(new JLabel(message), BorderLayout.NORTH);
         }
         validate();
         repaint();
