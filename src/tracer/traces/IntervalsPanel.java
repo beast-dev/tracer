@@ -190,7 +190,7 @@ public class IntervalsPanel extends TraceChartPanel {
                         } else {
                             double lower = trace.getTraceStatistics().getLowerHPD();
                             double upper = trace.getTraceStatistics().getUpperHPD();
-                            IntegerViolinPlot violinPlot = new IntegerViolinPlot(true, 0.6, lower, upper, false, trace.getFrequencyCounter());
+                            ViolinPlot violinPlot = new ViolinPlot(true, 0.6, lower, upper, false, tl.getValues(traceIndex));
 
                             if (trace.getUniqueValueCount() > 2) {
                                 // don't show hpds for binary traces...
