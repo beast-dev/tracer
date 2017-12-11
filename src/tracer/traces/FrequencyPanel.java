@@ -155,6 +155,8 @@ public class FrequencyPanel extends TraceChartPanel {
                     getChartPanel().getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
 
                 } else {
+                    // discrete but not categorical and thus integer...
+
                     columnPlot = new ColumnPlot(trace.getFrequencyCounter(),  null, true);
 
                     columnPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
@@ -164,7 +166,7 @@ public class FrequencyPanel extends TraceChartPanel {
                     }
                     columnPlot.setColumnWidth(0.5);
 
-                    Axis xAxis = new DiscreteAxis(true, true);
+                    Axis xAxis = new DiscreteAxis(true, trace.getUniqueValueCount() < 20);
                     getChartPanel().getChart().setXAxis(xAxis);
 
                     if (trace.getUniqueValueCount() == 1) {
