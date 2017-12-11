@@ -184,6 +184,12 @@ public class DiscreteContinuousJointDensityPanel extends TraceChartPanel {
 
         TraceCorrelation tc = discreteTraceList.getCorrelationStatistics(discreteTraceIndex);
 
+        // TODO - this doesn't seem to work at present...
+//        if (discreteTraceList.getTrace(discreteTraceIndex).getTraceType() != TraceType.CATEGORICAL) {
+//            // if an integer discrete axis then allow for missing labels...
+//            getChart().setXAxis(new DiscreteAxis(true, discreteTraceList.getTrace(discreteTraceIndex).getUniqueValueCount() < 20));
+//        }
+
         for (int value : tc.getFrequencyCounter().getUniqueValues()) {
             valueMap.put(value, new ArrayList<Double>());
         }
@@ -234,6 +240,7 @@ public class DiscreteContinuousJointDensityPanel extends TraceChartPanel {
 
             getChart().addPlot(plot);
         }
+
 
     }
 
