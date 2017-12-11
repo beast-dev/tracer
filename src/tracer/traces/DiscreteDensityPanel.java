@@ -133,7 +133,6 @@ public class DiscreteDensityPanel extends TraceChartPanel {
             for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
                 Trace trace = tl.getTrace(traceIndex);
-                traceType = trace.getTraceType();
 
                 TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
 

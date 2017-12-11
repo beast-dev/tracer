@@ -145,21 +145,17 @@ public class DiscreteContinuousJointDensityPanel extends TraceChartPanel {
             throw new RuntimeException("Should not reach here");
         }
 
-        TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
-        TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
+        Trace trace1 = traceList1.getTrace(traceIndex1);
+        Trace trace2 = traceList2.getTrace(traceIndex2);
 
-        if (td1.getTraceType().isDiscrete() && !td2.getTraceType().isDiscrete() ||
-                !td1.getTraceType().isDiscrete() && td2.getTraceType().isDiscrete()) {
+        if (trace1.getTraceType().isDiscrete() && !trace2.getTraceType().isDiscrete() ||
+                !trace1.getTraceType().isDiscrete() && trace2.getTraceType().isDiscrete()) {
 
             defaultNumberFormatCheckBox.setVisible(false);
 
-            if (td1.getTraceType().isDiscrete()) {
+            if (trace1.getTraceType().isDiscrete()) {
                 createDiscreteContinuousPlot(traceList1, traceIndex1, traceList2, traceIndex2);
             } else {
-                String swapName = traceName1;
-                traceName1 = traceName2;
-                traceName2 = swapName;
-
                 createDiscreteContinuousPlot(traceList2, traceIndex2, traceList1, traceIndex1);
             }
 
