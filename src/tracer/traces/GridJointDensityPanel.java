@@ -152,8 +152,8 @@ public class GridJointDensityPanel extends TraceChartPanel {
         int columnCount = traceCount;
         int plotCount = rowCount * columnCount;
 
-//        correlationChart.setDimensions(rowCount, columnCount);
-        correlationChart.setDimensions(0, 0);
+        correlationChart.setDimensions(rowCount, columnCount);
+//        correlationChart.setDimensions(0, 0);
 
         getChartPanel().getChart().removeAllPlots();
 
@@ -202,32 +202,34 @@ public class GridJointDensityPanel extends TraceChartPanel {
             //adding this here and not yet combining data for multiple .log files
             //TODO combine for multiple .log files once it's working for a single .log file
 
-            int plotNumber = 0;
+            int y = 0;
             for (String one : correlationData.getTraceNames()) {
+                int x = 0;
                 for (String two : correlationData.getTraceNames()) {
                     Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
                     //plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
+                    plot.setLocation(x, y);
                     getChartPanel().getChart().addPlot(plot);
-                    plot.setPlotNumber(plotNumber);
-                    plot.setPlotCount(plotCount);
-                    plotNumber ++;
+                    x ++;
                 }
+                y ++;
             }
 
-//            plotNumber = 0;
-//            for (String one : correlationData.getTraceNames()) {
-//                for (String two : correlationData.getTraceNames()) {
-//                    Plot plot = new ScatterPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
-//                    plot.setMarkStyle(Plot.POINT_MARK, 1.0,
-//                            new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-//                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
-//                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
-//                    getChartPanel().getChart().addPlot(plot);
-//                    plot.setPlotNumber(plotNumber);
-//                    plot.setPlotCount(plotCount);
-//                    plotNumber ++;
-//                }
-//            }
+            y = 0;
+            for (String one : correlationData.getTraceNames()) {
+                int x = 0;
+                for (String two : correlationData.getTraceNames()) {
+                    Plot plot = new ScatterPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
+                    plot.setMarkStyle(Plot.POINT_MARK, 1.0,
+                            new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
+                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
+                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
+                    plot.setLocation(x, y);
+                    getChartPanel().getChart().addPlot(plot);
+                    x ++;
+                }
+                y ++;
+            }
         }
 
 //        correlationChart.setDimensions(rowCount, columnCount);
