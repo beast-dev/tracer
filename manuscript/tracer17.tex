@@ -14,6 +14,8 @@
 
 \usepackage{url}
 
+\newcommand{\tracer}{\emph{Tracer}}
+
 \begin{document}
 \firstpage{1}
 
@@ -33,8 +35,8 @@ $^{1}$Institute of Evolutionary Biology, University of Edinburgh, Edinburgh, UK\
 $^{2}$Department of Microbiology and Immunology, Rega Institute, KU Leuven, Leuven, Belgium\\
 $^{3}$Department of Computer Science, University of Auckland, Auckland, NZ\\
 $^{4}$Centre for Computational Evolution, University of Auckland, Auckland, NZ\\
-$^{5}$Departments of Biomathematics and Human Genetics, David Geffen School of Medicine, University of California, Los Angeles, USA \\
-$^{6}$Department of Biostatistics, UCLA Fielding School of Public Health, University of California, Los Angeles, USA \\
+$^{5}$Department of Human Genetics, David Geffen School of Medicine, University of California, Los Angeles, USA \\
+$^{6}$Department of Biostatistics, Fielding School of Public Health, University of California, Los Angeles, USA \\
 %$^{7}$Department of Human Genetics, David Geffen School of Medicine at UCLA, University of California, Los Angeles, USA\\
 }
 
@@ -52,10 +54,10 @@ $^{6}$Department of Biostatistics, UCLA Fielding School of Public Health, Univer
 Bayesian inference of phylogeny using Markov chain Monte Carlo (MCMC) plays a central role in understanding evolutionary history from molecular sequence data.
 Visualising and analysing the MCMC-generated samples from the posterior distribution is a key step in any non-trivial Bayesian inference. %, and it is especially important for methods that employ MCMC.
 \section{Results:}
-We present the software package \emph{Tracer} (version 1.7) for visualising and analysing the MCMC trace files generated through Bayesian phylogenetic inference.
-\emph{Tracer} provides kernel density estimation, multivariate visualisation, demographic trajectory reconstruction, conditional posterior distribution summary and more.
+We present the software package \tracer\ (version 1.7) for visualising and analysing the MCMC trace files generated through Bayesian phylogenetic inference.
+\tracer\ provides kernel density estimation, multivariate visualisation, demographic trajectory reconstruction, conditional posterior distribution summary and more.
 \section{Availability:}
-\emph{Tracer} is open-source and available at \url{http://http://beast.community/tracer} and \url{https://github.com/beast-dev/tracer}.
+\tracer\ is open-source and available at \url{http://http://beast.community/tracer}.
 
 \section{Contact:}
 \href{a.rambaut@ed.ac.uk}{\url{a.rambaut@ed.ac.uk}},
@@ -67,29 +69,28 @@ and
 
 \section*{Introduction}
 
-Bayesian inference of phylogeny using Markov chain Monte Carlo (MCMC) \citep{rannala1996probability, mau1999bayesian} flourishes as a popular approach to uncover the evolutionary relationships among operational taxonomic units (OTUs), such as genes, genomes, individuals or species.
+Bayesian inference of phylogeny using Markov chain Monte Carlo (MCMC) \citep{rannala1996probability, mau1999bayesian} flourishes as a popular approach to uncover the evolutionary relationships among taxa, such as genes, genomes, individuals or species.
 MCMC approaches generate samples of model parameter values - including the phylogenetic tree - drawn from their posterior distribution given molecular sequence data and a selection of evolutionary models.
 Visualising, tabulating and marginalising these samples is critical for approximating the posterior quantities of interest that one reports as the outcome of a Bayesian phylogenetic analysis.
-To facilitate this task, we have developed the Tracer (version 1.7) software package, which allows users to process MCMC log files containing parameter samples and to interactively explore the high-dimensional posterior distribution.
-Tracer works automatically with sample output from BEAST 1 \citep{drummond2012bayesian}, BEAST 2 \citep{bouckaert2014beast2}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes}, LAMARC \citep{kuhner2006lamarc}, Migrate \citep{beerli2006comparison} and possibly other MCMC programs from other domains.
-
-
+To facilitate this task, we have developed the \tracer\ (version 1.7) software package to
+process MCMC trace files containing parameter samples and to interactively explore the high-dimensional posterior distribution.
+\tracer\ works automatically with sample output from BEAST 1 \citep{drummond2012bayesian}, BEAST 2 \citep{bouckaert2014beast2},  LAMARC \citep{kuhner2006lamarc},  Migrate \citep{beerli2006comparison}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes} and possibly other MCMC programs from other domains.
 
 \section*{Design and Implementation}
 
-Tracer is able to analyse a single MCMC log and can also combine posterior samples from multiple trace files stemming from an independent evaluation of the same dataset with an identical model combination.
-For each trace file loaded, Tracer analyses the posterior samples from all the available parameters, regardless of whether these are discrete or continuous, and present statistical summaries as well as visualisation options for all of these parameters.
-Importantly, the effective sample size (ESS) - an important measurement designed for a sampled parameter having continuous values - is immediately apparent in the default view of Tracer and allows users to assess the number of effectively independent draws from the posterior distribution for that parameter (see Figure \ref{fig:overview}:a).
+\tracer\ is able to analyse a single MCMC log and can also combine posterior samples from multiple trace files stemming from an independent evaluation of the same dataset with an identical model combination.
+For each trace file loaded, \tracer\ analyses the posterior samples from all the available parameters, regardless of whether these are discrete or continuous, and present statistical summaries as well as visualisation options for all of these parameters.
+Importantly, the effective sample size (ESS) - an important measurement designed for a sampled parameter having continuous values - is immediately apparent in the default view of \tracer\ and allows users to assess the number of effectively independent draws from the posterior distribution for that parameter (see Figure \ref{fig:overview}:a).
 Colour coding is provided for the ESS values to assist the user in determining potential mixing problems in the Bayesian inference performed, with cut-off values at 100 and 200.
 
-Tracer is able to handle three trace types, also known as variable types \citep{mendenhall2012introduction}: real, integer, and categorical.
+\tracer\ is able to handle three trace types, also known as variable types \citep{mendenhall2012introduction}: real, integer, and categorical.
 The real trace type is used to handle quantitative continuous variables, which commonly appear in phylodynamic analyses, whereas the integer trace type allows to deal with quantitative discrete variables and the categorical trace is meant for qualitative categorical variables.
 The three trace types are automatically assigned when the trace file is imported but can also manually be set.
 
 Multiple parameter traces can be selected from the traces panel, which will result in a side-by-side comparison or overlay of the selected parameters' visualisations for the different traces (see Figure \ref{fig:overview}:b-e).
 Multiple trace files can be selected in a similar fashion to compare posterior samples between different replicates of an analysis.
 If multiple trace files have the same file name,  then a ``Combined'' trace will automatically appear, which can be selected as well as the individual trace files.
-Tracer consists of four panels that allow to present both individual and joint visualisation options for either a single or multiple selected trace files:
+\tracer\ consists of four panels that allow to present both individual and joint visualisation options for either a single or multiple selected trace files:
 
 \begin{itemize}
 
@@ -105,12 +106,12 @@ A histogram presenting the frequency distribution over values will be shown for 
 \end{itemize}
 
 
-Tracer offers an elegant solution of visualising conditional posterior distributions.
+\tracer\ offers an elegant solution of visualising conditional posterior distributions.
 A typical use case involves support for Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters appear in the likelihood function only when a specific model is indicated by an indicator function.
 When BSSVS is used, the posterior distribution of the parameter should not include those states that were sampled from the prior when its model was not part of the likelihood.
 Discrete phylogeographic analyses frequently employ such an approach due to the potentially large amount of transition rates that need to be estimated \citep{Lemey2009}, but this is also relevant when employing model averaging approaches such as for relaxed molecular clocks for example \citep{Li2012}.
 
-Additionally, Tracer provides demographic reconstruction resulting in a graphical plot, often applied to reconstruct epidemic dynamics.
+Additionally, \tracer\ provides demographic reconstruction resulting in a graphical plot, often applied to reconstruct epidemic dynamics.
 Depending on the actual demographic model used in the analysis, an additional file containing samples from the posterior tree distribution will be required.
 The currently available models are constant size, exponential and logistic growth \citep{drummond2002estimating}, Bayesian coalescent skyline \citep{drummond2005bayesian}, Gaussian Markov Random Field (GMRF) Bayesian skyride \citep{minin2008smooth}, and Bayesian coalescent skygrid \citep{gill2012improving}.
 %Not sure if the statement below is correct ...
@@ -124,7 +125,7 @@ All of these demographic models are available in BEAST 1 \citep{drummond2012baye
 \subfigure[Density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-density.pdf}}\\
 \subfigure[Violin]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-violin.pdf}}
 \subfigure[Trace]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-traces.pdf}}
-\caption{Overview of Tracer functionality and individual parameter visualisations: (a) Main Tracer panel upon loading a single trace file; (b) boxplot representation of two continuous parameters; (c) kernel density estimates; (d) violin plots; (e) the actual traces connecting the parameter values visited by the Markov chain.}
+\caption{Overview of \tracer\ functionality and individual parameter visualisations: (a) Main \tracer\ panel upon loading a single trace file; (b) boxplot representation of two continuous parameters; (c) kernel density estimates; (d) violin plots; (e) the actual traces connecting the parameter values visited by the Markov chain.}
 \label{fig:overview}
 \end{figure}
 
@@ -167,9 +168,9 @@ Additionally, the strength of correlation is reflected in the shape of the ellip
 %Finally, in order to display the joint marginal distribution between a continuous variable and an integer or categorical variable, we make use of box-and-whisker plots.
 %Using such a plot (Figure \ref{fig:4tabs}:e), we can infer that the range of the non-zero transition rates can depend on the ancestral location state inferred at the root of the underlying phylogeny.
 
-The Bayesian skygrid coalescent model \citep{gill2012improving} allows us to use Tracer to reconstruct the demographic history of RABV in North America by drawing the effective population sizes over time (see Figure \ref{fig:rabv}).
-Given the properties of this coalescent prior, which requires to specify a grid of intervals over the timeframe of the epidemic, Tracer is able to infer this history without requiring a posterior sample of trees.
-According to Tracer's skygrid plot, it is clear that rabies virus has successfully established itself in North American bat species, with its numbers rising steadily throughout recent centuries.
+The Bayesian skygrid coalescent model \citep{gill2012improving} allows us to use \tracer\ to reconstruct the demographic history of RABV in North America by drawing the effective population sizes over time (see Figure \ref{fig:rabv}).
+Given the properties of this coalescent prior, which requires to specify a grid of intervals over the timeframe of the epidemic, \tracer\ is able to infer this history without requiring a posterior sample of trees.
+According to \tracer's skygrid plot, it is clear that rabies virus has successfully established itself in North American bat species, with its numbers rising steadily throughout recent centuries.
 Following a decline in numbers at the end of last century, we observe a recent sharp increase in population size of RABV in North American bats.
 
 
@@ -185,11 +186,10 @@ Following a decline in numbers at the end of last century, we observe a recent s
 
 \section*{Availability}
 
-Tracer 1.7 is open-source under the GNU lesser general public license and available in both executable and source code forms at \url{http://beast.community/tracer}.
-It requires Java version 1.6 or greater.
-Github houses the Tracer's source code within \url{https://github.com/beast-dev/tracer}, and links to a GoogleGroup discussion group related to Tracer, i.e. the ``beast-users" group (\url{http://groups.google.com/group/beast-users}).
-This page also links to a sizeable list of self-contained, step-by-step tutorials covering basic to advance usage of Tracer to summarise posterior distributions of a large set of phylogenetic models simulated using BEAST.
-For example, popular tutorials describe how to use Tracer to generate marginal parameter summaries and infer population dynamics trajectories over time.
+\tracer\ 1.7 is open-source under the GNU lesser general public license and available in both source code (\url{https://github.com/beast-dev/tracer}) and executable (\url{http://beast.community/tracer}) forms.
+This latter page also serves up self-contained, step-by-step tutorials covering basic to advance usage of \tracer\ to summarise posteriors under a variety of phylogenetic models using BEAST.
+Popular tutorials employ \tracer\ to generate marginal parameter summaries and ito nfer population dynamics trajectories over time.
+\tracer\ requires Java version 1.6 or greater.
 
 
 
