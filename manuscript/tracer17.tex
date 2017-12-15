@@ -20,7 +20,13 @@
 % Title must be 150 characters or less
 \title[Tracer 1.7]{Posterior summarisation in Bayesian phylogenetics using Tracer 1.7}
 
-\author[Rambaut \textit{et~al.}]{ Andrew Rambaut\,$^{1}$, Guy Baele$^{2}$,  Dong Xie\,$^{3,4}$, Marc A.~Suchard\,$^{5,6,7}$, Alexei J.~Drummond\,$^{3,4}$}
+\author[Rambaut \textit{et~al.}]{
+Andrew Rambaut\,$^{1}$,
+Guy Baele$^{2}$,
+Dong Xie\,$^{3,4}$,
+Alexei J.~Drummond\,$^{3,4}$,
+Marc A.~Suchard\,$^{5,6,7}$
+}
 
 \address{
 $^{1}$Institute of Evolutionary Biology, University of Edinburgh, Edinburgh, UK\\
@@ -80,14 +86,14 @@ Tracer is able to handle three trace types, also known as variable types \citep{
 The real trace type is used to handle quantitative continuous variables, which commonly appear in phylodynamic analyses, whereas the integer trace type allows to deal with quantitative discrete variables and the categorical trace is meant for qualitative categorical variables.
 The three trace types are automatically assigned when the trace file is imported but can also manually be set.
 
-Multiple parameter traces can be selected from the traces panel, which will result in a side-by-side comparison or overlay of the selected parameters' visualisations for the different traces (see Figure \ref{fig:overview}:b-e). 
-Multiple trace files can be selected in a similar fashion to compare posterior samples between different replicates of an analysis. 
+Multiple parameter traces can be selected from the traces panel, which will result in a side-by-side comparison or overlay of the selected parameters' visualisations for the different traces (see Figure \ref{fig:overview}:b-e).
+Multiple trace files can be selected in a similar fashion to compare posterior samples between different replicates of an analysis.
 If multiple trace files have the same file name,  then a ``Combined'' trace will automatically appear, which can be selected as well as the individual trace files.
 Tracer consists of four panels that allow to present both individual and joint visualisation options for either a single or multiple selected trace files:
 
 \begin{itemize}
 
-\item Estimates: this panel reports common summary statistics such as the mean, standard deviation, highest posterior density interval, ESS, and other statistics concerning the selected parameter(s). 
+\item Estimates: this panel reports common summary statistics such as the mean, standard deviation, highest posterior density interval, ESS, and other statistics concerning the selected parameter(s).
 A histogram presenting the frequency distribution over values will be shown for a single selected parameter of any trace type (see Figure \ref{fig:overview}:a), whereas side-by-side boxplots will be shown when multiple continuous parameters are selected (see Figure \ref{fig:overview}:b).
 
 \item Marginal Density: this panel shows a density plot for the posterior sample of the selected parameter(s). Kernel density estimation (see Figure \ref{fig:overview}:c), histograms and violin plots (see Figure \ref{fig:overview}:d) are available for continuous traces, whereas frequency plots are employed for integer traces.
@@ -99,7 +105,7 @@ A histogram presenting the frequency distribution over values will be shown for 
 \end{itemize}
 
 
-Tracer offers an elegant solution of visualising conditional posterior distributions. 
+Tracer offers an elegant solution of visualising conditional posterior distributions.
 A typical use case involves support for Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters appear in the likelihood function only when a specific model is indicated by an indicator function.
 When BSSVS is used, the posterior distribution of the parameter should not include those states that were sampled from the prior when its model was not part of the likelihood.
 Discrete phylogeographic analyses frequently employ such an approach due to the potentially large amount of transition rates that need to be estimated \citep{Lemey2009}, but this is also relevant when employing model averaging approaches such as for relaxed molecular clocks for example \citep{Li2012}.
@@ -128,9 +134,9 @@ All of these demographic models are available in BEAST 1 \citep{drummond2012baye
 
 \subsection*{Cross-species dynamics of rabies virus in North American bats}
 
-We provide on example on reconstructing the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations based on a set of 372 nucleoprotein gene sequences (nucleotide positions: 594-1353). 
+We provide on example on reconstructing the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations based on a set of 372 nucleoprotein gene sequences (nucleotide positions: 594-1353).
 The data set comprises a total of 17 bat species sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker}, including two additional species that had been excluded from the original analysis owing to a limited amount of available sequences \citep{Faria2013}.
-%We also include a viral sequence with an unknown sampling date (accession no. TX5275, sampled in Texas from Lasiurus borealis), which will be adequately accommodated in our inference.We estimate the ancestral locations of RABV using a Bayesian discrete phylogeographic approach and, at the same time, infer the history of host jumping using the same model approach \citep{Lemey2009}. 
+%We also include a viral sequence with an unknown sampling date (accession no. TX5275, sampled in Texas from Lasiurus borealis), which will be adequately accommodated in our inference.We estimate the ancestral locations of RABV using a Bayesian discrete phylogeographic approach and, at the same time, infer the history of host jumping using the same model approach \citep{Lemey2009}.
 We employ the Bayesian skygrid coalescent model \citep{gill2012improving} to estimate the effective population sizes over time.
 
 
@@ -147,12 +153,12 @@ We employ the Bayesian skygrid coalescent model \citep{gill2012improving} to est
 
 Performing BSSVS in a discrete phylogeographic approach provides us with parameters of the integer and categorical trace type.
 While a single parameter of such types can easily be visualised using a frequency plot, we have developed a TangHuLu chart to visualise the joint probability between two integer or categorical traces using coloured bubbles (see Figure \ref{fig:4tabs}:a).
-The size of circle drawn is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set. 
-with the tile background being coloured if there is in fact a circle, to enhance visibility. 
+The size of circle drawn is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set.
+with the tile background being coloured if there is in fact a circle, to enhance visibility.
 %The coloured background can also help to show the area of the credible set and non-credible set.
 Multiple integer parameters can also be visualised using marginal density plots (see Figure \ref{fig:4tabs}:b), with a different colour scale being assigned to each parameter.
 Both figures show a clear overlap in the number of non-zero transition rates in the discrete trait models for host and location, as identified using a BSSVS procedure.
-The visualisation options for integer or categorical parameters are complemented with popular plots for continuous variables, such as a scatter or correlation plot (see Figure \ref{fig:4tabs}:c) for two continuous variables, which indicates a strong positive correlation between the clock rates of both discrete trait models. 
+The visualisation options for integer or categorical parameters are complemented with popular plots for continuous variables, such as a scatter or correlation plot (see Figure \ref{fig:4tabs}:c) for two continuous variables, which indicates a strong positive correlation between the clock rates of both discrete trait models.
 We also provide an extension of such a scatter plot for multiple (i.e. more than two) continuous variables (see Figure \ref{fig:4tabs}:d; \citet{Murdoch}), which makes use of coloured ellipses to indicate the strength of correlation between each pair of continuous variables.
 Colour gradients indicate the strength and direction of the correlation, with a colour gradient from white to dark blue indicating increasingly strong correlation and a colour gradient from white to dark red indicating increasingly strong anti-correlation.
 Additionally, the strength of correlation is reflected in the shape of the ellipse drawn, with no correlation being drawn as a circle and perfect (anti-)correlation being drawn as a line.
@@ -180,7 +186,7 @@ Following a decline in numbers at the end of last century, we observe a recent s
 Tracer 1.7 is open-source under the GNU lesser general public license and available in both executable and source code forms at \url{http://beast.community/tracer}.
 It requires Java version 1.6 or greater.
 Github houses the Tracer's source code within \url{https://github.com/beast-dev/tracer}, and links to a GoogleGroup discussion group related to Tracer, i.e. the ``beast-users" group (\url{http://groups.google.com/group/beast-users}).
-This page also links to a sizeable list of self-contained, step-by-step tutorials covering basic to advance usage of Tracer to summarise posterior distributions of a large set of phylogenetic models simulated using BEAST.  
+This page also links to a sizeable list of self-contained, step-by-step tutorials covering basic to advance usage of Tracer to summarise posterior distributions of a large set of phylogenetic models simulated using BEAST.
 For example, popular tutorials describe how to use Tracer to generate marginal parameter summaries and infer population dynamics trajectories over time.
 
 
@@ -232,7 +238,7 @@ For example, popular tutorials describe how to use Tracer to generate marginal p
 %%\end{figure}
 %%\begin{figure}[ht]
 %%\includegraphics[width=.5\textwidth]{./figures/joint-marginal.pdf}
-%%\caption{The joint-marginal distribution of two selected traces}
+%%\caption{The joint-marginal distribution of two selected tes}
 %%\label{fig:trace}
 %%\end{figure}
 %%\begin{figure}[ht]
