@@ -96,6 +96,7 @@ If multiple trace files have the same file name,  then a ``Combined'' trace appe
 % , which can be selected as well as the individual trace files.
 \tracer\ generates four display panels for the selected parameters:
 
+
 \begin{itemize}
 
 \item Estimates: Reports common summary statistics such as the sample mean, standard deviation, highest posterior density interval and ESS.  Also presents a histogram of sample values for a single selected parameter (Figure \ref{fig:overview}:a) or  side-by-side boxplots for multiple continuous parameters (Figure \ref{fig:overview}:b).
@@ -105,8 +106,18 @@ If multiple trace files have the same file name,  then a ``Combined'' trace appe
 \item Joint-Marginal: Visualisation in this panel appears after selecting two or more parameters and the plot form depends on the parameter types. We show several examples in the next section of the paper.
 
 \item Trace: Constructs line plots connecting the sequential samples of one or more selected parameters against state or generation number (Figure \ref{fig:overview}:e).  Users typically use this plot to assess mixing, select a suitable burn-in and identify trends that suggest convergence issues.
-
 \end{itemize}
+%
+\begin{figure}
+\subfigure[Tracer overview]{\includegraphics[width=0.47\textwidth]{./figures/rabv-overview.pdf}}
+\subfigure[Boxplot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-boxplots.pdf}}
+\subfigure[Density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-density.pdf}}\\
+\subfigure[Violin]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-violin.pdf}}
+\subfigure[Trace]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-traces.pdf}}
+\caption{Overview of \tracer\ functionality and individual parameter visualisations: (a) Main \tracer\ panel upon loading a single trace file; (b) boxplot representation of two continuous parameters; (c) kernel density estimates; (d) violin plots; (e) the actual traces connecting the parameter values visited by the Markov chain.
+}
+\label{fig:overview}
+\end{figure}
 
 \tracer\ offers a solution of visualising conditional posterior distributions as well.
 A typical use case involves Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters influence the likelihood function only when a specific model is selected by a random indicator function.
@@ -120,32 +131,11 @@ The currently available models are constant size, exponential and logistic growt
 %All of these demographic models are available in BEAST 1 \citep{drummond2012bayesian} and BEAST 2 \citep{bouckaert2014beast2}.
 %Besides these, ``Lineages Through Time'' (?) is also available to plot the quantiles of the number of lineages against time, which describes the change of diversification of all organisms over time. %citation?
 
-
-\begin{figure}[ht]
-\subfigure[Tracer overview]{\includegraphics[width=0.47\textwidth]{./figures/rabv-overview.pdf}}
-\subfigure[Boxplot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-boxplots.pdf}}
-\subfigure[Density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-density.pdf}}\\
-\subfigure[Violin]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-violin.pdf}}
-\subfigure[Trace]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-traces.pdf}}
-\caption{Overview of \tracer\ functionality and individual parameter visualisations: (a) Main \tracer\ panel upon loading a single trace file; (b) boxplot representation of two continuous parameters; (c) kernel density estimates; (d) violin plots; (e) the actual traces connecting the parameter values visited by the Markov chain.}
-\label{fig:overview}
-\end{figure}
-
-
-
 \section*{Example}
 
 \subsection*{Cross-species dynamics of rabies in North American bats}
 
-We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations.
-The data set comprises 372 \textit{nucleoprotein} gene sequences (nucleotide positions: 594-1353) from
-17 bat species, sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker,Faria2013}.
-%, including two additional species that had been excluded from the original analysis owing to a limited amount of available sequences \citep{Faria2013}.
-%We also include a viral sequence with an unknown sampling date (accession no. TX5275, sampled in Texas from Lasiurus borealis), which will be adequately accommodated in our inference.
-We estimate the ancestral locations of RABV and their host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS \citep{Lemey2009}, while simultaneously estimating RABV effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
-
-
-\begin{figure}[ht]
+\begin{figure}
 \subfigure[TangHuLu chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integerjointmarginal.pdf}}
 \subfigure[Marginal density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integermarginaldensity.pdf}} \\
 \subfigure[Scatter plot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-correlation.pdf}}
@@ -156,6 +146,14 @@ We estimate the ancestral locations of RABV and their host-jumping history using
 }
 \label{fig:4tabs}
 \end{figure}
+
+We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations.
+The data set comprises 372 \textit{nucleoprotein} gene sequences (nucleotide positions: 594-1353) from
+17 bat species, sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker,Faria2013}.
+%, including two additional species that had been excluded from the original analysis owing to a limited amount of available sequences \citep{Faria2013}.
+%We also include a viral sequence with an unknown sampling date (accession no. TX5275, sampled in Texas from Lasiurus borealis), which will be adequately accommodated in our inference.
+We estimate the ancestral locations of RABV and their host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS \citep{Lemey2009}, while simultaneously estimating RABV effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
+
 
 Phylogeographic BSSVS inference includes parameters of both integer (number of non-zero transition rates) and categorical (host or location-state) trace type.
 %While a single parameter of such types can easily be visualised using a frequency plot,
@@ -183,18 +181,16 @@ The shape of ellipse drawn re-enforces the strength of correlation, with no corr
 %Given the properties of this coalescent prior, which requires to specify a grid of intervals over the timeframe of the epidemic, \tracer\ is able to infer this history without requiring a posterior sample of trees.
 %According to \tracer's skygrid plot, it is clear that
 RABV has successfully established itself in North American bat species, with its effective population size rising steadily throughout recent centuries.
-Following a rapid decline at the end of last century, we observe a recent sharp increase in size, reflecting [INSERT SOMETHING].
+Following a rapid decline at the end of last century, we observe a recent sharp increase in size.
+%, reflecting [INSERT SOMETHING].
 
-
-\begin{figure}[b]
+\begin{figure}[t]
 \centerline{
 \includegraphics[width=0.46\textwidth]{./figures/rabv-skygrid.pdf}
 }
 \caption{Estimating the effective population sizes over time using a Bayesian skygrid demographic reconstruction for rabies virus in North America.}
 \label{fig:rabv}
 \end{figure}
-
-
 
 \section*{Availability}
 
