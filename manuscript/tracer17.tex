@@ -20,7 +20,7 @@
 \firstpage{1}
 
 % Title must be 150 characters or less
-\title[Tracer 1.7]{Posterior summarisation in Bayesian phylogenetics using Tracer 1.7}
+\title[Tracer]{Posterior summarisation in Bayesian phylogenetics using Tracer 1.7}
 
 \author[Rambaut \textit{et~al.}]{
 Andrew Rambaut\,$^{1}$,
@@ -133,12 +133,14 @@ All of these demographic models are available in BEAST 1 \citep{drummond2012baye
 
 \section*{Example}
 
-\subsection*{Cross-species dynamics of rabies virus in North American bats}
+\subsection*{Cross-species dynamics of rabies in North American bats}
 
-We provide on example on reconstructing the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations based on a set of 372 nucleoprotein gene sequences (nucleotide positions: 594-1353).
-The data set comprises a total of 17 bat species sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker}, including two additional species that had been excluded from the original analysis owing to a limited amount of available sequences \citep{Faria2013}.
-%We also include a viral sequence with an unknown sampling date (accession no. TX5275, sampled in Texas from Lasiurus borealis), which will be adequately accommodated in our inference.We estimate the ancestral locations of RABV using a Bayesian discrete phylogeographic approach and, at the same time, infer the history of host jumping using the same model approach \citep{Lemey2009}.
-We employ the Bayesian skygrid coalescent model \citep{gill2012improving} to estimate the effective population sizes over time.
+We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations.
+The data set comprises 372 \textit{nucleoprotein} gene sequences (nucleotide positions: 594-1353) from
+17 bat species, sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker,Faria2013}.
+%, including two additional species that had been excluded from the original analysis owing to a limited amount of available sequences \citep{Faria2013}.
+%We also include a viral sequence with an unknown sampling date (accession no. TX5275, sampled in Texas from Lasiurus borealis), which will be adequately accommodated in our inference.
+We estimate the ancestral locations of RABV and their host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS \citep{Lemey2009}, while simultaneously estimating RABV effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
 
 
 \begin{figure}[ht]
@@ -153,28 +155,36 @@ We employ the Bayesian skygrid coalescent model \citep{gill2012improving} to est
 \label{fig:4tabs}
 \end{figure}
 
-
-Performing BSSVS in a discrete phylogeographic approach provides us with parameters of the integer and categorical trace type.
-While a single parameter of such types can easily be visualised using a frequency plot, we have developed a TangHuLu chart to visualise the joint probability between two integer or categorical traces using coloured bubbles (see Figure \ref{fig:4tabs}:a).
-The size of circle drawn is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set.
-with the tile background being coloured if there is in fact a circle, to enhance visibility.
+Phylogeographic BSSVS inference includes parameters of both integer (number of non-zero transition rates) and categorical (host or location-state) trace type.
+%While a single parameter of such types can easily be visualised using a frequency plot,
+In \tracer, we have developed a TangHuLu chart to visualise the joint probability distribution between two integer or categorical traces using coloured bubbles (see Figure \ref{fig:4tabs}:a).
+Here, circle size is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set.
+with a coloured tile background if this probability reaches a nominal threshold to enhance visibility.
 %The coloured background can also help to show the area of the credible set and non-credible set.
-Multiple integer parameters can also be visualised using marginal density plots (see Figure \ref{fig:4tabs}:b), with a different colour scale being assigned to each parameter.
-Both figures show a clear overlap in the number of non-zero transition rates in the discrete trait models for host and location, as identified using a BSSVS procedure.
-The visualisation options for integer or categorical parameters are complemented with popular plots for continuous variables, such as a scatter or correlation plot (see Figure \ref{fig:4tabs}:c) for two continuous variables, which indicates a strong positive correlation between the clock rates of both discrete trait models.
-We also provide an extension of such a scatter plot for multiple (i.e. more than two) continuous variables (see Figure \ref{fig:4tabs}:d; \citet{Murdoch}), which makes use of coloured ellipses to indicate the strength of correlation between each pair of continuous variables.
-Colour gradients indicate the strength and direction of the correlation, with a colour gradient from white to dark blue indicating increasingly strong correlation and a colour gradient from white to dark red indicating increasingly strong anti-correlation.
-Additionally, the strength of correlation is reflected in the shape of the ellipse drawn, with no correlation being drawn as a circle and perfect (anti-)correlation being drawn as a line.
+%Multiple integer parameters can also be visualised using
+Marginal density plots (see Figure \ref{fig:4tabs}:b) can also display multiple integer parameters, each with unique colour scales.
+With approximately equal numbers of transition rates, both figures suggest a similar host and location trait model complexity.
+%Both figures show a clear overlap in the number of non-zero transition rates in the discrete trait models for host and location, as identified using a BSSVS procedure.
+\tracer\ also provides
+%The visualisation options for integer or categorical parameters are complemented with
+ popular visualisations for continuous parameters, including scatter plots (see Figure \ref{fig:4tabs}:c) for two parameters,
+ and recent extensions for correlations between $\ge\hspace{-0.32em}2$ continuous parameters (Figure \ref{fig:4tabs};d; \citet{Murdoch}).
+ %, which indicates a strong positive correlation between the clock rates of both discrete trait models.
+%We also provide an extension of such a scatter plot for multiple (i.e. more than two) continuous variables (see Figure \ref{fig:4tabs}:d; \citet{Murdoch}), which makes use of coloured ellipses to indicate the strength of correlation between each pair of continuous variables.
+Colour gradients indicate the strength and direction of the correlation, from red (strong negative-correlation) to blue (strong positive-correlation).
+%with a colour gradient from white to dark blue indicating increasingly strong correlation and a colour gradient from white to dark red indicating increasingly strong anti-correlation.
+The shape of ellipse drawn re-enforces the strength of correlation, with no correlation appearing as a circle and perfect (anti-)correlation as a line.
 %Finally, in order to display the joint marginal distribution between a continuous variable and an integer or categorical variable, we make use of box-and-whisker plots.
 %Using such a plot (Figure \ref{fig:4tabs}:e), we can infer that the range of the non-zero transition rates can depend on the ancestral location state inferred at the root of the underlying phylogeny.
 
-The Bayesian skygrid coalescent model \citep{gill2012improving} allows us to use \tracer\ to reconstruct the demographic history of RABV in North America by drawing the effective population sizes over time (see Figure \ref{fig:rabv}).
-Given the properties of this coalescent prior, which requires to specify a grid of intervals over the timeframe of the epidemic, \tracer\ is able to infer this history without requiring a posterior sample of trees.
-According to \tracer's skygrid plot, it is clear that rabies virus has successfully established itself in North American bat species, with its numbers rising steadily throughout recent centuries.
-Following a decline in numbers at the end of last century, we observe a recent sharp increase in population size of RABV in North American bats.
+\tracer\ reconstructs the demographic history of RABV by drawing the effective population sizes over time (Figure \ref{fig:rabv}).
+%Given the properties of this coalescent prior, which requires to specify a grid of intervals over the timeframe of the epidemic, \tracer\ is able to infer this history without requiring a posterior sample of trees.
+%According to \tracer's skygrid plot, it is clear that
+RABV has successfully established itself in North American bat species, with its effective population size rising steadily throughout recent centuries.
+Following a rapid decline at the end of last century, we observe a recent sharp increase in size, reflecting [INSERT SOMETHING].
 
 
-\begin{figure}[ht]
+\begin{figure}[b]
 \centerline{
 \includegraphics[width=0.46\textwidth]{./figures/rabv-skygrid.pdf}
 }
@@ -186,9 +196,9 @@ Following a decline in numbers at the end of last century, we observe a recent s
 
 \section*{Availability}
 
-\tracer\ 1.7 is open-source under the GNU lesser general public license and available in both source code (\url{https://github.com/beast-dev/tracer}) and executable (\url{http://beast.community/tracer}) forms.
+\tracer\ is open-source under the GNU lesser general public license and available in both source code (\url{https://github.com/beast-dev/tracer}) and executable (\url{http://beast.community/tracer}) forms.
 This latter page also serves up self-contained, step-by-step tutorials covering basic to advance usage of \tracer\ to summarise posteriors under a variety of phylogenetic models using BEAST.
-Popular tutorials employ \tracer\ to generate marginal parameter summaries and ito nfer population dynamics trajectories over time.
+Popular tutorials employ \tracer\ to generate marginal parameter summaries and to infer population dynamics trajectories over time.
 \tracer\ requires Java version 1.6 or greater.
 
 
