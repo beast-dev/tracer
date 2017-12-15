@@ -35,8 +35,8 @@ $^{1}$Institute of Evolutionary Biology, University of Edinburgh, Edinburgh, UK\
 $^{2}$Department of Microbiology and Immunology, Rega Institute, KU Leuven, Leuven, Belgium\\
 $^{3}$Department of Computer Science, University of Auckland, Auckland, NZ\\
 $^{4}$Centre for Computational Evolution, University of Auckland, Auckland, NZ\\
-$^{5}$Department of Human Genetics, David Geffen School of Medicine, University of California, Los Angeles, USA \\
-$^{6}$Department of Biostatistics, Fielding School of Public Health, University of California, Los Angeles, USA \\
+$^{5}$Department of Human Genetics, University of California, Los Angeles, USA \\
+$^{6}$Department of Biostatistics, University of California, Los Angeles, USA \\
 %$^{7}$Department of Human Genetics, David Geffen School of Medicine at UCLA, University of California, Los Angeles, USA\\
 }
 
@@ -78,44 +78,46 @@ process MCMC trace files containing parameter samples and to interactively explo
 
 \section*{Design and Implementation}
 
-\tracer\ is able to analyse a single MCMC log and can also combine posterior samples from multiple trace files stemming from an independent evaluation of the same dataset with an identical model combination.
-For each trace file loaded, \tracer\ analyses the posterior samples from all the available parameters, regardless of whether these are discrete or continuous, and present statistical summaries as well as visualisation options for all of these parameters.
-Importantly, the effective sample size (ESS) - an important measurement designed for a sampled parameter having continuous values - is immediately apparent in the default view of \tracer\ and allows users to assess the number of effectively independent draws from the posterior distribution for that parameter (see Figure \ref{fig:overview}:a).
-Colour coding is provided for the ESS values to assist the user in determining potential mixing problems in the Bayesian inference performed, with cut-off values at 100 and 200.
+A key feature of \tracer\ is its ability to link together samples from quantitative model parameter trace files with tree trace files.
+This linkage is not available in other popular post-processing MCMC software, such as coda \citep{plummer2006coda} and AWTY \citep{nylander2007awty}, and enables users to approximate the posterior distribution of scientifically relevant quantities that are functions of both the tree and other quantitative measures.
+Further, \tracer\ can analyse a single trace or combine samples from multiple traces.
+For each trace, \tracer\ examines the posterior samples from all the available parameters, regardless of whether these are continuous, integer or categorical, and presents statistical summaries and visualizations.
+Immediately apparent in the default \tracer\ view, the effective sample size (ESS) is one such statistic that
+allows users to assess the number of effectively independent draws from the posterior distribution the trace represents (Figure \ref{fig:overview}:a).
+Colour coding assists the user in determining potential MCMC mixing problems, with cut-off values at 100 and 200.
 
-\tracer\ is able to handle three trace types, also known as variable types \citep{mendenhall2012introduction}: real, integer, and categorical.
-The real trace type is used to handle quantitative continuous variables, which commonly appear in phylodynamic analyses, whereas the integer trace type allows to deal with quantitative discrete variables and the categorical trace is meant for qualitative categorical variables.
-The three trace types are automatically assigned when the trace file is imported but can also manually be set.
+%\tracer\ is able to handle three trace types, also known as variable types \citep{mendenhall2012introduction}: real, integer, and categorical.
+%The real trace type is used to handle quantitative continuous variables, which commonly appear in phylodynamic analyses, whereas the integer trace type allows to deal with quantitative discrete variables and the categorical trace is meant for qualitative categorical variables.
+%The three trace types are automatically assigned when the trace file is imported but can also manually be set.
 
-Multiple parameter traces can be selected from the traces panel, which will result in a side-by-side comparison or overlay of the selected parameters' visualisations for the different traces (see Figure \ref{fig:overview}:b-e).
+Selecting multiple parameters from the ``Traces" panel on the left generates a side-by-side comparison or an overlay of the selected parameters' visualisations (Figure \ref{fig:overview}:b-e).
 Multiple trace files can be selected in a similar fashion to compare posterior samples between different replicates of an analysis.
-If multiple trace files have the same file name,  then a ``Combined'' trace will automatically appear, which can be selected as well as the individual trace files.
-\tracer\ consists of four panels that allow to present both individual and joint visualisation options for either a single or multiple selected trace files:
+If multiple trace files have the same file name,  then a ``Combined'' trace appears automatically.
+% , which can be selected as well as the individual trace files.
+\tracer\ generates four display panels for the selected parameters:
 
 \begin{itemize}
 
-\item Estimates: this panel reports common summary statistics such as the mean, standard deviation, highest posterior density interval, ESS, and other statistics concerning the selected parameter(s).
-A histogram presenting the frequency distribution over values will be shown for a single selected parameter of any trace type (see Figure \ref{fig:overview}:a), whereas side-by-side boxplots will be shown when multiple continuous parameters are selected (see Figure \ref{fig:overview}:b).
+\item Estimates: Reports common summary statistics such as the sample mean, standard deviation, highest posterior density interval and ESS.  Also presents a histogram of sample values for a single selected parameter (Figure \ref{fig:overview}:a) or  side-by-side boxplots for multiple continuous parameters (Figure \ref{fig:overview}:b).
 
-\item Marginal Density: this panel shows a density plot for the posterior sample of the selected parameter(s). Kernel density estimation (see Figure \ref{fig:overview}:c), histograms and violin plots (see Figure \ref{fig:overview}:d) are available for continuous traces, whereas frequency plots are employed for integer traces.
+\item Marginal Density: Draws density plots for the selected parameter(s), including  kernel density estimates (Figure \ref{fig:overview}:c), histograms and violin plots (Figure \ref{fig:overview}:d) for continuous parameters and frequency plots for categorical or integer parameters.
 
-\item Joint-Marginal: visualisation in this panel only appears when two or more parameters are selected. The actual visualisation depends on the trace type of the selected parameters. We show several examples in the next section of the paper.
+\item Joint-Marginal: Visualisation in this panel appears after selecting two or more parameters and the plot form depends on the parameter types. We show several examples in the next section of the paper.
 
-\item Trace: this panel shows a line plot connecting the posterior samples of one or more selected parameters against state or generation number (see Figure \ref{fig:overview}:e). Such a trace plot is typically used to assess mixing, select a suitable burn-in and identify trends that suggest convergence issues.
+\item Trace: Constructs line plots connecting the sequential samples of one or more selected parameters against state or generation number (Figure \ref{fig:overview}:e).  Users typically use this plot to assess mixing, select a suitable burn-in and identify trends that suggest convergence issues.
 
 \end{itemize}
 
-
-\tracer\ offers an elegant solution of visualising conditional posterior distributions.
-A typical use case involves support for Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters appear in the likelihood function only when a specific model is indicated by an indicator function.
-When BSSVS is used, the posterior distribution of the parameter should not include those states that were sampled from the prior when its model was not part of the likelihood.
-Discrete phylogeographic analyses frequently employ such an approach due to the potentially large amount of transition rates that need to be estimated \citep{Lemey2009}, but this is also relevant when employing model averaging approaches such as for relaxed molecular clocks for example \citep{Li2012}.
-
-Additionally, \tracer\ provides demographic reconstruction resulting in a graphical plot, often applied to reconstruct epidemic dynamics.
-Depending on the actual demographic model used in the analysis, an additional file containing samples from the posterior tree distribution will be required.
-The currently available models are constant size, exponential and logistic growth \citep{drummond2002estimating}, Bayesian coalescent skyline \citep{drummond2005bayesian}, Gaussian Markov Random Field (GMRF) Bayesian skyride \citep{minin2008smooth}, and Bayesian coalescent skygrid \citep{gill2012improving}.
+\tracer\ offers a solution of visualising conditional posterior distributions as well.
+A typical use case involves Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters influence the likelihood function only when a specific model is selected by a random indicator function.
+Under BSSVS, a posterior estimate of the parameter should only sample values from states where the indicator equals one.
+Discrete phylogeographic analyses frequently employ BSSVS due to the potentially large amount of transition rates that need to be estimated \citep{Lemey2009}, but this is also relevant when employing model averaging approaches such as for relaxed molecular clocks for example \citep{Li2012}.
+%
+Finally, \tracer\ provides demographic reconstruction resulting in a graphical plot, often applied to reconstruct epidemic dynamics.
+%Depending on the actual demographic model used in the analysis, an additional file containing samples from the posterior tree distribution will be required.
+The currently available models are constant size, exponential and logistic growth \citep{drummond2002estimating}, Bayesian  skyline \citep{drummond2005bayesian}, Bayesian skyride \citep{minin2008smooth} and Bayesian skygrid \citep{gill2012improving}.
 %Not sure if the statement below is correct ...
-All of these demographic models are available in BEAST 1 \citep{drummond2012bayesian} and BEAST 2 \citep{bouckaert2014beast2}.
+%All of these demographic models are available in BEAST 1 \citep{drummond2012bayesian} and BEAST 2 \citep{bouckaert2014beast2}.
 %Besides these, ``Lineages Through Time'' (?) is also available to plot the quantiles of the number of lineages against time, which describes the change of diversification of all organisms over time. %citation?
 
 
