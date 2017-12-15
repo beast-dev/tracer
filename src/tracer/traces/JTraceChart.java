@@ -116,8 +116,8 @@ public class JTraceChart extends DiscreteJChart {
         minMax[1] = stateStart + (values.size() * stateStep) - stateStep;
         minMax[2] = yd.getMin();
         minMax[3] = yd.getMax();
-        xAxis.addRange(minMax[0], minMax[1]);
-        yAxis.addRange(minMax[2], minMax[3]);
+        getXAxis().addRange(minMax[0], minMax[1]);
+        getYAxis().addRange(minMax[2], minMax[3]);
 
         Trace trace = new Trace(stateStart, stateStep, values);
         traces.add(trace);
@@ -148,8 +148,8 @@ public class JTraceChart extends DiscreteJChart {
 
     // used to re-set range for multi-traces
     public void setRange(double minX, double maxX, double minY, double maxY) {
-        xAxis.setRange(minX, maxX);
-        yAxis.setRange(minY, maxY);
+        getXAxis().setRange(minX, maxX);
+        getYAxis().setRange(minY, maxY);
         recalibrate();
         repaint();
     }
@@ -167,8 +167,8 @@ public class JTraceChart extends DiscreteJChart {
     public void removeAllTraces() {
         traces.clear();
         burninTraces.clear();
-        xAxis.setRange(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
-        yAxis.setRange(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        getXAxis().setRange(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        getYAxis().setRange(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
         removeAllPlots();
         recalibrate();
         repaint();

@@ -54,7 +54,7 @@ public class GridJointDensityPanel extends TraceChartPanel {
     private JCheckBox pointsCheckBox = new JCheckBox("Draw as points");
     private JCheckBox translucencyCheckBox = new JCheckBox("Use translucency");
 
-    private final JChart correlationChart;
+    private final JGridChart correlationChart;
     private final JChartPanel chartPanel;
     private final CorrelationData correlationData;
 
@@ -142,6 +142,19 @@ public class GridJointDensityPanel extends TraceChartPanel {
     @Override
     protected void setupTraces() {
 
+        int traceCount = 0;
+        for (TraceList ignored : getTraceLists()) {
+            for (String ignored2 : getTraceNames()) {
+                traceCount ++;
+            }
+        }
+        int rowCount = traceCount;
+        int columnCount = traceCount;
+        int plotCount = rowCount * columnCount;
+
+        correlationChart.setDimensions(rowCount, columnCount);
+//        correlationChart.setDimensions(0, 0);
+
         getChartPanel().getChart().removeAllPlots();
 
         correlationData.clear();
@@ -181,22 +194,45 @@ public class GridJointDensityPanel extends TraceChartPanel {
                 }
             }
 
+            pointsCheckBox.isSelected();
+            sampleCheckBox.isSelected();
+            translucencyCheckBox.isSelected();
+
             //add another routine here for the correlation plot, now that all the data has been collected
             //adding this here and not yet combining data for multiple .log files
             //TODO combine for multiple .log files once it's working for a single .log file
+
+            int y = 0;
             for (String one : correlationData.getTraceNames()) {
+                int x = 0;
                 for (String two : correlationData.getTraceNames()) {
-                    Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two), pointsCheckBox.isSelected(), sampleCheckBox.isSelected(), translucencyCheckBox.isSelected());
+                    Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
                     //plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
+                    plot.setLocation(x, y);
                     getChartPanel().getChart().addPlot(plot);
+                    x ++;
                 }
+                y ++;
             }
 
+            y = 0;
+            for (String one : correlationData.getTraceNames()) {
+                int x = 0;
+                for (String two : correlationData.getTraceNames()) {
+                    Plot plot = new ScatterPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
+                    plot.setMarkStyle(Plot.POINT_MARK, 1.0,
+                            new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
+                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
+                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
+                    plot.setLocation(x, y);
+                    getChartPanel().getChart().addPlot(plot);
+                    x ++;
+                }
+                y ++;
+            }
         }
 
-        for (int p = 0; p < getChartPanel().getChart().getPlotCount(); p++) {
-            ((CorrelationPlot)(getChartPanel().getChart().getPlot(p))).setTotalPlotCount(getChartPanel().getChart().getPlotCount());
-        }
+//        correlationChart.setDimensions(rowCount, columnCount);
 
     }
 
