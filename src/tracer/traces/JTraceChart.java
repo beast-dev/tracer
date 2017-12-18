@@ -26,7 +26,7 @@
 package tracer.traces;
 
 import dr.app.gui.chart.Axis;
-import dr.app.gui.chart.DiscreteJChart;
+import dr.app.gui.chart.JChart;
 import dr.app.gui.chart.Plot;
 import dr.stats.Variate;
 
@@ -40,7 +40,7 @@ import java.util.List;
  * This should probably be changed to plots being added to a standard
  * JChart (or DiscreteJChart).
  */
-public class JTraceChart extends DiscreteJChart {
+public class JTraceChart extends JChart {
 
     private static final int SAMPLE_POINTS = 1000;
 

@@ -60,7 +60,7 @@ public class FrequencyPanel extends TraceChartPanel {
      */
     public FrequencyPanel(final JFrame frame) {
         super(frame);
-        traceChart = new DiscreteJChart(
+        traceChart = new JChart(
                 new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         traceChartPanel = new JChartPanel(traceChart, "","", "Frequency"); // xAxisTitle, yAxisTitle
         toolBar = createToolBar(currentSettings);

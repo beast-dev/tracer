@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class DiscreteDensityPanel extends TraceChartPanel {
 
-    private final DiscreteJChart densityChart;
+    private final JChart densityChart;
     private final JChartPanel densityChartPanel;
 
     private ChartSetupDialog chartSetupDialog = null;
@@ -63,7 +63,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
      */
     public DiscreteDensityPanel(final JFrame frame) {
         super(frame);
-        densityChart = new DiscreteJChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis(Axis.AT_ZERO, Axis.AT_MAJOR_TICK_PLUS));
+        densityChart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis(Axis.AT_ZERO, Axis.AT_MAJOR_TICK_PLUS));
         densityChartPanel = new JChartPanel(densityChart, "","","");
         toolBar = createToolBar(currentSettings);
     }
@@ -250,17 +250,10 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         if (td != null) {
             TraceType traceType = td.getTraceType();
 
-            if (!(getChart() instanceof DiscreteJChart)) {
-                throw new RuntimeException("traceChart has to be instanceof DiscreteJChart, " +
-                        "using setXAxis(TraceType traceType, Map<Integer, String> categoryDataMap) !");
-            }
-
             if (!traceType.isCategorical()) {
-                ((DiscreteJChart) getChart()).setXAxis(traceType.isIntegerOrBinary());
-
+                getChart().setXAxis(new DiscreteAxis(true, true));
             } else if (traceType.isCategorical()) {
-                ((DiscreteJChart) getChart()).setXAxis(trace.getCategoryLabelMap());
-
+                getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
             } else {
                 throw new RuntimeException("Trace type is not recognized: " + traceType);
             }
