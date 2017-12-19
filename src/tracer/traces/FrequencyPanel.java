@@ -137,7 +137,7 @@ public class FrequencyPanel extends TraceChartPanel {
                 if (td != null) {
                     histogramPlot.setIntervals(td.getUpperHPD(), td.getLowerHPD());
                 }
-                getChartPanel().getChart().setXAxis(new LinearAxis());
+                getChartPanel().getChart().setXAxis(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS));
 
                 plot = histogramPlot;
             } else if (traceType.isDiscrete()) {
