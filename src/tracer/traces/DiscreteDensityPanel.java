@@ -126,9 +126,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         TraceType traceType = null;
         Set<String> categoryLabels = null;
 
-        int i = 0;
         for (TraceList tl : getTraceLists()) {
-            int n = tl.getStateCount();
 
             for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
@@ -212,21 +210,6 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                 // change x axis to DiscreteAxis or LinearAxis according TraceType
                 setXAxis(trace, td);
 
-                // colourBy
-                if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
-                    i++;
-                }
-                if (i == currentSettings.palette.length) {
-                    i = 0;
-                }
-            }
-            if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
-                i++;
-            } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
-                i = 0;
-            }
-            if (i >= currentSettings.palette.length) {
-                i = 0;
             }
         }
 

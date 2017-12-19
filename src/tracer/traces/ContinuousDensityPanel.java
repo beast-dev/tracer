@@ -242,7 +242,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
     protected void setupTraces() {
 
-        int i = 0;
         TraceType traceType = null;
 
         displayCombo.setSelectedItem(currentSettings.type);
@@ -250,7 +249,6 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         getChartPanel().getChart().removeAllPlots();
 
         for (TraceList tl : getTraceLists()) {
-            int n = tl.getStateCount();
 
             for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
@@ -299,29 +297,10 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                         getChartPanel().getChart().addPlot(plot);
                     }
 
-                    // colourBy
-                    if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE || currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE_AND_TRACE) {
-                        i++;
-                    }
-                    if (i == currentSettings.palette.length) {
-                        i = 0;
-                    }
                 }
-            }
-            if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_FILE) {
-                i++;
-            } else if (currentSettings.colourBy == ColourByOptions.COLOUR_BY_TRACE) {
-                i = 0;
-            }
-            if (i >= currentSettings.palette.length) {
-                i = 0;
             }
         }
 
-        // swap in the correct chart panel
-//        BorderLayout layout = (BorderLayout)getLayout();
-//        remove(layout.getLayoutComponent(BorderLayout.CENTER));
-//        remove(layout.getLayoutComponent(BorderLayout.SOUTH));
         removeAll();
         add(getChartPanel(), BorderLayout.CENTER);
         add(getToolBar(), BorderLayout.SOUTH);
