@@ -275,37 +275,25 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                     switch (currentSettings.type) {
                         case KDE:
                             plot = createKDEPlot(values);
-
-                            plot.setName(name);
-                            if (tl instanceof CombinedTraces) {
-                                plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
-                            } else {
-                                plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
-                            }
                             break;
                         case HISTOGRAM:
                             plot = createHistogramPlot(values);
-                            plot.setName(name);
                             ((NumericalDensityPlot) plot).setRelativeDensity(currentSettings.relativeDensity);
                             break;
                         case VIOLIN:
                             double lower = trace.getTraceStatistics().getLowerHPD();
                             double upper = trace.getTraceStatistics().getUpperHPD();
                             plot = createViolinPlot(values, lower, upper);
-                            plot.setName(name);
-                            if (tl instanceof CombinedTraces) {
-                                plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
-                            } else {
-                                plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
-                            }
                             break;
                     }
 
                     if (plot != null) {
+                        plot.setName(name);
+                        int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
                         if (tl instanceof CombinedTraces) {
-                            plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
+                            plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[selectedColour]);
                         } else {
-                            plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
+                            plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[selectedColour]);
                         }
 
                         getChartPanel().getChart().addPlot(plot);

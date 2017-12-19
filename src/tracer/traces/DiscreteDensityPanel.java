@@ -194,12 +194,13 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
                 if (columnPlot != null) {
                     columnPlot.setName(name);
+                    int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
                     if (tl instanceof CombinedTraces) {
-                        columnPlot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[i]);
+                        columnPlot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[selectedColour]);
                     } else {
-                        columnPlot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[i]);
+                        columnPlot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[selectedColour]);
                     }
-                    columnPlot.setPaints(createTranslucentColor((Color)currentSettings.palette[i], 128), createTranslucentColor((Color)currentSettings.palette[i], 32));
+                    columnPlot.setPaints(createTranslucentColor((Color)currentSettings.palette[selectedColour], 128), createTranslucentColor((Color)currentSettings.palette[selectedColour], 32));
 
 
                     plot = columnPlot;
