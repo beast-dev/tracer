@@ -74,7 +74,7 @@ MCMC approaches generate samples of model parameter values - including the phylo
 Visualising, tabulating and marginalising these samples is critical for approximating the posterior quantities of interest that one reports as the outcome of a Bayesian phylogenetic analysis.
 To facilitate this task, we have developed the \tracer\ (version 1.7) software package to
 process MCMC trace files containing parameter samples and to interactively explore the high-dimensional posterior distribution.
-\tracer\ works automatically with sample output from BEAST 1 \citep{drummond2012bayesian}, BEAST 2 \citep{bouckaert2014beast2},  LAMARC \citep{kuhner2006lamarc},  Migrate \citep{beerli2006comparison}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes} and possibly other MCMC programs from other domains.
+\tracer\ works automatically with sample output from BEAST \citep{drummond2012bayesian}, BEAST2 \citep{bouckaert2014beast2},  LAMARC \citep{kuhner2006lamarc},  Migrate \citep{beerli2006comparison}, MrBayes \citep{ronquist2012mrbayes}, RevBayes \citep{hohna2016revbayes} and possibly other MCMC programs from other domains.
 
 \section*{Design and Implementation}
 
@@ -134,7 +134,7 @@ Available models are constant size, exponential and logistic growth,
 %Bayesian skygrid \citep{gill2012improving}.
 and the non-parametric Bayesian skline, skyride and skygrid.
 %Not sure if the statement below is correct ...
-%All of these demographic models are available in BEAST 1 \citep{drummond2012bayesian} and BEAST 2 \citep{bouckaert2014beast2}.
+%All of these demographic models are available in BEAST \citep{drummond2012bayesian} and BEAST2 \citep{bouckaert2014beast2}.
 %Besides these, ``Lineages Through Time'' (?) is also available to plot the quantiles of the number of lineages against time, which describes the change of diversification of all organisms over time. %citation?
 
 \section*{Example}
@@ -142,12 +142,12 @@ and the non-parametric Bayesian skline, skyride and skygrid.
 \subsection*{Cross-species dynamics of rabies in North American bats}
 
 \begin{figure}
-\subfigure[TangHuLu chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integerjointmarginal.pdf}}
+\subfigure[Bubble chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integerjointmarginal.pdf}}
 \subfigure[Marginal density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integermarginaldensity.pdf}} \\
 \subfigure[Scatter plot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-correlation.pdf}}
 \subfigure[Correlation plot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-joint-real.pdf}} \\
 %\subfigure[Box-and-whisker plot]{\includegraphics[width = .465\textwidth, height = 3cm]{./figures/rabv-catreal.pdf}}
-\caption{Joint marginal and marginal density plots of: (a) two integer variables through a TangHuLu chart; (b) frequency plots the marginal density of multiple integer or categorical variables; (c) classic scatter or correlation plot for two continuous variables; (d) large correlation matrices for multiple ($> 2$) continuous variables.
+\caption{Joint marginal and marginal density plots of: (a) two integer variables through a bubble chart; (b) frequency plots the marginal density of multiple integer or categorical variables; (c) classic scatter or correlation plot for two continuous variables; (d) large correlation matrices for multiple ($> 2$) continuous variables.
 %; (e) box-and-whisker plots for the joint marginal distribution of a continuous and an integer or categorical variable.
 }
 \label{fig:4tabs}
@@ -163,7 +163,7 @@ We estimate the ancestral locations of RABV and their host-jumping history using
 
 Phylogeographic BSSVS inference includes parameters of both integer (number of non-zero transition rates) and categorical (host or location-state) trace type.
 %While a single parameter of such types can easily be visualised using a frequency plot,
-In \tracer, we have developed a TangHuLu chart to visualise the joint probability distribution between two integer or categorical traces using coloured bubbles (see Figure \ref{fig:4tabs}:a).
+In \tracer, we have developed a bubble chart to visualise the joint probability distribution between two integer or categorical traces using coloured bubbles (see Figure \ref{fig:4tabs}:a).
 Here, circle size is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set.
 with a coloured tile background if this probability reaches a nominal threshold to enhance visibility.
 %The coloured background can also help to show the area of the credible set and non-credible set.

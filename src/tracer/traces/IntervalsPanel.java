@@ -138,6 +138,11 @@ public class IntervalsPanel extends TraceChartPanel {
                     setMessage("Traces must be of the same type to visualize here.");
                     return;
                 }
+
+                if (trace.getTraceStatistics() == null) {
+                    setMessage("Trace statistics are still being calculated.");
+                    return;
+                }
             }
         }
 
