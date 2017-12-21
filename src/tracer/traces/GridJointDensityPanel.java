@@ -48,11 +48,9 @@ import java.util.Map;
  */
 public class GridJointDensityPanel extends TraceChartPanel {
 
-    private JCheckBox defaultNumberFormatCheckBox = new JCheckBox("Use default number format");
-
-    private JCheckBox sampleCheckBox = new JCheckBox("Sample only");
-    private JCheckBox pointsCheckBox = new JCheckBox("Draw as points");
-    private JCheckBox translucencyCheckBox = new JCheckBox("Use translucency");
+//    private JCheckBox sampleCheckBox = new JCheckBox("Sample only");
+    private JCheckBox pointsCheckBox = new JCheckBox("Show points");
+//    private JCheckBox translucencyCheckBox = new JCheckBox("Use translucency");
 
     private final JGridChart correlationChart;
     private final JChartPanel chartPanel;
@@ -105,24 +103,19 @@ public class GridJointDensityPanel extends TraceChartPanel {
     private JToolBar createToolBar(final JFrame frame) {
         JToolBar toolBar = super.createToolBar();
 
-        sampleCheckBox.setOpaque(false);
-        sampleCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
-        // todo make 'samples only' unchecked as default for ordinal types
-        sampleCheckBox.setSelected(true);
-        toolBar.add(sampleCheckBox);
+//        sampleCheckBox.setOpaque(false);
+//        sampleCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
+//        // todo make 'samples only' unchecked as default for ordinal types
+//        sampleCheckBox.setSelected(true);
+//        toolBar.add(sampleCheckBox);
 
         pointsCheckBox.setOpaque(false);
         pointsCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
         toolBar.add(pointsCheckBox);
 
-        translucencyCheckBox.setOpaque(false);
-        translucencyCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
-        toolBar.add(translucencyCheckBox);
-
-        defaultNumberFormatCheckBox.setOpaque(false);
-        defaultNumberFormatCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
-        defaultNumberFormatCheckBox.setSelected(true);
-        toolBar.add(defaultNumberFormatCheckBox);
+//        translucencyCheckBox.setOpaque(false);
+//        translucencyCheckBox.setFont(UIManager.getFont("SmallSystemFont"));
+//        toolBar.add(translucencyCheckBox);
 
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
@@ -131,10 +124,9 @@ public class GridJointDensityPanel extends TraceChartPanel {
                 setupTraces();
             }
         };
-        sampleCheckBox.addActionListener(listener);
+//        sampleCheckBox.addActionListener(listener);
         pointsCheckBox.addActionListener(listener);
-        translucencyCheckBox.addActionListener(listener);
-        defaultNumberFormatCheckBox.addActionListener(listener);
+//        translucencyCheckBox.addActionListener(listener);
 
         return toolBar;
     }
@@ -194,9 +186,9 @@ public class GridJointDensityPanel extends TraceChartPanel {
                 }
             }
 
-            pointsCheckBox.isSelected();
-            sampleCheckBox.isSelected();
-            translucencyCheckBox.isSelected();
+            boolean showPoints = pointsCheckBox.isSelected();
+//            sampleCheckBox.isSelected();
+//            translucencyCheckBox.isSelected();
 
             //add another routine here for the correlation plot, now that all the data has been collected
             //adding this here and not yet combining data for multiple .log files
@@ -206,7 +198,7 @@ public class GridJointDensityPanel extends TraceChartPanel {
             for (String one : correlationData.getTraceNames()) {
                 int x = 0;
                 for (String two : correlationData.getTraceNames()) {
-                    Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
+                    Plot plot = new CorrelationPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two), showPoints);
                     //plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[0]);
                     plot.setLocation(x, y);
                     getChartPanel().getChart().addPlot(plot);
@@ -215,21 +207,21 @@ public class GridJointDensityPanel extends TraceChartPanel {
                 y ++;
             }
 
-            y = 0;
-            for (String one : correlationData.getTraceNames()) {
-                int x = 0;
-                for (String two : correlationData.getTraceNames()) {
-                    Plot plot = new ScatterPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
-                    plot.setMarkStyle(Plot.POINT_MARK, 1.0,
-                            new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
-                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
-                    plot.setLocation(x, y);
-                    getChartPanel().getChart().addPlot(plot);
-                    x ++;
-                }
-                y ++;
-            }
+//            y = 0;
+//            for (String one : correlationData.getTraceNames()) {
+//                int x = 0;
+//                for (String two : correlationData.getTraceNames()) {
+//                    Plot plot = new ScatterPlot(two, correlationData.getDataForKey(one), correlationData.getDataForKey(two));
+//                    plot.setMarkStyle(Plot.POINT_MARK, 1.0,
+//                            new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
+//                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255),
+//                            new Color(16, 16, 64, translucencyCheckBox.isSelected() ? 32 : 255));
+//                    plot.setLocation(x, y);
+//                    getChartPanel().getChart().addPlot(plot);
+//                    x ++;
+//                }
+//                y ++;
+//            }
         }
 
 //        correlationChart.setDimensions(rowCount, columnCount);
