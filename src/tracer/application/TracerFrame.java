@@ -642,6 +642,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         currentTraceLists.clear();
 
+        // Check for and add the combined trace first so it is underneath the
+        // individual traces.
         for (int row : selRows) {
             if (row == traceLists.size()) {
                 // Combined is include in the selection so disable remove

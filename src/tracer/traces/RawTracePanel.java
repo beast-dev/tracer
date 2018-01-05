@@ -234,7 +234,6 @@ public class RawTracePanel extends TraceChartPanel {
                 }
 
                 Trace trace = tl.getTrace(traceIndex);
-                TraceDistribution td = tl.getCorrelationStatistics(traceIndex);
 
                 if (traceType == null) {
                     traceType = trace.getTraceType();

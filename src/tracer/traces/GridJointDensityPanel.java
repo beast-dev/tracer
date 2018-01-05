@@ -167,8 +167,6 @@ public class GridJointDensityPanel extends TraceChartPanel {
 
         correlationData.clear();
 
-        //int i = 0;
-        TraceType traceType = null;
         for (TraceList tl : getTraceLists()) {
             for (String traceName : getTraceNames()) {
 

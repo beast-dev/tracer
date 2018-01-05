@@ -68,6 +68,13 @@ public class JointDensityPanel extends JPanel implements Exportable {
     public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
         removeAll();
 
+        if (traceLists.length > 1 && traceLists[0] instanceof CombinedTraces) {
+            // remove the combined traces if more than one trace is selected
+            TraceList[] tl = new TraceList[traceLists.length - 1];
+            System.arraycopy(traceLists, 1, tl, 0, tl.length);
+            traceLists = tl;
+        }
+
         if (traceLists != null && traceNames != null && traceLists.length * traceNames.size() > 1) {
             if (traceLists.length * traceNames.size() == 2) {
                 if ((getTrace(0, traceLists, traceNames).getTraceType().isDiscrete() && getTrace(1, traceLists, traceNames).getTraceType().isContinuous()) ||
