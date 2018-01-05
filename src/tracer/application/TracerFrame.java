@@ -1602,8 +1602,6 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
 
         public String getToolTipText(int row, int col) {
-            TraceList traceList;
-
             if (traceLists.size() == 0) {
                 return null;
             } else if (row == traceLists.size()) {

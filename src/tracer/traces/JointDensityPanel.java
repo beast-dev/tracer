@@ -93,7 +93,7 @@ public class JointDensityPanel extends JPanel implements Exportable {
                 setDensityPanel(gridJointDensityPanel);
             }
         } else {
-            add(new JLabel("Selected two traces to visualize the joint density."), BorderLayout.CENTER);
+            add(new JLabel("Select two traces to visualize the joint density."), BorderLayout.CENTER);
             validate();
             repaint();
         }

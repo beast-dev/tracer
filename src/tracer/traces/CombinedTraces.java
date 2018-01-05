@@ -188,13 +188,18 @@ public class CombinedTraces extends FilteredTraceList { //implements TraceList {
     public void analyseTrace(int index) {
         // no offset: burnin is handled inside each TraceList we own and invisible to us.
         if (traceStatistics == null) {
-            traceStatistics = new TraceCorrelation[getTraceCount()];            
+            traceStatistics = new TraceCorrelation[getTraceCount()];
         }
 
         Trace trace = getTrace(index);
 
-        if (trace != null)
-            traceStatistics[index] = new TraceCorrelation(getValues(index), trace.getTraceType(), getStepSize()); 
+        if (trace != null) {
+            if (trace.getTraceType() == TraceType.CATEGORICAL) {
+                traceStatistics[index] = new TraceCorrelation(getValues(index), trace.getCategoryLabelMap(), trace.getCategoryOrder(), getStepSize());
+            } else {
+                traceStatistics[index] = new TraceCorrelation(getValues(index), trace.getTraceType(), getStepSize());
+            }
+        }
     }
 
     public Trace getTrace(int index) {

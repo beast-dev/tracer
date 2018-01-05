@@ -135,11 +135,27 @@ public class GridJointDensityPanel extends TraceChartPanel {
     protected void setupTraces() {
 
         int traceCount = 0;
-        for (TraceList ignored : getTraceLists()) {
-            for (String ignored2 : getTraceNames()) {
+        for (TraceList tl : getTraceLists()) {
+            for (String traceName : getTraceNames()) {
+                int traceIndex = tl.getTraceIndex(traceName);
+                Trace trace = tl.getTrace(traceIndex);
+                TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
+
+                if (td == null) {
+                    // TraceCorrelations not generated yet so must be still computing ESSs etc.
+                    setMessage("Waiting for analysis of traces to complete");
+                    return;
+                }
+
+                if (!trace.getTraceType().isContinuous()) {
+                    setMessage("Multiple continuous traits required for grid correlation.");
+                    return;
+                }
+
                 traceCount ++;
             }
         }
+
         int rowCount = traceCount;
         int columnCount = traceCount;
         int plotCount = rowCount * columnCount;
@@ -176,10 +192,6 @@ public class GridJointDensityPanel extends TraceChartPanel {
                     }
 
                     List values = tl.getValues(traceIndex);
-
-                    // set traceType here to avoid Exception from setYLabel
-                    traceType = trace.getTraceType();
-                    assert traceType.isContinuous();
 
                     //collect all traceNames and values while looping here
                     correlationData.add(name, values);
