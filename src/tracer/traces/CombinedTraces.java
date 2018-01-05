@@ -81,6 +81,13 @@ public class CombinedTraces extends FilteredTraceList { //implements TraceList {
     }
 
     /**
+     * @return the name of this trace list
+     */
+    public String getFullName() {
+        return name;
+    }
+
+    /**
      * @return the number of traces in this trace list
      */
     public int getTraceCount() {

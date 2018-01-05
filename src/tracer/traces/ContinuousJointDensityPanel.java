@@ -33,9 +33,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A panel that displays correlation plots of 2 traces
@@ -154,12 +152,10 @@ public class ContinuousJointDensityPanel extends TraceChartPanel {
             // two trace files and one trace
             traceList1 = getTraceLists()[0];
             traceList2 = getTraceLists()[1];
-            traceName1 = traceList1.getName();
-            traceName2 = traceList2.getName();
             traceIndex1 = traceList1.getTraceIndex(getTraceNames().get(0));
             traceIndex2 = traceList2.getTraceIndex(getTraceNames().get(0));
-            traceName1 = traceName1 + " - " + traceList1.getTraceName(traceIndex1);
-            traceName2 = traceName2 + " - " + traceList2.getTraceName(traceIndex2);
+            traceName1 = traceList1.getName() + " - " + traceList1.getTraceName(traceIndex1);
+            traceName2 = traceList2.getName() + " - " + traceList2.getTraceName(traceIndex2);
         } else if (getTraceLists().length == 1 && getTraceNames().size() == 2) {
             // one trace files and two trace
             traceList1 = getTraceLists()[0];
@@ -174,6 +170,12 @@ public class ContinuousJointDensityPanel extends TraceChartPanel {
 
         TraceCorrelation td1 = traceList1.getCorrelationStatistics(traceIndex1);
         TraceCorrelation td2 = traceList2.getCorrelationStatistics(traceIndex2);
+
+        if (td1 == null || td2 == null) {
+            // not finished doing correlation calculations...
+            setMessage("Trace statistics are still being calculated.");
+            return;
+        }
 
         assert td1.getTraceType().isContinuous() && td2.getTraceType().isContinuous();
 

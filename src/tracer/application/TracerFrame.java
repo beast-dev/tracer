@@ -152,7 +152,14 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         tracePanel.setBorder(new BorderUIResource.EmptyBorderUIResource(new java.awt.Insets(12, 6, 12, 12)));
 
         traceTableModel = new TraceTableModel();
-        traceTable = new JTable(traceTableModel);
+        traceTable = new JTable(traceTableModel){
+
+            //Implement table cell tool tips.
+            public String getToolTipText(MouseEvent e) {
+                java.awt.Point p = e.getPoint();
+                return traceTableModel.getToolTipText(rowAtPoint(p), columnAtPoint(p));
+            }
+        };
         TableRenderer renderer = new TableRenderer(SwingConstants.LEFT, new Insets(0, 4, 0, 4));
         traceTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
         traceTable.getColumnModel().getColumn(1).setPreferredWidth(50);
@@ -1106,10 +1113,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             try {
                 final LogFileTraces traces = tracesArray[0];
 
-                final String fileName = traces.getName();
                 final ProgressMonitorInputStream in = new ProgressMonitorInputStream(
                         this,
-                        "Reading " + fileName,
+                        "Reading " + traces.getName(),
                         new FileInputStream(traces.getFile()));
                 in.getProgressMonitor().setMillisToDecideToPopup(0);
                 in.getProgressMonitor().setMillisToPopup(0);
@@ -1593,6 +1599,19 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         public boolean isCellEditable(int row, int col) {
             return col == 2 && row < traceLists.size();
+        }
+
+        public String getToolTipText(int row, int col) {
+            TraceList traceList;
+
+            if (traceLists.size() == 0) {
+                return null;
+            } else if (row == traceLists.size()) {
+                return "Combined trace files";
+            } else {
+                return traceLists.get(row).getFullName();
+            }
+
         }
     }
 
