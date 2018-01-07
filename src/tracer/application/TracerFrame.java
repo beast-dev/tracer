@@ -1070,6 +1070,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
 
     public final void doImport() {
+        
         final JFileChooser chooser = new JFileChooser(openDefaultDirectory);
         chooser.setMultiSelectionEnabled(true);
 

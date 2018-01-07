@@ -5,11 +5,11 @@
   <jre>
     <minVersion>1.6.0</minVersion>
     <initialHeapSize>64</initialHeapSize>
-    <maxHeapSize>2048</maxHeapSize>
+    <maxHeapSize>4096</maxHeapSize>
   </jre>    
   <versionInfo>
     <fileDescription>Tracer</fileDescription>
-    <copyright>2003-2017</copyright>
+    <copyright>2003-2018</copyright>
     <productName>Tracer</productName>
     <internalName>Tracer</internalName>
     <originalFilename>Tracer.exe</originalFilename>    

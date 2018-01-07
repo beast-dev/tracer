@@ -1,4 +1,4 @@
-                     Tracer v1.7 2003-2017
+                     Tracer v1.7 2003-2018
         		  MCMC Trace Analysis Package
                               by
         Andrew Rambaut, Alexei J. Drummond & Marc Suchard
@@ -17,7 +17,7 @@
 
 
 UNIX / Mac OS X / Linux / Windows README 
-a.rambaut@ed.ac.uk - 20 August 2017
+a.rambaut@ed.ac.uk - 05 January 2018
 
 Contents:
 1) INTRODUCTION
@@ -83,6 +83,9 @@ To export the currently displayed graphic use the "Export PDF" function in the "
 
 ___________________________________________________________________________
 5) VERSION HISTORY
+
+---Version 1.7 05 Jan 2018---
+
 
 ---Version 1.6 20 Oct 2013---
 
@@ -197,11 +200,11 @@ join the mailing list here:
 
 The website for BEAST (and Tracer) is here:
 
-<http://beast.bio.ed.ac.uk/>
+<http://beast.community/>
 
 Source code distributed under the GNU Lesser General Public License:
 
-<http://code.google.com/p/beast-mcmc/>
+<http://github.com/beast-dev/tracer/>
 
 ___________________________________________________________________________
 8) ACKNOWLEDGMENTS
