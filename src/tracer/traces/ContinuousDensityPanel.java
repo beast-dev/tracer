@@ -49,7 +49,8 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     private enum Type {
         KDE("KDE"),
         HISTOGRAM("Histogram"),
-        VIOLIN("Vioin");
+        VIOLIN("Violin"),
+        BOX_AND_WHISKER("Box and whisker");
 
         Type(String name) {
             this.name = name;
@@ -132,6 +133,8 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                 return histogramToolBar;
             case VIOLIN:
                 return violinToolBar;
+            case BOX_AND_WHISKER:
+                return violinToolBar;
             default:
                 throw new IllegalArgumentException("Unknown chart type");
         }
@@ -149,6 +152,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
             case HISTOGRAM:
                 return histogramChartPanel;
             case VIOLIN:
+            case BOX_AND_WHISKER:
                 return violinChartPanel;
             default:
                 throw new IllegalArgumentException("Unknown chart type");
@@ -186,7 +190,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         if (type == Type.HISTOGRAM) {
             toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
-            JLabel label = (JLabel)createBinsComboAndLabel();
+            JLabel label = createBinsComboAndLabel();
             toolBar.add(label);
             toolBar.add(label.getLabelFor());
 
@@ -195,14 +199,14 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
-        JLabel label = (JLabel)createLegendComboAndLabel();
+        JLabel label = createLegendComboAndLabel();
         toolBar.add(label);
         toolBar.add(label.getLabelFor());
         ((JComboBox)label.getLabelFor()).setSelectedItem(settings.legendAlignment);
 
         toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
 
-        label = (JLabel)createColourByComboAndLabel();
+        label = createColourByComboAndLabel();
         toolBar.add(label);
         toolBar.add(label.getLabelFor());
         ((JComboBox)label.getLabelFor()).setSelectedItem(settings.colourBy.ordinal());
@@ -217,6 +221,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
             case HISTOGRAM:
                 return densityChartSetupDialog;
             case VIOLIN:
+            case BOX_AND_WHISKER:
                 return violinChartSetupDialog;
             default:
                 throw new IllegalArgumentException("Unknown chart type");
@@ -238,6 +243,10 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
     protected Plot createViolinPlot(List values, double lower, double upper) {
         return new ViolinPlot(true, 0.8, lower, upper, false, values);
+    }
+
+    protected Plot createBoxPlot(double lower, double upper, double lowerTail, double upperTail, double mean) {
+        return new BoxPlot(true, 0.8, lower, upper, lowerTail, upperTail, mean);
     }
 
     protected void setupTraces() {
@@ -278,11 +287,21 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                             plot = createHistogramPlot(values);
                             ((NumericalDensityPlot) plot).setRelativeDensity(currentSettings.relativeDensity);
                             break;
-                        case VIOLIN:
+                        case VIOLIN: {
                             double lower = trace.getTraceStatistics().getLowerHPD();
                             double upper = trace.getTraceStatistics().getUpperHPD();
                             plot = createViolinPlot(values, lower, upper);
                             break;
+                        }
+                        case BOX_AND_WHISKER: {
+                            double lower = trace.getTraceStatistics().getLowerHPD();
+                            double upper = trace.getTraceStatistics().getUpperHPD();
+                            double lowerTail = trace.getTraceStatistics().getMinimum();
+                            double upperTail = trace.getTraceStatistics().getMaximum();
+                            double mean = trace.getTraceStatistics().getMean();
+                            plot = createBoxPlot(lower, upper, lowerTail, upperTail, mean);
+                            break;
+                        }
                     }
 
                     if (plot != null) {
@@ -292,6 +311,9 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                             plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[selectedColour]);
                         } else {
                             plot.setLineStyle(new BasicStroke(1.0f), currentSettings.palette[selectedColour]);
+                        }
+                        if (plot instanceof BoxPlot) {
+                            ((BoxPlot)plot).setMeanLineStyle(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), currentSettings.palette[selectedColour]);
                         }
 
                         getChartPanel().getChart().addPlot(plot);
@@ -306,7 +328,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         add(getToolBar(), BorderLayout.SOUTH);
 
         setXLabelMultipleTraces();
-        if (currentSettings.type == Type.VIOLIN) {
+        if (currentSettings.type == Type.VIOLIN || currentSettings.type == Type.BOX_AND_WHISKER) {
             setYLabel("Value");
         } else {
             setYLabel(traceType, new String[]{"Density", "Probability"});
