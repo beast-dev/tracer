@@ -1,4 +1,4 @@
-\documentclass{bioinfo}
+\documentclass{bioinfo_tracer}
 \copyrightyear{2017}
 \pubyear{2017}
 
@@ -104,20 +104,20 @@ If multiple trace files have the same file name,  then a ``Combined'' trace appe
 \item Marginal Density: Draws density plots for the selected parameter(s), including  kernel density estimates (Figure \ref{fig:overview}:c), histograms and violin plots (Figure \ref{fig:overview}:d) for continuous parameters and frequency plots for categorical or integer parameters.
 
 \item Joint-Marginal: Visualisation in this panel appears after selecting two or more parameters and the plot form depends on the parameter types. We show several examples in the next section of the paper.
-
-\item Trace: Constructs line plots connecting the sequential samples of one or more selected parameters against state or generation number (Figure \ref{fig:overview}:e).  Users typically use this plot to assess mixing, select a suitable burn-in and identify trends that suggest convergence issues.
-\end{itemize}
 %
-\begin{figure}
+\begin{figure}[t]
 \subfigure[Tracer overview]{\includegraphics[width=0.47\textwidth]{./figures/rabv-overview.pdf}}
 \subfigure[Boxplot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-boxplots.pdf}}
 \subfigure[Density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-density.pdf}}\\
 \subfigure[Violin]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-violin.pdf}}
 \subfigure[Trace]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-traces.pdf}}
-\caption{Overview of \tracer\ functionality and individual parameter visualisations: (a) Main \tracer\ panel upon loading a single trace file; (b) boxplot representation of two continuous parameters; (c) kernel density estimates; (d) violin plots; (e) the actual traces connecting the parameter values visited by the Markov chain.
-}
+\caption{Overview of \tracer\ functionality and individual parameter visualisations: (a) Main \tracer\ panel upon loading a single trace file; (b) boxplot representation of two continuous parameters; (c) kernel density estimates; (d) violin plots; (e) the actual traces connecting the parameter values visited by the Markov chain.}
 \label{fig:overview}
 \end{figure}
+%
+\item Trace: Constructs line plots connecting the sequential samples of one or more selected parameters against state or generation number (Figure \ref{fig:overview}:e).  Users typically use this plot to assess mixing, select a suitable burn-in and identify trends that suggest convergence issues.
+\end{itemize}
+%
 
 \tracer\ offers a solution of visualising conditional posterior distributions as well.
 A typical use case involves Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters influence the likelihood function only when a specific model is selected by a random indicator function.
@@ -141,7 +141,9 @@ and the non-parametric Bayesian skline, skyride and skygrid.
 
 \subsection*{Cross-species dynamics of rabies in North American bats}
 
-\begin{figure}
+We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations.
+%
+\begin{figure}[t]
 \subfigure[Bubble chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integerjointmarginal.pdf}}
 \subfigure[Marginal density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integermarginaldensity.pdf}} \\
 \subfigure[Scatter plot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-correlation.pdf}}
@@ -152,8 +154,7 @@ and the non-parametric Bayesian skline, skyride and skygrid.
 }
 \label{fig:4tabs}
 \end{figure}
-
-We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations.
+%
 The data set comprises 372 \textit{nucleoprotein} gene sequences (nucleotide positions: 594-1353) from
 17 bat species, sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker,Faria2013}.
 %, including two additional species that had been excluded from the original analysis owing to a limited amount of available sequences \citep{Faria2013}.
