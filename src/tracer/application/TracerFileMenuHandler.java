@@ -36,9 +36,11 @@ public interface TracerFileMenuHandler {
 
 	Action getReloadAction();
 
-	Action getExportDataAction();
+	Action getExportRawDataAction();
+
+	Action getExportDataTableAction();
 
 	Action getExportPDFAction();
 
-	Action getExportFullStatisticsAction();
+//	Action getExportFullStatisticsAction();
 }

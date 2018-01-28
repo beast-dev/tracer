@@ -79,13 +79,13 @@ public class TracerDefaultFileMenuFactory implements MenuFactory {
 
             menu.addSeparator();
 
-            item = new JMenuItem(((TracerFileMenuHandler)frame).getExportDataAction());
+            item = new JMenuItem(((TracerFileMenuHandler)frame).getExportDataTableAction());
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MenuBarFactory.MENU_MASK));
             menu.add(item);
 
-//            item = new JMenuItem(((TracerFileMenuHandler)frame).getExportFullStatisticsAction());
-//            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MenuBarFactory.MENU_MASK + ActionEvent.SHIFT_MASK));
-//            menu.add(item);
+            item = new JMenuItem(((TracerFileMenuHandler)frame).getExportRawDataAction());
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MenuBarFactory.MENU_MASK + KeyEvent.SHIFT_MASK));
+            menu.add(item);
 
             item = new JMenuItem(((TracerFileMenuHandler)frame).getExportPDFAction());
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MenuBarFactory.MENU_MASK + KeyEvent.ALT_MASK));

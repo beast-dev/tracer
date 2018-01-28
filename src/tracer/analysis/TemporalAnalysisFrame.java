@@ -106,6 +106,11 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
 
         temporalAnalysisPlotPanel.addDemographicPlot(title, xData, yDataMean, yDataMedian, yDataUpper, yDataLower,
                 timeMean, timeMedian, timeUpper, timeLower);
+
+        // unless there was a meaningful data table to write
+        exportRawDataAction.setEnabled(false);
+        exportDataTableAction.setEnabled(true);
+
         setVisible(true);
     }
 
@@ -291,22 +296,30 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
         return null;
     }
 
-    public Action getExportDataAction() {
-        return exportDataAction;
-    }
-
-    public Action getExportPDFAction() {
-        return exportPDFAction;
+    @Override
+    public Action getExportRawDataAction() {
+        return exportRawDataAction;
     }
 
     @Override
-    public Action getExportFullStatisticsAction() {
-        return null;
+    public Action getExportDataTableAction() {
+        return exportDataTableAction;
     }
 
-    private AbstractAction exportDataAction = new AbstractAction("Export Data...") {
+    @Override
+    public Action getExportPDFAction() {
+        return exportPDFAction;
+    }
+    
+    private AbstractAction exportDataTableAction = new AbstractAction("Export Data Table...") {
         public void actionPerformed(ActionEvent ae) {
             doExportData();
+        }
+    };
+
+    private AbstractAction exportRawDataAction = new AbstractAction("Export Raw Data...") {
+        public void actionPerformed(ActionEvent ae) {
+            // do nothing
         }
     };
 

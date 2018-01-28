@@ -139,7 +139,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
             }
         };
         setImportAction(importAction);
-        setExportAction(exportDataAction);
+        setExportAction(exportDataTableAction);
 
         setAnalysesEnabled(false);
     }
@@ -409,8 +409,9 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         getConditionalPosteriorDistAction().setEnabled(enabled);
 
         getExportAction().setEnabled(enabled);
-        getExportDataAction().setEnabled(enabled);
-        getExportFullStatisticsAction().setEnabled(enabled);
+        getExportRawDataAction().setEnabled(enabled);
+        getExportDataTableAction().setEnabled(enabled);
+//        getExportFullStatisticsAction().setEnabled(enabled);
         getExportPDFAction().setEnabled(enabled);
         getCopyAction().setEnabled(true);
     }
@@ -816,15 +817,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 isIncomplete = true;
         }
 
-        java.util.List<String> selectedTraces = new ArrayList<String>();
-        for (int selRow : selRows) {
-            if (selRow < commonTraceNames.size()) {
-                selectedTraces.add(commonTraceNames.get(selRow));
-            }
-        }
-        if (selectedTraces.size() < 1) {
-            selectedTraces.add(commonTraceNames.get(0));
-        }
+        List<String> selectedTraces = getSelectedTraces();
 
         if (currentTraceLists.size() == 0 || isIncomplete) {
             tracePanel.setTraces(null, selectedTraces);
@@ -843,6 +836,23 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         realButton.setEnabled(selRows.length > 0);
         integerButton.setEnabled(selRows.length > 0);
         categoricalButton.setEnabled(selRows.length > 0);
+    }
+
+    public List<String> getSelectedTraces() {
+
+        int[] selRows = statisticTable.getSelectedRows();
+
+        List<String> selectedTraces = new ArrayList<String>();
+        for (int selRow : selRows) {
+            if (selRow < commonTraceNames.size()) {
+                selectedTraces.add(commonTraceNames.get(selRow));
+            }
+        }
+        if (selectedTraces.size() < 1) {
+            selectedTraces.add(commonTraceNames.get(0));
+        }
+
+        return selectedTraces;
     }
 
     public void analyseTraceList(TraceList job) {
@@ -977,10 +987,10 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         //private String message;
     }
 
-    public final void doExportData() {
+    public final void doExportData(boolean rawData) {
 
         FileDialog dialog = new FileDialog(this,
-                "Export Data...",
+                (rawData ? "Export Raw Data..." : "Export Data Table..."),
                 FileDialog.SAVE);
 
         dialog.setVisible(true);
@@ -989,7 +999,18 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
             try {
                 FileWriter writer = new FileWriter(file);
-                writer.write(tracePanel.getExportText());
+                if (rawData) {
+                    try {
+                        exportRawData(new PrintWriter(writer));
+                    } catch (StateStepsDifferentException ssde) {
+                        JOptionPane.showMessageDialog(this, "Unable to write multiple trace files\n" +
+                                        "with different step sizes.",
+                                "Unable to write file",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    writer.write(tracePanel.getExportDataTableText());
+                }
                 writer.close();
 
 
@@ -999,37 +1020,115 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                         JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
 
+    private class StateStepsDifferentException extends Exception { }
+
+    /**
+     * Write out the selected traces to a single file. Checks that when multiple files are
+     * selected they have the same step size.
+     * @param writer
+     */
+    private void exportRawData(PrintWriter writer) throws StateStepsDifferentException {
+        List<String> selectedTraces = getSelectedTraces();
+
+        long minStateStart = Long.MAX_VALUE;
+        long maxStateCount = 0;
+        long stateStep = 0;
+
+        for (TraceList tl : currentTraceLists) {
+            long stateCount = tl.getStateCount();
+            if (stateStep == 0) {
+                stateStep = tl.getStepSize();
+            } else {
+                if (stateStep != tl.getStepSize()) {
+                    throw new StateStepsDifferentException();
+                }
+            }
+
+            if (tl.getBurnIn() < minStateStart) {
+                minStateStart = tl.getBurnIn();
+            }
+
+            if (stateCount > maxStateCount) {
+                maxStateCount = stateCount;
+            }
+        }
+
+        writer.print("state");
+        for (String traceName : selectedTraces) {
+            for (TraceList tl : currentTraceLists) {
+                String name = tl.getName() + ":" + tl.getTraceName(tl.getTraceIndex(traceName));
+                writer.print("\t");
+                writer.print(name);
+            }
+        }
+        writer.println();
+
+        for (long state = minStateStart; state <= maxStateCount; state += stateStep) {
+            writer.print(state);
+            for (String traceName : selectedTraces) {
+                for (TraceList tl : currentTraceLists) {
+                    int traceIndex = tl.getTraceIndex(traceName);
+                    Trace trace = tl.getTrace(traceIndex);
+
+                    writer.print("\t");
+
+                    long burnin = tl.getBurnIn();
+                    int index = (int)((state - burnin) / stateStep);
+
+                    if (state >= burnin && index < trace.getValueCount() ) {
+
+                        double value = trace.getValue(index);
+
+                        String valueString;
+                        if (trace.getTraceType().isDiscrete()) {
+                            if (trace.getTraceType().isCategorical()) {
+                                valueString = trace.getCategoryLabelMap().get((int) value);
+                            } else {
+                                valueString = Integer.toString((int)value);
+                            }
+                        } else {
+                            valueString = Double.toString(value);
+                        }
+                        writer.print(valueString);
+                    } else {
+                        // print nothing in this cell
+                    }
+                }
+            }
+            writer.println();
+        }
     }
 
     /**
      * export full statistic summary of selected traceList (log) to a tab-delimited txt file
      */
-    public final void doExportStatisticSummary() {
-        final JFrame frame = this;
-
-        FileDialog dialog = new FileDialog(frame, "Export Statistic Summary...", FileDialog.SAVE);
-
-        dialog.setVisible(true);
-        if (dialog.getFile() != null) {
-            File file = new File(dialog.getDirectory(), dialog.getFile());
-
-            // todo use LongTask
-            final String statSummTxt = TraceAnalysis.getStatisticSummary(currentTraceLists);
-
-            try {
-
-                FileWriter writer = new FileWriter(file);
-                writer.write(statSummTxt);
-                writer.close();
-
-            } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(this, "Unable to write file: " + ioe,
-                        "Unable to write file",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
+//    public final void doExportStatisticSummary() {
+//        final JFrame frame = this;
+//
+//        FileDialog dialog = new FileDialog(frame, "Export Statistic Summary...", FileDialog.SAVE);
+//
+//        dialog.setVisible(true);
+//        if (dialog.getFile() != null) {
+//            File file = new File(dialog.getDirectory(), dialog.getFile());
+//
+//            // todo use LongTask
+//            final String statSummTxt = TraceAnalysis.getStatisticSummary(currentTraceLists);
+//
+//            try {
+//
+//                FileWriter writer = new FileWriter(file);
+//                writer.write(statSummTxt);
+//                writer.close();
+//
+//            } catch (IOException ioe) {
+//                JOptionPane.showMessageDialog(this, "Unable to write file: " + ioe,
+//                        "Unable to write file",
+//                        JOptionPane.ERROR_MESSAGE);
+//            }
+//        }
+//    }
 
     public final void doExportPDF() {
         FileDialog dialog = new FileDialog(this,
@@ -1070,7 +1169,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
 
     public final void doImport() {
-        
+
         final JFileChooser chooser = new JFileChooser(openDefaultDirectory);
         chooser.setMultiSelectionEnabled(true);
 
@@ -1734,12 +1833,16 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         return reloadAction;
     }
 
-    public Action getExportFullStatisticsAction() {
-        return exportFullStatisticsAction;
+//    public Action getExportFullStatisticsAction() {
+//        return exportFullStatisticsAction;
+//    }
+
+    public Action getExportRawDataAction() {
+        return exportRawDataAction;
     }
 
-    public Action getExportDataAction() {
-        return exportDataAction;
+    public Action getExportDataTableAction() {
+        return exportDataTableAction;
     }
 
     public Action getExportPDFAction() {
@@ -1892,15 +1995,21 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         }
     };
 
-    private final AbstractAction exportFullStatisticsAction = new AbstractAction("Export Statistic Summary...") {
+//    private final AbstractAction exportFullStatisticsAction = new AbstractAction("Export Statistic Summary...") {
+//        public void actionPerformed(ActionEvent ae) {
+//            doExportStatisticSummary();
+//        }
+//    };
+
+    private final AbstractAction exportRawDataAction = new AbstractAction("Export Raw Data...") {
         public void actionPerformed(ActionEvent ae) {
-            doExportStatisticSummary();
+            doExportData(true);
         }
     };
 
-    private final AbstractAction exportDataAction = new AbstractAction("Export Data...") {
+    private final AbstractAction exportDataTableAction = new AbstractAction("Export Data Table...") {
         public void actionPerformed(ActionEvent ae) {
-            doExportData();
+            doExportData(false);
         }
     };
 

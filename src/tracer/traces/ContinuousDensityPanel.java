@@ -364,6 +364,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
             getChartPanel().setYAxisTitle("Multiple Traces");
         }
     }
+    
     public String toString() {
         JChart chart = getChartPanel().getChart();
 

@@ -48,8 +48,6 @@ public class TracePanel extends javax.swing.JPanel implements Exportable {
     private final JointDensityPanel jointDensityPanel;
     private final RawTracePanel tracePanel;
 
-    private static final boolean USE_KDE = false;
-
     /**
      * Creates new form TracePanel
      */
@@ -96,14 +94,15 @@ public class TracePanel extends javax.swing.JPanel implements Exportable {
         java.awt.datatransfer.Clipboard clipboard =
                 Toolkit.getDefaultToolkit().getSystemClipboard();
 
+        // default for copy is the data table?
         java.awt.datatransfer.StringSelection selection =
-                new java.awt.datatransfer.StringSelection(getExportText());
+                new java.awt.datatransfer.StringSelection(getExportDataTableText());
 
         clipboard.setContents(selection, selection);
 
     }
 
-    public String getExportText() {
+    public String getExportDataTableText() {
         switch (tabbedPane.getSelectedIndex()) {
             case 0:
                 return summaryPanel.toString();
@@ -116,7 +115,6 @@ public class TracePanel extends javax.swing.JPanel implements Exportable {
         }
         return "";
     }
-
     public JComponent getExportableComponent() {
 
         JComponent exportable = null;

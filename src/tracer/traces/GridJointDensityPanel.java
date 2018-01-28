@@ -238,7 +238,10 @@ public class GridJointDensityPanel extends TraceChartPanel {
 
     }
 
+    // Called by exportDataTable
     public String toString() {
+        // todo - make this a table of correlation coefficients
+
         if (getChart().getPlotCount() == 0) {
             return "no plot available";
         }
