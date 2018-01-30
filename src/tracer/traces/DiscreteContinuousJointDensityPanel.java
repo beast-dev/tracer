@@ -155,17 +155,17 @@ public class DiscreteContinuousJointDensityPanel extends TraceChartPanel {
 
             if (trace1.getTraceType().isDiscrete()) {
                 createDiscreteContinuousPlot(traceList1, traceIndex1, traceList2, traceIndex2);
+                setXLabel(traceName1);
+                setYLabel(traceName2);
             } else {
                 createDiscreteContinuousPlot(traceList2, traceIndex2, traceList1, traceIndex1);
+                setXLabel(traceName2);
+                setYLabel(traceName1);
             }
 
         } else {
             throw new RuntimeException("This panel only works with one discrete vs one continuous trace");
         }
-
-        setXLabel(traceName1);
-        setYLabel(traceName2);
-
     }
 
     /**
