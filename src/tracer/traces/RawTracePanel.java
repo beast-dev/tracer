@@ -27,7 +27,6 @@ package tracer.traces;
 
 import dr.app.gui.chart.*;
 import dr.inference.trace.Trace;
-import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 import dr.stats.Variate;
@@ -266,7 +265,8 @@ public class RawTracePanel extends TraceChartPanel {
                 if (trace.getTraceType().isNumber()) {
 
                     if (trace.getTraceType().isInteger()) {
-                        getChart().setXAxis(new DiscreteAxis(true, true));
+                        //change Y axis to discrete
+                        getChart().setYAxis(new DiscreteAxis(true, true));
                         getChart().getYAxis().setAxisFlags(Axis.AT_DATA, Axis.AT_DATA);
 
                         if (trace.getTraceType().isBinary()) {
@@ -279,7 +279,8 @@ public class RawTracePanel extends TraceChartPanel {
                     //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
                     minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
                 } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
-                    getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
+                    //change Y axis to discrete
+                    getChart().setYAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
                     int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
                     //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
                     minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
