@@ -26,12 +26,14 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.inference.trace.*;
+import dr.inference.trace.Trace;
+import dr.inference.trace.TraceList;
+import dr.inference.trace.TraceType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -193,27 +195,53 @@ public class IntervalsPanel extends TraceChartPanel {
                             // Stacked column charts?
                             plot = null;
                         } else {
-                            double lower = trace.getTraceStatistics().getLowerHPD();
-                            double upper = trace.getTraceStatistics().getUpperHPD();
-                            ViolinPlot violinPlot = new ViolinPlot(true, 0.6, lower, upper, false, tl.getValues(traceIndex));
-
-                            if (trace.getUniqueValueCount() > 2) {
-                                // don't show hpds for binary traces...
-                                violinPlot.setIntervals(trace.getTraceStatistics().getLowerHPD(), trace.getTraceStatistics().getUpperHPD());
-                            }
-
-                            violinPlot.setName(name);
-                            violinPlot.setLineStyle(new BasicStroke(0.5f), Color.black);
-                            violinPlot.setPaints(BAR_PAINT, TAIL_PAINT);
-
                             Axis yAxis = new DiscreteAxis(true, true);
                             getChartPanel().getChart().setYAxis(yAxis);
 
-                            if (trace.getUniqueValueCount() == 1) {
-                                yAxis.addRange(0, 1);
-                            }
+                            // TODO: setIntervals & setPaints not in AbstractPlot, a new child class?
+                            int uniqueValueCount = trace.getUniqueValueCount();
+                            if (uniqueValueCount < 2) {
+//                                yAxis.addRange(0, 1); // why?
 
-                            plot = violinPlot;
+                                // only has 1 value, so use mean
+                                double mean = trace.getTraceStatistics().getMean();
+
+                                IntegerViolinPlot oneValuePlot = new IntegerViolinPlot(true, 0.6, mean, mean, false, trace.getFrequencyCounter());
+                                oneValuePlot.setIntervals(mean, mean);
+                                oneValuePlot.setName(name);
+                                oneValuePlot.setLineStyle(new BasicStroke(0.5f), Color.black);
+                                oneValuePlot.setPaints(BAR_PAINT, TAIL_PAINT);
+
+                                plot = oneValuePlot;
+                            } else if (uniqueValueCount == 2) {
+                                // has 2 values, use min and max
+                                double lower = trace.getTraceStatistics().getMinimum();
+                                double upper = trace.getTraceStatistics().getMaximum();
+
+                                IntegerViolinPlot integerViolinPlot = new IntegerViolinPlot(true, 0.6, lower, upper, false, trace.getFrequencyCounter());
+                                integerViolinPlot.setIntervals(lower, upper);
+                                integerViolinPlot.setName(name);
+                                integerViolinPlot.setLineStyle(new BasicStroke(0.5f), Color.black);
+                                integerViolinPlot.setPaints(BAR_PAINT, TAIL_PAINT);
+
+                                plot = integerViolinPlot;
+                            } else {
+                                // more than 2 values, use hpd, and ViolinPlot works
+                                double lower = trace.getTraceStatistics().getLowerHPD();
+                                double upper = trace.getTraceStatistics().getUpperHPD();
+
+                                ViolinPlot violinPlot = new ViolinPlot(true, 0.6, lower, upper, false, tl.getValues(traceIndex));
+
+//                                if (trace.getUniqueValueCount() > 2) {
+                                // don't show hpds for binary traces...
+                                violinPlot.setIntervals(lower, upper);
+//                                }
+                                violinPlot.setName(name);
+                                violinPlot.setLineStyle(new BasicStroke(0.5f), Color.black);
+                                violinPlot.setPaints(BAR_PAINT, TAIL_PAINT);
+
+                                plot = violinPlot;
+                            }
                         }
 
                     } else {
