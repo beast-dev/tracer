@@ -31,8 +31,8 @@ import dr.stats.Variate;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A panel that displays density plots of traces
@@ -192,7 +192,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
                 if (columnPlot != null) {
                     columnPlot.setName(name);
-                    int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
+                    int selectedColour = currentSettings.cm.addTraceColour(tl.getFullName(), name, currentSettings.colourBy);
                     if (tl instanceof CombinedTraces) {
                         columnPlot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[selectedColour]);
                     } else {

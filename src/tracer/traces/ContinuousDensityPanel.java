@@ -27,7 +27,6 @@ package tracer.traces;
 
 import dr.app.gui.chart.*;
 import dr.inference.trace.Trace;
-import dr.inference.trace.TraceCorrelation;
 import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 import dr.stats.Variate;
@@ -306,7 +305,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
                     if (plot != null) {
                         plot.setName(name);
-                        int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
+                        int selectedColour = currentSettings.cm.addTraceColour(tl.getFullName(), name, currentSettings.colourBy);
                         if (tl instanceof CombinedTraces) {
                             plot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[selectedColour]);
                         } else {

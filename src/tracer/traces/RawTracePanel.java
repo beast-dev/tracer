@@ -275,13 +275,13 @@ public class RawTracePanel extends TraceChartPanel {
                             getChart().getYAxis().setRange(0.0, 1.0);
                         }
                     }
-                    int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
+                    int selectedColour = currentSettings.cm.addTraceColour(tl.getFullName(), name, currentSettings.colourBy);
                     //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
                     minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
                 } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
                     //change Y axis to discrete
                     getChart().setYAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
-                    int selectedColour = currentSettings.cm.addTraceColour(tl.getName(), name, currentSettings.colourBy);
+                    int selectedColour = currentSettings.cm.addTraceColour(tl.getFullName(), name, currentSettings.colourBy);
                     //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
                     minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
                 } else {
