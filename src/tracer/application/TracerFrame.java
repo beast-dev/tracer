@@ -1493,6 +1493,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                             "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
+
+            return;
         }
 
         if (add) {
