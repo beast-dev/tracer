@@ -1383,6 +1383,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                             "this analysis on, or select the Combined trace.",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
 
 
@@ -1411,6 +1412,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                             "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
 
         if (add) {
@@ -1438,6 +1440,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                             "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
 
         if (add) {
@@ -1465,6 +1468,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                             "this analysis on, (but not the Combined trace).",
                     "Unable to perform analysis",
                     JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
 
         if (add) {
