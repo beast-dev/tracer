@@ -315,7 +315,8 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             break;
                         case 9:
                             value = tc.getESS();
-                            break;
+                            // only need 1 dp for ESS
+                            return TraceAnalysis.formattedNumber(value, 1);
                         case 10:
                             value = tc.getSize();
                             break;
@@ -348,7 +349,8 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                         case 9:
                             value = tc.getESS();
                             if (Double.isNaN(value)) return "n/a";
-                            break;
+                            // only need 1 dp for ESS
+                            return TraceAnalysis.formattedNumber(value, 1);
                         case 10:
                             value = tc.getSize();
                             break;
