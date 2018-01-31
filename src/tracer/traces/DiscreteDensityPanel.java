@@ -145,7 +145,9 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                     return;
                 }
 
-                if (traceType == TraceType.CATEGORICAL) {
+                ColumnPlot columnPlot;
+
+                if (traceType.isCategorical()) {
                     Set<String> labels = new HashSet<String>(trace.getCategoryLabelMap().values());
                     if (categoryLabels == null) {
                         categoryLabels = labels;
@@ -156,16 +158,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                         return;
                     }
                     categoryLabels.addAll(trace.getCategoryLabelMap().values());
-                }
 
-                String name = tl.getTraceName(traceIndex);
-                if (getTraceLists().length > 1) {
-                    name = tl.getName() + " - " + name;
-                }
-
-                ColumnPlot columnPlot;
-
-                if (traceType.isCategorical()) {
                     trace.setOrderType(Trace.OrderType.FREQUENCY);
                     columnPlot = new ColumnPlot(trace.getFrequencyCounter(), trace.getCategoryOrder(), false);
 
@@ -191,7 +184,13 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                 }
 
                 if (columnPlot != null) {
+                    String name = tl.getTraceName(traceIndex);
+                    if (getTraceLists().length > 1) {
+                        name = tl.getName() + " - " + name;
+                    }
+
                     columnPlot.setName(name);
+                    
                     int selectedColour = currentSettings.cm.addTraceColour(tl.getFullName(), name, currentSettings.colourBy);
                     if (tl instanceof CombinedTraces) {
                         columnPlot.setLineStyle(new BasicStroke(2.0f), currentSettings.palette[selectedColour]);
