@@ -205,10 +205,6 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                     getChart().setOriginStyle(null, null);
                     getChart().addPlot(plot);
                 }
-
-                // change x axis to DiscreteAxis or LinearAxis according TraceType
-                setXAxis(trace, td);
-
             }
         }
 
@@ -227,20 +223,6 @@ public class DiscreteDensityPanel extends TraceChartPanel {
                 ((Color) source).getRed(),
                 ((Color) source).getGreen(),
                 ((Color) source).getBlue(), alpha);
-    }
-
-    protected void setXAxis(Trace trace, TraceDistribution td) {
-        if (td != null) {
-            TraceType traceType = td.getTraceType();
-
-            if (!traceType.isCategorical()) {
-                getChart().setXAxis(new DiscreteAxis(true, true));
-            } else if (traceType.isCategorical()) {
-                getChart().setXAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
-            } else {
-                throw new RuntimeException("Trace type is not recognized: " + traceType);
-            }
-        }
     }
 
     /**
