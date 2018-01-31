@@ -134,6 +134,21 @@ public class IntervalsPanel extends TraceChartPanel {
                         return;
                     }
                     categoryLabels.addAll(trace.getCategoryLabelMap().values());
+                } else {
+                    // multiple integer traces only have violin plot
+                    // default toolbar has 3 components
+                    int toolbarComps = getToolBar().getComponents().length;
+                    if (traceType.isIntegerOrBinary()) {
+                        if (toolbarComps > 1)
+                            getToolBar().getComponentAtIndex(1).setVisible(false);
+                        if (toolbarComps > 2)
+                            getToolBar().getComponentAtIndex(2).setVisible(false);
+                    } else {
+                        if (toolbarComps > 1)
+                            getToolBar().getComponentAtIndex(1).setVisible(true);
+                        if (toolbarComps > 2)
+                            getToolBar().getComponentAtIndex(2).setVisible(true);
+                    }
                 }
 
                 if (traceType != trace.getTraceType()) {
