@@ -56,6 +56,7 @@ public class IntervalsPanel extends TraceChartPanel {
     private ChartSetupDialog chartSetupDialog = null;
 
     private JToolBar toolBar;
+    private JLabel showComboLabel;
 
     private Settings currentSettings = new Settings();
 
@@ -96,9 +97,9 @@ public class IntervalsPanel extends TraceChartPanel {
 
         toolBar.add(createSetupButton());
 
-        JLabel label = createShowComboAndLabel();
-        toolBar.add(label);
-        toolBar.add(label.getLabelFor());
+        showComboLabel = createShowComboAndLabel();
+        toolBar.add(showComboLabel);
+        toolBar.add(showComboLabel.getLabelFor());
 
         return toolBar;
     }
@@ -134,22 +135,10 @@ public class IntervalsPanel extends TraceChartPanel {
                         return;
                     }
                     categoryLabels.addAll(trace.getCategoryLabelMap().values());
-                } else {
-                    // multiple integer traces only have violin plot
-                    // default toolbar has 3 components
-                    int toolbarComps = getToolBar().getComponents().length;
-                    if (traceType.isIntegerOrBinary()) {
-                        if (toolbarComps > 1)
-                            getToolBar().getComponentAtIndex(1).setVisible(false);
-                        if (toolbarComps > 2)
-                            getToolBar().getComponentAtIndex(2).setVisible(false);
-                    } else {
-                        if (toolbarComps > 1)
-                            getToolBar().getComponentAtIndex(1).setVisible(true);
-                        if (toolbarComps > 2)
-                            getToolBar().getComponentAtIndex(2).setVisible(true);
-                    }
                 }
+
+                // multiple integer traces only have violin plot
+                showComboLabel.getLabelFor().setVisible(traceType.isContinuous());
 
                 if (traceType != trace.getTraceType()) {
                     setMessage("Traces must be of the same type to visualize here.");
@@ -228,10 +217,30 @@ public class IntervalsPanel extends TraceChartPanel {
                                 oneValuePlot.setPaints(BAR_PAINT, TAIL_PAINT);
 
                                 plot = oneValuePlot;
-                            } else if (uniqueValueCount == 2) {
-                                // has 2 values, use min and max
-                                double lower = trace.getTraceStatistics().getMinimum();
-                                double upper = trace.getTraceStatistics().getMaximum();
+                            } else {
+                                double lower;
+                                double upper;
+                                if (uniqueValueCount == 2) {
+                                    // has 2 values, use min and max
+                                     lower = trace.getTraceStatistics().getMinimum();
+                                     upper = trace.getTraceStatistics().getMaximum();
+
+                                } else {
+                                    // more than 2 values, use hpd, and ViolinPlot works
+                                    lower = trace.getTraceStatistics().getLowerHPD();
+                                    upper = trace.getTraceStatistics().getUpperHPD();
+                                }
+//                                    ViolinPlot violinPlot = new ViolinPlot(true, 0.6, lower, upper, false, tl.getValues(traceIndex));
+//
+////                                if (trace.getUniqueValueCount() > 2) {
+//                                    // don't show hpds for binary traces...
+//                                    violinPlot.setIntervals(lower, upper);
+////                                }
+//                                    violinPlot.setName(name);
+//                                    violinPlot.setLineStyle(new BasicStroke(0.5f), Color.black);
+//                                    violinPlot.setPaints(BAR_PAINT, TAIL_PAINT);
+//
+//                                    plot = violinPlot;
 
                                 IntegerViolinPlot integerViolinPlot = new IntegerViolinPlot(true, 0.6, lower, upper, false, trace.getFrequencyCounter());
                                 integerViolinPlot.setIntervals(lower, upper);
@@ -240,22 +249,6 @@ public class IntervalsPanel extends TraceChartPanel {
                                 integerViolinPlot.setPaints(BAR_PAINT, TAIL_PAINT);
 
                                 plot = integerViolinPlot;
-                            } else {
-                                // more than 2 values, use hpd, and ViolinPlot works
-                                double lower = trace.getTraceStatistics().getLowerHPD();
-                                double upper = trace.getTraceStatistics().getUpperHPD();
-
-                                ViolinPlot violinPlot = new ViolinPlot(true, 0.6, lower, upper, false, tl.getValues(traceIndex));
-
-//                                if (trace.getUniqueValueCount() > 2) {
-                                // don't show hpds for binary traces...
-                                violinPlot.setIntervals(lower, upper);
-//                                }
-                                violinPlot.setName(name);
-                                violinPlot.setLineStyle(new BasicStroke(0.5f), Color.black);
-                                violinPlot.setPaints(BAR_PAINT, TAIL_PAINT);
-
-                                plot = violinPlot;
                             }
                         }
 
