@@ -25,8 +25,8 @@
 \author[Rambaut \textit{et~al.}]{
 Andrew Rambaut\,$^{1}$,
 Alexei J.~Drummond\,$^{2,3}$,
-Guy Baele$^{4}$,
 Dong Xie\,$^{2,3}$,
+Guy Baele$^{4}$,
 Marc A.~Suchard\,$^{5,6}$
 }
 
@@ -57,7 +57,7 @@ Visualising and analysing the MCMC-generated samples from the posterior distribu
 We present the software package \tracer\ (version 1.7) for visualising and analysing the MCMC trace files generated through Bayesian phylogenetic inference.
 \tracer\ provides kernel density estimation, multivariate visualisation, demographic trajectory reconstruction, conditional posterior distribution summary and more.
 \section{Availability:}
-\tracer\ is open-source and available at \url{http://http://beast.community/tracer}.
+\tracer\ is open-source and available at \url{http://beast.community/tracer}.
 
 \section{Contact:}
 \href{a.rambaut@ed.ac.uk}{\url{a.rambaut@ed.ac.uk}},
@@ -69,7 +69,7 @@ and
 
 \section*{Introduction}
 
-Bayesian inference of phylogeny using Markov chain Monte Carlo (MCMC) \citep{rannala1996probability, mau1999bayesian} flourishes as a popular approach to uncover the evolutionary relationships among taxa, such as genes, genomes, individuals or species.
+Bayesian inference of phylogeny using Markov chain Monte Carlo (MCMC) \citep{rannala1996probability, mau1999bayesian, drummond2002estimating} flourishes as a popular approach to uncover the evolutionary relationships among taxa, such as genes, genomes, individuals or species.
 MCMC approaches generate samples of model parameter values - including the phylogenetic tree - drawn from their posterior distribution given molecular sequence data and a selection of evolutionary models.
 Visualising, tabulating and marginalising these samples is critical for approximating the posterior quantities of interest that one reports as the outcome of a Bayesian phylogenetic analysis.
 To facilitate this task, we have developed the \tracer\ (version 1.7) software package to
@@ -127,12 +127,8 @@ Discrete phylogeographic analyses frequently employ BSSVS due to the potentially
 Finally, \tracer\ provides demographic reconstruction resulting in a graphical plot, often applied to reconstruct epidemic dynamics.
 %Depending on the actual demographic model used in the analysis, an additional file containing samples from the posterior tree distribution will be required.
 %The currently
-Available models are constant size, exponential and logistic growth,
-%\citep{drummond2002estimating},
-%Bayesian  skyline \citep{drummond2005bayesian},
-%Bayesian skyride \citep{minin2008smooth} and
-%Bayesian skygrid \citep{gill2012improving}.
-and the non-parametric Bayesian skline, skyride and skygrid.
+Available models are constant size, exponential and logistic growth \citep{drummond2002estimating},
+and the non-parametric Bayesian skyline \citep{drummond2005bayesian,heledDrummond2008}, skyride \citep{minin2008smooth} and skygrid \citep{gill2012improving}.
 %Not sure if the statement below is correct ...
 %All of these demographic models are available in BEAST \citep{drummond2012bayesian} and BEAST2 \citep{bouckaert2014beast2}.
 %Besides these, ``Lineages Through Time'' (?) is also available to plot the quantiles of the number of lineages against time, which describes the change of diversification of all organisms over time. %citation?
@@ -165,7 +161,7 @@ We estimate the ancestral locations of RABV and their host-jumping history using
 Phylogeographic BSSVS inference includes parameters of both integer (number of non-zero transition rates) and categorical (host or location-state) trace type.
 %While a single parameter of such types can easily be visualised using a frequency plot,
 In \tracer, we use a bubble chart to visualise the joint probability distribution between two integer or categorical traces (see Figure \ref{fig:4tabs}:a).
-Here, circle size is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set.
+Here, circle area is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set.
 with a coloured tile background if this probability reaches a nominal threshold to enhance visibility.
 %The coloured background can also help to show the area of the credible set and non-credible set.
 %Multiple integer parameters can also be visualised using
@@ -309,7 +305,7 @@ Popular tutorials employ \tracer\ to generate marginal parameter summaries and t
 
 \section*{Acknowledgements}
 
-This work was supported in part by the Wellcome Trust through project 206298/Z/17/Z (Artic Network), the European Union Seventh Framework Programme under grant agreement no. 725422-RESERVOIRDOCS, the National Science Foundation through grant DMS 1264153, the National Institutes of Health under grants R01 AI107034 and U19 AI135995, and the Marsden Trust.
+This work was supported in part by the Wellcome Trust through project 206298/Z/17/Z (Artic Network), the European Union Seventh Framework Programme under grant agreement no. 725422-RESERVOIRDOCS, the National Science Foundation through grant DMS 1264153, the National Institutes of Health under grants R01 AI107034 and U19 AI135995. AJD acknowledges support from Marsden grant contract UOA1611.
 GB acknowledges support from the Interne Fondsen KU Leuven / Internal Funds KU Leuven.
 
 
