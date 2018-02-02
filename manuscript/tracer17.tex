@@ -78,10 +78,10 @@ process MCMC trace files containing parameter samples and to interactively explo
 
 \section*{Design and Implementation}
 
-A key feature of \tracer\ is its ability to link together samples from quantitative model parameter trace files with tree trace files.
-This linkage is not available in other popular post-processing MCMC software, such as coda \citep{plummer2006coda} and AWTY \citep{nylander2007awty}, and enables users to approximate the posterior distribution of scientifically relevant quantities that are functions of both the tree and other quantitative measures.
-Further, \tracer\ can analyse a single trace or combine samples from multiple traces.
-For each trace, \tracer\ examines the posterior samples from all the available parameters, regardless of whether these are continuous, integer or categorical, and presents statistical summaries and visualizations.
+%A key feature of \tracer\ is its ability to link together samples from quantitative model parameter trace files with tree trace files. %% AR - only for the demographic reconstructions...
+%This linkage is not available in other popular post-processing MCMC software, such as coda \citep{plummer2006coda} and AWTY \citep{nylander2007awty}, and enables users to approximate the posterior distribution of scientifically relevant quantities that are functions of both the tree and other quantitative measures. %% AR - ... which are intended in these other software packages.
+For each trace, \tracer\ examines the posterior samples from all the available parameters, treating continuous, integer and categorical parameters appropriately, and presents statistical summaries and visualizations.
+Further, \tracer\ can analyse a single trace or combine samples from multiple files.
 Immediately apparent in the default \tracer\ view, the effective sample size (ESS) is one such statistic that
 allows users to assess the number of effectively independent draws from the posterior distribution the trace represents (Figure \ref{fig:overview}:a).
 Colour coding assists the user in determining potential MCMC mixing problems, with cut-off values at 100 and 200.
