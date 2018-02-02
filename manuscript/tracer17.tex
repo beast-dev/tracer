@@ -104,6 +104,11 @@ If multiple trace files have the same file name,  then a ``Combined'' trace appe
 \item Marginal Density: Draws density plots for the selected parameter(s), including  kernel density estimates (Figure \ref{fig:overview}:c), histograms and violin plots (Figure \ref{fig:overview}:d) for continuous parameters and frequency plots for categorical or integer parameters.
 
 \item Joint-Marginal: Visualisation in this panel appears after selecting two or more parameters and the plot form depends on the parameter types. We show several examples in the next section of the paper.
+
+\item Trace: Constructs line plots connecting the sequential samples of one or more selected parameters against state or generation number (Figure \ref{fig:overview}:e).  Users typically use this plot to assess mixing, select a suitable burn-in and identify trends that suggest convergence issues.
+\end{itemize}
+%
+
 %
 \begin{figure}[t]
 \subfigure[Tracer overview]{\includegraphics[width=0.47\textwidth]{./figures/rabv-overview-2.pdf}}
@@ -111,14 +116,26 @@ If multiple trace files have the same file name,  then a ``Combined'' trace appe
 \subfigure[Density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-density.pdf}}\\
 \subfigure[Violin]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-violin.pdf}}
 \subfigure[Trace]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-traces.pdf}}
+\vspace{-0.25cm}
 \caption{Overview of \tracer\ functionality and individual parameter visualisations: (a) Main \tracer\ panel upon loading a single trace file; (b) boxplot representation of two continuous parameters; (c) kernel density estimates; (d) violin plots; (e) the actual traces connecting the parameter values visited by the Markov chain.}
 \label{fig:overview}
 \end{figure}
 %
-\item Trace: Constructs line plots connecting the sequential samples of one or more selected parameters against state or generation number (Figure \ref{fig:overview}:e).  Users typically use this plot to assess mixing, select a suitable burn-in and identify trends that suggest convergence issues.
-\end{itemize}
-%
 
+%
+\begin{figure}[t]
+\subfigure[Bubble chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integerjointmarginal-2.pdf}}
+\subfigure[Marginal density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integermarginaldensity.pdf}} \\
+\subfigure[Scatter plot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-correlation.pdf}}
+\subfigure[Correlation plot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-joint-real.pdf}}
+\vspace{-0.25cm}
+%\subfigure[Box-and-whisker plot]{\includegraphics[width = .465\textwidth, height = 3cm]{./figures/rabv-catreal.pdf}}
+\caption{Joint marginal and marginal density plots of: (a) two integer variables through a bubble chart; (b) frequency plots the marginal density of multiple integer or categorical variables; (c) classic scatter or correlation plot for two continuous variables; (d) large correlation matrices for multiple ($> 2$) continuous variables.
+%; (e) box-and-whisker plots for the joint marginal distribution of a continuous and an integer or categorical variable.
+}
+\label{fig:4tabs}
+\end{figure}
+%
 \tracer\ offers a solution of visualising conditional posterior distributions as well.
 A typical use case involves Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters influence the likelihood function only when a specific model is selected by a random indicator function.
 Under BSSVS, a posterior estimate of the parameter should only sample values from states where the indicator equals one.
@@ -133,26 +150,14 @@ and the non-parametric Bayesian skyline \citep{drummond2005bayesian,heledDrummon
 %All of these demographic models are available in BEAST \citep{drummond2012bayesian} and BEAST2 \citep{bouckaert2014beast2}.
 %Besides these, ``Lineages Through Time'' (?) is also available to plot the quantiles of the number of lineages against time, which describes the change of diversification of all organisms over time. %citation?
 
+\vspace{-0.5cm}
+
 \section*{Example}
 
 \subsection*{Cross-species dynamics of rabies in North American bats}
 
 We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations.
-%
-\begin{figure}[t]
-\subfigure[Bubble chart]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integerjointmarginal-2.pdf}}
-\subfigure[Marginal density]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-integermarginaldensity.pdf}} \\
-\subfigure[Scatter plot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-correlation.pdf}}
-\subfigure[Correlation plot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-joint-real.pdf}} \\
-%\subfigure[Box-and-whisker plot]{\includegraphics[width = .465\textwidth, height = 3cm]{./figures/rabv-catreal.pdf}}
-\caption{Joint marginal and marginal density plots of: (a) two integer variables through a bubble chart; (b) frequency plots the marginal density of multiple integer or categorical variables; (c) classic scatter or correlation plot for two continuous variables; (d) large correlation matrices for multiple ($> 2$) continuous variables.
-%; (e) box-and-whisker plots for the joint marginal distribution of a continuous and an integer or categorical variable.
-}
-\label{fig:4tabs}
-\end{figure}
-%
-The data set comprises 372 \textit{nucleoprotein} gene sequences (nucleotide positions: 594-1353) from
-17 bat species, sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker,Faria2013}.
+The data set comprises 372 \textit{nucleoprotein} gene sequences from 17 bat species, sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker,Faria2013}.
 %, including two additional species that had been excluded from the original analysis owing to a limited amount of available sequences \citep{Faria2013}.
 %We also include a viral sequence with an unknown sampling date (accession no. TX5275, sampled in Texas from Lasiurus borealis), which will be adequately accommodated in our inference.
 We estimate the ancestral locations of RABV and their host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS \citep{Lemey2009}, while simultaneously estimating RABV effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
@@ -190,12 +195,16 @@ Following a rapid decline at the end of last century, we observe a recent sharp 
 \centerline{
 \includegraphics[width=0.46\textwidth]{./figures/rabv-skygrid.pdf}
 }
+\vspace{-0.25cm}
 \caption{Estimating the effective population sizes over time using a Bayesian skygrid demographic reconstruction for rabies virus in North America.}
 \label{fig:rabv}
 \end{figure}
 
-Other packages are available for the post-processing of MCMC samples and are largely complementary to \tracer\. The R package `coda' \citep{plummer2006coda} provides some of the functionality of \tracer\ within the R programming environment. `AWTY' \citep{nylander2007awty} explores the convergence of the phylogenetic tree parameter itself across multiple MCMC runs.
+Other packages are available for the post-processing of MCMC samples and are largely complementary to \tracer\ .
+The R package `coda' \citep{plummer2006coda} provides some of the functionality of \tracer\ within the R programming environment. `AWTY' \citep{nylander2007awty} explores the convergence of the phylogenetic tree parameter itself across multiple MCMC runs.
 %% AR - anything else? The MDS tree-space approaches of Hillis etc.?
+
+\vspace{-0.25cm}
 
 \section*{Availability}
 
@@ -304,12 +313,15 @@ Popular tutorials employ \tracer\ to generate marginal parameter summaries and t
 
 %To export the currently displayed graphic use the "Export PDF" function in the "File" menu.
 
+\vspace{-0.25cm}
 
 \section*{Acknowledgements}
 
 This work was supported in part by the Wellcome Trust through project 206298/Z/17/Z (Artic Network), the European Union Seventh Framework Programme under grant agreement no. 725422-RESERVOIRDOCS, the National Science Foundation through grant DMS 1264153, the National Institutes of Health under grants R01 AI107034 and U19 AI135995. AJD acknowledges support from Marsden grant contract UOA1611.
 GB acknowledges support from the Interne Fondsen KU Leuven / Internal Funds KU Leuven.
 
+
+\vspace{-0.25cm}
 
 %\section*{References}
 % The bibtex filename
