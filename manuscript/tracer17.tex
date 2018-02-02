@@ -157,7 +157,6 @@ The data set comprises 372 \textit{nucleoprotein} gene sequences (nucleotide pos
 %We also include a viral sequence with an unknown sampling date (accession no. TX5275, sampled in Texas from Lasiurus borealis), which will be adequately accommodated in our inference.
 We estimate the ancestral locations of RABV and their host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS \citep{Lemey2009}, while simultaneously estimating RABV effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
 
-
 Phylogeographic BSSVS inference includes parameters of both integer (number of non-zero transition rates) and categorical (host or location-state) trace type.
 %While a single parameter of such types can easily be visualised using a frequency plot,
 In \tracer, we use a bubble chart to visualise the joint probability distribution between two integer or categorical traces (see Figure \ref{fig:4tabs}:a).
@@ -194,6 +193,8 @@ Following a rapid decline at the end of last century, we observe a recent sharp 
 \caption{Estimating the effective population sizes over time using a Bayesian skygrid demographic reconstruction for rabies virus in North America.}
 \label{fig:rabv}
 \end{figure}
+
+Other packages are available for the post-processing of MCMC samples are available and are largely complementary to \tracer\. The R package `coda' \citep{plummer2006coda} provides some of the functionality of \tracer\ within the R programming environment. `AWTY' \citep{nylander2007awty} looks at the convergence of phylogenetic MCMC runs for the phylogenetic tree itself. %% AR - anything else? The MDS tree-space approaches of Hillis etc.?
 
 \section*{Availability}
 
