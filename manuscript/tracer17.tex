@@ -130,7 +130,7 @@ If multiple trace files have the same file name,  then a ``Combined'' trace appe
 \subfigure[Correlation plot]{\includegraphics[width = .23\textwidth, height = 3cm]{./figures/rabv-joint-real.pdf}}
 \vspace{-0.25cm}
 %\subfigure[Box-and-whisker plot]{\includegraphics[width = .465\textwidth, height = 3cm]{./figures/rabv-catreal.pdf}}
-\caption{Joint marginal and marginal density plots of: (a) two integer variables through a bubble chart; (b) frequency plots the marginal density of multiple integer or categorical variables; (c) classic scatter or correlation plot for two continuous variables; (d) large correlation matrices for multiple ($> 2$) continuous variables.
+\caption{Multi-parameter visualisations of: (a) the joint probability distribution of two integer variables through a bubble chart; (b) the marginal density of multiple integer or categorical variables through frequency plots; (c) two continuous variables through a classic scatter or correlation plot; (d) multiple ($> 2$) continuous variables using large correlation matrices.
 %; (e) box-and-whisker plots for the joint marginal distribution of a continuous and an integer or categorical variable.
 }
 \label{fig:4tabs}
@@ -157,31 +157,30 @@ and the non-parametric Bayesian skyline \citep{drummond2005bayesian,heledDrummon
 
 \subsection*{Cross-species dynamics of rabies in North American bats}
 
-We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bat populations.
+We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bats.
 The data set comprises 372 \textit{nucleoprotein} gene sequences from 17 bat species, sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker,Faria2013}.
-%, including two additional species that had been excluded from the original analysis owing to a limited amount of available sequences \citep{Faria2013}.
-%We also include a viral sequence with an unknown sampling date (accession no. TX5275, sampled in Texas from Lasiurus borealis), which will be adequately accommodated in our inference.
-We estimate the ancestral locations of RABV and their host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS \citep{Lemey2009}, while simultaneously estimating RABV effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
+%We estimate the ancestral locations of RABV and their host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS \citep{Lemey2009}, while simultaneously estimating RABV effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
+We estimate RABV ancestral locations and host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS, while simultaneously estimating effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
 
-Phylogeographic BSSVS inference includes parameters of both integer (number of non-zero transition rates) and categorical (host or location-state) trace type.
+Phylogeographic BSSVS inference includes parameters of both integer (number of non-zero transition rates) and categorical (host or location-state) trace types.
 %While a single parameter of such types can easily be visualised using a frequency plot,
-In \tracer, we use a bubble chart to visualise the joint probability distribution between two integer or categorical traces (see Figure \ref{fig:4tabs}:a).
-Here, circle area is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set.
+In \tracer, a bubble chart visualises the joint probability distribution between two integer or categorical traces (see Figure \ref{fig:4tabs}:a).
+Circle area is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set.
 with a coloured tile background if this probability reaches a nominal threshold to enhance visibility.
 %The coloured background can also help to show the area of the credible set and non-credible set.
 %Multiple integer parameters can also be visualised using
-Marginal density plots (see Figure \ref{fig:4tabs}:b) can also display multiple integer parameters, each with unique colour scales.
-With approximately equal numbers of transition rates, both figures suggest a similar host and location trait model complexity.
+Marginal density plots can also display multiple integer parameters, each with unique colour scales (see Figure \ref{fig:4tabs}:b).
+With approximately equal numbers of transition rates, both figures suggest similar host and location trait model complexity.
 %Both figures show a clear overlap in the number of non-zero transition rates in the discrete trait models for host and location, as identified using a BSSVS procedure.
 \tracer\ also provides
 %The visualisation options for integer or categorical parameters are complemented with
- popular visualisations for continuous parameters, including scatter plots (see Figure \ref{fig:4tabs}:c) for two parameters,
- and recent extensions for correlations between $\ge\hspace{-0.32em}2$ continuous parameters (Figure \ref{fig:4tabs}:d; \citet{Murdoch}).
+ popular visualisations for continuous parameters, including scatter plots for two parameters (see Figure \ref{fig:4tabs}:c),
+ and extensions for correlations between $\ge\hspace{-0.32em}2$ continuous parameters (Figure \ref{fig:4tabs}:d; \citet{Murdoch}).
  %, which indicates a strong positive correlation between the clock rates of both discrete trait models.
 %We also provide an extension of such a scatter plot for multiple (i.e. more than two) continuous variables (see Figure \ref{fig:4tabs}:d; \citet{Murdoch}), which makes use of coloured ellipses to indicate the strength of correlation between each pair of continuous variables.
-Colour gradients indicate the strength and direction of the correlation, from red (strong negative-correlation) to blue (strong positive-correlation).
+Colour gradients indicate strength and direction of the correlation, from red (strong negative) to blue (strong positive).
 %with a colour gradient from white to dark blue indicating increasingly strong correlation and a colour gradient from white to dark red indicating increasingly strong anti-correlation.
-The shape of ellipse drawn re-enforces the strength of correlation, with no correlation appearing as a circle and perfect (anti-)correlation as a line.
+Ellipse shapes re-enforce the strength of correlation, with no correlation appearing as a circle and perfect (anti-)correlation as a line.
 %Finally, in order to display the joint marginal distribution between a continuous variable and an integer or categorical variable, we make use of box-and-whisker plots.
 %Using such a plot (Figure \ref{fig:4tabs}:e), we can infer that the range of the non-zero transition rates can depend on the ancestral location state inferred at the root of the underlying phylogeny.
 
