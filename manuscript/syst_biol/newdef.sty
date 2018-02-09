@@ -1,0 +1,139 @@
+%
+\def\LC{\MakeLowercase}
+\def\vpb#1{\vadjust{\pagebreak}}
+\newcommand{\vvp}{\vadjust{\vfill\eject}}
+\newcommand{\epb}{\removelastskip\hrule height 0pt\eject}
+\def\n{\nobreak}
+\def\h#1{\hbox{#1}}
+\def\pb{\pagebreak}
+\def\br{\break}
+\def\BS{\boldsymbol}
+%
+%%%%%%%% Definitions for Tables %%%%
+\def\mcc#1{\multicolumn{1}{c}{#1}}
+\def\mcl#1{\multicolumn{1}{l}{#1}}
+\def\mcr#1{\multicolumn{1}{r}{#1}}
+\def\MC#1#2{\multicolumn{#1}{c}{#2}}
+\def\ML#1#2{\multicolumn{#1}{l}{#2}}
+\def\MR#1#2{\multicolumn{#1}{r}{#2}}
+\def\mcct#1{\multicolumn{2}{c}{#1}}
+\def\mclt#1{\multicolumn{2}{l}{#1}}
+%
+%%%%%%%%
+%\font\Usy=MTMI at 8pt
+%\def\UPtheta{\mbox{\Usy\char"12}}
+%\font\Upsymb=MTGU at 12pt
+%\def\UPmu{\mbox{\Upsymb\char"6D}}
+%\def\UPpi{\mbox{\Upsymb\char"008}}
+%\def\UPgamma{\mbox{\Upsymb\char"67}}
+%\def\UPalpha{\mbox{\Upsymb\char"61}}
+%\def\UPbeta{\mbox{\Upsymb\char"62}}
+%\def\UPdelta{\mbox{\Upsymb\char"64}}
+%\def\UPepsilon{\mbox{\Upsymb\char"2B}}
+%\def\UPnu{\mbox{\Upsymb\char"6E}}
+%\def\UPeta{\mbox{\Upsymb\char"21}}
+%\def\UPlambda{\mbox{\Upsymb\char"6C}}
+%
+%\font\Upsymb=MTGU at 9pt
+%\def\UPmu{\mbox{\Upsymb\char"6D}}
+%\def\UPphi{\mbox{\Upsymb\char"23}}
+%\def\UPdelta{\mbox{\Upsymb\char"064}}
+%\def\UPPpi{\mbox{\Upsymb\char"70}}
+%\def\UPgamma{\mbox{\Upsymb\char"67}}
+%\def\UPalpha{\mbox{\Upsymb\char"61}}
+%\def\UPbeta{\mbox{\Upsymb\char"62}}
+%\def\UPkappa{\mbox{\Upsymb\char"6B}}
+%\def\UPvarepsilon{\mbox{\Upsymb\char"02B}}
+%\def\UPPdelta{\mbox{\Upsymb\char"64}}
+%\def\UPPepsilon{\mbox{\Upsymb\char"2B}}
+%\def\UPPnu{\mbox{\Upsymb\char"6E}}
+%\def\UPPeta{\mbox{\Upsymb\char"21}}
+%\def\UPPlambda{\mbox{\Upsymb\char"6C}}
+%\def\UPPeta{\mbox{\Upsymb\char"034}}
+%
+%\font\Upbtn=MTGU at 8pt
+%\def\ntheta{\mbox{\Upbtn\char"022}}
+%\def\btnmu{\mbox{\Upbtn\char"6D}}
+%\def\btnphi{\mbox{\Upbtn\char"23}}
+%\def\UPPpi{\mbox{\Upsymb\char"70}}
+%\def\btngamma{\mbox{\Upbtn\char"67}}
+%\def\btnalpha{\mbox{\Upbtn\char"61}}
+%\def\btnbeta{\mbox{\Upbtn\char"62}}
+%\def\btndelta{\mbox{\Upsymb\char"64}}
+%\def\btnkappa{\mbox{\Upsymb\char"6B}}
+%\def\UPPepsilon{\mbox{\Upsymb\char"2B}}
+%\def\UPPnu{\mbox{\Upsymb\char"6E}}
+%\def\UPPeta{\mbox{\Upsymb\char"21}}
+%\def\UPPlambda{\mbox{\Upsymb\char"6C}}
+
+%\font\Upbn=MTGU at 7pt
+%\def\balpha{\mbox{\Upbn\char"61}}
+%\def\bbeta{\mbox{\Upbn\char"62}}
+
+%\font\bsymbm=MTGUB at 8pt
+%\def\Ubtntheta{\mbox{\bsymbm\char'042}}
+%\def\btntheta{\mbox{\bsymbm\char"022}}
+
+%\font\bsymb=MTGUB at 8pt %Bold  Roman
+%\def\Bmu{\mbox{\bsymb\char"6D}
+%\def\Bpi{\mbox{\Upsymb\char"70}}
+%%\def\UPgamma{\mbox{\Upsymb\char"67}}
+%%\def\btnalpha{\mbox{\Upbtn\char"61}}
+%\def\btnbeta{\mbox{\Upbtn\char"62}}
+%%\def\UPPdelta{\mbox{\Upsymb\char"64}}
+%%\def\UPPepsilon{\mbox{\Upsymb\char"2B}}
+%%\def\UPPnu{\mbox{\Upsymb\char"6E}}
+%%\def\UPPeta{\mbox{\Upsymb\char"21}}
+%%\def\UPPlambda{\mbox{\Upsymb\char"6C}}
+
+%\font\EURO=MACIC at 10pt
+%\def\Euro{\mbox{\EURO\char"045}}
+%
+%\font\Upsyb=MTGU at 6pt
+%\def\Upmu{\mbox{\Upsyb\char"6D}}
+%\def\Upgamma{\mbox{\Upsyb\char"67}}
+%\def\Uptheta{\mbox{\Upsyb\char"022}}
+%\def\Upalpha{\mbox{\Upsyb\char"61}}
+%
+%\font\bsymb=MTGUB at 10pt
+%\def\UPtheta{\mbox{\bsymb\char"022}}
+%\def\Bmu{\mbox{\bsymb\char"6D}}
+%\def\btbeta{\mbox{\bsymb\char"62}}
+%\def\btalpha{\mbox{\bsymb\char"61}}
+%
+%\font\Ups=MTGU at 12pt
+%\def\btnUPPnu{\mbox{\Ups\char"6E}}
+
+%\font\bsym=MTGUB at 16pt
+%\def\Bbeta{\mbox{\bsym\char"62}}
+
+\def\Ch#1{\setcounter{chapter}{#1}}
+\def\Pg#1{\setcounter{page}{#1}}
+\def\Fg#1{\setcounter{figure}{#1}}
+\def\Tb#1{\setcounter{table}{#1}}
+%
+\newcommand{\nn}{\nonumber}
+\def\Max{\mathop{\rm Maximum}}
+\def\Min{\mathop{\rm Maximum}}
+\def\~{\hphantom{0}}
+
+%\font\Usyb=MTMIB at 10pt
+%\def\Upmu{\mbox{\Upsyb\char"6D}}
+%\def\UpDelta{\mbox{\Usyb\char"31}}
+%\def\bitheta{\mbox{\Usyb\char"12}}
+%\def\bimu{\mbox{\Usyb\char"16}}
+
+%\font\UpH=MTGU at 16pt
+%\def\Hbeta{\mbox{\UpH\char"062}}
+
+%\font\isymb=MTMI at 10pt
+%\def\imu{\mbox{\isymb\char"16}}
+%\def\itheta{\mbox{\isymb\char"12}}
+%\def\itau{\mbox{\isymb\char"1C}}
+%\def\ivarepsilon{\mbox{\isymb\char"22}}
+%\def\ialpha{\mbox{\isymb\char"0B}}
+
+%\font\eurosym=MACIC at 10pt
+%\def\euros{\mbox{\eurosym{\char"45}}}
+
+\def\Mnote#1{\marginpar{\rule{7pc}{1pt}\vskip0pt\raggedright\fontsize{8pt}{10pt}\sf\selectfont #1\vskip-6pt\rule{7pc}{.5pt}}}

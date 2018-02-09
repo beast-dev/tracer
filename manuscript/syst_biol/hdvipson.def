@@ -1,0 +1,120 @@
+%%
+%% This is file `hdvipson.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hyperref.dtx  (with options: `dvipsone')
+%% 
+%% File: hyperref.dtx Copyright 1995-2001 Sebastian Rahtz,
+%% RCS: $Id: hyperref.dtx 6.71 2000/10/04 rahtz Exp rahtz $
+%%
+%% This file is part of the `Hyperref Bundle'.
+%% -------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the `Hyperref Bundle' is
+%% given in the file `manifest.txt'.
+%%
+\ProvidesFile{hdvipson.def}
+  [2001/04/05 v6.71e
+  Hyperref driver for dvipsone]
+\providecommand\@pdfborder{0 0 65781}
+\input{pdfmark.def}%
+\def\@pdfproducer{dvipsone + Distiller}
+\def\literalps@out#1{\special{ps:#1}}%
+\def\headerps@out#1{\special{! #1}}%
+\def\PDF@FinishDoc{%
+  \special{PDF: Keywords \@pdfkeywords}%
+  \special{PDF: Title \@pdftitle}%
+  \special{PDF: Creator \@pdfcreator}%
+  \special{PDF: Author \@pdfauthor}%
+  \special{PDF: Producer \@pdfproducer}%
+  \special{PDF: Subject \@pdfsubject}%
+  \Hy@DisableOption{pdfauthor}%
+  \Hy@DisableOption{pdftitle}%
+  \Hy@DisableOption{pdfsubject}%
+  \Hy@DisableOption{pdfcreator}%
+  \Hy@DisableOption{pdfproducer}%
+  \Hy@DisableOption{pdfkeywords}%
+}
+\def\PDF@SetupDoc{%
+  \pdfmark{%
+    pdfmark=/DOCVIEW,
+    Page=\@pdfstartpage,
+    View=\@pdfstartview,
+    URI={<< /Base (\@baseurl) >>},
+    PageMode=\@pdfpagemode
+  }%
+  \ifx\@pdfpagescrop\@empty
+  \else
+    \pdfmark{pdfmark=/PAGES,CropBox=\@pdfpagescrop}%
+  \fi
+  \pdfmark{%
+    pdfmark=/PUT,%
+    Raw={
+      \string{Catalog\string} <<
+        /ViewerPreferences <<
+          \ifHy@toolbar\else /HideToolbar true \fi
+          \ifHy@menubar\else /HideMenubar true \fi
+          \ifHy@windowui\else /HideWindowUI true \fi
+          \ifHy@fitwindow /FitWindow true \fi
+          \ifHy@centerwindow /CenterWindow true \fi
+        >>
+        \ifx\pdf@pagelayout\@empty
+        \else
+          /PageLayout /\pdf@pagelayout\space
+        \fi
+      >>%
+    }%
+  }%
+}
+\providecommand\@pdfview{XYZ}
+\providecommand\@pdfviewparams{ %
+  gsave revscl currentpoint grestore
+  112 add exch pop null exch null
+}
+\special{headertext=
+  /DvipsToPDF { 65781 div  } def
+  /PDFToDvips { 65781 mul } def
+  /HyperBorder  { 1 PDFToDvips } def
+  /H.B {/Rect[pdf@llx pdf@lly pdf@urx pdf@ury]} def
+  /H.S {
+    currentpoint
+    HyperBorder add /pdf@lly exch def
+    dup   DvipsToPDF /pdf@hoff exch def
+    HyperBorder sub /pdf@llx exch def
+  } def
+  /H.L {
+    2 sub
+    PDFToDvips /HyperBase exch def
+    currentpoint
+    HyperBase sub /pdf@ury exch def
+    /pdf@urx exch def
+  } def
+  /H.A {
+    H.L
+    currentpoint exch pop
+    HyperBase sub % baseline skip
+    DvipsToPDF /pdf@voff exch def
+  } def
+  /H.R {
+    currentpoint
+    HyperBorder sub /pdf@ury exch def
+    HyperBorder add /pdf@urx exch def
+    currentpoint exch pop DvipsToPDF /pdf@voff exch def
+  } def
+  systemdict
+  /pdfmark known not
+  {userdict /pdfmark systemdict /cleartomark get put} if
+}
+
+\endinput
+%%
+%% End of file `hdvipson.def'.

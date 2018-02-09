@@ -1,0 +1,3754 @@
+%%
+%% This is file `hyperref.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hyperref.dtx  (with options: `package')
+%%
+%% File: hyperref.dtx Copyright 1995-2001 Sebastian Rahtz,
+%% RCS: $Id: hyperref.dtx 6.71 2000/10/04 rahtz Exp rahtz $
+%%
+%% This file is part of the `Hyperref Bundle'.
+%% -------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the `Hyperref Bundle' is
+%% given in the file `manifest.txt'.
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cpl-hyperref}
+  [2001/04/05 v6.71e
+  Hypertext links for LaTeX]
+\begingroup
+  \@makeother\`%
+  \@makeother\=%
+  \edef\x{%
+    \edef\noexpand\x{%
+      \endgroup
+      \noexpand\toks@{%
+        \catcode 96=\noexpand\the\catcode`\noexpand\`\relax
+        \catcode 61=\noexpand\the\catcode`\noexpand\=\relax
+      }%
+    }%
+    \noexpand\x
+  }%
+\x
+\@makeother\`
+\@makeother\=
+\def\Hy@SetCatcodes{%
+  \@makeother\`%
+  \@makeother\=%
+  \catcode`\$=3
+  \catcode`\&=4
+  \catcode`\^=7
+  \catcode`\_=8
+  \@makeother\|%
+  \@makeother\:%
+  \@makeother\(%
+  \@makeother\)%
+  \@makeother\[%
+  \@makeother\]%
+  \@makeother\/%
+  \@makeother\!%
+  \@makeother\<%
+  \@makeother\>%
+  \@makeother\.%
+  \@makeother\;%
+  \@makeother\+%
+  \@makeother\-%
+  \@makeother\"%
+  \@makeother\'%
+}
+\begingroup
+  \def\x#1{\catcode`\noexpand#1=\the\catcode`#1\relax}%
+  \xdef\Hy@RestoreCatcodes{%
+    \the\toks@
+    \x\$%
+    \x\&%
+    \x\^%
+    \x\_%
+    \x\|%
+    \x\:%
+    \x\(%
+    \x\)%
+    \x\[%
+    \x\]%
+    \x\/%
+    \x\!%
+    \x\<%
+    \x\>%
+    \x\.%
+    \x\;%
+    \x\+%
+    \x\-%
+    \x\"%
+    \x\'%
+  }%
+\endgroup
+\Hy@SetCatcodes
+\RequirePackage{keyval}[1997/11/10]
+\def\Hy@Warning#1{\PackageWarning{hyperref}{#1}}
+\def\Hy@WarningNoLine#1{\PackageWarningNoLine{hyperref}{#1}}
+\def\Hy@Info#1{\PackageInfo{hyperref}{#1}}
+\newif\ifHy@typexml
+\newif\ifHy@activeanchor
+\newif\ifHy@backref
+\newif\ifHy@bookmarks
+\newif\ifHy@bookmarksnumbered
+\newif\ifHy@bookmarksopen
+\newif\ifHy@breaklinks
+\newif\ifHy@centerwindow
+\newif\ifHy@CJKbookmarks
+\newif\ifHy@colorlinks
+\newif\ifHy@draft
+\newif\ifHy@figures
+\newif\ifHy@fitwindow
+\newif\ifHy@frenchlinks
+\newif\ifHy@hyperfootnotes
+\newif\ifHy@hyperindex
+\newif\ifHy@hypertexnames
+\newif\ifHy@implicit
+\newif\ifHy@linktocpage
+\newif\ifHy@menubar
+\newif\ifHy@naturalnames
+\newif\ifHy@nesting
+\newif\ifHy@newwindow
+\newif\ifHy@pageanchor
+\newif\ifHy@pagelabels
+\newif\ifHy@pdfpagehidden
+\newif\ifHy@pdfstring
+\newif\ifHy@plainpages
+\newif\ifHy@psize
+\newif\ifHy@raiselinks
+\newif\ifHy@seminarslides
+\newif\ifHy@texht
+\newif\ifHy@toolbar
+\newif\ifHy@unicode
+\newif\ifHy@verbose
+\newif\ifHy@windowui
+\Hy@backreffalse
+\Hy@bookmarksnumberedfalse
+\Hy@bookmarksopenfalse
+\Hy@bookmarkstrue
+\Hy@breaklinksfalse
+\Hy@centerwindowfalse
+\Hy@CJKbookmarksfalse
+\Hy@figuresfalse
+\Hy@fitwindowfalse
+\Hy@hyperfootnotestrue
+\Hy@hyperindextrue
+\Hy@hypertexnamestrue
+\Hy@implicittrue
+\Hy@linktocpagefalse
+\Hy@menubartrue
+\Hy@naturalnamesfalse
+\Hy@nestingfalse
+\Hy@newwindowfalse
+\Hy@pageanchortrue
+\Hy@pagelabelsfalse
+\Hy@pdfpagehiddenfalse
+\Hy@pdfstringfalse
+\Hy@plainpagestrue
+\Hy@raiselinksfalse
+\Hy@texhtfalse
+\Hy@toolbartrue
+\Hy@typexmlfalse
+\Hy@unicodefalse
+\Hy@verbosefalse
+\Hy@windowuitrue
+\def\Hy@StepCount#1{\advance#1 by 1 }%
+\def\Hy@GlobalStepCount#1{\global\advance#1 by 1 }%
+\newdimen\@linkdim
+\let\Hy@driver\@empty
+\let\MaybeStopEarly\relax
+\newcount\Hy@linkcounter
+\newcount\Hy@pagecounter
+\Hy@linkcounter0
+\Hy@pagecounter0
+\long\def\Hy@ReturnAfterElseFi#1\else#2\fi{\fi#1}
+\long\def\Hy@ReturnAfterFi#1\fi{\fi#1}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname dimexpr\endcsname\relax
+  \def\hypercalcbpdef#1#2{%
+    \begingroup
+      \toks@{}%
+      \HyCal@scan#2\hypercalcbp\@nil
+    \expandafter\endgroup
+    \expandafter\def\expandafter#1\expandafter{\the\toks@}%
+  }
+  \def\HyCal@scan#1\hypercalcbp#2\@nil{%
+    \toks@\expandafter{\the\toks@ #1}%
+    \ifx\\#2\\%
+    \else
+      \Hy@ReturnAfterFi{%
+        \HyCal@do#2\@nil
+      }%
+    \fi
+  }
+  \def\HyCal@do#1#2\@nil{%
+    \setlength{\dimen@}{#1}%
+    \setlength{\dimen@}{0.99626401\dimen@}%
+    \edef\x{%
+      \toks@{%
+        \the\toks@
+        \strip@pt\dimen@
+      }%
+    }\x
+    \HyCal@scan#2\@nil
+  }
+\else
+  \def\hypercalcbp#1{%
+    \strip@pt\dimexpr 0.99626401\dimexpr #1\relax\relax
+  }
+  \def\hypercalcbpdef{\def}
+\fi
+\def\pdfstringdef#1#2{%
+  \begingroup
+    \escapechar`\\%
+    \edef\0{\string\0}%
+    \edef\1{\string\1}%
+    \edef\2{\string\2}%
+    \edef\3{\string\3}%
+    \ifHy@unicode
+      \edef\8{\string\8}%
+      \edef\9{\string\9}%
+      \fontencoding{PU}%
+    \else
+      \fontencoding{PD1}%
+    \fi
+    \enc@update
+    \@inmathwarn\pdfstringdef
+    \let\@inmathwarn\HyPsd@inmathwarn
+    \let\add@accent\HyPsd@add@accent
+    \let\{\textbraceleft
+    \let\}\textbraceright
+    \let\\\textbackslash
+    \let\#\textnumbersign
+    \let\$\textdollar
+    \let\%\textpercent
+    \let\&\textampersand
+    \let\_\textunderscore
+    \let\P\textparagraph
+    \let\ldots\textellipsis
+    \let\dots\textellipsis
+    \def\\{\pdfstringdefWarn\\}%
+    \def\newline{\pdfstringdefWarn\newline}%
+    \def\TeX{TeX}%
+    \def\LaTeX{La\TeX}%
+    \def\LaTeXe{\LaTeX2e}%
+    \def\eTeX{e-\TeX}%
+    \def\MF{Metafont}%
+    \def\MP{Metapost}%
+    \let\emph\@firstofone
+    \let\textbf\@firstofone
+    \let\textit\@firstofone
+    \let\textmd\@firstofone
+    \let\textnormal\@firstofone
+    \let\textrm\@firstofone
+    \let\textsc\@firstofone
+    \let\textsf\@firstofone
+    \let\textsl\@firstofone
+    \let\texttt\@firstofone
+    \let\textup\@firstofone
+    \let\ttfamily\@empty
+    \let\sffamily\@empty
+    \let\itshape\@empty
+    \let\upshape\@empty
+    \let\bfseries\@empty
+    \let\rm\@empty
+    \let\Huge\@empty
+    \let\LARGE\@empty
+    \let\Large\@empty
+    \let\footnotesize\@empty
+    \let\huge\@empty
+    \let\large\@empty
+    \let\normalsize\@empty
+    \let\scriptsize\@empty
+    \let\small\@empty
+    \let\tiny\@empty
+    \let\textlatin\@firstofone
+    \@ifundefined{language@group}{}{%
+      \csname HyPsd@babel@\language@group\endcsname
+    }%
+    \let\glqq\textglqq
+    \let\grqq\textgrqq
+    \let\glq\textglq
+    \let\grq\textgrq
+    \let\flqq\textflqq
+    \let\frqq\textfrqq
+    \let\flq\textflq
+    \let\frq\textfrq
+    \HyPSD@AMSclassfix
+    \let\hspace\HyPsd@hspace
+    \let\label\@gobble
+    \let\index\@gobble
+    \let\glossary\@gobble
+    \let\href\@secondoftwo
+    \let\ref\HyPsd@ref
+    \let\pageref\HyPsd@pageref
+    \let\leavevmode\@empty
+    \def\halign{\pdfstringdefWarn\halign\@gobble}%
+    \ifHy@CJKbookmarks
+      \HyPsd@CJKhook
+    \fi
+    \Hy@pdfstringtrue
+    \pdfstringdefPreHook
+    \HyPsd@LetUnexpandableSpace\space
+    \HyPsd@LetUnexpandableSpace\ %
+    \HyPsd@LetUnexpandableSpace~%
+    \HyPsd@LetUnexpandableSpace\nobreakspace
+    \@ifundefined{@xspace}{%
+      \let\xspace\HyPsd@ITALCORR
+    }{%
+      \let\xspace\HyPsd@XSPACE
+    }%
+    \let\/\HyPsd@ITALCORR
+    \let\bgroup\/%
+    \let\egroup\/%
+    \let\discretionary\@gobbletwo
+    \let\@ifnextchar\HyPsd@ifnextchar
+    \let\@protected@testopt\HyPsd@protected@testopt
+    \begingroup
+      \let\GenericError\@gobblefour
+      \let\GenericWarning\@gobbletwo
+      \let\GenericInfo\@gobbletwo
+      \ifx\nofrenchguillemets\@undefined
+      \else
+        \nofrenchguillemets
+      \fi
+      \let\Hy@temp\xdef
+      \let\def\HyPsd@DefCommand
+      \let\gdef\HyPsd@DefCommand
+      \let\edef\HyPsd@DefCommand
+      \let\xdef\HyPsd@DefCommand
+      \let\futurelet\HyPsd@LetCommand
+      \let\let\HyPsd@LetCommand
+      \Hy@temp#1{#2}%
+    \endgroup
+    \ifx#1\@empty
+    \else
+      \HyPsd@ProtectSpaces#1%
+      \let\HyPsd@String\@empty
+      \expandafter\HyPsd@RemoveBraces\expandafter{#1|}%
+      \global\let#1\HyPsd@String
+      \let\HyPsd@SPACEOPTI\relax
+      {%
+         \let\HyPsd@String\@empty
+         \expandafter\HyPsd@CheckCatcodes#1\HyPsd@End
+         \global\let#1\HyPsd@String
+      }%
+      \expandafter\HyPsd@RemoveMask\expandafter
+        |\expandafter\@empty#1\HyPsd@End#1%
+      \expandafter\HyPsd@Subst\expandafter{\HyPsd@GLYPHERR}{\relax}#1%
+      \let\HyPsd@String\@empty
+      \expandafter\HyPsd@GlyphProcess#1\relax\@empty
+      \global\let#1\HyPsd@String
+      \HyPsd@StringSubst{\\}{\textbackslash}#1%
+      \ifHy@unicode
+        \expandafter\HyPsd@StringSubst\csname 80\040\endcsname
+          \HyPsd@SPACEOPTI#1%
+        \edef\Hy@temp@A{\HyPsd@SPACEOPTI\HyPsd@SPACEOPTI\80\273}%
+        \expandafter\HyPsd@Subst\expandafter{\Hy@temp@A}%
+          {\HyPsd@SPACEOPTI\80\273}#1%
+      \else
+        \HyPsd@StringSubst{\040}\HyPsd@SPACEOPTI#1%
+        \expandafter\HyPsd@Subst\expandafter{%
+          \expandafter\HyPsd@SPACEOPTI\expandafter\HyPsd@SPACEOPTI
+          \string\273}{\HyPsd@SPACEOPTI\273}#1%
+      \fi
+      \ifHy@unicode
+        \HyPsd@StringSubst{\)}{\80\051}#1%
+        \HyPsd@Subst){\80\051}#1%
+        \let\HyPsd@empty\relax
+        \expandafter\HyPsd@StringSubst\csname 80\051\endcsname
+          {\HyPsd@empty\80\051}#1%
+      \else
+        \HyPsd@StringSubst{\)}{\051}#1%
+        \HyPsd@Subst){\051}#1%
+        \let\HyPsd@empty\relax
+        \HyPsd@StringSubst{\051}{\HyPsd@empty\string\)}#1%
+      \fi
+      \expandafter\HyPsd@Subst\expandafter{\/}\HyPsd@empty#1%
+      \@ifundefined{@xspace}{%
+      }{%
+        \let\HyPsd@xspace\relax
+        \expandafter\HyPsd@Subst\expandafter
+          {\HyPsd@XSPACE}\HyPsd@xspace#1%
+        \let\HyPsd@xspace\HyPsd@doxspace
+      }%
+      \xdef#1{#1\HyPsd@empty}%
+      \HyPsd@Subst{!`}\textexclamdown#1%
+      \HyPsd@Subst{?`}\textquestiondown#1%
+      \let\HyPsd@empty\@empty
+      \ifHy@unicode
+        \HyPsd@StringSubst\(\textparenleft#1%
+        \HyPsd@Subst(\textparenleft#1%
+      \else
+        \HyPsd@StringSubst\({\050}#1%
+        \HyPsd@Subst({\050}#1%
+        \HyPsd@StringSubst{\050}{\string\(}#1%
+      \fi
+      \ifHy@unicode
+        \edef\HyPsd@SPACEOPTI{\80\040}%
+      \else
+        \let\HyPsd@SPACEOPTI\HyPsd@spaceopti
+      \fi
+      \xdef#1{#1\@empty}%
+    \fi
+    \ifHy@unicode
+      \HyPsd@ConvertToUnicode#1%
+    \fi
+    \pdfstringdefPostHook#1%
+  \endgroup
+}
+\@ifundefined{T@PD1}{\input{pd1enc.def}}{}
+\DeclareFontFamily{PD1}{pdf}{}
+\DeclareFontShape{PD1}{pdf}{m}{n}{ <-> cmr10 }{}
+\DeclareFontSubstitution{PD1}{pdf}{m}{n}
+\def\HyPsd@InitUnicode{%
+  \@ifundefined{T@PU}{\input{puenc.def}}{}%
+  \DeclareFontFamily{PU}{pdf}{}%
+  \DeclareFontShape{PU}{pdf}{m}{n}{ <-> cmr10 }{}%
+  \DeclareFontSubstitution{PU}{pdf}{m}{n}%
+  \let\HyPsd@InitUnicode\relax
+}
+\newcommand*{\texorpdfstring}{%
+   \ifHy@pdfstring
+     \expandafter\@secondoftwo
+   \else
+     \expandafter\@firstoftwo
+   \fi
+}
+\@ifundefined{pdfstringdefPreHook}{%
+  \let\pdfstringdefPreHook\@empty
+}{}
+\@ifundefined{pdfstringdefPostHook}{%
+  \let\pdfstringdefPostHook\@gobble
+}{}
+\def\pdfstringdefDisableCommands{%
+  \begingroup
+    \makeatletter
+    \HyPsd@DisableCommands
+}
+\long\def\HyPsd@DisableCommands#1{%
+    \toks0=\expandafter{\pdfstringdefPreHook}%
+    \toks1={#1}%
+    \xdef\pdfstringdefPreHook{\the\toks0 \the\toks1}%
+  \endgroup
+}
+\def\pdfstringdefWarn#1{%
+   \expandafter\noexpand\csname<>-\string#1\endcsname
+}
+\newif\ifHy@next
+\@ifpackagewith{babel}{danish}{%
+  \def\HyPsd@babel@danish{%
+    \declare@shorthand{danish}{"|}{}%
+    \declare@shorthand{danish}{"~}{-}%
+  }%
+}{}
+\@ifpackagewith{babel}{dutch}{%
+  \def\HyPsd@babel@dutch{%
+    \declare@shorthand{dutch}{"|}{}%
+    \declare@shorthand{dutch}{"~}{-}%
+  }%
+}{}
+\@ifpackagewith{babel}{finnish}{%
+  \def\HyPsd@babel@finnish{%
+    \declare@shorthand{finnish}{"|}{}%
+  }%
+}{}
+\Hy@nextfalse
+\@ifpackagewith{babel}{frenchb}{\Hy@nexttrue}{}
+\@ifpackagewith{babel}{francais}{\Hy@nexttrue}{}
+\ifHy@next
+  \def\HyPsd@babel@frenchb{%
+    \def\guill@spacing{ }%
+  }%
+\fi
+\Hy@nextfalse
+\@ifpackagewith{babel}{german}{\Hy@nexttrue}{}%
+\@ifpackagewith{babel}{germanb}{\Hy@nexttrue}{}%
+\@ifpackagewith{babel}{austrian}{\Hy@nexttrue}{}%
+\ifHy@next
+  \def\HyPsd@babel@german{%
+    \declare@shorthand{german}{"f}{f}%
+    \declare@shorthand{german}{"|}{}%
+    \declare@shorthand{german}{"~}{-}%
+  }%
+\fi
+\Hy@nextfalse
+\@ifpackagewith{babel}{ngerman}{\Hy@nexttrue}{}%
+\@ifpackagewith{babel}{ngermanb}{\Hy@nexttrue}{}%
+\@ifpackagewith{babel}{naustrian}{\Hy@nexttrue}{}%
+\ifHy@next
+  \def\HyPsd@babel@ngerman{%
+    \declare@shorthand{german}{"|}{}%
+    \declare@shorthand{german}{"~}{-}%
+  }%
+\fi
+\Hy@nextfalse
+\@ifpackagewith{babel}{usorbian}{\Hy@nexttrue}{}%
+\@ifpackagewith{babel}{uppersorbian}{\Hy@nexttrue}{}%
+\ifHy@next
+  \def\HyPsd@babel@usorbian{%
+    \declare@shorthand{usorbian}{"f}{f}%
+    \declare@shorthand{usorbian}{"|}{}%
+  }%
+\fi
+\Hy@nextfalse
+\@ifpackagewith{babel}{brazil}{\Hy@nexttrue}{}%
+\@ifpackagewith{babel}{brazilian}{\Hy@nexttrue}{}%
+\@ifpackagewith{babel}{portuges}{\Hy@nexttrue}{}%
+\@ifpackagewith{babel}{portuguese}{\Hy@nexttrue}{}%
+\ifHy@next
+  \def\HyPsd@babel@portuges{%
+    \declare@shorthand{portuges}{"|}{}%
+  }%
+\fi
+\Hy@nextfalse
+\@ifpackagewith{babel}{russian}{\Hy@nexttrue}{}
+\@ifpackagewith{babel}{russianb}{\Hy@nexttrue}{}
+\ifHy@next
+  \def\HyPsd@babel@russian{%
+    \declare@shorthand{russian}{"|}{}%
+    \declare@shorthand{russian}{"~}{-}%
+  }%
+\fi
+\Hy@nextfalse
+\@ifpackagewith{babel}{ukrainian}{\Hy@nexttrue}{}
+\@ifpackagewith{babel}{ukraineb}{\Hy@nexttrue}{}
+\ifHy@next
+  \def\HyPsd@babel@ukrainian{%
+    \declare@shorthand{ukrainian}{"|}{}%
+    \declare@shorthand{ukrainian}{"~}{-}%
+  }%
+\fi
+\@ifpackagewith{babel}{slovene}{%
+  \def\HyPsd@babel@slovene{%
+    \declare@shorthand{slovene}{"|}{}%
+  }%
+}{}
+\@ifpackagewith{babel}{swedish}{%
+  \def\HyPsd@babel@swedish{%
+    \declare@shorthand{swedish}{"|}{}%
+    \declare@shorthand{swedish}{"~}{-}%
+  }%
+}{}
+\begingroup
+  \toks@{%
+    \let\CJK@ignorespaces\empty
+    \def\CJK@char#1{\@gobbletwo}%
+    \let\CJK@charx\@gobblefour
+    \let\CJK@punctchar\@gobblefour
+    \def\CJK@punktcharx#1{\@gobblefour}%
+    % ... ?
+    \ifHy@unicode
+      \def\Hy@cjkpu{\80}%
+    \else
+      \let\Hy@cjkpu\@empty
+    \fi
+    \HyPsd@CJKActiveChars
+  }%
+  \count@=127
+  \@whilenum\count@<255 \do{%
+    \advance\count@ by 1
+    \lccode`\~=\count@
+    \lowercase{%
+      \toks@\expandafter{\the\toks@ ~}%
+    }%
+  }%
+  \toks@\expandafter{\the\toks@ !}%
+  \xdef\HyPsd@CJKhook{\the\toks@}%
+\endgroup
+\def\HyPsd@CJKActiveChars#1{%
+  \ifx#1!%
+    \let\HyPsd@CJKActiveChars\relax
+  \else
+    \edef#1{\noexpand\Hy@cjkpu\string#1}%
+  \fi
+  \HyPsd@CJKActiveChars
+}
+\def\HyPsd@inmathwarn#1#2{%
+  \ifx#2\expandafter
+    \expandafter\ifx\csname\cf@encoding\string#1\endcsname\relax
+      \HyPsd@GLYPHERR
+      \expandafter\@gobble\string#1%
+      >%
+      \expandafter\expandafter\expandafter\HyPsd@EndWithElse
+    \else
+      \expandafter\expandafter\expandafter\HyPsd@GobbleFiFi
+    \fi
+  \else
+    \expandafter#2%
+  \fi
+}
+\def\HyPsd@GobbleFiFi#1\fi#2\fi{}
+\def\HyPsd@EndWithElse#1\else{\else}
+\def\HyPsd@add@accent#1#2{%
+  \HyPsd@GLYPHERR\expandafter\@gobble\string#1+\string#2>%
+  #2%
+}%
+\def\HyPsd@LetUnexpandableSpace#1{%
+  \expandafter\futurelet\expandafter#1\expandafter\@gobble\space\relax
+}
+\HyPsd@LetUnexpandableSpace\HyPsd@UnexpandableSpace
+\edef\HyPsd@XSPACE{\string#\string X}
+\edef\HyPsd@ITALCORR{\string#\string I}
+\edef\HyPsd@GLYPHERR{\string#\string G}
+\def\HyPsd@hspace#1{\HyPsd@@hspace#1*\END}
+\def\HyPsd@@hspace#1*#2\END{%
+  \ifx\\#2\\%
+    \HyPsd@hspacetest{#1}%
+  \else
+    \expandafter\HyPsd@hspacetest
+  \fi
+}
+\def\HyPsd@hspacetest#1{\ifdim#1>\z@\space\fi}
+\@ifundefined{tocsection}{%
+  \let\HyPSD@AMSclassfix\relax
+}{%
+  \def\HyPSD@AMSclassfix{%
+    \let\tocpart\HyPSD@tocsection
+    \let\tocchapter\HyPSD@tocsection
+    \let\tocappendix\HyPSD@tocsection
+    \let\tocsection\HyPSD@tocsection
+    \let\tocsubsection\HyPSD@tocsection
+    \let\tocsubsubsection\HyPSD@tocsection
+    \let\tocparagraph\HyPSD@tocsection
+  }%
+  \def\HyPSD@tocsection#1#2#3{%
+    \if @#2@\else\if @#1@\else#1 \fi#2. \fi
+    #3%
+  }%
+}
+\def\HyPsd@ref#1{\HyPsd@@ref#1*\END}%
+\def\HyPsd@@ref#1*#2\END{%
+  \ifx\\#2\\%
+    \HyPsd@@@ref{#1}%
+  \else
+    \expandafter\HyPsd@@@ref
+  \fi
+}%
+\def\HyPsd@@@ref#1{%
+  \expandafter\ifx\csname r@#1\endcsname\relax
+    ??%
+  \else
+    \expandafter\expandafter\expandafter\@car\csname r@#1\endcsname\@nil
+  \fi
+}
+\def\HyPsd@pageref#1{\HyPsd@@pageref#1*\END}
+\def\HyPsd@@pageref#1*#2\END{%
+  \ifx\\#2\\%
+    \HyPsd@@@pageref{#1}%
+  \else
+    \expandafter\HyPsd@@@pageref
+  \fi
+}
+\def\HyPsd@@@pageref#1{%
+  \expandafter\ifx\csname r@#1\endcsname\relax
+    ??%
+  \else
+    \expandafter\expandafter\expandafter\expandafter
+    \expandafter\expandafter\expandafter\@car
+    \expandafter\expandafter\expandafter\@gobble
+    \csname r@#1\endcsname\@nil
+  \fi
+}
+\begingroup
+  \def\x#1#2{%
+    \endgroup
+    \let#1\def
+    \def\HyPsd@DefCommand##1##2##{%
+      #1%
+      \expandafter\noexpand
+        \csname\expandafter\@gobble\string##1\@empty\endcsname
+      \@gobble
+    }%
+    \let#2\let
+    \def\HyPsd@LetCommand##1{%
+      #2%
+      \expandafter\noexpand
+        \csname\expandafter\@gobble\string##1\@empty\endcsname
+    }%
+  }%
+\expandafter\x\csname <def>-command\expandafter\endcsname
+              \csname <let>-command\endcsname
+\def\HyPsd@ifnextchar{%
+  \pdfstringdefWarn\@ifnextchar
+  \expandafter\@gobbletwo\@gobble
+}
+\def\HyPsd@protected@testopt#1{%
+  \pdfstringdefWarn#1%
+  \@gobbletwo
+}
+\def\HyPsd@Warning#1{%
+  \begingroup
+    \def\space{ }%
+    \Hy@Warning{#1}%
+  \endgroup
+}
+\def\HyPsd@ProtectSpaces#1{%
+  \expandafter\HyPsd@@ProtectSpaces
+    \expandafter|\expandafter\@empty#1| \HyPsd@End#1%
+}
+\def\HyPsd@@ProtectSpaces#1 #2\HyPsd@End#3{%
+  \ifx\scrollmode#2\scrollmode
+    \HyPsd@RemoveMask#1\HyPsd@End#3%
+  \else
+    \gdef#3{#1\HyPsd@UnexpandableSpace#2}%
+    \Hy@ReturnAfterFi{%
+      \expandafter\HyPsd@@ProtectSpaces#3\HyPsd@End#3%
+    }%
+  \fi
+}
+\def\HyPsd@RemoveMask|#1|\HyPsd@End#2{%
+  \toks@\expandafter{#1}%
+  \xdef#2{\the\toks@}%
+}
+\def\HyPsd@RemoveBraces#1{%
+  \ifx\scrollmode#1\scrollmode
+  \else
+    \Hy@ReturnAfterFi{%
+      \HyPsd@@RemoveBraces#1\HyPsd@End{#1}%
+    }%
+  \fi
+}
+\def\HyPsd@@RemoveBraces#1#2\HyPsd@End#3{%
+  \def\Hy@temp@A{#1#2}%
+  \def\Hy@temp@B{#3}%
+  \ifx\Hy@temp@A\Hy@temp@B
+    \expandafter\def\expandafter\HyPsd@String\expandafter{%
+      \HyPsd@String#1%
+    }%
+    \Hy@ReturnAfterElseFi{%
+      \ifx\scrollmode#2\scrollmode
+      \else
+        \Hy@ReturnAfterFi{%
+          \HyPsd@RemoveBraces{#2}%
+        }%
+      \fi
+    }%
+  \else
+    \def\Hy@temp@A{#1}%
+    \HyPsd@AppendItalcorr\HyPsd@String
+    \Hy@ReturnAfterFi{%
+      \ifx\Hy@temp@A\@empty
+        \Hy@ReturnAfterElseFi{%
+          \HyPsd@RemoveBraces{#2}%
+        }%
+      \else
+        \Hy@ReturnAfterFi{%
+          \HyPsd@ProtectSpaces\Hy@temp@A
+          \HyPsd@AppendItalcorr\Hy@temp@A
+          \expandafter\HyPsd@RemoveBraces\expandafter
+            {\Hy@temp@A#2}%
+        }%
+      \fi
+    }%
+  \fi
+}
+\def\HyPsd@AppendItalcorr#1{%
+  \expandafter\HyPsd@@AppendItalcorr\expandafter{\/}#1%
+}
+\def\HyPsd@@AppendItalcorr#1#2{%
+  \expandafter\def\expandafter#2\expandafter{#2#1}%
+}
+\def\HyPsd@CheckCatcodes#1#2\HyPsd@End{%
+  \global\let\HyPsd@Rest\relax
+  \ifcat\relax\noexpand#1\relax
+    \ifx#1\protect
+    \else
+      \ifx#1\penalty
+        \setbox\z@=\hbox{%
+          \afterassignment\HyPsd@AfterCountRemove
+          \count@=#2\HyPsd@End
+        }%
+      \else
+        \ifx#1\kern
+          \setbox\z@=\hbox{%
+            \afterassignment\HyPsd@AfterDimenRemove
+            \dimen@=#2\HyPsd@End
+          }%
+        \else
+          \ifx#1\hskip
+            \setbox\z@=\hbox{%
+              \afterassignment\HyPsd@AfterSkipRemove
+              \skip@=#2\HyPsd@End
+            }%
+          \else
+            \HyPsd@CatcodeWarning{#1}%
+          \fi
+        \fi
+      \fi
+    \fi
+  \else
+    \ifcat#1 %SPACE
+      \expandafter\def\expandafter\HyPsd@String\expandafter{%
+        \HyPsd@String\HyPsd@SPACEOPTI
+      }%
+    \else
+      \ifcat$#1%
+        \HyPsd@CatcodeWarning{math shift}%
+      \else
+        \ifcat&#1%
+          \HyPsd@CatcodeWarning{alignment tab}%
+        \else
+          \ifcat^#1%
+            \HyPsd@CatcodeWarning{superscript}%
+          \else
+            \ifcat_#1%
+              \HyPsd@CatcodeWarning{subscript}%
+            \else
+              \expandafter\def\expandafter\HyPsd@String\expandafter{%
+                \HyPsd@String#1%
+              }%
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+  \ifx\HyPsd@Rest\relax
+    \Hy@ReturnAfterElseFi{%
+      \ifx\scrollmode#2\scrollmode
+      \else
+        \Hy@ReturnAfterFi{%
+          \HyPsd@CheckCatcodes#2\HyPsd@End
+        }%
+      \fi
+    }%
+  \else
+    \Hy@ReturnAfterFi{%
+      \ifx\HyPsd@Rest\@empty
+      \else
+        \expandafter\HyPsd@CheckCatcodes\HyPsd@Rest\HyPsd@End
+      \fi
+    }%
+  \fi
+}
+\def\HyPsd@AfterCountRemove#1\HyPsd@End{%
+  \gdef\HyPsd@Rest{#1}%
+}
+\def\HyPsd@AfterDimenRemove#1\HyPsd@End{%
+  \ifdim\ifx\HyPsd@String\@empty\z@\else\dimen@\fi>1ex
+    \HyPsd@ReplaceSpaceWarning{\string\kern\space\the\dimen@}%
+    \gdef\HyPsd@Rest{\HyPsd@UnexpandableSpace #1}%
+  \else
+    \ifdim\dimen@=\z@
+    \else
+      \HyPsd@RemoveSpaceWarning{\string\kern\space\the\dimen@}%
+    \fi
+    \gdef\HyPsd@Rest{#1}%
+  \fi
+}
+\def\HyPsd@AfterSkipRemove#1\HyPsd@End{%
+  \ifdim\ifx\HyPsd@String\@empty\z@\else\skip@\fi>1ex
+    \HyPsd@ReplaceSpaceWarning{\string\hskip\space\the\skip@}%
+    \gdef\HyPsd@Rest{\HyPsd@UnexpandableSpace #1}%
+  \else
+    \ifdim\skip@=\z@
+    \else
+      \HyPsd@RemoveSpaceWarning{\string\kern\space\the\skip@}%
+    \fi
+    \gdef\HyPsd@Rest{#1}%
+  \fi
+}
+\def\HyPsd@CatcodeWarning#1{%
+  \HyPsd@Warning{%
+    Token not allowed in a PDFDocEncoded string,%
+    \MessageBreak removing `\HyPsd@RemoveCmdPrefix#1'%
+  }%
+}
+\begingroup
+  \catcode`\|=0
+  \catcode`\\=12
+  |gdef|HyPsd@RemoveCmdPrefix#1{%
+    |expandafter|HyPsd@@RemoveCmdPrefix
+      |string#1|@empty\<>-|@empty|@empty
+  }%
+  |gdef|HyPsd@@RemoveCmdPrefix#1\<>-#2|@empty#3|@empty{#1#2}%
+|endgroup
+\def\HyPsd@RemoveSpaceWarning#1{%
+  \HyPsd@Warning{%
+    Token not allowed in a PDFDocEncoded string:%
+    \MessageBreak #1\MessageBreak
+    removed%
+  }%
+}
+\def\HyPsd@ReplaceSpaceWarning#1{%
+  \HyPsd@Warning{%
+    Token not allowed in a PDFDocEncoded string:%
+    \MessageBreak #1\MessageBreak
+    replaced by space%
+  }%
+}
+\def\HyPsd@GlyphProcess#1\relax#2\@empty{%
+  \expandafter\def\expandafter\HyPsd@String\expandafter{%
+    \HyPsd@String#1%
+  }%
+  \ifx\\#2\\%
+  \else
+    \Hy@ReturnAfterFi{%
+      \HyPsd@GlyphProcessWarning#2\@empty
+    }%
+  \fi
+}
+\def\HyPsd@GlyphProcessWarning#1>#2\@empty{%
+  \HyPsd@Warning{%
+    Glyph not defined in %
+    P\ifHy@unicode U\else D1\fi\space encoding,\MessageBreak
+    removing `\@backslashchar#1'%
+  }%
+  \HyPsd@GlyphProcess#2\@empty
+}
+\def\HyPsd@spaceopti#1{ % first space
+  \ifx\HyPsd@spaceopti#1%
+    \040%
+  \else
+    #1%
+  \fi
+}%
+\def\HyPsd@Subst#1#2#3{%
+  \def\HyPsd@@Replace##1#1##2\END{%
+    ##1%
+    \ifx\\##2\\%
+    \else
+      #2%
+      \Hy@ReturnAfterFi{%
+        \HyPsd@@Replace##2\END
+      }%
+    \fi
+  }%
+  \xdef#3{%
+    \expandafter\HyPsd@@Replace#3#1\END
+  }%
+}
+\def\HyPsd@StringSubst#1{%
+  \expandafter\HyPsd@Subst\expandafter{\string#1}%
+}
+\def\HyPsd@doxspace#1{%
+  \ifx#1\relax\else
+   \ifx#1.\else
+    \ifx#1:\else
+     \ifx#1,\else
+      \ifx#1;\else
+       \ifx#1!\else
+        \ifx#1?\else
+         \ifx#1/\else
+          \ifx#1-\else
+           \ifx#1'\else
+             \HyPsd@SPACEOPTI
+           \fi
+          \fi
+         \fi
+        \fi
+       \fi
+      \fi
+     \fi
+    \fi
+   \fi
+  \fi
+  #1%
+}%
+\begingroup
+  \catcode`\|=0
+  \catcode`\\=12
+  |gdef|HyPsd@ConvertToUnicode#1{%
+    |xdef#1{%
+      \376\377%
+      |expandafter|HyPsd@DoConvert#1|@empty|@empty|@empty
+    }%
+  }
+  |gdef|HyPsd@DoConvert#1{%
+    |ifx#1|@empty
+    |else
+      |Hy@ReturnAfterFi{%
+        |ifx#1\%
+          \%
+          |expandafter|HyPsd@DoEscape
+        |else
+          \000#1%
+          |expandafter|HyPsd@DoConvert
+        |fi
+      }%
+    |fi
+  }
+  |gdef|HyPsd@DoEscape#1{%
+    |ifx#19%
+      |expandafter|HyPsd@GetTwoBytes
+    |else
+      |Hy@ReturnAfterFi{%
+        |ifx#18%
+          00%
+          |expandafter|HyPsd@GetTwoBytes
+        |else
+          #1%
+          |expandafter|HyPsd@GetOneByte
+        |fi
+      }%
+    |fi
+  }
+  |gdef|HyPsd@GetTwoBytes#1\#2#3#4{%
+    #1\#2#3#4%
+    |HyPsd@DoConvert
+  }
+  |gdef|HyPsd@GetOneByte#1#2{%
+    #1#2%
+    |HyPsd@DoConvert
+  }
+|endgroup
+\def\HyPsd@GetNextTwoTokens#1#2#3\END#4{%
+  \xdef#4{#4#1#2}%
+  \HyPsd@@ConvertToUnicode#3\END#4%
+}
+\@ifpackageloaded{subfigure}{%
+  \Hy@hypertexnamesfalse
+}{}
+\@ifundefined{XR@addURL}{%
+}{%
+  \def\XR@addURL#1{\XR@@dURL#1{}{}{}{}\\}%
+  \def\XR@@dURL#1#2#3#4#5\\{%
+    {#1}{#2}%
+    \if!#4!%
+    \else
+      {#3}{#4}{\XR@URL}%
+    \fi
+  }%
+}
+\def\Hy@true{true}
+\def\Hy@false{false}
+\let\literalps@out\@gobble
+\newcommand\pdfbookmark[3][]{}
+\let\Acrobatmenu\@gobble
+\def\Hy@writebookmark#1#2#3#4#5{}%
+\let\HyperRaiseLinkLength\@tempdima
+\let\HyperRaiseLinkHook\@empty
+\def\HyperRaiseLinkDefault{\baselineskip}%-.8
+\def\Hy@raisedlink#1{%
+  \setlength\HyperRaiseLinkLength\HyperRaiseLinkDefault
+  \HyperRaiseLinkHook
+  \ifvmode
+    #1%
+  \else
+    \smash{\raise\HyperRaiseLinkLength\hbox{#1}}%
+  \fi
+}
+%
+%
+\def\Hy@SaveLastskip{%
+  \let\Hy@RestoreLastskip\relax
+  \ifvmode
+    \ifdim\lastskip=\z@
+      \let\Hy@RestoreLastskip\nobreak
+    \else
+      \begingroup
+        \skip@=-\lastskip
+        \edef\x{%
+          \endgroup
+          \def\noexpand\Hy@RestoreLastskip{%
+            \noexpand\ifvmode
+              \noexpand\nobreak
+              \vskip\the\skip@
+              \vskip\the\lastskip\relax
+            \noexpand\fi
+          }%
+        }%
+      \x
+    \fi
+  \else
+    \ifhmode
+      \ifdim\lastskip=\z@
+        \let\Hy@RestoreLastskip\nobreak
+      \else
+        \begingroup
+          \skip@=-\lastskip
+          \edef\x{%
+            \endgroup
+            \def\noexpand\Hy@RestoreLastskip{%
+              \noexpand\ifhmode
+                \noexpand\nobreak
+                \hskip\the\skip@
+                \hskip\the\lastskip\relax
+              \noexpand\fi
+            }%
+          }%
+        \x
+      \fi
+    \fi
+  \fi
+}%
+\def\Hy@boolkey{\@dblarg\Hy@@boolkey}
+\def\Hy@@boolkey[#1]#2#3{%
+  \lowercase{\def\Hy@tempa{#3}}%
+  \ifx\Hy@tempa\@empty
+    \let\Hy@tempa\Hy@true
+  \fi
+  \ifx\Hy@tempa\Hy@true
+  \else
+    \ifx\Hy@tempa\Hy@false
+    \else
+      \let\Hy@tempa\relax
+    \fi
+  \fi
+  \ifx\Hy@tempa\relax
+    \Hy@WarnOptionValue{#3}{#1}{`true' or 'false'}%
+  \else
+    \Hy@Info{Option `#1' set `\Hy@tempa'}%
+    \csname Hy@#2\Hy@tempa\endcsname
+  \fi
+}
+\def\Hy@WarnOptionValue#1#2#3{%
+  \Hy@Warning{%
+    Unexpected value `#1'\MessageBreak
+    of option `#2' instead of\MessageBreak
+    #3%
+  }
+}
+\def\Hy@DisableOption#1{%
+  \@ifundefined{KV@Hyp@#1@default}{%
+    \define@key{Hyp}{#1}%
+  }{%
+    \define@key{Hyp}{#1}[]%
+  }%
+  {\Hy@WarnOptionDisabled{#1}}%
+}
+\def\Hy@WarnOptionDisabled#1{%
+  \Hy@Warning{%
+    Option `#1' has already been used,\MessageBreak
+    setting the option has no effect%
+  }%
+}
+\define@key{Hyp}{implicit}[true]{%
+  \Hy@boolkey{implicit}{#1}%
+}
+\define@key{Hyp}{draft}[true]{%
+  \Hy@boolkey{draft}{#1}%
+}
+\let\KV@Hyp@nolinks\KV@Hyp@draft
+\define@key{Hyp}{a4paper}[true]{%
+  \def\special@paper{210mm,297mm}%
+  \def\Hy@pageheight{842}%
+}
+\define@key{Hyp}{a5paper}[true]{%
+  \def\special@paper{148mm,210mm}%
+  \def\Hy@pageheight{595}%
+}
+\define@key{Hyp}{b5paper}[true]{%
+  \def\special@paper{176mm,250mm}%
+  \def\Hy@pageheight{709}%
+}
+\define@key{Hyp}{letterpaper}[true]{%
+  \def\special@paper{8.5in,11in}%
+  \def\Hy@pageheight{792}%
+}
+\define@key{Hyp}{legalpaper}[true]{%
+  \def\special@paper{8.5in,14in}%
+  \def\Hy@pageheight{1008}%
+}
+\define@key{Hyp}{executivepaper}[true]{%
+  \def\special@paper{7.25in,10.5in}%
+  \def\Hy@pageheight{720}%
+}
+\define@key{Hyp}{debug}[true]{%
+  \Hy@boolkey[debug]{verbose}{#1}%
+}
+\define@key{Hyp}{linktocpage}[true]{%
+  \Hy@boolkey{linktocpage}{#1}%
+}
+\define@key{Hyp}{extension}{\def\XR@ext{#1}}
+\def\XR@ext{dvi}
+\define@key{Hyp}{verbose}[true]{%
+  \Hy@boolkey{verbose}{#1}%
+}
+\define@key{Hyp}{typexml}[true]{%
+  \Hy@boolkey{typexml}{#1}%
+}
+\define@key{Hyp}{raiselinks}[true]{%
+  \Hy@boolkey{raiselinks}{#1}%
+}
+\define@key{Hyp}{breaklinks}[true]{%
+  \Hy@boolkey{breaklinks}{#1}%
+}
+\define@key{Hyp}{pageanchor}[true]{%
+  \Hy@boolkey{pageanchor}{#1}%
+}
+\define@key{Hyp}{plainpages}[true]{%
+  \Hy@boolkey{plainpages}{#1}%
+}
+\define@key{Hyp}{naturalnames}[true]{%
+  \Hy@boolkey{naturalnames}{#1}%
+}
+\define@key{Hyp}{hypertexnames}[true]{%
+  \Hy@boolkey{hypertexnames}{#1}%
+}
+\define@key{Hyp}{nesting}[true]{%
+  \Hy@boolkey{nesting}{#1}%
+}
+\define@key{Hyp}{unicode}[true]{%
+  \Hy@boolkey{unicode}{#1}%
+  \HyPsd@InitUnicode
+}
+\define@key{Hyp}{hyperref}[true]{}
+\define@key{Hyp}{tex4ht}[true]{%
+  \def\XR@ext{html}%
+  \Hy@texhttrue
+  \def\Hy@raisedlink{}%
+  \setkeys{Hyp}{colorlinks=true}%
+  \def\BeforeTeXIVht{\usepackage{color}}%
+  \def\Hy@driver{htex4ht}%
+  \def\MaybeStopEarly{%
+    \typeout{Hyperref stopped early}%
+    \AtBeginDocument{\PDF@FinishDoc}%
+    \endinput
+  }%
+}
+\define@key{Hyp}{pdftex}[true]{%
+  \def\Hy@driver{hpdftex}%
+  \def\XR@ext{pdf}%
+  \PassOptionsToPackage{pdftex}{color}%
+  \Hy@breaklinkstrue
+}
+\define@key{Hyp}{dvipdf}[true]{%
+}
+\define@key{Hyp}{nativepdf}[true]{%
+  \def\Hy@driver{hdvips}%
+  \def\XR@ext{pdf}%
+}
+\define@key{Hyp}{dvipdfm}[true]{%
+  \def\Hy@driver{hdvipdfm}%
+  \def\XR@ext{pdf}%
+  \Hy@breaklinkstrue
+}
+\define@key{Hyp}{pdfmark}[true]{%
+  \def\Hy@driver{hdvips}%
+  \def\XR@ext{pdf}%
+}
+\define@key{Hyp}{dvips}[true]{%
+  \def\Hy@driver{hdvips}%
+  \def\XR@ext{pdf}%
+}
+\define@key{Hyp}{hypertex}[true]{%
+  \def\Hy@driver{hypertex}%
+}
+\let\Hy@MaybeStopNow\relax
+\define@key{Hyp}{vtex}[true]{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname OpMode\endcsname\relax
+    \@latex@error{Non-VTeX processor}{}%
+    \global\let\Hy@MaybeStopNow\endinput
+    \endinput
+  \else
+    \ifnum\ifnum\OpMode=2 1\else\OpMode\fi=1 % SPACE
+      \def\XR@ext{pdf}%
+      \def\Hy@driver{hvtex}%
+    \else
+      \ifnum\OpMode=10\relax
+        \def\XR@ext{htm}%
+        \def\Hy@driver{hvtexhtm}%
+        \def\MaybeStopEarly{%
+           \typeout{Hyperref stopped early}%
+           \AtBeginDocument{\PDF@FinishDoc}%
+           \endinput
+        }%
+      \else
+        \@latex@error{Mode (\the\OpMode) has no hyperref driver}{}%
+        \global\let\Hy@MaybeStopNow\endinput
+        \endinput
+      \fi
+    \fi
+  \fi
+}
+\define@key{Hyp}{vtexpdfmark}[true]{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname OpMode\endcsname\relax
+    \@latex@error{Non-VTeX processor}{}%
+    \let\Hy@MaybeStopNow\endinput
+    \endinput
+  \else
+    \ifnum\ifnum\OpMode=2 1\else\OpMode\fi=1 % SPACE
+      \def\XR@ext{pdf}%
+      \def\Hy@driver{hvtexmrk}%
+    \else
+      \@latex@error{Mode (\the\OpMode) has no hyperref driver}{}%
+      \let\Hy@MaybeStopNow\endinput
+      \endinput
+    \fi
+  \fi
+}
+\define@key{Hyp}{dviwindo}[true]{%
+  \def\Hy@driver{hdviwind}%
+  \setkeys{Hyp}{colorlinks}%
+  \PassOptionsToPackage{dviwindo}{color}%
+}
+\define@key{Hyp}{dvipsone}[true]{%
+  \def\XR@ext{pdf}%
+  \def\Hy@driver{hdvipson}%
+}
+\define@key{Hyp}{textures}[true]{%
+  \def\XR@ext{pdf}%
+  \def\Hy@driver{htexture}%
+}
+\define@key{Hyp}{latex2html}[true]{%
+  \AtBeginDocument{\@@latextohtmlX}%
+}
+\define@key{Hyp}{ps2pdf}[true]{%
+  \def\Hy@driver{hdvips}%
+  \providecommand\@pdfborder{0 0 1}%
+}
+\define@key{Hyp}{hyperfigures}[true]{%
+  \Hy@boolkey[hyperfigures]{figures}{#1}%
+}
+\define@key{Hyp}{hyperfootnotes}[true]{%
+  \Hy@boolkey{hyperfootnotes}{#1}%
+}
+\def\back@none{none}
+\def\back@section{section}
+\def\back@page{page}
+\def\back@slide{slide}
+\define@key{Hyp}{backref}[section]{%
+  \lowercase{\def\Hy@tempa{#1}}%
+  \ifx\Hy@tempa\@empty
+    \let\Hy@tempa\back@section
+  \fi
+  \ifx\Hy@tempa\Hy@false
+    \let\Hy@tempa\back@none
+  \fi
+  \ifx\Hy@tempa\back@slide
+    \let\Hy@tempa\back@section
+  \fi
+  \ifx\Hy@tempa\back@page
+    \PassOptionsToPackage{hyperpageref}{backref}%
+    \Hy@backreftrue
+  \else
+    \ifx\Hy@tempa\back@section
+      \PassOptionsToPackage{hyperref}{backref}%
+      \Hy@backreftrue
+    \else
+      \ifx\Hy@tempa\back@none
+        \Hy@backreffalse
+      \else
+        \Hy@WarnOptionValue{#1}{backref}{%
+          `section', `slide', `page', `none',\MessageBreak
+          or `false'}%
+      \fi
+    \fi
+  \fi
+}
+\define@key{Hyp}{pagebackref}[true]{%
+  \lowercase{\def\Hy@tempa{#1}}%
+  \ifx\Hy@tempa\@empty
+    \let\Hy@tempa\Hy@true
+  \fi
+  \ifx\Hy@tempa\Hy@true
+    \PassOptionsToPackage{hyperpageref}{backref}%
+    \Hy@backreftrue
+  \else
+    \ifx\Hy@tempa\Hy@false
+      \Hy@backreffalse
+    \else
+      \Hy@WarnOptionValue{#1}{pagebackref}{`true' or `false'}%
+    \fi
+  \fi
+}
+\define@key{Hyp}{hyperindex}[true]{%
+  \Hy@boolkey{hyperindex}{#1}%
+}
+\def\Hy@setcaptions#1#2{%
+  \@ifpackageloaded{babel}{%
+    \expandafter\addto\csname captions#2\expandafter\endcsname
+    \expandafter{#1}%
+  }{%
+    #1%
+  }%
+}
+\def\Hy@autorefenglish{\Hy@setcaptions\Hy@captionsenglish}
+\def\Hy@autorefgerman{\Hy@setcaptions\Hy@captionsgerman}
+\def\Hy@autorefspanish{\Hy@setcaptions\Hy@captionsspanish}
+\def\Hy@captionsenglish{%
+  \def\equationautorefname{Equation}%
+  \def\footnoteautorefname{footnote}%
+  \def\itemautorefname{item}%
+  \def\figureautorefname{Figure}%
+  \def\tableautorefname{Table}%
+  \def\partautorefname{Part}%
+  \def\appendixautorefname{Appendix}%
+  \def\chapterautorefname{chapter}%
+  \def\sectionautorefname{section}%
+  \def\subsectionautorefname{subsection}%
+  \def\subsubsectionautorefname{subsubsection}%
+  \def\paragraphautorefname{paragraph}%
+  \def\subparagraphautorefname{subparagraph}%
+  \def\FancyVerbLineautorefname{line}%
+  \def\theoremautorefname{Theorem}%
+}
+\def\Hy@captionsgerman{%
+  \def\equationautorefname{Gleichung}%
+  \def\footnoteautorefname{Fu\ss note}%
+  \def\itemautorefname{Punkt}%
+  \def\figureautorefname{Abbildung}%
+  \def\tableautorefname{Tabelle}%
+  \def\partautorefname{Teil}%
+  \def\appendixautorefname{Anhang}%
+  \def\chapterautorefname{Kapitel}%
+  \def\sectionautorefname{Abschnitt}%
+  \def\subsectionautorefname{Unterabschnitt}%
+  \def\subsubsectionautorefname{Unterunterabschnitt}%
+  \def\paragraphautorefname{Absatz}%
+  \def\subparagraphautorefname{Unterabsatz}%
+  \def\FancyVerbLineautorefname{Zeile}%
+  \def\theoremautorefname{Theorem}%
+}
+\def\Hy@captionsspanish{%
+  \def\equationautorefname{Ecuaci\'on}%
+  \def\footnoteautorefname{Nota a pie de p\'agina}%
+  \def\itemautorefname{Elemento}%
+  \def\figureautorefname{Figura}%
+  \def\tableautorefname{Tabla}%
+  \def\partautorefname{Parte}%
+  \def\appendixautorefname{Ap\'endice}%
+  \def\chapterautorefname{Cap\'itulo}%
+  \def\sectionautorefname{Secci\'on}%
+  \def\subsectionautorefname{Subsecci\'on}%
+  \def\subsubsectionautorefname{Subsubsecci\'on}%
+  \def\paragraphautorefname{P\'arrafo}%
+  \def\subparagraphautorefname{Subp\'arrafo}%
+  \def\FancyVerbLineautorefname{L\'inea}%
+  \def\theoremautorefname{Teorema}%
+}
+\define@key{Hyp}{english}[]{\Hy@autorefenglish{english}}
+\define@key{Hyp}{UKenglish}[]{\Hy@autorefenglish{UKenglish}}
+\define@key{Hyp}{british}[]{\Hy@autorefenglish{british}}
+\define@key{Hyp}{USenglish}[]{\Hy@autorefenglish{USenglish}}
+\define@key{Hyp}{american}[]{\Hy@autorefenglish{american}}
+\define@key{Hyp}{german}[]{\Hy@autorefgerman{german}}
+\define@key{Hyp}{austrian}[]{\Hy@autorefgerman{austrian}}
+\define@key{Hyp}{ngerman}[]{\Hy@autorefgerman{ngerman}}
+\define@key{Hyp}{naustrian}[]{\Hy@autorefgerman{naustrian}}
+\define@key{Hyp}{spanish}[]{\Hy@autorefspanish{spanish}}
+\define@key{Hyp}{colorlinks}[true]{%
+  \Hy@boolkey{colorlinks}{#1}%
+  \ifHy@colorlinks
+    \def\@pdfborder{0 0 0}%
+  \fi
+}
+\define@key{Hyp}{frenchlinks}[true]{%
+  \Hy@boolkey{frenchlinks}{#1}%
+}
+\define@key{Hyp}{bookmarks}[true]{%
+  \Hy@boolkey{bookmarks}{#1}%
+}
+\define@key{Hyp}{bookmarksopen}[true]{%
+  \Hy@boolkey{bookmarksopen}{#1}%
+}
+\define@key{Hyp}{bookmarksopenlevel}{%
+  \def\@bookmarksopenlevel{#1}%
+}
+\def\@bookmarksopenlevel{\maxdimen}
+\define@key{Hyp}{bookmarkstype}{%
+  \def\Hy@bookmarkstype{#1}%
+}
+\def\Hy@bookmarkstype{toc}
+\define@key{Hyp}{bookmarksnumbered}[true]{%
+  \Hy@boolkey{bookmarksnumbered}{#1}%
+}
+\define@key{Hyp}{CJKbookmarks}[true]{%
+  \Hy@boolkey{CJKbookmarks}{#1}%
+}
+\define@key{Hyp}{linkcolor}{\def\@linkcolor{#1}}
+\define@key{Hyp}{anchorcolor}{\def\@anchorcolor{#1}}
+\define@key{Hyp}{citecolor}{\def\@citecolor{#1}}
+\define@key{Hyp}{urlcolor}{\def\@urlcolor{#1}}
+\define@key{Hyp}{menucolor}{\def\@menucolor{#1}}
+\define@key{Hyp}{filecolor}{\def\@filecolor{#1}}
+\define@key{Hyp}{pagecolor}{\def\@pagecolor{#1}}
+\def\@linkcolor{red}
+\def\@anchorcolor{black}
+\def\@citecolor{green}
+\def\@filecolor{cyan}
+\def\@urlcolor{blue}
+\def\@menucolor{red}
+\def\@pagecolor{red}
+\def\hyperbaseurl#1{\def\@baseurl{#1}}
+\define@key{Hyp}{baseurl}{\hyperbaseurl{#1}}
+\let\@baseurl\@empty
+\def\hyperlinkfileprefix#1{\def\Hy@linkfileprefix{#1}}
+\define@key{Hyp}{linkfileprefix}{\hyperlinkfileprefix{#1}}
+%\hyperlinkfileprefix{file:}%
+\hyperlinkfileprefix{}
+\let\@pdfpagetransition\relax
+\define@key{Hyp}{pdfpagetransition}{\def\@pdfpagetransition{#1}}
+\let\@pdfpageduration\relax
+\define@key{Hyp}{pdfpageduration}{\def\@pdfpageduration{#1}}
+\newif\ifHy@useHidKey
+\Hy@useHidKeyfalse
+\define@key{Hyp}{pdfpagehidden}[true]{%
+  \Hy@boolkey{pdfpagehidden}{#1}%
+  \ifHy@pdfpagehidden
+    \global\Hy@useHidKeytrue
+  \fi
+}
+\define@key{Hyp}{linkbordercolor}{\def\@linkbordercolor{#1}}
+\define@key{Hyp}{urlbordercolor}{\def\@urlbordercolor{#1}}
+\define@key{Hyp}{menubordercolor}{\def\@menubordercolor{#1}}
+\define@key{Hyp}{filebordercolor}{\def\@filebordercolor{#1}}
+\define@key{Hyp}{runbordercolor}{\def\@runbordercolor{#1}}
+\define@key{Hyp}{citebordercolor}{\def\@citebordercolor{#1}}
+\define@key{Hyp}{pagebordercolor}{\def\@pagebordercolor{#1}}
+\define@key{Hyp}{pdfhighlight}{\def\@pdfhighlight{#1}}
+\define@key{Hyp}{pdfborder}{\def\@pdfborder{#1}}
+\define@key{Hyp}{pdfpagemode}{\def\@pdfpagemode{/#1 }}
+\define@key{Hyp}{pdftitle}{\pdfstringdef\@pdftitle{#1}}
+\define@key{Hyp}{pdfauthor}{\pdfstringdef\@pdfauthor{#1}}
+\define@key{Hyp}{pdfproducer}{\pdfstringdef\@pdfproducer{#1}}
+\define@key{Hyp}{pdfcreator}{\pdfstringdef\@pdfcreator{#1}}
+\define@key{Hyp}{pdfsubject}{\pdfstringdef\@pdfsubject{#1}}
+\define@key{Hyp}{pdfkeywords}{\pdfstringdef\@pdfkeywords{#1}}
+\define@key{Hyp}{pdfview}{\calculate@pdfview#1 \\}
+\define@key{Hyp}{pdflinkmargin}{\setpdflinkmargin{#1}}
+\let\setpdflinkmargin\@gobble
+\def\calculate@pdfview#1 #2\\{%
+  \def\@pdfview{#1}%
+  \ifx\\#2\\%
+    \def\@pdfviewparams{ -32768}%
+  \else
+    \def\@pdfviewparams{ #2}%
+  \fi
+}
+\define@key{Hyp}{pdfstartpage}{\def\@pdfstartpage{#1}}
+\define@key{Hyp}{pdfstartview}{%
+  \ifx\\#1\\%
+    \def\@pdfstartview{}%
+  \else
+    \hypercalcbpdef\@pdfstartview{ /#1 }%
+  \fi
+}
+\define@key{Hyp}{pdfpagescrop}{\edef\@pdfpagescrop{#1}}
+\define@key{Hyp}{pdftoolbar}[true]{%
+  \Hy@boolkey[pdftoolbar]{toolbar}{#1}%
+}
+\define@key{Hyp}{pdfmenubar}[true]{%
+  \Hy@boolkey[pdfmenubar]{menubar}{#1}%
+}
+\define@key{Hyp}{pdfwindowui}[true]{%
+  \Hy@boolkey[pdfwindowui]{windowui}{#1}%
+}
+\define@key{Hyp}{pdffitwindow}[true]{%
+  \Hy@boolkey[pdffitwindow]{fitwindow}{#1}%
+}
+\define@key{Hyp}{pdfcenterwindow}[true]{%
+  \Hy@boolkey[pdfcenterwindow]{centerwindow}{#1}%
+}
+\define@key{Hyp}{pdfnewwindow}[true]{%
+  \Hy@boolkey[pdfnewwindow]{newwindow}{#1}%
+}
+\define@key{Hyp}{pdfpagelayout}{\def\pdf@pagelayout{#1}}
+\def\pdf@pagelayout{}
+\define@key{Hyp}{pdfpagelabels}[true]{%
+  \Hy@boolkey[pdfpagelabels]{pagelabels}{#1}%
+}
+\def\@linkbordercolor{0 0 0}
+\def\@urlbordercolor{0 1 0}
+\def\@menubordercolor{1 0 0}
+\def\@filebordercolor{0 .5 .5}
+\def\@runbordercolor{0 .7 .7}
+\def\@citebordercolor{0 1 0}
+\def\@pagebordercolor{1 1 0}
+\def\@pdfhighlight{/I}
+\def\@pdfpagemode{}
+\def\@pdftitle{}
+\def\@pdfauthor{}
+\def\@pdfproducer{}
+\def\@pdfcreator{LaTeX with hyperref package}
+\def\@pdfsubject{}
+\def\@pdfkeywords{}
+\def\@pdfpagescrop{}
+\def\@pdfstartview{ /Fit }
+\def\@pdfstartpage{1}
+\let\PDF@SetupDoc\@empty
+\let\PDF@FinishDoc\@empty
+\edef\special@paper{\the\paperwidth,\the\paperheight}
+\hypercalcbpdef\Hy@pageheight{\hypercalcbp{\paperheight}}
+\def\hypersetup{\setkeys{Hyp}}
+\let\hyper@normalise\ExecuteOptions
+\let\ExecuteOptions\hypersetup
+\Hy@RestoreCatcodes
+\InputIfFileExists{hyperref.cfg}{}{}
+\Hy@SetCatcodes
+\let\ExecuteOptions\hyper@normalise
+\Hy@MaybeStopNow
+\def\ProcessOptionsWithKV#1{%
+  \let\@tempc\relax
+  \let\Hy@tempa\@empty
+  \@for\CurrentOption:=\@classoptionslist\do{%
+    \@ifundefined{KV@#1@\CurrentOption}%
+    {}%
+    {%
+      \edef\Hy@tempa{\Hy@tempa,\CurrentOption,}%
+      \@expandtwoargs\@removeelement\CurrentOption
+        \@unusedoptionlist\@unusedoptionlist
+    }%
+  }%
+  \edef\Hy@tempa{%
+    \noexpand\setkeys{#1}{%
+      \Hy@tempa\@ptionlist{\@currname.\@currext}%
+    }%
+  }%
+  \Hy@tempa
+}
+\let\ReadBookmarks\relax
+\ProcessOptionsWithKV{Hyp}
+\AtBeginDocument{%
+  \ifHy@draft
+    \let\hyper@@anchor\@gobble
+    \gdef\hyper@link#1#2#3{#3}%
+    \let\hyper@anchorstart\@gobble
+    \let\hyper@anchorend\@empty
+    \let\hyper@linkstart\@gobbletwo
+    \let\hyper@linkend\@empty
+    \def\hyper@linkurl#1#2{#1}%
+    \def\hyper@linkfile#1#2#3{#1}%
+    \def\Acrobatmenu#1#2{#2}%
+    \let\PDF@SetupDoc\@empty
+    \let\PDF@FinishDoc\@empty
+    \let\@fifthoffive\@secondoftwo
+    \let\@secondoffive\@secondoftwo
+    \let\ReadBookmarks\relax
+    \let\WriteBookmarks\relax
+    \Hy@WarningNoLine{ draft mode on}%
+  \fi
+  \Hy@DisableOption{draft}%
+}%
+\ifx\HyPsd@InitUnicode\relax
+  \define@key{Hyp}{unicode}[true]{%
+    \Hy@boolkey{unicode}{#1}%
+  }
+\else
+  \define@key{Hyp}{unicode}[true]{%
+    \Hy@boolkey{unicode}{#1}%
+    \ifHy@unicode
+      \Hy@WarningNoLine{Set package option `unicode' first\MessageBreak
+                  in order to load unicode support%
+      }%
+      \Hy@unicodefalse
+    \fi
+  }
+\fi
+\let\HyPsd@InitUnicode\@undefined
+\Hy@nextfalse
+\@ifpackagewith{babel}{spanish}{\Hy@nexttrue}{}
+\@ifpackagewith{babel}{galician}{\Hy@nexttrue}{}
+\@ifpackagewith{babel}{estonian}{\Hy@nexttrue}{}
+\ifHy@next
+  \let\texttilde\~%
+\fi
+\def\WriteBookmarks{0}
+\def\@bookmarkopenstatus#1{%
+  \ifHy@bookmarksopen
+    \ifnum#1<\expandafter\@firstofone\expandafter
+             {\number\@bookmarksopenlevel} % explicit space
+    \else
+      -%
+    \fi
+  \else
+    -%
+  \fi
+}
+\ifHy@bookmarks
+  \Hy@Info{Bookmarks ON}%
+  \ifx\@pdfpagemode\@empty
+    \def\@pdfpagemode{/UseOutlines }%
+  \fi
+\else
+  \def\@bookmarkopenstatus#1{}%
+  \Hy@Info{Bookmarks OFF}%
+  \AtEndOfPackage{%
+    \global\let\ReadBookmarks\relax
+    \global\let\WriteBookmarks\relax
+  }
+  \ifx\@pdfpagemode\@empty
+    \def\@pdfpagemode{/UseNone}%
+  \fi
+\fi
+\Hy@DisableOption{bookmarks}
+\ifHy@figures
+  \Hy@Info{Hyper figures ON}
+\else
+  \Hy@Info{Hyper figures OFF}
+\fi
+\ifHy@nesting
+  \Hy@Info{Link nesting ON}
+\else
+  \Hy@Info{Link nesting OFF}
+\fi
+\ifHy@hyperindex
+  \Hy@Info{Hyper index ON}
+\else
+  \Hy@Info{Hyper index OFF}
+\fi
+\ifHy@plainpages
+  \Hy@Info{Plain pages ON}
+\else
+  \Hy@Info{Plain pages OFF}
+\fi
+\ifHy@backref
+  \Hy@Info{Backreferencing ON}
+\else
+  \Hy@Info{Backreferencing OFF}
+\fi
+\ifHy@typexml
+   \AtEndOfPackage{\RequirePackage{color}\RequirePackage{nameref}}
+\fi
+\Hy@DisableOption{typexml}
+\ifHy@implicit
+  \typeout{Implicit mode ON; LaTeX internals redefined}%
+\else
+  \typeout{Implicit mode OFF; no redefinition of LaTeX internals}%
+  \def\MaybeStopEarly{%
+    \typeout{Hyperref stopped early}%
+    \AtBeginDocument{\PDF@FinishDoc}%
+    \endinput
+  }%
+  \AtBeginDocument{%
+    \let\autoref\ref
+    \ifx\@pdfpagemode\@empty
+      \gdef\@pdfpagemode{/UseNone}%
+    \fi
+    \global\Hy@backreffalse
+  }%
+  \AtEndOfPackage{%
+    \global\let\ReadBookmarks\relax
+    \global\let\WriteBookmarks\relax
+  }%
+\fi
+\Hy@DisableOption{implicit}
+\AtEndOfPackage{%
+  \@ifpackageloaded{tex4ht}{%
+    \def\Hy@driver{htex4ht}%
+    \Hy@texhttrue
+  }{}%
+  \ifx\Hy@driver\@empty
+    \@ifundefined{pdfoutput}{%
+      \let\pdfoutput\@undefined
+      \@ifundefined{OpMode}{%
+        \def\Hy@driver{hypertex}%
+      }{%
+        \ifnum\ifnum\OpMode=2 1\else\OpMode\fi=1 % SPACE
+          \def\Hy@driver{hvtex}%
+          \def\XR@ext{pdf}%
+        \else
+          \ifnum\OpMode=10\relax
+            \def\XR@ext{htm}%
+            \def\Hy@driver{hvtexhtm}%
+            \def\MaybeStopEarly{%
+              \typeout{Hyperref stopped early}%
+              \AtBeginDocument{\PDF@FinishDoc}%
+              \endinput
+            }%
+          \else
+            \def\Hy@driver{hypertex}%
+          \fi
+        \fi
+      }
+    }{%
+      \ifcase\pdfoutput
+        \let\pdfoutput\@undefined
+        \def\Hy@driver{hypertex}%
+      \else
+        \def\Hy@driver{hpdftex}%
+        \def\XR@ext{pdf}%
+        \PassOptionsToPackage{pdftex}{color}%
+        \Hy@breaklinkstrue
+      \fi
+    }%
+    \typeout{*hyperref using default driver \Hy@driver*}%
+  \else
+    \typeout{*hyperref using driver \Hy@driver*}%
+  \fi
+  \input{\Hy@driver.def}%
+  \let\@unprocessedoptions\relax
+  \Hy@RestoreCatcodes
+}
+\Hy@DisableOption{tex4ht}
+\Hy@DisableOption{pdftex}
+\Hy@DisableOption{dvipdf}
+\Hy@DisableOption{nativepdf}
+\Hy@DisableOption{dvipdfm}
+\Hy@DisableOption{pdfmark}
+\Hy@DisableOption{dvips}
+\Hy@DisableOption{hypertex}
+\Hy@DisableOption{vtex}
+\Hy@DisableOption{vtexpdfmark}
+\Hy@DisableOption{dviwindo}
+\Hy@DisableOption{dvipsone}
+\Hy@DisableOption{textures}
+\Hy@DisableOption{latex2html}
+\Hy@DisableOption{ps2pdf}
+\AtBeginDocument{%
+  \ifHy@colorlinks
+    \ifHy@typexml\else\RequirePackage{color}\fi
+    \def\Hy@colorlink#1{\begingroup\color{#1}}%
+    \def\Hy@endcolorlink{\endgroup}%
+    \Hy@Info{Link coloring ON}%
+  \else
+    \ifHy@frenchlinks
+      \def\Hy@colorlink#1{\begingroup\fontshape{sc}\selectfont}%
+      \def\Hy@endcolorlink{\endgroup}%
+      \Hy@Info{French linking ON}%
+    \else
+      \def\Hy@colorlink#1{\begingroup}%
+      \def\Hy@endcolorlink{\endgroup}%
+      \Hy@Info{Link coloring OFF}%
+    \fi
+  \fi
+  \Hy@DisableOption{colorlinks}%
+  \Hy@DisableOption{frenchlinks}%
+  \ifHy@texht
+    \long\def\@firstoffive#1#2#3#4#5{#1}%
+    \long\def\@secondoffive#1#2#3#4#5{#2}%
+    \long\def\@thirdoffive#1#2#3#4#5{#3}%
+    \long\def\@fourthoffive#1#2#3#4#5{#4}%
+    \long\def\@fifthoffive#1#2#3#4#5{#5}%
+    \providecommand*\@safe@activestrue{}%
+    \providecommand*\@safe@activesfalse{}%
+    \def\T@ref#1{%
+      \@safe@activestrue
+      \expandafter\@setref\csname r@#1\endcsname\@firstoffive{#1}%
+      \@safe@activesfalse
+    }%
+    \def\T@pageref#1{%
+      \@safe@activestrue
+      \expandafter\@setref\csname r@#1\endcsname\@secondoffive{#1}%
+      \@safe@activesfalse
+    }%
+  \else
+    \ifHy@typexml\else\RequirePackage{nameref}\fi
+    \ReadBookmarks
+  \fi
+  \DeclareRobustCommand\ref{\@ifstar\@refstar\T@ref}%
+  \DeclareRobustCommand\pageref{%
+    \@ifstar\@pagerefstar\T@pageref
+  }%
+}
+\ifHy@backref
+  \RequirePackage{backref}
+\else
+  \let\Hy@backout\@gobble
+\fi
+\Hy@DisableOption{backref}
+\Hy@DisableOption{pagebackref}
+\Hy@activeanchorfalse
+\begingroup
+  \endlinechar=-1
+  \catcode`\^^M\active
+  \catcode`\%\active
+  \catcode`\#\active
+  \catcode`\_\active
+  \gdef\hyper@normalise{
+    \begingroup
+    \catcode`\^^M\active
+    \def^^M{ }
+    \catcode`\%\active
+    \let%\@percentchar
+    \let\%\@percentchar
+    \catcode`\#\active
+    \def#{\hyper@hash}
+    \def\#{\hyper@hash}
+    \catcode`\_\active
+    \def_{\string_}
+    \let~\hyper@tilde
+    \let\~\hyper@tilde
+    \ifx\@safe@activestrue\@undefined\else\@safe@activestrue\fi
+    \hyper@n@rmalise
+  }
+  \catcode`\#=6
+  \gdef\hyper@n@rmalise#1#2{
+    \edef\Hy@tempa{
+      \endgroup
+      \noexpand#1{\Hy@RemovePercentCr#2%^^M\@nil}
+    }
+    \Hy@tempa
+  }
+  \gdef\Hy@RemovePercentCr#1%^^M#2\@nil{
+    #1
+    \ifx\limits#2\limits
+    \else
+      \Hy@ReturnAfterFi{
+        \Hy@RemovePercentCr #2\@nil
+      }
+    \fi
+  }
+\endgroup
+\providecommand\hyper@chars{%
+  \let\#\hyper@hash
+  \let\%\@percentchar
+}
+\def\hyperlink#1#2{%
+  \hyper@@link{}{#1}{#2}%
+}
+\DeclareRobustCommand*{\href}{\hyper@normalise\href@}
+\begingroup
+  \catcode`\$=6
+  \catcode`\#=12
+  \gdef\href@$1{\expandafter\href@split$1##\\}
+  \gdef\href@split$1#$2#$3\\{%
+    \hyper@@link{$1}{$2}%
+  }
+\endgroup
+\RequirePackage{url}
+\let\HyOrg@url\url
+\def\Hurl{\begingroup \Url}
+\let\nolinkurl\Hurl
+\DeclareRobustCommand*{\url}{\hyper@normalise\url@}
+\def\url@#1{\hyper@linkurl{\Hurl{#1}}{#1}}
+\DeclareRobustCommand*{\hyperimage}{\hyper@normalise\hyper@image}
+\providecommand\hyper@image[2]{#2}
+\def\hypertarget#1#2{%
+  \ifHy@nesting
+    \hyper@@anchor{#1}{#2}%
+  \else
+    \hyper@@anchor{#1}{\relax}#2%
+  \fi
+}
+\DeclareRobustCommand*{\hyperref}{%
+  \@ifnextchar[\label@hyperref\@hyperref
+}
+\def\@hyperref{\hyper@normalise\@@hyperref}
+\def\@@hyperref#1#2#3{%
+  \edef\ref@one{\ifx\\#2\\\else#2.\fi#3}%
+  \expandafter\tryhyper@link\ref@one\\{#1}%
+}
+\def\tryhyper@link#1\\#2{%
+ \hyper@@link{#2}{#1}%
+}
+\def\hyperdef{\@ifnextchar[{\label@hyperdef}{\@hyperdef}}
+\def\@hyperdef#1#2#3{%, category, name, text
+  \ifHy@nesting
+    \hyper@@anchor{#1.#2}{#3}%
+  \else
+    \hyper@@anchor{#1.#2}{\relax}#3%
+  \fi
+}
+\def\label@hyperref[#1]{%
+  \expandafter\label@@hyperref\csname r@#1\endcsname{#1}%
+}%
+\def\label@@hyperref#1#2#3{%
+  \ifx#1\relax
+    \protect\G@refundefinedtrue
+    \@latex@warning{%
+      Hyper reference `#2' on page \thepage \space undefined%
+    }%
+    \hyper@@link{}{??}{#3}%
+  \else
+    \hyper@@link{\expandafter\@fifthoffive#1}%
+      {\expandafter\@fourthoffive#1\@empty\@empty}{#3}%
+  \fi
+}
+\def\label@hyperdef[#1]#2#3#4{% label name, category, name,
+                                % anchor text
+  \@bsphack
+  \protected@write\@auxout{}%
+    {\string\newlabel{#1}{{}{}{}\##2.#3}}%
+  \@esphack
+  \ifHy@nesting
+    \hyper@@anchor{#2.#3}{#4}%
+  \else
+    \hyper@@anchor{#2.#3}{\relax}#4%
+  \fi
+}
+\def\hyper@@link{\let\Hy@reserved@a\relax
+  \@ifnextchar[{\hyper@link@}{\hyper@link@[link]}%
+}
+\def\hyper@link@[#1]#2#3#4{%
+  \edef\Hy@tempa{#2}%
+  \ifx\Hy@tempa\@empty
+    \hyper@link{#1}{#3}{#4}%
+  \else
+    \expandafter\hyper@readexternallink#2\\{#1}{#3}{#4}%
+  \fi
+}
+\def\hyper@readexternallink#1\\#2#3#4{%
+  \expandafter\@hyper@readexternallink{#2}{#3}{#4}#1::\\{#1}%
+}
+\def\@pdftempwordfile{file}%
+\def\@pdftempwordrun{run}%
+\def\@hyper@readexternallink#1#2#3#4:#5:#6\\#7{%
+  \ifx\\#6\\%
+    \expandafter\@hyper@linkfile file:#7\\{#3}{#2}%
+  \else
+    \ifx\\#4\\%
+      \expandafter\@hyper@linkfile file:#7\\{#3}{#2}%
+    \else
+      \def\@pdftempa{#4}%
+      \ifx\@pdftempa\@pdftempwordfile
+        \expandafter\@hyper@linkfile#7\\{#3}{#2}%
+      \else
+        \ifx\@pdftempa\@pdftempwordrun
+          \expandafter\@hyper@launch#7\\{#3}{#2}%
+        \else
+          \hyper@linkurl{#3}{#7\ifx\\#2\\\else\##2\fi}%
+        \fi
+      \fi
+    \fi
+  \fi
+}
+\def\@hyper@launch run:#1\\#2#3{% filename, anchor text, linkname
+   \hyper@linkurl{#2}{file:#1\ifx\\#3\\\else\##3\fi}%
+}
+\def\@hyper@linkfile file:#1\\#2#3{%
+     %file url,link string, name
+  \filename@parse{#1}%
+  \ifx\filename@ext\relax
+    \edef\filename@ext{\XR@ext}%
+  \fi
+  \def\use@file{\filename@area\filename@base.\filename@ext}%
+  \ifx\filename@ext\XR@ext
+    \hyper@linkfile{#2}{\use@file}{#3}%
+  \else
+    \ifx\@baseurl\@empty
+      \hyper@linkurl{#2}{%
+        \Hy@linkfileprefix\use@file\ifx\\#3\\\else\##3\fi
+      }%
+    \else
+      \hyper@linkurl{#2}{\use@file\ifx\\#3\\\else\##3\fi}%
+    \fi
+  \fi
+}
+\long\def\hyper@@anchor#1#2{\@hyper@@anchor#1\relax#2\relax}
+\long\def\@hyper@@anchor#1\relax#2#3\relax{%
+  \ifx\\#1\\%
+    #2\Hy@WarningNoLine{empty link? #1: #2#3}%
+  \else
+    \def\anchor@spot{#2#3}%
+    \let\put@me@back\@empty
+    \ifx\relax#2\relax
+    \else
+      \ifHy@nesting
+      \else
+        \ifcat a\noexpand#2\relax
+        \else
+          \ifcat 0\noexpand#2 \relax
+          \else
+            \let\anchor@spot\@empty
+            \def\put@me@back{#2#3}%
+          \fi
+        \fi
+      \fi
+    \fi
+    \ifHy@activeanchor
+      \anchor@spot
+    \else
+      \hyper@anchor{#1}%
+    \fi
+    \expandafter\put@me@back
+  \fi
+  \let\anchor@spot\@empty
+}
+\let\htmladdimg\hyperimage
+\def\htmladdnormallink#1#2{\href{#2}{#1}}
+\def\htmladdnormallinkfoot#1#2{\href{#2}{#1}\footnote{#2}}
+\def\htmlref#1#2{% anchor text, label
+  \label@hyperref[{#2}]{#1}%
+}
+\def\@@latextohtmlX{%
+  \let\hhyperref\hyperref
+  \def\hyperref##1##2##3##4{% anchor text for HTML
+                     % text to print before label in print
+                     % label
+                     % post-label text in print
+    ##2\ref{##4}##3%
+  }%
+}
+\newif\ifFld@checked
+\newif\ifFld@hidden
+\newif\ifFld@multiline
+\newif\ifFld@readonly
+\newif\ifFld@disabled
+\newif\ifFld@password
+\newif\ifFld@radio
+\newif\ifFld@combo
+\newif\ifFld@popdown
+\Fld@multilinefalse
+\Fld@checkedfalse
+\Fld@hiddenfalse
+\Fld@readonlyfalse
+\Fld@disabledfalse
+\Fld@radiofalse
+\Fld@combofalse
+\Fld@popdownfalse
+\Fld@passwordfalse
+\newcount\Fld@menulength
+\newdimen\Field@Width
+\newdimen\Fld@charsize
+\Fld@charsize=10\p@
+\def\Fld@maxlen{0}
+\def\Fld@align{0}
+\def\Fld@color{0 0 0}
+\def\Fld@bcolor{1 1 1}
+\def\Fld@bordercolor{1 0 0}
+\def\Fld@bordersep{1\p@}
+\def\Fld@borderwidth{1}
+\def\Fld@borderstyle{S}
+\def\Fld@cbsymbol{4}
+\newtoks\Choice@toks
+\def\Form{\@ifnextchar[{\@Form}{\@Form[]}}
+\def\endForm{\@endForm}
+\newif\ifForm@html
+\Form@htmlfalse
+\def\Form@boolkey#1#2{%
+  \csname Form@#2\ifx\relax#1\relax true\else#1\fi\endcsname
+}
+\define@key{Form}{action}{%
+  \def\Form@action{#1}%
+}
+\def\enc@@html{html}
+\define@key{Form}{encoding}{%
+  \def\Hy@tempa{#1}%
+  \ifx\Hy@tempa\enc@@html
+    \Form@htmltrue
+  \else
+    \typeout{hyperref: form `encoding' key set to #1 %
+      -- unknown type%
+    }%
+    \Form@htmlfalse
+  \fi
+}
+\define@key{Form}{method}{%
+  \def\Form@method{#1}%
+}
+\def\Form@method{}
+\def\Field@boolkey#1#2{%
+  \csname Fld@#2\ifx\relax#1\relax true\else#1\fi\endcsname
+}
+\newtoks\Field@toks
+\Field@toks={ }%
+\def\Field@addtoks#1#2{%
+  \edef\@processme{\Field@toks{\the\Field@toks\space #1="#2"}}%
+  \@processme
+}
+\def\Fld@checkequals#1=#2=#3\\{%
+  \def\@currDisplay{#1}%
+  \ifx\\#2\\%
+    \def\@currValue{#1}%
+  \else
+    \def\@currValue{#2}%
+  \fi
+}
+\define@key{Field}{loc}{%
+  \def\Fld@loc{#1}%
+}
+\define@key{Field}{multiline}[true]{%
+  \lowercase{\Field@boolkey{#1}}{multiline}%
+}
+\define@key{Field}{checked}[true]{%
+  \lowercase{\Field@boolkey{#1}}{checked}%
+}
+\define@key{Field}{hidden}[true]{%
+  \lowercase{\Field@boolkey{#1}}{hidden}%
+}
+\define@key{Field}{readonly}[true]{%
+  \lowercase{\Field@boolkey{#1}}{readonly}%
+}
+\define@key{Field}{disabled}[true]{%
+  \lowercase{\Field@boolkey{#1}}{disabled}%
+}
+\define@key{Field}{password}[true]{%
+  \lowercase{\Field@boolkey{#1}}{password}%
+}
+\define@key{Field}{radio}[true]{%
+  \lowercase{\Field@boolkey{#1}}{radio}%
+}
+\define@key{Field}{combo}[true]{%
+  \lowercase{\Field@boolkey{#1}}{combo}%
+}
+\define@key{Field}{popdown}[true]{%
+  \lowercase{\Field@boolkey{#1}}{popdown}%
+}
+\define@key{Field}{accesskey}{%
+  \Field@addtoks{accesskey}{#1}%
+}
+\define@key{Field}{tabkey}{%
+  \Field@addtoks{tabkey}{#1}%
+}
+\define@key{Field}{name}{%
+  \def\Fld@name{#1}%
+}
+\define@key{Field}{width}{%
+  \def\Fld@width{#1}%
+  \Field@Width#1\setbox0=\hbox{m}%
+}
+\define@key{Field}{maxlen}{%
+  \def\Fld@maxlen{#1}%
+}
+\define@key{Field}{menulength}{%
+  \Fld@menulength=#1\relax
+}
+\define@key{Field}{height}{%
+  \def\Fld@height{#1}%
+}
+\define@key{Field}{charsize}{%
+  \Fld@charsize#1%
+}
+\define@key{Field}{fillcolor}{%
+  \def\Fld@fillcolor{#1}%
+}
+\define@key{Field}{bordercolor}{%
+  \def\Fld@bordercolor{#1}%
+}
+\define@key{Field}{color}{%
+  \def\Fld@color{#1}%
+}
+\define@key{Field}{borderwidth}{%
+  \def\Fld@borderwidth{#1}%
+}
+\define@key{Field}{borderstyle}{%
+  \def\Fld@borderstyle{#1}%
+}
+\define@key{Field}{bordersep}{%
+  \def\Fld@bordersep{#1}%
+}
+\define@key{Field}{default}{%
+  \def\Fld@default{#1}%
+}
+\define@key{Field}{align}{%
+  \def\Fld@align{#1}%
+}
+\define@key{Field}{value}{%
+  \def\Fld@value{#1}%
+}
+\define@key{Field}{backgroundcolor}{%
+  \def\Fld@bcolor{#1}%
+}
+\define@key{Field}{checkboxsymbol}{%
+  \def\Fld@cbsymbol{#1}%
+}
+\def\Fld@format@code{}
+\def\Fld@validate@code{}
+\def\Fld@calculate@code{}
+\def\Fld@keystroke@code{}
+\define@key{Field}{keystroke}{%
+  \def\Fld@keystroke@code{#1}%
+}
+\define@key{Field}{format}{%
+  \def\Fld@format@code{#1}%
+}
+\define@key{Field}{validate}{%
+  \def\Fld@validate@code{#1}%
+}
+\define@key{Field}{calculate}{%
+  \def\Fld@calculate@code{#1}%
+}
+\define@key{Field}{onfocus}{%
+  \Field@addtoks{onfocus}{#1}%
+}
+\define@key{Field}{onblur}{%
+  \Field@addtoks{onblur}{#1}%
+}
+\define@key{Field}{onselect}{%
+  \Field@addtoks{onselect}{#1}%
+}
+\define@key{Field}{onchange}{%
+  \Field@addtoks{onchange}{#1}%
+}
+\define@key{Field}{onclick}{%
+  \def\Fld@onclick{#1}%
+  \Field@addtoks{onclick}{#1}%
+}
+\define@key{Field}{ondblclick}{%
+  \Field@addtoks{ondblclick}{#1}%
+}
+\define@key{Field}{onmousedown}{%
+  \Field@addtoks{onmousedown}{#1}%
+}
+\define@key{Field}{onmouseup}{%
+  \Field@addtoks{onmouseup}{#1}%
+}
+\define@key{Field}{onmouseover}{%
+  \Field@addtoks{onmouseover}{#1}%
+}
+\define@key{Field}{onmousemove}{%
+  \Field@addtoks{onmousemove}{#1}%
+}
+\define@key{Field}{onmouseout}{%
+  \Field@addtoks{onmouseout}{#1}%
+}
+\define@key{Field}{onkeypress}{%
+  \Field@addtoks{onkeypress}{#1}%
+}
+\define@key{Field}{onkeydown}{%
+  \Field@addtoks{onkeydown}{#1}%
+}
+\define@key{Field}{onkeyup}{%
+  \Field@addtoks{onkeyup}{#1}%
+}
+\DeclareRobustCommand\TextField{%
+  \@ifnextchar[{\@TextField}{\@TextField[]}%
+}
+\DeclareRobustCommand\ChoiceMenu{%
+  \@ifnextchar[{\@ChoiceMenu}{\@ChoiceMenu[]}%
+}
+\DeclareRobustCommand\CheckBox{%
+  \@ifnextchar[{\@CheckBox}{\@CheckBox[]}%
+}
+\DeclareRobustCommand\PushButton{%
+  \@ifnextchar[{\@PushButton}{\@PushButton[]}%
+}
+\DeclareRobustCommand\Gauge{%
+  \@ifnextchar[{\@Gauge}{\@Gauge[]}%
+}
+\DeclareRobustCommand\Submit{%
+  \@ifnextchar[{\@Submit}{\@Submit[]}%
+}
+\DeclareRobustCommand\Reset{%
+  \@ifnextchar[{\@Reset}{\@Reset[]}%
+}
+\def\LayoutTextField#1#2{% label, field
+  #1 #2%
+}
+\def\LayoutChoiceField#1#2{% label, field
+  #1 #2%
+}
+\def\LayoutCheckField#1#2{% label, field
+  #1 #2%
+}
+\def\LayoutPushButtonField#1{% button
+  #1%
+}
+\def\MakeRadioField#1#2{\vbox to #2{\hbox to #1{\hfill}\vfill}}
+\def\MakeCheckField#1#2{\vbox to #2{\hbox to #1{\hfill}\vfill}}
+\def\MakeTextField#1#2{\vbox to #2{\hbox to #1{\hfill}\vfill}}
+\def\MakeChoiceField#1#2{\vbox to #2{\hbox to #1{\hfill}\vfill}}
+\def\MakeButtonField#1{%
+  \sbox0{%
+    \hskip\Fld@borderwidth bp#1\hskip\Fld@borderwidth bp%
+  }%
+  \@tempdima\ht0
+  \advance\@tempdima by \Fld@borderwidth bp
+  \advance\@tempdima by \Fld@borderwidth bp
+  \ht0\@tempdima
+  \@tempdima\dp0
+  \advance\@tempdima by \Fld@borderwidth bp
+  \advance\@tempdima by \Fld@borderwidth bp
+  \dp0\@tempdima
+  \box0\relax
+}
+\def\DefaultHeightofSubmit{14pt}
+\def\DefaultWidthofSubmit{2cm}
+\def\DefaultHeightofReset{14pt}
+\def\DefaultWidthofReset{2cm}
+\def\DefaultHeightofCheckBox{\baselineskip}
+\def\DefaultWidthofCheckBox{\baselineskip}
+\def\DefaultHeightofChoiceMenu{\baselineskip}
+\def\DefaultWidthofChoiceMenu{\baselineskip}
+\def\DefaultHeightofText{\baselineskip}
+\def\DefaultWidthofText{3cm}
+\ifHy@figures
+  \Hy@Info{Hyper figures ON}
+\else
+  \Hy@Info{Hyper figures OFF}
+\fi
+\ifHy@nesting
+  \Hy@Info{Link nesting ON}
+\else
+  \Hy@Info{Link nesting OFF}
+\fi
+\ifHy@hyperindex
+  \Hy@Info{Hyper index ON}
+\else
+  \Hy@Info{Hyper index OFF}
+\fi
+\ifHy@backref
+  \Hy@Info{backreferencing ON}
+\else
+  \Hy@Info{backreferencing OFF}
+\fi
+\ifHy@colorlinks
+  \Hy@Info{Link coloring ON}
+\else
+  \Hy@Info{Link coloring OFF}
+\fi
+\edef\hyper@hash{\string#}
+\edef\hyper@tilde{\string~}
+\edef\hyper@quote{\string"}
+\let\@currentHref\@empty
+\AtBeginDocument{%
+  \Hy@pdfstringtrue
+  \PDF@SetupDoc
+  \let\PDF@SetupDoc\@empty
+  \Hy@DisableOption{4}%
+  \Hy@DisableOption{pdfpagescrop}%
+  \Hy@DisableOption{pdfpagemode}%
+  \Hy@DisableOption{pdfstartview}%
+  \Hy@DisableOption{pdfstartpage}%
+  \Hy@DisableOption{pdftoolbar}%
+  \Hy@DisableOption{pdfmenubar}%
+  \Hy@DisableOption{pdfwindowui}%
+  \Hy@DisableOption{pdffitwindow}%
+  \Hy@DisableOption{pdfcenterwindow}%
+  \Hy@DisableOption{pdfpagelayout}%
+  \Hy@DisableOption{baseurl}%
+  \ifHy@texht\else\hyper@anchorstart{Doc-Start}\hyper@anchorend\fi
+  \Hy@pdfstringfalse
+}
+\def\NoHyper{%
+  \def\hyper@link@[##1]##2##3##4{##4}%
+  \def\hyper@@anchor##1{}%
+  \global\let\hyper@livelink\hyper@link
+  \gdef\hyper@link##1##2##3{##3}%
+  \def\hyper@anchorstart##1{}%
+  \let\hyper@anchorend\@empty
+  \def\hyper@linkstart##1##2{}%
+  \let\hyper@linkend\@empty
+  \def\hyper@linkurl##1##2{##1}%
+  \def\hyper@linkfile##1##2##3{##1}%
+  \let\Hy@backout\@gobble
+}
+\def\stop@hyper{%
+  \def\hyper@link@[##1]##2##3##4{##4}%
+  \let\Hy@backout\@gobble
+  \def\hyper@@anchor##1{}%
+  \def\hyper@link##1##2##3{##3}%
+  \def\hyper@anchorstart##1{}%
+  \let\hyper@anchorend\@empty
+  \def\hyper@linkstart##1##2{}%
+  \let\hyper@linkend\@empty
+  \def\hyper@linkurl##1##2{##1}%
+  \def\hyper@linkfile##1##2##3{##1}%
+}
+\def\endNoHyper{%
+  \global\let\hyper@link\hyper@livelink
+}
+\AtBeginDocument{%
+  \if@filesw
+   \ifHy@typexml
+     \immediate\closeout\@mainaux
+     \immediate\openout\@mainaux\jobname.aux
+     \immediate\write\@auxout{<relaxxml>\relax}%
+   \fi
+   \immediate\write\@auxout{%
+      \string\ifx\string\hyper@anchor\string\@undefined^^J%
+        \global\let\string\oldcontentsline\string\contentsline^^J%
+        \gdef\string\contentsline%
+          \string#1\string#2\string#3\string#4{%
+          \string\oldcontentsline%
+            {\string#1}{\string#2}{\string#3}}^^J%
+        \global\let\string\oldnewlabel\string\newlabel^^J%
+        \gdef\string\newlabel\string#1\string#2{%
+           \string\newlabelxx{\string#1}\string#2}^^J%
+        \gdef\string\newlabelxx%
+           \string#1\string#2\string#3\string#4\string#5\string#6{%
+           \string\oldnewlabel{\string#1}{{\string#2}{\string#3}}}^^J%
+        \string\AtEndDocument{%
+          \let\string\contentsline\string\oldcontentsline^^J%
+          \let\string\newlabel\string\oldnewlabel}^^J%
+      \string\else^^J%
+        \global\let\string\hyper@last\relax^^J%
+      \string\fi^^J%
+    }%
+  \fi
+  \ifx\hyper@last\@undefined
+    \def\@starttoc#1{%
+      \begingroup
+        \makeatletter
+        \IfFileExists{\jobname.#1}{%
+          \Hy@WarningNoLine{%
+            old #1 file detected, not used; run LaTeX again%
+          }%
+        }{}%
+        \if@filesw
+          \expandafter\newwrite\csname tf@#1\endcsname
+          \immediate\openout\csname tf@#1\endcsname \jobname.#1\relax
+        \fi
+        \@nobreakfalse
+      \endgroup
+    }%
+    \def\newlabel#1#2{\@newl@bel r{#1}{#2{}{}{}{}}}%
+  \fi
+}
+\ifHy@pagelabels
+  \def\HyPL@Labels{}
+  \newcount\Hy@abspage
+  \Hy@abspage=0
+  \def\HyPL@LastType{init}%
+  \def\HyPL@LastNumber{0}%
+  \def\HyPL@LastPrefix{}%
+  \def\HyPL@arabic{D}%
+  \def\HyPL@Roman{R}%
+  \def\HyPL@roman{r}%
+  \def\HyPL@Alph{A}%
+  \def\HyPL@alph{a}%
+  \def\HyPL@EveryPage{%
+    \begingroup
+      \let\HyPL@Type\relax
+      \ifnum\the\c@page>0
+        \expandafter\HyPL@CheckThePage\thepage\@nil
+      \fi
+      \let\Hy@temp Y%
+      \ifx\HyPL@Type\HyPL@LastType
+      \else
+        \let\Hy@temp N%
+      \fi
+      \ifx\HyPL@Type\relax
+         \pdfstringdef\HyPL@Prefix{\thepage}%
+      \else
+         \pdfstringdef\HyPL@Prefix\HyPL@Prefix
+      \fi
+      \ifx\HyPL@Prefix\HyPL@LastPrefix
+      \else
+        \let\Hy@temp N%
+      \fi
+      \if Y\Hy@temp
+        \advance\c@page by -1
+        \ifnum\HyPL@LastNumber=\the\c@page\relax
+        \else
+          \let\Hy@temp N%
+        \fi
+        \Hy@StepCount\c@page
+      \fi
+      \if N\Hy@temp
+        \ifx\HyPL@Type\relax
+          \HyPL@StorePageLabel{/P (\HyPL@Prefix)}%
+        \else
+          \HyPL@StorePageLabel{%
+            \ifx\HyPL@Prefix\@empty
+            \else
+              /P (\HyPL@Prefix)
+            \fi
+            /S /\csname HyPL\HyPL@Type\endcsname
+            \ifnum\the\c@page=1
+            \else
+              \space/St \the\c@page
+            \fi
+          }%
+        \fi
+      \fi
+      \xdef\HyPL@LastNumber{\the\c@page}%
+      \global\let\HyPL@LastType\HyPL@Type
+      \global\let\HyPL@LastPrefix\HyPL@Prefix
+    \endgroup
+    \Hy@GlobalStepCount\Hy@abspage
+  }
+  \def\HyPL@CheckThePage#1\@nil{%
+    \HyPL@@CheckThePage{#1}#1\csname\endcsname\c@page\@nil
+  }
+  \def\HyPL@@CheckThePage#1#2\csname#3\endcsname\c@page#4\@nil{%
+    \def\Hy@tempa{#4}%
+    \def\Hy@tempb{\csname\endcsname\c@page}%
+    \ifx\Hy@tempa\Hy@tempb
+      \expandafter\ifx\csname HyPL#3\endcsname\relax
+      \else
+        \def\HyPL@Type{#3}%
+        \def\HyPL@Prefix{#2}%
+      \fi
+    \else
+      \begingroup
+        \let\Hy@next\endgroup
+        \let\HyPL@found\@undefined
+        \def\arabic{\HyPL@Format{arabic}}%
+        \def\Roman{\HyPL@Format{Roman}}%
+        \def\roman{\HyPL@Format{roman}}%
+        \def\Alph{\HyPL@Format{Alph}}%
+        \def\alph{\HyPL@Format{alph}}%
+        \protected@edef\Hy@temp{#1}%
+        \ifx\HyPL@found\relax
+          \toks@\expandafter{\Hy@temp}%
+          \edef\Hy@next{\endgroup
+            \noexpand\HyPL@@@CheckThePage\the\toks@
+               \noexpand\HyPL@found\relax\noexpand\@nil
+          }%
+        \fi
+      \Hy@next
+    \fi
+  }
+  \def\HyPL@Format#1#2{%
+    \ifx\HyPL@found\@undefined
+      \expandafter\ifx\csname c@#2\endcsname\c@page
+        \expandafter\noexpand\csname HyPL@found\endcsname{#1}%
+      \else
+        \expandafter\noexpand\csname#1\endcsname{#2}%
+      \fi
+    \else
+      \expandafter\noexpand\csname#1\endcsname{#2}%
+    \fi
+  }
+  \def\HyPL@@@CheckThePage#1\HyPL@found#2#3\@nil{%
+    \def\Hy@tempa{#3}%
+    \def\Hy@tempb{\HyPL@found\relax}%
+    \ifx\Hy@tempa\Hy@tempb
+      \def\HyPL@Type{@#2}%
+      \def\HyPL@Prefix{#1}%
+    \fi
+  }
+  \providecommand*{\HyPL@StorePageLabel}[1]{}
+  \def\HyPL@Useless{0 << /S /D >> }%
+  \def\HyPL@SetPageLabels{%
+    \ifx\HyPL@Labels\@empty
+    \else
+      \ifx\HyPL@Labels\HyPL@Useless
+      \else
+        \Hy@PutCatalog{/PageLabels << /Nums [\HyPL@Labels] >>}%
+      \fi
+    \fi
+  }
+\else
+  \let\HyPL@EveryPage\@empty
+\fi
+\Hy@DisableOption{pdfpagelabels}
+\MaybeStopEarly
+\newcommand\theHequation{\theHsection.\arabic{equation}}
+\@ifundefined{thepart}{}{\newcommand\theHpart{\arabic{part}}}
+\@ifundefined{thechapter}{%
+  \newcommand\theHsection    {\arabic{section}}
+  \newcommand\theHfigure     {\arabic{figure}}
+  \newcommand\theHtable      {\arabic{table}}
+}{%
+  \newcommand\theHchapter    {\arabic{chapter}}
+  \newcommand\theHfigure     {\theHchapter.\arabic{figure}}
+  \newcommand\theHtable      {\theHchapter.\arabic{table}}
+  \newcommand\theHsection    {\theHchapter.\arabic{section}}
+}
+\newcommand\theHsubsection   {\theHsection.\arabic{subsection}}
+\newcommand\theHsubsubsection{\theHsubsection.\arabic{subsubsection}}
+\newcommand\theHparagraph    {\theHsubsubsection.\arabic{paragraph}}
+\newcommand\theHsubparagraph {\theHparagraph.\arabic{subparagraph}}
+\newcommand\theHtheorem      {\theHsection.\arabic{theorem}}
+\newcommand\theHthm          {\theHsection.\arabic{thm}}
+\let\H@item\item
+\newcounter{Item}
+\def\theHItem{\arabic{Item}}
+\def\item{%
+  \@hyper@itemfalse
+  \if@nmbrlist\@hyper@itemtrue\fi
+  \H@item
+}
+\newcommand\theHenumi     {\theHItem}
+\newcommand\theHenumii    {\theHItem}
+\newcommand\theHenumiii   {\theHItem}
+\newcommand\theHenumiv    {\theHItem}
+\newcommand\theHHfootnote {\arabic{Hfootnote}}
+\newcommand\theHmpfootnote{\arabic{mpfootnote}}
+\let\theHHmpfootnote\theHHfootnote
+\let\H@refstepcounter\refstepcounter
+\edef\name@of@eq{equation}%
+\edef\name@of@slide{slide}%
+\newif\if@hyper@item
+\newif\if@skiphyperref
+\@hyper@itemfalse
+\@skiphyperreffalse
+\def\refstepcounter#1{%
+  \H@refstepcounter{#1}%
+  \edef\This@name{#1}%
+  \ifx\This@name\name@of@slide
+  \else
+    \if@skiphyperref
+    \else
+      \if@hyper@item
+        \stepcounter{Item}%
+        \hyper@refstepcounter{Item}%
+      \else
+        \hyper@refstepcounter{#1}%
+      \fi
+    \fi
+  \fi
+}
+\@ifpackageloaded{amsmath}{}{\newif\ifmeasuring@\measuring@false}
+\def\hyper@refstepcounter#1{%
+  \edef\This@name{#1}%
+  \ifx\This@name\name@of@eq
+    \make@stripped@name{\theequation}%
+    \let\theHequation\newname
+  \fi
+  \@ifundefined{theH#1}{%
+    \expandafter\def\csname theH#1\endcsname{\arabic{#1}}%
+  }{}%
+  \hyper@makecurrent{#1}%
+  \ifmeasuring@
+  \else
+    \Hy@raisedlink{%
+      \hyper@anchorstart{\@currentHref}\hyper@anchorend}%
+  \fi
+}
+\def\Hy@chapterstring{chapter}
+\def\Hy@appendixstring{appendix}
+\def\Hy@chapapp{\Hy@chapterstring}
+\let\Hy@org@appendix\appendix
+\def\appendix{%
+  \Hy@org@appendix
+  \@ifundefined{chapter}%
+    {\gdef\theHsection{\Alph{section}}}%
+    {\gdef\theHchapter{\Alph{chapter}}}%
+  \xdef\Hy@chapapp{\Hy@appendixstring}%
+}
+\def\hyper@makecurrent#1{%
+  \begingroup
+    \edef\Hy@param{#1}%
+    \ifx\Hy@param\Hy@chapterstring
+      \let\Hy@param\Hy@chapapp
+    \fi
+    \ifHy@hypertexnames
+      \ifHy@naturalnames
+        \let\textlatin\@firstofone
+        \xdef\@currentHlabel{\csname the#1\endcsname}%
+      \else
+        \xdef\@currentHlabel{\csname theH#1\endcsname}%
+      \fi
+      \xdef\@currentHref{%
+        \Hy@param.\expandafter\strip@prefix\meaning\@currentHlabel
+      }%
+    \else
+      \Hy@GlobalStepCount\Hy@linkcounter
+      \xdef\@currentHref{\Hy@param.\the\Hy@linkcounter}%
+    \fi
+  \endgroup
+}
+\@ifpackageloaded{fancyvrb}{%
+  \def\FV@StepLineNo{%
+    \FV@SetLineNo
+    \def\FV@StepLineNo{\H@refstepcounter{FancyVerbLine}}%
+    \FV@StepLineNo
+  }%
+}{}
+\AtBeginDocument{%
+  \@ifpackageloaded{lastpage}{%
+    \ifHy@pageanchor
+    \else
+      \Hy@WarningNoLine{%
+        The \string\pageref{LastPage} link doesn't work\MessageBreak
+        with disabled option `pageanchor'%
+      }%
+    \fi
+    \def\lastpage@putlabel{%
+      \addtocounter{page}{-1}%
+      \if@filesw
+        \begingroup
+          \ifHy@pageanchor
+            \ifHy@hypertexnames
+              \ifHy@plainpages
+                \def\Hy@temp{\arabic{page}}%
+              \else
+                \let\textlatin\@firstofone
+                \edef\Hy@temp{\thepage}%
+              \fi
+            \else
+              \def\Hy@temp{\the\Hy@pagecounter}%
+            \fi
+          \fi
+          \immediate\write\@auxout{%
+            \string\newlabel
+              {LastPage}{{}{\thepage}{}{%
+                \ifHy@pageanchor page.\Hy@temp\fi}{}}%
+          }%
+        \endgroup
+      \fi
+      \addtocounter{page}{1}%
+    }%
+  }{}%
+}
+\newcommand*{\hypergetpageref}[1]{%
+  \expandafter\Hy@getpageref\csname r@#1\endcsname{#1}%
+}
+\def\Hy@getpageref#1#2{%
+  \ifx#1\relax
+    0%
+    \protect\G@refundefinedtrue
+    \@latex@warning{Reference `#2' on page \thepage\space
+      undefined%
+    }%
+  \else
+    \expandafter\Hy@GetSecondArg#1\@nil
+  \fi
+}
+\long\def\Hy@GetSecondArg#1#2#3\@nil{#2}
+\newcommand*{\hypergetref}[1]{%
+  \expandafter\Hy@getref\csname r@#1\endcsname{#1}%
+}
+\def\Hy@getref#1#2{%
+  \ifx#1\relax
+    ??%
+    \protect\G@refundefinedtrue
+    \@latex@warning{Reference `#2' on page \thepage\space
+      undefined%
+    }%
+  \else
+    \expandafter\@car#1\@nil
+  \fi
+}
+\@ifpackageloaded{ifthen}{%
+  \let\HyOrg@ifthenelse\ifthenelse
+  \def\ifthenelse{%
+    \let\begingroup\Hy@TE@begingroup
+    \HyOrg@ifthenelse
+  }%
+  \let\HyOrg@begingroup\begingroup
+  \def\Hy@TE@begingroup{%
+    \let\begingroup\HyOrg@begingroup
+    \begingroup
+    \let\ref\hypergetref
+    \let\pageref\hypergetpageref
+  }%
+}{}
+\@ifpackageloaded{titlesec}{%
+  \def\ttl@Hy@steplink#1{%
+    \Hy@GlobalStepCount\Hy@linkcounter
+    \xdef\@currentHref{#1*.\the\Hy@linkcounter}%
+    \def\ttl@Hy@saveanchor{%
+      \Hy@raisedlink{\hyper@anchorstart{\@currentHref}\hyper@anchorend}%
+    }%
+  }%
+  \def\ttl@Hy@refstepcounter#1{%
+    \let\ttl@b\Hy@raisedlink
+    \def\Hy@raisedlink##1{\def\ttl@Hy@saveanchor{\Hy@raisedlink{##1}}}%
+    \refstepcounter{#1}%
+    \let\Hy@raisedlink\ttl@b
+  }%
+}{}
+\@ifpackageloaded{titletoc}{%
+  \def\ttl@gobblecontents#1#2#3#4{\ignorespaces}%
+}{}
+\let\new@refstepcounter\refstepcounter
+\let\H@equation\equation
+\let\H@endequation\endequation
+\@ifpackageloaded{amsmath}{}{%
+  \def\equation{%
+  \let\refstepcounter\H@refstepcounter
+  \H@equation
+  \make@stripped@name{\theequation}%
+  \let\theHequation\newname
+  \hyper@makecurrent{equation}%
+  \Hy@raisedlink{\hyper@anchorstart{\@currentHref}}%
+  \let\refstepcounter\new@refstepcounter}%
+  \def\endequation{\Hy@raisedlink{\hyper@anchorend}\H@endequation}%
+}
+\newif\if@eqnstar
+\@eqnstarfalse
+\let\H@eqnarray\eqnarray
+\let\H@endeqnarray\endeqnarray
+\def\eqnarray{%
+  \let\Hy@reserved@a\relax
+  \def\@currentHref{}%
+  \H@eqnarray
+  \if@eqnstar
+  \else
+    \ifx\\\@currentHref\\%
+    \else
+      \make@stripped@name{\theequation}%
+      \let\theHequation\newname
+      \hyper@makecurrent{equation}%
+      \hyper@anchorstart{\@currentHref}{}\hyper@anchorend
+    \fi
+  \fi
+}
+\def\endeqnarray{%
+  \H@endeqnarray
+}
+\@namedef{eqnarray*}{%
+  \def\@eqncr{\nonumber\@seqncr}\@eqnstartrue\eqnarray
+}
+\@namedef{endeqnarray*}{%
+  \nonumber\endeqnarray\@eqnstarfalse
+}
+\@ifundefined{subeqnarray}{}{%
+  \let\H@subeqnarray\subeqnarray
+  \let\H@endsubeqnarray\endsubeqnarray
+  \def\subeqnarray{%
+    \let\Hy@reserved@a\relax
+    \H@subeqnarray
+    \make@stripped@name{\theequation}%
+    \let\theHequation\newname
+    \hyper@makecurrent{equation}%
+    \hyper@anchorstart{\@currentHref}{}\hyper@anchorend
+  }%
+  \def\endsubeqnarray{%
+    \H@endsubeqnarray
+  }%
+  \newcommand\theHsubequation{\theHequation\alph{subequation}}%
+}
+\def\make@stripped@name#1{%
+  \begingroup
+    \escapechar\m@ne
+    \global\let\newname\@empty
+    \protected@edef\Hy@tempa{#1}%
+    \edef\@tempb{%
+      \noexpand\@tfor\noexpand\Hy@tempa:=%
+        \expandafter\strip@prefix\meaning\Hy@tempa
+    }%
+    \@tempb\do{%
+      \if{\Hy@tempa\else
+        \if}\Hy@tempa\else
+          \xdef\newname{\newname\Hy@tempa}%
+        \fi
+      \fi
+    }%
+  \endgroup
+}
+\@ifpackageloaded{tabularx}{\Hy@hyperfootnotesfalse}{}
+\ifHy@hyperfootnotes
+  \newcounter{Hfootnote}
+  \let\H@@footnotetext\@footnotetext
+  \let\H@@footnotemark\@footnotemark
+  \def\@xfootnotenext[#1]{%
+    \begingroup
+      \csname c@\@mpfn\endcsname #1\relax
+      \unrestored@protected@xdef\@thefnmark{\thempfn}%
+    \endgroup
+    \ifx\@footnotetext\@mpfootnotetext
+      \expandafter\H@@mpfootnotetext
+    \else
+      \expandafter\H@@footnotetext
+    \fi
+  }%
+  \def\@xfootnotemark[#1]{%
+    \begingroup
+      \c@footnote #1\relax
+      \unrestored@protected@xdef\@thefnmark{\thefootnote}%
+    \endgroup
+    \H@@footnotemark
+  }%
+  \let\H@@mpfootnotetext\@mpfootnotetext
+  \long\def\@mpfootnotetext#1{%
+    \H@@mpfootnotetext{%
+      \ifHy@nesting
+        \hyper@@anchor{\@currentHref}{#1}%
+      \else
+        \Hy@raisedlink{\hyper@@anchor{\@currentHref}{\relax}}#1%
+      \fi
+    }%
+  }%
+  \long\def\@footnotetext#1{%
+    \H@@footnotetext{%
+      \ifHy@nesting
+        \hyper@@anchor{\@currentHref}{#1}%
+      \else
+        \Hy@raisedlink{\hyper@@anchor{\@currentHref}{\relax}}#1%
+      \fi
+    }%
+  }%
+  \def\@footnotemark{%
+    \leavevmode
+    \ifhmode\edef\@x@sf{\the\spacefactor}\nobreak\fi
+    \H@refstepcounter{Hfootnote}%
+    \hyper@makecurrent{Hfootnote}%
+    \hyper@linkstart{link}{\@currentHref}%
+    \@makefnmark
+    \hyper@linkend
+    \ifhmode\spacefactor\@x@sf\fi
+    \relax
+  }%
+  \let\HyOrg@maketitle\maketitle
+  \def\maketitle{%
+    \let\Hy@saved@footnotemark\@footnotemark
+    \let\Hy@saved@footnotetext\@footnotetext
+    \let\@footnotemark\H@@footnotemark
+    \let\@footnotetext\H@@footnotetext
+    \HyOrg@maketitle
+    \ifx\@footnotemark\H@@footnotemark
+      \let\@footnotemark\Hy@saved@footnotemark
+    \fi
+    \ifx\@footnotetext\H@@footnotetext
+      \let\@footnotetext\Hy@saved@footnotetext
+    \fi
+  }%
+  \def\realfootnote{%
+    \@ifnextchar[\@xfootnote{%
+      \stepcounter{\@mpfn}%
+      \protected@xdef\@thefnmark{\thempfn}%
+      \H@@footnotemark\H@@footnotetext
+    }%
+  }%
+\fi
+\Hy@DisableOption{hyperfootnotes}
+\def\caption{%
+  \ifx\@captype\@undefined
+    \@latex@error{\noexpand\caption outside float}\@ehd
+    \expandafter\@gobble
+  \else
+    \H@refstepcounter\@captype
+    \expandafter\@firstofone
+  \fi
+  {\@dblarg{\@caption\@captype}}%
+}
+\long\def\@caption#1[#2]#3{%
+  \hyper@makecurrent{\@captype}%
+  \par\addcontentsline{\csname ext@#1\endcsname}{#1}{%
+    \protect\numberline{\csname the#1\endcsname}{\ignorespaces #2}%
+  }%
+  \begingroup
+    \@parboxrestore
+    \if@minipage
+      \@setminipage
+    \fi
+    \normalsize
+    \@makecaption{\csname fnum@#1\endcsname}{%
+      \ignorespaces
+      \ifHy@nesting
+        \Hy@raisedlink{\hyper@@anchor{\@currentHref}{\relax}}{#3}%my changes
+      \else
+        \Hy@raisedlink{\hyper@@anchor{\@currentHref}{\relax}}{#3}%my changes
+      \fi
+    }%
+    \par
+  \endgroup
+}
+\def\hyper@natlinkstart#1{%
+  \Hy@backout{#1}%
+  \hyper@linkstart{cite}{cite.#1}%
+  \def\hyper@nat@current{#1}%
+}
+\def\hyper@natlinkend{%
+  \hyper@linkend
+}
+\def\hyper@natlinkbreak#1#2{%
+  \hyper@linkend#1\hyper@linkstart{cite}{cite.#2}%
+}
+\def\hyper@natanchorstart#1{%
+  \hyper@anchorstart{cite.#1}%
+}
+\def\hyper@natanchorend{\hyper@anchorend}
+\@ifundefined{NAT@parse}{%
+  \def\bibcite#1#2{%
+    \@newl@bel{b}{#1}{\hyper@@link[cite]{}{cite.#1}{#2}}%
+  }%
+    \let\Hy@bibcite\bibcite
+    \begingroup
+      \@ifundefined{bbl@cite@choice}{}{%
+        \g@addto@macro\bbl@cite@choice{%
+          \let\bibcite\Hy@bibcite
+        }%
+      }%
+    \endgroup
+  \providecommand{\@BIBLABEL}{\@biblabel}%
+  \def\@lbibitem[#1]#2{%
+    \@skiphyperreftrue
+    \H@item[\hyper@anchorstart{cite.#2}% my change
+    \@BIBLABEL{#1}\hyper@anchorend\hfill]%
+    \@skiphyperreffalse
+    \if@filesw
+      \begingroup
+        \let\protect\noexpand
+        \immediate\write\@auxout{%
+          \string\bibcite{#2}{#1}%
+        }%
+      \endgroup
+    \fi
+    \ignorespaces
+  }%
+  \def\@bibitem#1{%
+    \@skiphyperreftrue\H@item\@skiphyperreffalse
+      \hyper@anchorstart{cite.#1}\relax\hyper@anchorend% my change
+    \if@filesw
+      \begingroup
+        \let\protect\noexpand
+        \immediate\write\@auxout{%
+          \string\bibcite{#1}{\the\value{\@listctr}}%
+        }%
+      \endgroup
+    \fi
+    \ignorespaces
+  }%
+}{}
+\@ifclassloaded{revtex}{%
+  \Hy@Info{*** compatibility with revtex **** }%
+  \def\revtex@checking#1#2{%
+    \expandafter\let\expandafter\T@temp\csname b@#1\endcsname
+    \expandafter\def\csname b@#1\endcsname{#2}%
+    \@SetMaxRnhefLabel{#1}%
+    \expandafter\let\csname b@#1\endcsname\T@temp
+  }%
+  \@ifundefined{@CITE}{\def\@CITE{\@cite}}{}%
+  \def\@CITEX[#1]#2{%
+    \let\@citea\@empty
+    \leavevmode
+    \unskip
+    $^{%
+      \scriptstyle
+      \@CITE{%
+        \@for\@citeb:=#2\do{%
+          \@citea
+          \def\@citea{,\penalty\@m\ }%
+          \edef\@citeb{\expandafter\@firstofone\@citeb}%
+          \if@filesw
+            \immediate\write\@auxout{\string\citation{\@citeb}}%
+          \fi
+          \@ifundefined{b@\@citeb}{%
+            \mbox{\reset@font\bfseries ?}%
+            \G@refundefinedtrue
+            \@latex@warning{%
+              Citation `\@citeb' on page \thepage \space undefined%
+            }%
+          }{%
+            {\csname b@\@citeb\endcsname}%
+          }%
+        }%
+      }{#1}%
+    }$%
+  }%
+  \def\@citex[#1]#2{%
+    \let\@citea\@empty
+    \@cite{%
+      \@for\@citeb:=#2\do{%
+        \@citea
+        \def\@citea{,\penalty\@m\ }%
+        \edef\@citeb{\expandafter\@firstofone\@citeb}%
+        \if@filesw
+          \immediate\write\@auxout{\string\citation{\@citeb}}%
+        \fi
+        \@ifundefined{b@\@citeb}{%
+          \mbox{\reset@font\bfseries ?}%
+          \G@refundefinedtrue
+          \@latex@warning{%
+            Citation `\@citeb' on page \thepage \space undefined%
+          }%
+        }{%
+          \hbox{\csname b@\@citeb\endcsname}%
+        }%
+      }%
+    }{#1}%
+  }%
+}{}
+\@ifpackageloaded{harvard}{%
+  \Hy@Info{*** compatibility with harvard **** }%
+  \Hy@raiselinksfalse
+  \def\harvardcite#1#2#3#4{%
+    \global\@namedef{HAR@fn@#1}{\hyper@@link[cite]{}{cite.#1}{#2}}%
+    \global\@namedef{HAR@an@#1}{\hyper@@link[cite]{}{cite.#1}{#3}}%
+    \global\@namedef{HAR@yr@#1}{\hyper@@link[cite]{}{cite.#1}{#4}}%
+    \global\@namedef{HAR@df@#1}{\csname HAR@fn@#1\endcsname}%
+  }%
+  \def\HAR@citetoaux#1{%
+    \if@filesw\immediate\write\@auxout{\string\citation{#1}}\fi%
+    \ifHy@backref
+      \ifx\@empty\@currentlabel
+      \else
+        \@bsphack
+        \protected@write\@auxout{}{%
+          \string\@writefile{brf}{%
+            \string\backcite{#1}{%
+              {\thepage}{\@currentlabel}{\@currentHref}%
+            }%
+          }%
+        }%
+        \@esphack
+      \fi
+    \fi
+  }%
+  \def\harvarditem{%
+    \@ifnextchar[{\@harvarditem}{\@harvarditem[\null]}%
+  }%
+  \def\@harvarditem[#1]#2#3#4#5\par{%
+    \item[]%
+    \hyper@anchorstart{cite.#4}\relax\hyper@anchorend
+    \if@filesw
+      \begingroup
+        \def\protect##1{\string ##1\space}%
+        \ifthenelse{\equal{#1}{\null}}%
+          {\def\next{{#4}{#2}{#2}{#3}}}%
+          {\def\next{{#4}{#2}{#1}{#3}}}%
+        \immediate\write\@auxout{\string\harvardcite\codeof\next}%
+     \endgroup
+    \fi
+    \protect\hspace*{-\labelwidth}%
+    \protect\hspace*{-\labelsep}%
+    \ignorespaces
+    #5%
+    \ifHy@backref
+      \newblock
+      \backref{\csname br@#4\endcsname}%
+    \fi
+    \par
+  }%
+  \long\def\HAR@checkcitations#1#2#3#4{%
+    \def\HAR@tempa{\hyper@@link[cite]{}{cite.#1}{#2}}%
+    \expandafter\ifx\csname HAR@fn@#1\endcsname\HAR@tempa
+      \def\HAR@tempa{\hyper@@link[cite]{}{cite.#1}{#3}}%
+      \expandafter\ifx\csname HAR@an@#1\endcsname\HAR@tempa
+        \def\HAR@tempa{\hyper@@link[cite]{}{cite.#1}{#4}}%
+        \expandafter\ifx\csname HAR@yr@#1\endcsname\HAR@tempa
+        \else
+          \@tempswatrue
+        \fi
+      \else
+        \@tempswatrue
+      \fi
+    \else
+      \@tempswatrue
+    \fi
+  }%
+}{}
+\@ifpackageloaded{chicago}{%
+  \def\citeN{%
+    \def\@citeseppen{-1000}%
+    \def\@cite##1##2{##1}%
+    \def\citeauthoryear##1##2##3{##1 (##3\@cite@opt)}%
+    \@citedata@opt
+  }%
+  \def\shortciteN{%
+    \def\@citeseppen{-1000}%
+    \def\@cite##1##2{##1}%
+    \def\citeauthoryear##1##2##3{##2 (##3\@cite@opt)}%
+    \@citedata@opt
+  }%
+  \def\@citedata@opt{%
+    \let\@cite@opt\@empty
+    \@ifnextchar [{%
+      \@tempswatrue
+      \@citedatax@opt
+    }{%
+      \@tempswafalse
+      \@citedatax[]%
+    }%
+  }%
+  \def\@citedatax@opt[#1]{%
+    \def\@cite@opt{, #1}%
+    \@citedatax[{#1}]%
+  }
+}{}
+\def\@begindvi{%
+  \unvbox \@begindvibox
+  \Hy@begindvi
+  \global\let\@begindvi\Hy@begindvi
+}
+\def\Hy@begindvi{%
+  \ifHy@pageanchor
+    \@hyperfixhead
+  \fi
+  \HyPL@EveryPage
+}
+\def\pagenumbering#1{%
+  \global\c@page \@ne
+  \gdef\thepage{\csname @#1\endcsname\c@page}%
+}
+\let\HYPERPAGEANCHOR\hyperpageanchor
+\providecommand\hyper@pagetransition{}
+\providecommand\hyper@pageduration{}
+\providecommand\hyper@pagehidden{}
+\def\@hyperfixhead{%
+  \ifHy@hypertexnames
+    \ifHy@plainpages
+      \gdef\Hy@TempPageAnchor{\hyper@@anchor{page.\arabic{page}}}%
+    \else
+      \begingroup
+        \let\textlatin\@firstofone
+        \xdef\@the@H@page{\thepage}%
+      \endgroup
+      \gdef\Hy@TempPageAnchor{\hyper@@anchor{page.\@the@H@page}}%
+    \fi
+  \else
+    \Hy@GlobalStepCount\Hy@pagecounter
+    \gdef\Hy@TempPageAnchor{\hyper@@anchor{page.\the\Hy@pagecounter}}%
+  \fi
+  \let\H@old@thehead\@thehead
+  \if^\@thehead^%
+    \def\H@old@thehead{\hfil}%
+  \fi
+  \ifHy@texht
+    \def\@thehead{}%
+  \else
+    \ifHy@seminarslides
+      \begingroup
+        \let\leavevmode\relax
+        \Hy@TempPageAnchor\relax
+        \hyper@pagetransition
+        \hyper@pageduration
+        \hyper@pagehidden
+      \endgroup
+    \else
+      \def\@thehead{%
+        \Hy@TempPageAnchor\relax
+        \hyper@pagetransition
+        \hyper@pageduration
+        \hyper@pagehidden
+        \H@old@thehead
+      }%
+    \fi
+  \fi
+  \ifx\PDF@FinishDoc\@empty
+  \else
+    \PDF@FinishDoc
+    \gdef\PDF@FinishDoc{}%
+  \fi
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname chapter\endcsname\relax
+  \def\toclevel@part{0}
+\else
+  \def\toclevel@part{-1}
+\fi
+\def\toclevel@chapter{0}
+\def\toclevel@section{1}
+\def\toclevel@subsection{2}
+\def\toclevel@subsubsection{3}
+\def\toclevel@paragraph{4}
+\def\toclevel@subparagraph{5}
+\def\toclevel@figure{0}
+\def\toclevel@table{0}
+\@ifpackageloaded{listings}{%
+  \def\theHlstlisting{\thelstlisting}%
+  \def\toclevel@lstlisting{0}%
+}{}
+\@ifpackageloaded{listing}{%
+  \def\theHlisting{\thelisting}%
+  \def\toclevel@listing{0}%
+}{}
+\def\addcontentsline#1#2#3{% toc extension, type, tag
+  \begingroup
+    \let\label\@gobble
+    \let\textlatin\@firstofone
+    \ifx\@currentHref\@empty
+      \Hy@Warning{%
+        No destination for bookmark of \string\addcontentsline,%
+        \MessageBreak destination is added%
+      }%
+      \phantomsection
+    \fi
+    \expandafter\ifx\csname toclevel@#2\endcsname\relax
+      \Hy@WarningNoLine{bookmark level for unknown #2 defaults to 0}%
+      \def\Hy@toclevel{0}%
+    \else
+      \edef\Hy@toclevel{\csname toclevel@#2\endcsname}%
+    \fi
+    \Hy@writebookmark{\csname the#2\endcsname}%
+      {#3}%
+      {\@currentHref}%
+      {\Hy@toclevel}%
+      {#1}%
+    \ifHy@verbose
+      \typeout{pdftex: bookmark at \the\inputlineno:
+        {\csname the#2\endcsname}
+        {#3}
+        {\@currentHref}%
+        {\Hy@toclevel}%
+        {#1}%
+      }%
+    \fi
+    \addtocontents{#1}{%
+      \protect\contentsline{#2}{#3}{\thepage}{\@currentHref}%
+    }%
+  \endgroup
+}
+\def\contentsline#1#2#3#4{%
+  \ifx\\#4\\%
+    \csname l@#1\endcsname{#2}{#3}%
+  \else
+    \ifHy@linktocpage
+      \csname l@#1\endcsname{{#2}}{%
+        \hyper@linkstart{link}{#4}{#3}\hyper@linkend
+      }%
+    \else
+      \csname l@#1\endcsname{%
+        \hyper@linkstart{link}{#4}{#2}\hyper@linkend
+      }{#3}%
+    \fi
+  \fi
+}
+\let\H@definecounter\@definecounter
+\def\@definecounter#1{%
+  \H@definecounter{#1}%
+  \expandafter\def\csname theH#1\endcsname{\arabic{#1}}%
+}
+\let\H@newctr\@newctr
+\def\@newctr#1[#2]{%
+  \H@newctr#1[{#2}]%
+  \expandafter\def\csname theH#1\endcsname
+    {\csname the#2\endcsname.\arabic{#1}}%
+}
+\let\Hmake@df@tag@@\make@df@tag@@
+\def\make@df@tag@@#1{%
+  \Hmake@df@tag@@{#1}%
+  \Hy@GlobalStepCount\Hy@linkcounter
+  \xdef\@currentHref{AMS.\the\Hy@linkcounter}%
+  \Hy@raisedlink{\hyper@anchorstart{\@currentHref}\hyper@anchorend}%
+}
+\let\Hmake@df@tag@@@\make@df@tag@@@
+\def\make@df@tag@@@#1{%
+  \Hmake@df@tag@@@{#1}%
+  \Hy@GlobalStepCount\Hy@linkcounter
+  \xdef\@currentHref{AMS.\the\Hy@linkcounter}%
+  \Hy@raisedlink{\hyper@anchorstart{\@currentHref}\hyper@anchorend}%
+}
+\@ifpackagewith{hyperref}{pdftex}{%
+   \let\H@seteqlabel\@seteqlabel
+   \def\@seteqlabel#1{%
+     \H@seteqlabel{#1}%
+     \xdef\@currentHref{AMS.\the\Hy@linkcounter}%
+     \Hy@raisedlink{\hyper@anchorstart{\@currentHref}\hyper@anchorend}%
+   }%
+}{}
+\@ifpackageloaded{amsmath}{%
+  \@ifpackagelater{amsmath}{1999/12/14}{%
+    \renewcommand*{\numberwithin}[3][\arabic]{%
+      \@ifundefined{c@#2}{\@nocounterr{#2}}{%
+        \@ifundefined{c@#3}{\@nocnterr{#3}}{%
+          \@addtoreset{#2}{#3}%
+          \@xp\xdef\csname the#2\endcsname{%
+            \@xp\@nx\csname the#3\endcsname .\@nx#1{#2}%
+          }%
+          \@xp\xdef\csname theH#2\endcsname{%
+            \@xp\@nx
+            \csname the\@ifundefined{theH#3}{}H#3\endcsname
+            .\@nx#1{#2}%
+          }%
+        }%
+      }%
+    }%
+  }{%
+    \Hy@WarningNoLine{%
+      \string\numberwithin\space of package `amsmath'
+      only fixed\MessageBreak
+      for version 2000/06/06 v2.12 or newer%
+    }%
+  }
+}{}
+\ifHy@figures
+  \let\Hy@Gin@setfile\Gin@setfile
+  \def\Gin@setfile#1#2#3{%
+    \hyperimage{#3}{\Hy@Gin@setfile{#1}{#2}{#3}}%
+  }
+\fi
+\Hy@DisableOption{hyperfigures}
+\ifHy@hyperindex
+  \def\HyInd@ParenLeft{(}%
+  \@ifpackageloaded{multind}{%
+    \let\HyInd@org@wrindex\@wrindex
+    \def\@wrindex#1#2{\HyInd@@wrindex{#1}#2||\\}%
+    \def\HyInd@@wrindex#1#2|#3|#4\\{%
+      \ifx\\#3\\%
+        \HyInd@org@wrindex{#1}{#2|hyperpage}%
+      \else
+        \def\Hy@temp@A{#3}%
+        \ifx\Hy@temp@A\HyInd@ParenLeft
+          HyInd@org@wrindex{#1}{#2|#3hyperpage}%
+        \else
+          \HyInd@org@wrindex{#1}{#2|#3}%
+        \fi
+      \fi
+    }%
+  }{%
+    \def\@wrindex#1{\@@wrindex#1||\\}
+    \def\@@wrindex#1|#2|#3\\{%
+      \ifx\\#2\\%
+        \protected@write\@indexfile{}{%
+          \string\indexentry{#1|hyperpage}{\thepage}%
+        }%
+      \else
+        \def\Hy@temp@A{#2}%
+        \ifx\Hy@temp@A\HyInd@ParenLeft
+          \protected@write\@indexfile{}{%
+             \string\indexentry{#1|#2hyperpage}{\thepage}%
+          }%
+        \else
+          \protected@write\@indexfile{}{%
+            \string\indexentry{#1|#2}{\thepage}%
+          }%
+        \fi
+      \fi
+      \endgroup
+      \@esphack
+    }%
+  }%
+\fi
+\Hy@DisableOption{hyperindex}
+\def\hyperpage#1{\@hyperpage#1----\\}
+\def\@hyperpage#1--#2--#3\\{%
+  \ifx\\#2\\%
+    \@commahyperpage{#1}%
+  \else
+    \hyperlink{page.#1}{#1}--\hyperlink{page.#2}{#2}%
+  \fi
+}
+\def\@commahyperpage#1{\@@commahyperpage#1, ,\\}
+\def\@@commahyperpage#1, #2,#3\\{%
+  \ifx\\#2\\%
+    \hyperlink{page.#1}{#1}%
+  \else
+    \hyperlink{page.#1}{#1}, \hyperlink{page.#2}{#2}%
+  \fi
+}
+\@ifclassloaded{foils}{%
+  \providecommand*\ext@table{lot}%
+  \providecommand*\ext@figure{lof}%
+}{}
+\@ifclassloaded{seminar}{%
+  \Hy@seminarslidestrue\newcommand\theHslide{\arabic{slide}}%
+}{%
+  \Hy@seminarslidesfalse
+}
+\@ifpackageloaded{slidesec}{%
+  \newcommand\theHslidesection   {\arabic{slidesection}}%
+  \newcommand\theHslidesubsection{%
+    \theHslidesection.\arabic{slidesubsection}%
+  }%
+  \def\slide@heading[#1]#2{%
+    \H@refstepcounter{slidesection}%
+    \@addtoreset{slidesubsection}{slidesection}%
+    \addtocontents{los}{%
+      \protect\l@slide{\the\c@slidesection}{\ignorespaces#1}%
+        {\@SCTR}{slideheading.\theslidesection}%
+    }%
+    \def\Hy@tempa{#2}%
+    \ifx\Hy@tempa\@empty
+    \else
+      {%
+        \edef\@currentlabel{%
+          \csname p@slidesection\endcsname\theslidesection
+        }%
+        \makeslideheading{#2}%
+      }%
+    \fi
+    \gdef\theslideheading{#1}%
+    \gdef\theslidesubheading{}%
+    \ifHy@hypertexnames
+       \ifHy@naturalnames
+         \hyper@@anchor{slideheading.\theslidesection}{\relax}%
+         \Hy@writebookmark
+           {\theslidesection}%
+           {#1}%
+           {slideheading.\theslidesection}%
+           {1}%
+           {toc}%
+       \else
+         \hyper@@anchor{slideheading.\theHslidesection}{\relax}%
+         \Hy@writebookmark
+           {\theslidesection}%
+           {#1}%
+           {slideheading.\theHslidesection}%
+           {1}%
+           {toc}%
+       \fi
+    \else
+      \Hy@GlobalStepCount\Hy@linkcounter
+      \hyper@@anchor{slideheading.\the\Hy@linkcounter}{\relax}%
+      \Hy@writebookmark
+        {\theslidesection}%
+        {#1}%
+        {slideheading.\the\Hy@linkcounter}%
+        {1}%
+        {toc}%
+    \fi
+  }%
+  \def\slide@subheading[#1]#2{%
+    \H@refstepcounter{slidesubsection}%
+    \addtocontents{los}{%
+      \protect\l@subslide{\the\c@slidesubsection}{\ignorespaces#1}%
+        {\@SCTR}{slideheading.\theslidesubsection}%
+    }%
+    \def\Hy@tempa{#2}%
+    \ifx\Hy@tempa\@empty
+    \else
+      {%
+        \edef\@currentlabel{%
+          \csname p@slidesubsection\endcsname\theslidesubsection
+        }%
+        \makeslidesubheading{#2}%
+      }%
+    \fi
+    \gdef\theslidesubheading{#1}%
+    \ifHy@hypertexnames
+      \ifHy@naturalnames
+        \hyper@@anchor{slideheading.\theslidesubsection}{\relax}%
+        \Hy@writebookmark
+          {\theslidesubsection}%
+          {#1}%
+          {slideheading.\theslidesubsection}%
+          {2}%
+          {toc}%
+      \else
+        \hyper@@anchor{slideheading.\theHslidesubsection}{\relax}%
+        \Hy@writebookmark
+          {\theslidesubsection}%
+          {#1}%
+          {slideheading.\theHslidesubsection}%
+          {2}%
+          {toc}%
+      \fi
+    \else
+      \Hy@GlobalStepCount\Hy@linkcounter
+      \hyper@@anchor{slideheading.\the\Hy@linkcounter}{\relax}%
+      \Hy@writebookmark
+        {\theslidesubsection}%
+        {#1}%
+        {slideheading.\the\Hy@linkcounter}%
+        {1}%
+        {toc}%
+    \fi
+  }%
+  \providecommand{\listslidename}{List of Slides}%
+  \def\listofslides{%
+    \section*{%
+      \listslidename
+      \@mkboth{%
+        \expandafter\MakeUppercase\listslidename
+      }{%
+        \expandafter\MakeUppercase\listslidename
+      }%
+    }%
+    \def\l@slide##1##2##3##4{%
+      \slide@undottedcline{%
+        \slidenumberline{##3}{\hyperlink{##4}{##2}}%
+      }{}%
+    }%
+    \let\l@subslide\l@slide
+    \@startlos
+  }%
+  \def\slide@contents{%
+    \def\l@slide##1##2##3##4{%
+      \slide@cline{\slidenumberline{##3}{\hyperlink{##4}{##2}}}{##3}%
+    }%
+    \let\l@subslide\@gobblefour
+    \@startlos
+  }%
+  \def\Slide@contents{%
+    \def\l@slide##1##2##3##4{%
+      \ifcase\lslide@flag
+        \message{##1 ** \the\c@slidesection}%
+        \ifnum##1>\c@slidesection
+          \def\lslide@flag{1}%
+          {%
+            \large
+            \slide@cline{%
+              \slidenumberline{$\Rightarrow\bullet$}%
+                {\hyperlink{##4}{##2}}%
+            }{##3}%
+          }%
+        \else
+          {%
+            \large
+            \slide@cline{%
+              \slidenumberline{$\surd\;\bullet$}%
+                {\hyperlink{##4}{##2}}%
+            }{##3}%
+          }%
+        \fi
+      \or
+        \def\lslide@flag{2}%
+        {%
+          \large
+          \slide@cline{%
+            \slidenumberline{$\bullet$}%
+              {\hyperlink{##4}{##2}}%
+          }{##3}%
+        }%
+      \or
+        {%
+          \large
+          \slide@cline{%
+            \slidenumberline{$\bullet$}%
+             {\hyperlink{##4}{##2}}%
+          }{##3}%
+        }%
+      \fi
+    }%
+    \def\l@subslide##1##2##3##4{%
+      \ifnum\lslide@flag=1
+        \@undottedtocline{2}{3.8em}{3.2em}{\hyperlink{##4}{##2}}{}%
+      \fi
+    }%
+    \def\lslide@flag{0}%
+    \@startlos
+  }%
+}{}
+\ifHy@texht\endinput\fi
+\let\real@setref\@setref
+\def\@setref#1#2#3{% csname, extract group, refname
+  \ifx#1\relax
+    \protect\G@refundefinedtrue
+    \nfss@text{\reset@font\bfseries ??}%
+    \@latex@warning{%
+      Reference `#3' on page \thepage \space undefined%
+    }%
+  \else
+    \hyper@@link
+      {\expandafter\@fifthoffive#1}%
+      {\expandafter\@fourthoffive#1\@empty\@empty}%
+      {\expandafter#2#1\@empty\@empty\null}%
+  \fi
+}
+\def\@pagesetref#1#2#3{% csname, extract macro, ref
+  \ifx#1\relax
+    \protect\G@refundefinedtrue
+    \nfss@text{\reset@font\bfseries ??}%
+    \@latex@warning{%
+      Reference `#3' on page \thepage \space undefined%
+    }%
+  \else
+    \protect\hyper@@link
+      {\expandafter\@fifthoffive#1}%
+      {page.\expandafter\@secondoffive#1}%
+      {\expandafter\@secondoffive#1}%
+  \fi
+}
+\def\@refstar#1{%
+  \@safe@activestrue
+  \expandafter\real@setref\csname r@#1\endcsname\@firstoffive{#1}%
+  \@safe@activesfalse
+}
+\def\@pagerefstar#1{%
+  \@safe@activestrue
+  \expandafter\real@setref\csname r@#1\endcsname\@secondoffive{#1}%
+  \@safe@activesfalse
+}
+\DeclareRobustCommand\autoref[1]{%
+  \expandafter\auto@setref\csname r@#1\endcsname\@firstoffive{#1}%
+}
+\def\auto@setref#1#2#3{% csname, extract group, refname
+  \@safe@activestrue
+  \ifx#1\relax
+    \protect\G@refundefinedtrue
+    \nfss@text{\reset@font\bfseries ??}%
+    \@latex@warning{%
+      Reference `#3' on page \thepage \space undefined%
+    }%
+  \else
+    \edef\@thisref{\expandafter\@fourthoffive#1\@empty\@empty}%
+    \expandafter\test@reftype\@thisref\\%
+    \hyper@@link
+      {\expandafter\@fifthoffive#1}%
+      {\expandafter\@fourthoffive#1\@empty\@empty}%
+      {\@currentHtag\expandafter#2#1\@empty\@empty\null}%
+  \fi
+  \@safe@activesfalse
+}
+\def\test@reftype#1.#2\\{%
+  \@ifundefined{#1autorefname}{%
+    \@ifundefined{#1name}{%
+      \def\@currentHtag{}%
+      \@latex@warning{no tag name for #1 at \the\inputlineno}%
+    }{%
+      \def\@currentHtag{\csname#1name\endcsname~}%
+    }%
+  }{%
+    \def\@currentHtag{\csname#1autorefname\endcsname~}%
+  }%
+}
+\def\@currentHtag{}
+\providecommand\AMSautorefname{\equationautorefname}
+\providecommand\Hfootnoteautorefname{\footnoteautorefname}
+\providecommand\Itemautorefname{\itemautorefname}
+\providecommand\equationautorefname{Equation}
+\providecommand\footnoteautorefname{footnote}
+\providecommand\itemautorefname{item}
+\providecommand\figureautorefname{Figure}
+\providecommand\tableautorefname{Table}
+\providecommand\partautorefname{Part}
+\providecommand\appendixautorefname{Appendix}
+\providecommand\chapterautorefname{chapter}
+\providecommand\sectionautorefname{section}
+\providecommand\subsectionautorefname{subsection}
+\providecommand\subsubsectionautorefname{subsubsection}
+\providecommand\paragraphautorefname{paragraph}
+\providecommand\subparagraphautorefname{subparagraph}
+\providecommand\FancyVerbLineautorefname{line}
+\providecommand\theoremautorefname{Theorem}
+\def\phantomsection{%
+ \Hy@GlobalStepCount\Hy@linkcounter
+ \xdef\@currentHref{section*.\the\Hy@linkcounter}%
+ \Hy@raisedlink{\hyper@anchorstart{\@currentHref}\hyper@anchorend}%
+}
+\endinput
+%%
+%% End of file `hyperref.sty'.
