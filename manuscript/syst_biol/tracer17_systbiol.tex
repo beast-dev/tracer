@@ -69,7 +69,7 @@ Visualising and analysing the MCMC-generated samples from the posterior distribu
 We present the software package \tracer\ (version 1.7) for visualising and analysing the MCMC trace files generated through Bayesian phylogenetic inference.
 \tracer\ provides kernel density estimation, multivariate visualisation, demographic trajectory reconstruction, conditional posterior distribution summary and more.
 \tracer\ is open-source and available at \url{http://beast.community/tracer}.
-[Bayesian inference; phylogenetics; Markov chain Monte Carlo.]
+[Bayesian inference; phylogenetics; Markov chain Monte Carlo; visualisation]
 \vspace*{-25pt}
 }
 
@@ -164,7 +164,7 @@ and the non-parametric Bayesian skyline \citep{drummond2005bayesian,heledDrummon
 
 \section*{\textsc{Example}}
 
-\subsection*{Dynamics of rabies across North American bats}
+\subsection*{Cross-species dynamics of North American bat rabies}
 
 We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bats.
 The data set comprises 372 \textit{nucleoprotein} gene sequences from 17 bat species, sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker,Faria2013}.
@@ -184,7 +184,7 @@ With approximately equal numbers of transition rates, both figures suggest simil
 \tracer\ also provides
 %The visualisation options for integer or categorical parameters are complemented with
  popular visualisations for continuous parameters, including scatter plots for two parameters (see Figure \ref{fig:4tabs}c),
- and extensions for correlations between $\ge\hspace{-0.32em}2$ continuous parameters (Figure \ref{fig:4tabs}d; \citet{Murdoch}).
+ and extensions for correlations between $\ge\hspace{-0.08em}2$ continuous parameters (Figure \ref{fig:4tabs}d; \citet{Murdoch}).
  %, which indicates a strong positive correlation between the clock rates of both discrete trait models.
 %We also provide an extension of such a scatter plot for multiple (i.e. more than two) continuous variables (see Figure \ref{fig:4tabs}d; \citet{Murdoch}), which makes use of coloured ellipses to indicate the strength of correlation between each pair of continuous variables.
 Colour gradients indicate strength and direction of the correlation, from red (strong negative) to blue (strong positive).
