@@ -35,6 +35,7 @@ import dr.app.gui.FileDrop;
 import dr.app.gui.chart.ChartRuntimeException;
 import dr.app.gui.table.TableEditorStopper;
 import dr.app.gui.util.LongTask;
+import dr.app.util.OSType;
 import dr.inference.trace.*;
 import jam.framework.DocumentFrame;
 import jam.panels.ActionPanel;
@@ -1170,16 +1171,24 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
     public final void doImport() {
 
-        final JFileChooser chooser = new JFileChooser(openDefaultDirectory);
-        chooser.setMultiSelectionEnabled(true);
+        if (OSType.isMac()) {
+            FileDialog dialog = new FileDialog(this, "Import trace file...", FileDialog.LOAD);
+            dialog.setVisible(true);
+            if (dialog.getFile() != null) {
+                importFiles(new File[] {  new File(dialog.getDirectory(), dialog.getFile()) });
+            }
+        } else {
+            final JFileChooser chooser = new JFileChooser(openDefaultDirectory);
+            chooser.setMultiSelectionEnabled(true);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("BEAST log (*.log) Files", "log", "txt");
-        chooser.setFileFilter(filter);
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("BEAST log (*.log) Files", "log", "txt");
+            chooser.setFileFilter(filter);
 
-        final int returnVal = chooser.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File[] files = chooser.getSelectedFiles();
-            importFiles(files);
+            final int returnVal = chooser.showOpenDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File[] files = chooser.getSelectedFiles();
+                importFiles(files);
+            }
         }
     }
 

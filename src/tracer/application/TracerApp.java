@@ -32,6 +32,7 @@ import jam.framework.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -69,9 +70,26 @@ public class TracerApp extends MultiDocApplication {
                 javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
                         try {
+                            // We need to do this using dynamic class loading to avoid other platforms
+                            // having to link to this class. If the Quaqua library is not on the classpath
+                            // it simply won't be used.
+                            Class<?> qm = Class.forName("ch.randelshofer.quaqua.QuaquaManager");
+                            Method method = qm.getMethod("setIncludedUIs", Set.class);
+
+                            Set includes = new HashSet();
+                            includes.add("ColorChooser");
+                            includes.add("FileChooser");
+                            includes.add("SplitPane");
+                            method.invoke(null, includes);
+
+                        } catch (Exception e) {
+                        }
+
+                        try {
                             UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
                             lafLoaded = true;
                         } catch (Exception e) {
+                            System.err.println("Failed to load ch.randelshofer.quaqua.QuaquaLookAndFeel");
                         }
                     }
                 });
@@ -108,27 +126,27 @@ public class TracerApp extends MultiDocApplication {
             }
 
             final String nameString = "Tracer";
-            final String versionString = "v1.7-Pre20180105";
+            final String versionString = "v1.7-Pre20180225";
             String aboutString = "<html><font face=\"helvetica,san-serif\"><center><p>MCMC Trace Analysis Tool<br>" +
                     "Version " + versionString + ", 2003-2018</p>" +
                     "<p>by<br>" +
 
-                    "Andrew Rambaut, Guy Baele, Walter Xie, Marc A. Suchard and Alexei J. Drummond</p>" +
+                    "Andrew Rambaut, Alexei J. Drummond, Walter Xie, Guy Baele, and Marc A. Suchard</p>" +
 
                     "<p>Institute of Evolutionary Biology, University of Edinburgh<br>" +
                     "<a href=\"mailto:a.rambaut@ed.ac.uk\">a.rambaut@ed.ac.uk</a></p>" +
 
-                    "<p>Departments of Biomathematics, Biostatistics and Human Genetics, UCLA<br>" +
-                    "<a href=\"mailto:msuchard@ucla.edu\">msuchard@ucla.edu</a></p>" +
-
                     "<p>Department of Computer Science, University of Auckland<br>" +
                     "<a href=\"mailto:alexei@cs.auckland.ac.nz\">alexei@cs.auckland.ac.nz</a></p>" +
+
+                    "<p>Departments of Biomathematics, Biostatistics and Human Genetics, UCLA<br>" +
+                    "<a href=\"mailto:msuchard@ucla.edu\">msuchard@ucla.edu</a></p>" +
 
                     "<p>Available from the BEAST site:<br>" +
                     "<a href=\"http://beast.community/tracer\">http://beast.community/</a></p>" +
                     "<p>Source code distributed under the GNU LGPL:<br>" +
                     "<a href=\"http://github.com/beast-dev/tracer/\">http://github.com/beast-dev/tracer/</a></p>" +
-                    "<p>Thanks for contributions to: Joseph Heled, Oliver Pybus & Benjamin Redelings</p>" +
+                    "<p>Thanks for contributions from: Joseph Heled, Oliver Pybus & Benjamin Redelings</p>" +
                     "</center></font></html>";
 
             String websiteURLString = "http://beast.community/";
