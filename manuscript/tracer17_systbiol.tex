@@ -59,7 +59,7 @@ and
 
 \history{Received X February 2018; reviews returned X March 2018; accepted X April 2018}
 
-\editor{Associate Editor: To fill in}
+\editor{Associate Editor: Edward Susko}
 
 \abstract{
 Bayesian inference of phylogeny using Markov chain Monte Carlo (MCMC) plays a central role in understanding evolutionary history from molecular sequence data.
@@ -83,9 +83,6 @@ process MCMC trace files containing parameter samples and to interactively explo
 \vspace{-2em}
 \section*{\textsc{Design and Implementation}}
 
-%A key feature of \tracer\ is its ability to link together samples from quantitative model parameter trace files with tree trace files. %% AR - only for the demographic reconstructions...
-%This linkage is not available in other popular post-processing MCMC software, such as coda \citep{plummer2006coda} and AWTY \citep{nylander2007awty}, and enables users to approximate the posterior distribution of scientifically relevant quantities that are functions of both the tree and other quantitative measures. %% AR - ... which are intended in these other software packages.
-%For each trace,
 \tracer\ examines the posterior samples from all the available parameters, treating continuous, integer and categorical parameters appropriately,
 from a trace
 and presents statistical summaries and visualizations.
@@ -94,16 +91,10 @@ Immediately apparent in the default \tracer\ view, the effective sample size (ES
 allows users to assess the number of effectively independent draws from the posterior distribution the trace represents (Figure \ref{fig:overview}a).
 Colour coding assists the user in determining potential MCMC mixing problems, with arbitrary cut-off values at 100 and 200.
 
-%\tracer\ is able to handle three trace types, also known as variable types \citep{mendenhall2012introduction}: real, integer, and categorical.
-%The real trace type is used to handle quantitative continuous variables, which commonly appear in phylodynamic analyses, whereas the integer trace type allows to deal with quantitative discrete variables and the categorical trace is meant for qualitative categorical variables.
-%The three trace types are automatically assigned when the trace file is imported but can also manually be set.
-
 Selecting multiple parameters from the ``Traces" panel on the left generates a side-by-side comparison or an overlay of the selected parameters' visualisations (Figure \ref{fig:overview}b-e).
 Multiple trace files can be selected in a similar fashion to compare posterior samples between different replicates of an analysis.
-If multiple trace files contain the same collection of parameters,  then a ``Combined'' trace appears automatically. %GB: or have the same collection of logged parameters
-% , which can be selected as well as the individual trace files.
+If multiple trace files contain the same collection of parameters,  then a ``Combined'' trace appears automatically.
 \tracer\ generates four display panels for the selected parameters:
-
 
 \begin{itemize}[leftmargin=*]
 \vspace{-0.5em}
@@ -140,16 +131,12 @@ If multiple trace files contain the same collection of parameters,  then a ``Com
 \end{itemize}
 %
 
-
-
 \tracer\ offers a solution of visualising conditional posterior distributions as well.
 A typical use case involves Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters influence the likelihood function only when a specific model is selected by a random indicator function.
 Under BSSVS, a posterior estimate of the parameter should only sample values from states where the indicator equals one.
 Discrete phylogeographic analyses frequently employ BSSVS due to the potentially large amount of transition rates that need to be estimated \citep{Lemey2009}, but this is also relevant when employing model averaging approaches, e.g., over relaxed molecular clocks \citep{Li2012}.
 
 Finally, \tracer\ provides demographic reconstruction resulting in a graphical plot, often applied to reconstruct epidemic dynamics.
-%Depending on the actual demographic model used in the analysis, an additional file containing samples from the posterior tree distribution will be required.
-%The currently
 Available models include, e.g., constant size, exponential and logistic growth \citep{drummond2002estimating},
 and the non-parametric Bayesian skyline \citep{drummond2005bayesian,heledDrummond2008}, skyride \citep{minin2008smooth} and skygrid \citep{gill2012improving}.
 
@@ -161,37 +148,22 @@ and the non-parametric Bayesian skyline \citep{drummond2005bayesian,heledDrummon
 
 We use \tracer\ to infer the spatial dispersal and cross-species dynamics of rabies virus (RABV) in North American bats.
 The data set comprises 372 \textit{nucleoprotein} gene sequences from 17 bat species, sampled between 1997 and 2006 across 14 states in the United States \citep{Streicker,Faria2013}.
-%We estimate the ancestral locations of RABV and their host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS \citep{Lemey2009}, while simultaneously estimating RABV effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
 We estimate RABV ancestral locations and host-jumping history using a Bayesian discrete phylogeographic approach with BSSVS, while simultaneously estimating effective population sizes over time through a Bayesian skygrid coalescent model \citep{gill2012improving}.
 
 Phylogeographic BSSVS inference includes parameters of both integer (number of non-zero transition rates) and categorical (host or location-state) trace types.
-%While a single parameter of such types can easily be visualised using a frequency plot,
 In \tracer, a bubble chart visualises the joint probability distribution between two integer or categorical traces (see Figure \ref{fig:4tabs}a).
-Circle area is proportional to the joint probability, %the blue coloured circle is in the credible set of given a probability threshold default to 0.95, the red is in the set not in the credible set.
+Circle area is proportional to the joint probability,
 with a coloured tile background if this probability reaches a nominal threshold to enhance visibility.
-%The coloured background can also help to show the area of the credible set and non-credible set.
-%Multiple integer parameters can also be visualised using
 Marginal density plots can also display multiple integer parameters, each with unique colour scales (see Figure \ref{fig:4tabs}b).
 With approximately equal numbers of transition rates, both figures suggest similar host and location trait model complexity.
-%Both figures show a clear overlap in the number of non-zero transition rates in the discrete trait models for host and location, as identified using a BSSVS procedure.
-\tracer\ also provides
-%The visualisation options for integer or categorical parameters are complemented with
- popular visualisations for continuous parameters, including scatter plots for two parameters (see Figure \ref{fig:4tabs}c),
+\tracer\ also provides popular visualisations for continuous parameters, including scatter plots for two parameters (see Figure \ref{fig:4tabs}c),
  and extensions for correlations between $\ge\hspace{-0.08em}2$ continuous parameters (Figure \ref{fig:4tabs}d; \citet{Murdoch}).
- %, which indicates a strong positive correlation between the clock rates of both discrete trait models.
-%We also provide an extension of such a scatter plot for multiple (i.e. more than two) continuous variables (see Figure \ref{fig:4tabs}d; \citet{Murdoch}), which makes use of coloured ellipses to indicate the strength of correlation between each pair of continuous variables.
 Colour gradients indicate strength and direction of the correlation, from red (strong negative) to blue (strong positive).
-%with a colour gradient from white to dark blue indicating increasingly strong correlation and a colour gradient from white to dark red indicating increasingly strong anti-correlation.
 Ellipse shapes re-enforce the strength of correlation, with no correlation appearing as a circle and perfect (anti-)correlation as a line.
-%Finally, in order to display the joint marginal distribution between a continuous variable and an integer or categorical variable, we make use of box-and-whisker plots.
-%Using such a plot (Figure \ref{fig:4tabs}e), we can infer that the range of the non-zero transition rates can depend on the ancestral location state inferred at the root of the underlying phylogeny.
 
 \tracer\ reconstructs the demographic history of RABV by drawing the effective population sizes over time (Figure \ref{fig:rabv}).
-%Given the properties of this coalescent prior, which requires to specify a grid of intervals over the timeframe of the epidemic, \tracer\ is able to infer this history without requiring a posterior sample of trees.
-%According to \tracer's skygrid plot, it is clear that
 RABV has successfully established itself in North American bat species, with its effective population size rising steadily throughout recent centuries.
 Following a rapid decline at the end of last century, we observe a recent sharp increase in size.
-%, reflecting [INSERT SOMETHING].
 
 \begin{figure}[t]
 \centerline{
