@@ -44,6 +44,35 @@ Details:
 
 *L130: coda also offers diagnostics absent from Tracer, such as Gelman-Rubin statistics.*
 
+*Please cite RWTY https://academic.oup.com/mbe/article/34/4/1016/2900564 , which has some features (e.g. topology diagnostics) that are not present in Tracer.*
 
-Please cite RWTY https://academic.oup.com/mbe/article/34/4/1016/2900564 , which has some features (e.g. topology diagnostics) that are not present in Tracer.
-Figure 3 has no axis labels of any kind
+*Figure 3 has no axis labels of any kind*
+
+# Reviewer 2
+
+*Line 36: Are there any references or reasons you can provide why should use cut-off values of 100 and 200? Or are these arbitrary?*
+
+*Line 43: If I'm correct, then the file names don't need to be same but the parameter name. Could you please correct this.*
+
+*Line 82-86: I was wondering if the demographic plotting are truly restricted to these models? There seem to be several more options available specifically for the "Demographic Reconstruction". *
+
+### Feature suggestions (these are rather general and not necessary for the manuscript):
+
+* 1) It would be nice to export a csv file with the parameter estimates (mean, 95% HPD,  etc) and ESS values so that this can be used easier in reports.*
+
+This has been implemented already under the File menu -> Export Data Table. ** This needs to be tested ***
+
+*2) There seems to be some memory issue in Tracer when multiple large files are opened. Closing and opening gets around the issue. It would be nice if that is fixed in some future release.*
+
+Test loading a too large file.
+
+# Editor's comments
+
+*Almost all of the material is clear and understandable, even to readers who have never used the software. For me the exception was the paragraph starting at 66. Since this appears to be a new feature, it probably could be elaborated on. Some general description of the types of things that can be conditioned on (models, the presence of variables in models, ...) and how the software does this, possibly with a figure, might help before or with some of the specifics on lines 68-79; I didn't actually see much about this in briefly looking at the tutorials on beast.community/tracer.*
+
+*-Fig 1(b)-(d): If you want to make space for additions, two of these could be cut and simply described as a list of (very familiar) available graphics for comparing multiple (marginal) distributions. By contrast, Fig 2(b)-(d) are less familiar and really need a figure to accompany the text description.*
+
+*-l67: Something like the sentence starting on l71 could be moved here to indicate generally how the conditional distributions are constructed from the sampled parameter values. It would be valuable to say something about how generally the indicator functions can be defined, how they are selected...*
+
+*-l79: `Finally,...' Should this be a new paragraph?*
+
