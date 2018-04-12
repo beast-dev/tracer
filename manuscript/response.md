@@ -8,7 +8,7 @@ Thanks
 
 *S1: How does the conditional posterior visualization work? That seems like a major improvement, but it’s not shown anywhere or described beyond a mention in the intro. The documentation basically says “try things out!”-- this mostly works except for here.*
 
-** To do **
+**To do**
 
 *S2: We were happy to see that the HME is no longer an option for model comparison (given its notorious bias).*
 
@@ -24,7 +24,7 @@ This feature has been restored [Issue #146](https://github.com/beast-dev/tracer/
 
 *S5: Please update the link on http://beast.community/tracer , which currently links to 1.6 (even though it says it’s linking to 1.7)*
 
-** To do **
+**To do**
 
 *P1: People mostly use Tracer to diagnose convergence problems. I think the best use of a paper about Tracer would be to walk readers through a side-by-side comparison of two runs, one of which has converged and another that hasn’t. This is additional work, but I think it would be very valuable to guide the community in making such calls. At least, there should be a link in the paper to some material giving such an example. The current Figures 1 b-e and 2a-c feel a little generic-- we know what these plot types look like. *
 
@@ -56,13 +56,13 @@ This feature has been restored [Issue #146](https://github.com/beast-dev/tracer/
 
 ### Feature suggestions (these are rather general and not necessary for the manuscript):
 
-* 1) It would be nice to export a csv file with the parameter estimates (mean, 95% HPD,  etc) and ESS values so that this can be used easier in reports.*
+*1) It would be nice to export a csv file with the parameter estimates (mean, 95% HPD,  etc) and ESS values so that this can be used easier in reports.*
 
 This has been implemented already under the File menu -> Export Data Table. ** This needs to be tested ***
 
 *2) There seems to be some memory issue in Tracer when multiple large files are opened. Closing and opening gets around the issue. It would be nice if that is fixed in some future release.*
 
-Test loading a too large file.
+**Test loading a too large file.**
 
 # Editor's comments
 
