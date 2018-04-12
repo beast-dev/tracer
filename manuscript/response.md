@@ -72,7 +72,11 @@ Fixed.
 
 *Line 36: Are there any references or reasons you can provide why should use cut-off values of 100 and 200? Or are these arbitrary?*
 
+The short answer is that these values are arbitrary and we have updated the manuscript to reflect this.  The long answer is that (1) these are nice, round numbers that users are likely to remember and (2) are sufficient to provide relatively accurate estimates of posterior means.
+
 *Line 43: If I'm correct, then the file names don't need to be same but the parameter name. Could you please correct this.*
+
+Fixed.  The text now reads, "[i]f multiple trace files contain the same collection of parameters..."
 
 *Line 82-86: I was wondering if the demographic plotting are truly restricted to these models? There seem to be several more options available specifically for the "Demographic Reconstruction". *
 

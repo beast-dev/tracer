@@ -92,7 +92,7 @@ and presents statistical summaries and visualizations.
 Further, \tracer\ can analyse a single trace or combine samples from multiple files.
 Immediately apparent in the default \tracer\ view, the effective sample size (ESS) is one such statistic that
 allows users to assess the number of effectively independent draws from the posterior distribution the trace represents (Figure \ref{fig:overview}a).
-Colour coding assists the user in determining potential MCMC mixing problems, with cut-off values at 100 and 200.
+Colour coding assists the user in determining potential MCMC mixing problems, with arbitrary cut-off values at 100 and 200.
 
 %\tracer\ is able to handle three trace types, also known as variable types \citep{mendenhall2012introduction}: real, integer, and categorical.
 %The real trace type is used to handle quantitative continuous variables, which commonly appear in phylodynamic analyses, whereas the integer trace type allows to deal with quantitative discrete variables and the categorical trace is meant for qualitative categorical variables.
@@ -100,7 +100,7 @@ Colour coding assists the user in determining potential MCMC mixing problems, wi
 
 Selecting multiple parameters from the ``Traces" panel on the left generates a side-by-side comparison or an overlay of the selected parameters' visualisations (Figure \ref{fig:overview}b-e).
 Multiple trace files can be selected in a similar fashion to compare posterior samples between different replicates of an analysis.
-If multiple trace files have the same file name,  then a ``Combined'' trace appears automatically. %GB: or have the same collection of logged parameters
+If multiple trace files contain the same collection of parameters,  then a ``Combined'' trace appears automatically. %GB: or have the same collection of logged parameters
 % , which can be selected as well as the individual trace files.
 \tracer\ generates four display panels for the selected parameters:
 
