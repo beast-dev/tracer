@@ -154,9 +154,6 @@ Finally, \tracer\ provides demographic reconstruction resulting in a graphical p
 %The currently
 Available models are constant size, exponential and logistic growth \citep{drummond2002estimating},
 and the non-parametric Bayesian skyline \citep{drummond2005bayesian,heledDrummond2008}, skyride \citep{minin2008smooth} and skygrid \citep{gill2012improving}.
-%Not sure if the statement below is correct ...
-%All of these demographic models are available in BEAST \citep{drummond2012bayesian} and BEAST2 \citep{bouckaert2014beast2}.
-%Besides these, ``Lineages Through Time'' (?) is also available to plot the quantiles of the number of lineages against time, which describes the change of diversification of all organisms over time. %citation?
 
 \vspace{-0.7cm}
 
@@ -208,10 +205,9 @@ Following a rapid decline at the end of last century, we observe a recent sharp 
 \end{figure}
 
 
-%Other packages for post-processing of MCMC samples are
-
-Other packages are available for the post-processing of MCMC samples. % and are largely complementary to \tracer\ .
+Other packages are available for the post-processing of MCMC samples.
  `coda' \citep{plummer2006coda} provides some of the functionality of \tracer\ within the R programming environment, while `AWTY' \citep{nylander2007awty} and `RWTY' \citep{warren2017rwty} explore the convergence of the phylogenetic tree parameter itself across multiple MCMC runs.
+%These alternative packages focus on MCMC convergence diagnostics, such as computing Gelman-Rubin statistics across multiple chains
 %% AR - anything else? The MDS tree-space approaches of Hillis etc.?
 
 \vspace{-0.55cm}
@@ -219,7 +215,7 @@ Other packages are available for the post-processing of MCMC samples. % and are 
 \section*{\textsc{Availability}}
 
 \tracer\ is open-source under the GNU lesser general public license and available in both source code (\url{https://github.com/beast-dev/tracer}) and executable (\url{http://beast.community/tracer}) forms.
-This latter page also serves up self-contained, step-by-step tutorials covering basic to advanced usage of \tracer\ to summarise posteriors under a variety of phylogenetic models using BEAST.
+This latter page also serves up self-contained, step-by-step tutorials covering basic to advanced usage of \tracer\ to summarise posteriors under a variety of phylogenetic models using BEAST and diagnose MCMC chain convergence.
 Popular tutorials employ \tracer\ to generate marginal parameter summaries and to infer population dynamics trajectories over time.
 \tracer\ requires Java version 1.6 or greater.
 

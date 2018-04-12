@@ -1,8 +1,18 @@
+
+Dear Prof. Near,
+
+Attached you will find our revised manuscript USYB-2018-044.   We thank the Associate Editor and Reviewers for their thorough reading, constructive comments and helpful insight.  Below you will find our point-by-point response to each comment and details on how these comments have improved our manuscript.
+
+Yours sincerely,
+
+Andrew Rambaut, Alexei Drummond, Dong Xie, Guy Baele and Marc Suchard
+
+
 # Reviewer 1
 
 *This is the first paper describing Tracer, the most frequently used software for convergence analysis of phylogenetic MCMC. Thus this paper certainly merits publication, and will no doubt get thousands of citations. Tracer was already very useful, and this new version brings additional useful functionality. The paper is mostly an announcement, and is well written though we have a few comments.*
 
-Thanks
+We thank the Reviewer for this encouragement.
 
 ## Regarding the software:
 
@@ -12,15 +22,15 @@ Thanks
 
 *S2: We were happy to see that the HME is no longer an option for model comparison (given its notorious bias).*
 
-No response required
+No response required.
 
 *S3: Box plots and violin plots are a fantastic improvement for viewing multiple distributions at the same time! The >2 dimensional correlation plots are also a welcome addition to the toolkit. *
 
-No response required
+No response required.
 
 *S4: We miss the ability to adjust the number of bins for histograms of univariate marginal distributions.*
 
-**To do:** This feature has been restored [Issue #146](https://github.com/beast-dev/tracer/issues/146).
+At the request of the Reviewer, we have restored this feature in the software. See [Issue #146](https://github.com/beast-dev/tracer/issues/146).
 
 *S5: Please update the link on http://beast.community/tracer , which currently links to 1.6 (even though it says it’s linking to 1.7)*
 
@@ -28,7 +38,7 @@ Done.
 
 *P1: People mostly use Tracer to diagnose convergence problems. I think the best use of a paper about Tracer would be to walk readers through a side-by-side comparison of two runs, one of which has converged and another that hasn’t. This is additional work, but I think it would be very valuable to guide the community in making such calls. At least, there should be a link in the paper to some material giving such an example. The current Figures 1 b-e and 2a-c feel a little generic-- we know what these plot types look like. *
 
-**To do**
+We believe that Figures 1b-e and 2a-c feel generic to the Reviewer because the Reviewer is likely to be a long-term user of the Tracer software.  A major goal of this manuscript is to raise the awareness for current non-users about the convenient graphical user interface of Tracer as opposed to command-line driven approaches of alternatives, like `coda`.  We further disagree that most people employ Tracer simply to diagnose convergence problems; we, for example, commonly use Tracer to quickly calculate summary statistics (posterior means, 95% highest probably density intervals).  However, we agree with the Reviewer that readers should be aware that Tracer is useful in diagnosing convergence problems and have added associated text highlighting a new tutorial on convergence to the manuscript.
 
 *Title: We cannot resist the temptation to suggest to the more active “Summarizing Bayesian phylogenetic posterior distributions using Tracer 1.7”*
 
