@@ -20,7 +20,7 @@ No response required
 
 *S4: We miss the ability to adjust the number of bins for histograms of univariate marginal distributions.*
 
-This feature has been restored [Issue #146](https://github.com/beast-dev/tracer/issues/146).
+**To do:** This feature has been restored [Issue #146](https://github.com/beast-dev/tracer/issues/146).
 
 *S5: Please update the link on http://beast.community/tracer , which currently links to 1.6 (even though it says it’s linking to 1.7)*
 
@@ -28,7 +28,7 @@ This feature has been restored [Issue #146](https://github.com/beast-dev/tracer/
 
 *P1: People mostly use Tracer to diagnose convergence problems. I think the best use of a paper about Tracer would be to walk readers through a side-by-side comparison of two runs, one of which has converged and another that hasn’t. This is additional work, but I think it would be very valuable to guide the community in making such calls. At least, there should be a link in the paper to some material giving such an example. The current Figures 1 b-e and 2a-c feel a little generic-- we know what these plot types look like. *
 
-** To do **
+**To do**
 
 *Title: We cannot resist the temptation to suggest to the more active “Summarizing Bayesian phylogenetic posterior distributions using Tracer 1.7”*
 
