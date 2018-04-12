@@ -46,6 +46,8 @@ Fixed.
 
 *Please cite RWTY https://academic.oup.com/mbe/article/34/4/1016/2900564 , which has some features (e.g. topology diagnostics) that are not present in Tracer.*
 
+Done.
+
 *Figure 3 has no axis labels of any kind*
 
 # Reviewer 2
