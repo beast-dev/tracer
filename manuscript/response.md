@@ -50,7 +50,11 @@ Fixed.
 
 *Fig 1a: the parameter name being open for editing is distracting*
 
+TODO (by GB)
+
 *L108: I am not sure I understand the comparison (“model complexity”) being made between the marginal and joint marginal plots. If it is just the number of nonzero parameters, it could be stated more clearly.*
+
+Model complexity does refer to the number of non-zero parameters.  We highlight this connection through the sentence "With approximately equal numbers of transition rates, both figures suggest similar host and location trait model complexity."
 
 *L130: coda also offers diagnostics absent from Tracer, such as Gelman-Rubin statistics.*
 
@@ -61,6 +65,8 @@ We now acknowledge this limitation in the text and introduce the Gelman and Rubi
 Done.
 
 *Figure 3 has no axis labels of any kind*
+
+Fixed.
 
 # Reviewer 2
 
