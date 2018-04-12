@@ -36,6 +36,8 @@ No response required
 
 *L197: the proper citation is “...finds its rootS”*
 
+Fixed.
+
 *Fig 1a: the parameter name being open for editing is distracting*
 
 *L108: I am not sure I understand the comparison (“model complexity”) being made between the marginal and joint marginal plots. If it is just the number of nonzero parameters, it could be stated more clearly.*
