@@ -195,6 +195,7 @@ public class GMRFSkyrideDialog {
 
         setArguments(temporalAnalysisFrame);
 
+        rootHeightCombo.removeAllItems();
         for (int j = 0; j < traceList.getTraceCount(); j++) {
             String statistic = traceList.getTraceName(j);
             rootHeightCombo.addItem(statistic);

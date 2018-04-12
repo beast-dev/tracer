@@ -72,6 +72,7 @@ public class TimeDensityDialog {
 
         setArguments();
 
+        traceCombo.removeAllItems();
         for (int j = 0; j < traceList.getTraceCount(); j++) {
             String statistic = traceList.getTraceName(j);
             traceCombo.addItem(statistic);
