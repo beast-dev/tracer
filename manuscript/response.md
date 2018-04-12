@@ -54,6 +54,8 @@ Fixed.
 
 *L130: coda also offers diagnostics absent from Tracer, such as Gelman-Rubin statistics.*
 
+We now acknowledge this limitation in the text and introduce the Gelman and Rubin (1992) diagnostic.
+
 *Please cite RWTY https://academic.oup.com/mbe/article/34/4/1016/2900564 , which has some features (e.g. topology diagnostics) that are not present in Tracer.*
 
 Done.
