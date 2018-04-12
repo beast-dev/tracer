@@ -132,6 +132,8 @@ If multiple trace files contain the same collection of parameters,  then a ``Com
 %
 
 \tracer\ offers a solution of visualising conditional posterior distributions as well.
+Selecting one continuous and one categorical parameter generates side-by-side violin or boxplots under the Joint-Marginal panel.
+These plots present the continuous parameter distribution conditioned on the observed categorical values.
 A typical use case involves Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters influence the likelihood function only when a specific model is selected by a random indicator function.
 Under BSSVS, a posterior estimate of the parameter should only sample values from states where the indicator equals one.
 Discrete phylogeographic analyses frequently employ BSSVS due to the potentially large amount of transition rates that need to be estimated \citep{Lemey2009}, but this is also relevant when employing model averaging approaches, e.g., over relaxed molecular clocks \citep{Li2012}.
