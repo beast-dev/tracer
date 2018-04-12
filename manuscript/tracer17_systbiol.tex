@@ -147,12 +147,12 @@ If multiple trace files contain the same collection of parameters,  then a ``Com
 \tracer\ offers a solution of visualising conditional posterior distributions as well.
 A typical use case involves Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters influence the likelihood function only when a specific model is selected by a random indicator function.
 Under BSSVS, a posterior estimate of the parameter should only sample values from states where the indicator equals one.
-Discrete phylogeographic analyses frequently employ BSSVS due to the potentially large amount of transition rates that need to be estimated \citep{Lemey2009}, but this is also relevant when employing model averaging approaches such as for relaxed molecular clocks for example \citep{Li2012}.
+Discrete phylogeographic analyses frequently employ BSSVS due to the potentially large amount of transition rates that need to be estimated \citep{Lemey2009}, but this is also relevant when employing model averaging approaches, e.g., over relaxed molecular clocks \citep{Li2012}.
 %
 Finally, \tracer\ provides demographic reconstruction resulting in a graphical plot, often applied to reconstruct epidemic dynamics.
 %Depending on the actual demographic model used in the analysis, an additional file containing samples from the posterior tree distribution will be required.
 %The currently
-Available models are constant size, exponential and logistic growth \citep{drummond2002estimating},
+Available models include, e.g., constant size, exponential and logistic growth \citep{drummond2002estimating},
 and the non-parametric Bayesian skyline \citep{drummond2005bayesian,heledDrummond2008}, skyride \citep{minin2008smooth} and skygrid \citep{gill2012improving}.
 
 \vspace{-0.7cm}
@@ -207,7 +207,7 @@ Following a rapid decline at the end of last century, we observe a recent sharp 
 
 Other packages are available for the post-processing of MCMC samples.
  `coda' \citep{plummer2006coda} provides some of the functionality of \tracer\ within the R programming environment, while `AWTY' \citep{nylander2007awty} and `RWTY' \citep{warren2017rwty} explore the convergence of the phylogenetic tree parameter itself across multiple MCMC runs.
-These alternative packages compute, for example, Gelman-Rubin diagnostics \citep{gelman1992inference} that \tracer\ currently does not provide.
+These alternative packages compute, e.g., Gelman-Rubin diagnostics \citep{gelman1992inference} that \tracer\ currently does not provide.
 
 \vspace{-0.55cm}
 

@@ -50,7 +50,7 @@ Fixed.
 
 *Fig 1a: the parameter name being open for editing is distracting*
 
-TODO (by GB)
+Fixed.
 
 *L108: I am not sure I understand the comparison (“model complexity”) being made between the marginal and joint marginal plots. If it is just the number of nonzero parameters, it could be stated more clearly.*
 
@@ -79,6 +79,8 @@ The short answer is that these values are arbitrary and we have updated the manu
 Fixed.  The text now reads, "[i]f multiple trace files contain the same collection of parameters..."
 
 *Line 82-86: I was wondering if the demographic plotting are truly restricted to these models? There seem to be several more options available specifically for the "Demographic Reconstruction". *
+
+The Reviewer is correct and we apologize for this oversight; many more parametric models available.  This is the available list is quite long, we have modified the text to include an "e.g." cause.
 
 ### Feature suggestions (these are rather general and not necessary for the manuscript):
 
