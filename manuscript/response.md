@@ -18,7 +18,10 @@ We thank the Reviewer for this encouragement.
 
 *S1: How does the conditional posterior visualization work? That seems like a major improvement, but it’s not shown anywhere or described beyond a mention in the intro. The documentation basically says “try things out!”-- this mostly works except for here.*
 
-**To do**
+We agree that our original description of visualising conditional posteriors was confusing, chiefly because we failed to provide instructions on how a user can generate the plots.  We have rectified this short-coming by adding these instructions.  The beginning of the paragraph now reads:
+
+"Tracer offers a solution of visualising conditional posterior distributions as well.
+Selecting one continuous and one categorical parameter generates side-by-side violin or boxplots under the Joint-Marginal panel.  These plots present the continuous parameter distribution conditioned on the observed categorical values.  A typical use case involves Bayesian stochastic search variable selection..."
 
 *S2: We were happy to see that the HME is no longer an option for model comparison (given its notorious bias).*
 
@@ -99,16 +102,11 @@ We again thank the Reviewer for this bug alert and will attempt to fix in a futu
 
 *Almost all of the material is clear and understandable, even to readers who have never used the software. For me the exception was the paragraph starting at 66. Since this appears to be a new feature, it probably could be elaborated on. Some general description of the types of things that can be conditioned on (models, the presence of variables in models, ...) and how the software does this, possibly with a figure, might help before or with some of the specifics on lines 68-79; I didn't actually see much about this in briefly looking at the tutorials on beast.community/tracer.*
 
-We agree that our original description of visualising conditional posteriors was confusing, chiefly because we failed to provide instructions on how a user can generate the plots.  We have rectified this short-coming by adding these instructions.  The beginning of the paragraph now reads:
-
-"Tracer offers a solution of visualising conditional posterior distributions as well.
-Selecting one continuous and one categorical parameter generates side-by-side violin or boxplots under the Joint-Marginal panel.  These plots present the continuous parameter distribution conditioned on the observed categorical values.  A typical use case involves Bayesian stochastic search variable selection..."
-
-The remainder of the paragraph provides several use-cases, in line with the Associate Editor's suggestion.
+Please see our response to Reviewer #1 (S1).  The remainder of the quoted paragraph provides several use-cases, in line with the Associate Editor's suggestion.
 
 *-Fig 1(b)-(d): If you want to make space for additions, two of these could be cut and simply described as a list of (very familiar) available graphics for comparing multiple (marginal) distributions. By contrast, Fig 2(b)-(d) are less familiar and really need a figure to accompany the text description.*
 
-Please see our response to Reviewer #1.
+Please see our response to Reviewer #1 (P1).
 
 *-l67: Something like the sentence starting on l71 could be moved here to indicate generally how the conditional distributions are constructed from the sampled parameter values. It would be valuable to say something about how generally the indicator functions can be defined, how they are selected...*
 
