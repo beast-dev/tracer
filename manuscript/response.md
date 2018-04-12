@@ -42,6 +42,8 @@ We believe that Figures 1b-e and 2a-c feel generic to the Reviewer because the R
 
 *Title: We cannot resist the temptation to suggest to the more active “Summarizing Bayesian phylogenetic posterior distributions using Tracer 1.7”*
 
+We elect to keep our original title "Posterior summarisation in Bayesian phylogenetic using Tracer 1.7" as it is shorter and reads more naturally in the form (adjective-noun) -> conjunction -> (adjective-noun) -> conjunction -> (noun-modifier).
+
 *L68: the BSSVS description doesn’t really feel like it comes to a satisfactory conclusion. Can you more clearly describe how Tracer helps with this type of analysis? Is the sentence at line 80 a continuation of this thought, or starting something new?*
 
 *L197: the proper citation is “...finds its rootS”*
@@ -80,25 +82,30 @@ Fixed.  The text now reads, "[i]f multiple trace files contain the same collecti
 
 *Line 82-86: I was wondering if the demographic plotting are truly restricted to these models? There seem to be several more options available specifically for the "Demographic Reconstruction". *
 
-The Reviewer is correct and we apologize for this oversight; many more parametric models available.  This is the available list is quite long, we have modified the text to include an "e.g." cause.
+The Reviewer is correct and we apologize for this oversight; many more parametric models are available.  This is the available list is quite long, we have modified the text to include an "e.g." cause.
 
 ### Feature suggestions (these are rather general and not necessary for the manuscript):
 
 *1) It would be nice to export a csv file with the parameter estimates (mean, 95% HPD,  etc) and ESS values so that this can be used easier in reports.*
 
-This has been implemented already under the File menu -> Export Data Table. ** This needs to be tested ***
+We thank the Reviewer for this suggestion.  It is implemented under the File menu -> Export Data Table.
 
 *2) There seems to be some memory issue in Tracer when multiple large files are opened. Closing and opening gets around the issue. It would be nice if that is fixed in some future release.*
 
+We again thank the Reviewer for this bug alert and will attempt to fix in a future release.
 **Test loading a too large file.**
 
-# Editor's comments
+# Associate Editor's comments
 
 *Almost all of the material is clear and understandable, even to readers who have never used the software. For me the exception was the paragraph starting at 66. Since this appears to be a new feature, it probably could be elaborated on. Some general description of the types of things that can be conditioned on (models, the presence of variables in models, ...) and how the software does this, possibly with a figure, might help before or with some of the specifics on lines 68-79; I didn't actually see much about this in briefly looking at the tutorials on beast.community/tracer.*
 
 *-Fig 1(b)-(d): If you want to make space for additions, two of these could be cut and simply described as a list of (very familiar) available graphics for comparing multiple (marginal) distributions. By contrast, Fig 2(b)-(d) are less familiar and really need a figure to accompany the text description.*
 
+Please see our response to Reviewer #1.
+
 *-l67: Something like the sentence starting on l71 could be moved here to indicate generally how the conditional distributions are constructed from the sampled parameter values. It would be valuable to say something about how generally the indicator functions can be defined, how they are selected...*
 
 *-l79: `Finally,...' Should this be a new paragraph?*
+
+Absolutely!
 
