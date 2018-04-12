@@ -169,7 +169,9 @@
         <!-- Create the release directory -->
         <mkdir dir="${Mac_package_dir}" />
 
-        <copy file="${common_dir}/README.txt" todir="${Mac_package_dir}"/>
+        <!--<copy file="${common_dir}/README.txt" todir="${Mac_package_dir}"/>-->
+
+        <copy file="${packaging_tools}/mac/install.png" todir="${Mac_package_dir}"/>
 
         <taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="${packaging_tools}/mac/jarbundler-core-3.3.0.jar"/>
 
@@ -209,7 +211,10 @@
 
         <echo message="Building disk image." />
 
+        <exec executable='packaging_tools/mac/createdmg.sh'/>
+
         <!-- create disk image -->
+        <!-- createdmg now does this...
         <exec executable="/usr/bin/hdiutil">
             <arg value="create"/>
             <arg value="-ov"/>
@@ -221,6 +226,7 @@
             <arg value="zlib-level=6"/>
             <arg value="${release_dir}/${name} v${version}.dmg"/>
         </exec>
+        -->
 
         <exec executable="codesign">
             <arg value="-s"/>
