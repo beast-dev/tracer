@@ -24,7 +24,7 @@ No response required
 
 *S5: Please update the link on http://beast.community/tracer , which currently links to 1.6 (even though it says it’s linking to 1.7)*
 
-**To do**
+Done.
 
 *P1: People mostly use Tracer to diagnose convergence problems. I think the best use of a paper about Tracer would be to walk readers through a side-by-side comparison of two runs, one of which has converged and another that hasn’t. This is additional work, but I think it would be very valuable to guide the community in making such calls. At least, there should be a link in the paper to some material giving such an example. The current Figures 1 b-e and 2a-c feel a little generic-- we know what these plot types look like. *
 
@@ -36,6 +36,8 @@ No response required
 
 *L197: the proper citation is “...finds its rootS”*
 
+Fixed.
+
 *Fig 1a: the parameter name being open for editing is distracting*
 
 *L108: I am not sure I understand the comparison (“model complexity”) being made between the marginal and joint marginal plots. If it is just the number of nonzero parameters, it could be stated more clearly.*
@@ -43,6 +45,8 @@ No response required
 *L130: coda also offers diagnostics absent from Tracer, such as Gelman-Rubin statistics.*
 
 *Please cite RWTY https://academic.oup.com/mbe/article/34/4/1016/2900564 , which has some features (e.g. topology diagnostics) that are not present in Tracer.*
+
+Done.
 
 *Figure 3 has no axis labels of any kind*
 

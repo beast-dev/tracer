@@ -2669,7 +2669,7 @@ plus1fill \noindent #1\par\vskip\baselineskip}}
 \def\slmdash{\mbox{\sltxfont\char"97}}
 \def\AQ#1{\marginpar{\textcolor{black}{\fboxsep=1pt\fboxrule=.5pt\fbox{\footnotesize #1}}}}
 
-\pagewiselinenumbers
+\runningpagewiselinenumbers
 
 \endinput
 
