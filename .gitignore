@@ -4,11 +4,8 @@
 *.log
 *.out
 *.idx
-tracer16.pdf
-tracer17.pdf
 tracer17_systbiol.pdf
 *.iml
-
 *.ipr
-
 *.iws
+.DS_Store
