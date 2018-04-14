@@ -23,5 +23,5 @@ if [ -z "$TRACER" ]; then
 fi
 
 TRACER_LIB=$TRACER/lib
-java -Xms64m -Xmx4096m -jar $TRACER_LIB/tracer.jar $*
+java -Xms64m -Xmx10000m -jar $TRACER_LIB/tracer.jar $*
 

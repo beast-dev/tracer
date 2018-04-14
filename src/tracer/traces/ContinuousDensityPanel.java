@@ -233,7 +233,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     }
 
     protected Plot createHistogramPlot(List values) {
-        return new NumericalDensityPlot(values, currentSettings.minimumBins);
+        return new NumericalDensityPlot(values, getSettings().minimumBins);
     }
 
     protected Plot createKDEPlot(List values) {
