@@ -18,10 +18,10 @@ We thank the Reviewer for this encouragement.
 
 *S1: How does the conditional posterior visualization work? That seems like a major improvement, but it’s not shown anywhere or described beyond a mention in the intro. The documentation basically says “try things out!”-- this mostly works except for here.*
 
-We agree that our original description of visualising conditional posteriors was confusing, chiefly because we failed to provide instructions on how a user can generate the plots.  We have rectified this short-coming by adding these instructions.  The beginning of the paragraph now reads:
+We agree that our original description of visualising conditional posteriors was confusing, chiefly because we failed to provide instructions on how a user can generate the plots.  We have rectified this short-coming by adding these instructions.  The paragraph now reads:
 
 "Tracer offers a solution of visualising conditional posterior distributions as well.
-Selecting one continuous and one categorical parameter generates side-by-side violin or boxplots under the Joint-Marginal panel.  These plots present the continuous parameter distribution conditioned on the observed categorical values.  A typical use case involves Bayesian stochastic search variable selection..."
+Selecting one continuous and one categorical parameter generates side-by-side violin or boxplots under the Joint-Marginal panel. These plots present the continuous parameter distribution conditioned on the observed categorical values. A typical use case involves Bayesian stochastic search variable selection (BSSVS), a form of model averaging, in which parameters influence the likelihood function only when a specific model is selected by a random indicator function."
 
 *S2: We were happy to see that the HME is no longer an option for model comparison (given its notorious bias).*
 
@@ -39,7 +39,7 @@ At the request of the Reviewer, we have restored this feature in the software. S
 
 Done.
 
-*P1: People mostly use Tracer to diagnose convergence problems. I think the best use of a paper about Tracer would be to walk readers through a side-by-side comparison of two runs, one of which has converged and another that hasn’t. This is additional work, but I think it would be very valuable to guide the community in making such calls. At least, there should be a link in the paper to some material giving such an example. The current Figures 1 b-e and 2a-c feel a little generic-- we know what these plot types look like. *
+*P1: People mostly use Tracer to diagnose convergence problems. I think the best use of a paper about Tracer would be to walk readers through a side-by-side comparison of two runs, one of which has converged and another that hasn’t. This is additional work, but I think it would be very valuable to guide the community in making such calls. At least, there should be a link in the paper to some material giving such an example. The current Figures 1 b-e and 2a-c feel a little generic-- we know what these plot types look like.*
 
 We believe that Figures 1b-e and 2a-c feel generic to the Reviewer because the Reviewer is likely to be a long-term user of the Tracer software.  A major goal of this manuscript is to raise the awareness for current non-users about the convenient graphical user interface of Tracer as opposed to command-line driven approaches of alternatives, like `coda`.  We further disagree that most people employ Tracer simply to diagnose convergence problems; we, for example, commonly use Tracer to quickly calculate summary statistics (posterior means, 95% highest probably density intervals).  However, we agree with the Reviewer that readers should be aware that Tracer is useful in diagnosing convergence problems and have added associated text to the manuscript highlighting a new tutorial on convergence.
 
@@ -48,6 +48,9 @@ We believe that Figures 1b-e and 2a-c feel generic to the Reviewer because the R
 We elect to keep our original title "Posterior summarisation in Bayesian phylogenetic using Tracer 1.7" as it is shorter and reads more naturally in the form (adjective-noun) -> conjunction -> (adjective-noun) -> conjunction -> (noun-modifier).
 
 *L68: the BSSVS description doesn’t really feel like it comes to a satisfactory conclusion. Can you more clearly describe how Tracer helps with this type of analysis? Is the sentence at line 80 a continuation of this thought, or starting something new?*
+
+As stated in a previous response, we have rewritten this paragraph to better describe the option in Tracer to visualise conditional posteriors.
+The sentence at line 80, starting a section on demographic plot generation/visualisation, has been moved to a new paragraph.
 
 *L197: the proper citation is “...finds its rootS”*
 
@@ -95,8 +98,7 @@ We thank the Reviewer for this suggestion.  It is implemented under the File men
 
 *2) There seems to be some memory issue in Tracer when multiple large files are opened. Closing and opening gets around the issue. It would be nice if that is fixed in some future release.*
 
-We again thank the Reviewer for this bug alert and will attempt to fix in a future release.
-**Test loading a too large file.**
+We again thank the Reviewer for this bug alert, which is related to the default memory allocation in Tracer. We have increased this default substantially, to decrease the odds the Tracer users will encounter this problem. Should users still encounter this problem, they can increase memory allocation as well, which we now discuss in one of the Tracer tutorials. 
 
 # Associate Editor's comments
 
@@ -109,6 +111,8 @@ Please see our response to Reviewer #1 (S1).  The remainder of the quoted paragr
 Please see our response to Reviewer #1 (P1).
 
 *-l67: Something like the sentence starting on l71 could be moved here to indicate generally how the conditional distributions are constructed from the sampled parameter values. It would be valuable to say something about how generally the indicator functions can be defined, how they are selected...*
+
+As stated in a previous response, we now provide proper instructions on how to visualise conditional posteriors.
 
 *-l79: `Finally,...' Should this be a new paragraph?*
 
