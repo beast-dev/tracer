@@ -47,7 +47,7 @@ Posterior summarisation in Bayesian phylogenetics using Tracer 1.7
 $^{1}$Institute of Evolutionary Biology, University of Edinburgh, Edinburgh, UK;
 $^{2}$Department of Computer Science, University of Auckland, Auckland, NZ;
 $^{3}$Centre for Computational Evolution, University of Auckland, Auckland, NZ;
-$^{4}$Department of Microbiology and Immunology, Rega Institute, KU Leuven, Leuven, Belgium;
+$^{4}$Department of Microbiology and Immunology, Rega Institute, KU Leuven - University of Leuven, Leuven, Belgium;
 $^{5}$Department of Human Genetics, University of California, Los Angeles, USA;
 $^{6}$Department of Biostatistics, University of California, Los Angeles, USA \\[6pt]
 $^{\ast}$Correspondence to:
@@ -83,9 +83,7 @@ process MCMC trace files containing parameter samples and to interactively explo
 \vspace{-2em}
 \section*{\textsc{Design and Implementation}}
 
-\tracer\ examines the posterior samples from all the available parameters, treating continuous, integer and categorical parameters appropriately,
-from a trace
-and presents statistical summaries and visualizations.
+\tracer\ examines the posterior samples from all the available parameters - treating continuous, integer and categorical parameters appropriately - from a trace and presents statistical summaries and visualisations.
 Further, \tracer\ can analyse a single trace or combine samples from multiple files.
 Immediately apparent in the default \tracer\ view, the effective sample size (ESS) is one such statistic that
 allows users to assess the number of effectively independent draws from the posterior distribution the trace represents (Figure \ref{fig:overview}a).
@@ -110,7 +108,7 @@ If multiple trace files contain the same collection of parameters,  then a ``Com
 \subfigure[Violin]{\includegraphics[width = .23\textwidth, height = 3cm]{figure_1d_rabv-violin.pdf}}
 \subfigure[Trace]{\includegraphics[width = .23\textwidth, height = 3cm]{figure_1e_rabv-traces.pdf}}
 \vspace{-0.25cm}
-\caption{Overview of \tracer\ functionality and individual parameter visualisations: (a) Main \tracer\ panel upon loading a single trace file; (b) boxplot representation of two continuous parameters; (c) kernel density estimates; (d) violin plots; (e) the actual traces connecting the parameter values visited by the Markov chain.}
+\caption{Overview of \tracer\ functionality and individual parameter visualisations: (a) Main \tracer\ panel upon loading a single trace file; (b) boxplot representation of two continuous parameters; corresponding (c) kernel density estimates; (d) violin plots; and (e) the actual traces connecting the parameter values visited by the Markov chain.}
 \label{fig:overview}
 \end{figure}
 %
