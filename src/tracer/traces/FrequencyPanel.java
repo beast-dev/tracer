@@ -98,6 +98,14 @@ public class FrequencyPanel extends TraceChartPanel {
 //        toolBar.add(label);
 //        toolBar.add(label.getLabelFor());
 
+        toolBar.add(new JToolBar.Separator(new Dimension(8, 8)));
+
+        JLabel label = createBinsComboAndLabel();
+        toolBar.add(label);
+        toolBar.add(label.getLabelFor());
+
+        ((JComboBox)label.getLabelFor()).setSelectedItem(settings.minimumBins);
+
         return toolBar;
     }
 
@@ -132,6 +140,7 @@ public class FrequencyPanel extends TraceChartPanel {
             if (traceType.isContinuous()) {
                 HistogramPlot histogramPlot = new HistogramPlot(traceList.getValues(traceIndex), currentSettings.minimumBins, td);
 
+                histogramPlot.setLineStroke(new BasicStroke(0.5F));
                 histogramPlot.setPaints(BAR_PAINT, QUANTILE_PAINT);
 
                 if (td != null) {
