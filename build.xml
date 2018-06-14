@@ -29,8 +29,8 @@
         $Id: build_release.xml,v 1.6 2017/02/28 18:16:17 rambaut Exp $
     </description>
 
-    <property name="version" value="1.7.0" />
-    <property name="version_number" value="1.7.0" />
+    <property name="version" value="1.7.1" />
+    <property name="version_number" value="1.7.1" />
     <property name="release_dir" value="release" />
     <property name="name" value="Tracer" />
     <property name="copyright" value="Copyright 2002-2018"/>
@@ -184,6 +184,7 @@
                         icon="${Mac_dir}/icons/Tracer.icns"
                         jvmversion="1.6+"
                         vmoptions="-Xmx10000M"
+                        highresolutioncapable="true"
                         arguments=""
                         version="${version}"
                         copyright="${name} v${version}, ${copyright}, Andrew Rambaut, Marc Suchard &amp; Alexei J. Drummond"
