@@ -149,9 +149,10 @@
 
         <copy file="${Linux_dir}/icons/Tracer.png" todir="${Linux_package_dir}/images"/>
         <copy file="${dist}/tracer.jar" todir="${Linux_package_dir}/lib"/>
-        <copy todir="${Linux_package_dir}/lib">
-            <fileset dir="${Linux_dir}/lib"/>
-        </copy>
+        <!--TODO I cannot release/Linux/lib, I think the commented lines should be removed.-->
+        <!--<copy todir="${Linux_package_dir}/lib">-->
+            <!--<fileset dir="${Linux_dir}/lib"/>-->
+        <!--</copy>-->
         <copy file="${common_dir}/README.txt" todir="${Linux_package_dir}"/>
 
         <tar destfile="${release_dir}/${name}_v${version}.tgz" compression="gzip">
