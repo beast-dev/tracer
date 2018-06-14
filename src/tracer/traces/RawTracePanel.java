@@ -274,6 +274,8 @@ public class RawTracePanel extends TraceChartPanel {
                             getChart().getYAxis().setManualRange(0.0, 1.0);
                             getChart().getYAxis().setRange(0.0, 1.0);
                         }
+                    } else {
+                        getChart().setYAxis(new LinearAxis(Axis.AT_DATA, Axis.AT_DATA));
                     }
                     int selectedColour = currentSettings.cm.addTraceColour(tl.getFullName(), name, currentSettings.colourBy);
                     //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
