@@ -28,12 +28,11 @@ package tracer.application;
 import jam.framework.*;
 import jam.mac.*;
 
-import dr.app.util.OSType;
 
 public class TracerMenuBarFactory extends DefaultMenuBarFactory {
 
     public TracerMenuBarFactory() {
-        if (OSType.isMac()) {
+        if (Utils.isMacOSX()) {
             registerMenuFactory(new TracerMacFileMenuFactory());
             registerMenuFactory(new MacEditMenuFactory());
 	        registerMenuFactory(new AnalysisMenuFactory());
