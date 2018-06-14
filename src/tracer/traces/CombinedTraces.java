@@ -195,9 +195,9 @@ public class CombinedTraces extends FilteredTraceList { //implements TraceList {
 
         if (trace != null) {
             if (trace.getTraceType() == TraceType.CATEGORICAL) {
-                traceStatistics[index] = new TraceCorrelation(getValues(index), trace.getCategoryLabelMap(), trace.getCategoryOrder(), getStepSize());
+                traceStatistics[index] = new TraceCorrelation(getValues(index), trace.getCategoryLabelMap(), trace.getCategoryOrder(), getStepSize(), trace.isConstant());
             } else {
-                traceStatistics[index] = new TraceCorrelation(getValues(index), trace.getTraceType(), getStepSize());
+                traceStatistics[index] = new TraceCorrelation(getValues(index), trace.getTraceType(), getStepSize(), trace.isConstant());
             }
         }
     }

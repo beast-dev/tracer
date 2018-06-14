@@ -308,12 +308,14 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             value = tc.getGeometricMean();
                             break;
                         case 7:
-                            if (!tc.isMinEqualToMax()) return "n/a";
+                            if (tc.isConstant()) return "n/a";
                             return "[" + TraceAnalysis.formattedNumber(tc.getLowerHPD()) + ", " + TraceAnalysis.formattedNumber(tc.getUpperHPD()) + "]";
                         case 8:
+                            if (tc.isConstant()) return "n/a";
                             value = tc.getACT();
                             break;
                         case 9:
+                            if (tc.isConstant()) return "n/a";
                             value = tc.getESS();
                             // only need 1 dp for ESS
                             return TraceAnalysis.formattedNumber(value, 1);
@@ -343,10 +345,12 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                         case 7:
                             return tc.setToString(tc.getIncredibleSet());
                         case 8:
+                            if (tc.isConstant()) return "n/a";
                             value = tc.getACT();
                             if (Double.isNaN(value)) return "n/a";
                             break;
                         case 9:
+                            if (tc.isConstant()) return "n/a";
                             value = tc.getESS();
                             if (Double.isNaN(value)) return "n/a";
                             // only need 1 dp for ESS

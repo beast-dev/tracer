@@ -266,6 +266,10 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         categoricalButton.setFont(UIManager.getFont("SmallSystemFont"));
         categoricalButton.setEnabled(false);
 
+        JLabel constantLabel = new JLabel("* constant");
+        PanelUtils.setupComponent(constantLabel);
+        constantLabel.setFont(UIManager.getFont("SmallSystemFont"));
+
         realButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeTraceType(TraceType.REAL);
@@ -285,6 +289,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         changeTraceTypePanel.add(realButton);
         changeTraceTypePanel.add(integerButton);
         changeTraceTypePanel.add(categoricalButton);
+        changeTraceTypePanel.add(constantLabel);
         changeTraceTypePanel.setToolTipText("<html> Change the data type of a selected parameter here. <br>" +
                 "Alternatively use key word real, ordinal, binary, categorical " +
                 "followed by tab delimited column names <br> in the beginning of the log file, " +
@@ -1765,7 +1770,12 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
             TraceCorrelation td = currentTraceLists.get(0).getCorrelationStatistics(row);
             if (td == null) return "-";
-            if (col == 3) return td.getTraceType().getBrief();
+            if (col == 3) {
+                if (td.isConstant()) {
+                    return "*";
+                }
+                return td.getTraceType().getBrief();
+            }
 
             double value = 0.0;
             boolean warning = false;
@@ -1778,7 +1788,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 case 2:
 //                    if (!td.minEqualToMax()) return "-";
                     value = td.getESS();
-                    if (Double.isNaN(value) || value < 1) {
+                    if (Double.isNaN(value) || value < 1 || td.isConstant()) {
                         // assume not applicable; should be tested in the computation
                         return "-";
                     }
