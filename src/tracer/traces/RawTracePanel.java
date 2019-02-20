@@ -226,13 +226,12 @@ public class RawTracePanel extends TraceChartPanel {
             TraceList tl = traceLists[i];
             long stateStart = tl.getBurnIn();
             long stateStep = tl.getStepSize();
-
-            System.out.println(traceLists.length + " : " + stateStart + "  " + stateStep);
+//            System.out.println(traceLists.length + " : " + stateStart + "  " + stateStep);
 
             // get traces from a log or combined trace
             for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
-                System.out.println(traceIndex + " : " + traceName);
+//                System.out.println(traceIndex + " : " + traceName);
 
                 String name = tl.getTraceName(traceIndex);
                 // this name has to be unique
@@ -285,7 +284,7 @@ public class RawTracePanel extends TraceChartPanel {
                         getChart().setYAxis(new LinearAxis(Axis.AT_DATA, Axis.AT_DATA));
                     }
                     int selectedColour = currentSettings.cm.addTraceColour(tl.getFullName(), name, currentSettings.colourBy);
-                    System.out.println(tl.getName() + " : " + name + " : " + values.size() + "  " + stateStart + "  " + stateStep);
+//                    System.out.println(tl.getName() + " : " + name + " : " + values.size() + "  " + stateStart + "  " + stateStep);
                     minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
 
                 } else if (trace.getTraceType().isCategorical()) {
