@@ -126,13 +126,15 @@ public class DiscreteDensityPanel extends TraceChartPanel {
         TraceType traceType = null;
         Set<String> categoryLabels = null;
 
-        for (TraceList tl : getTraceLists()) {
+        TraceList[] traceLists = getTraceLists();
+        for (int i = 0; i < traceLists.length; i++) {
+            TraceList tl = traceLists[i];
 
             for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
                 Trace trace = tl.getTrace(traceIndex);
 
-                TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
+//                TraceCorrelation td = tl.getCorrelationStatistics(traceIndex);
 
                 Plot plot;
 
@@ -185,9 +187,8 @@ public class DiscreteDensityPanel extends TraceChartPanel {
 
                 if (columnPlot != null) {
                     String name = tl.getTraceName(traceIndex);
-                    if (getTraceLists().length > 1) {
-                        name = tl.getName() + " - " + name;
-                    }
+                    if (traceLists.length > 1)
+                        name = i + "-" + name;
 
                     columnPlot.setName(name);
                     

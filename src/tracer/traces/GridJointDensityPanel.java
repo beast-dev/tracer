@@ -27,16 +27,15 @@ package tracer.traces;
 
 import dr.app.gui.chart.*;
 import dr.app.gui.util.CorrelationData;
-import dr.inference.trace.*;
+import dr.inference.trace.Trace;
+import dr.inference.trace.TraceCorrelation;
+import dr.inference.trace.TraceList;
 import dr.stats.Variate;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A panel that displays a grid of correlation plots for multiple traces
@@ -167,7 +166,10 @@ public class GridJointDensityPanel extends TraceChartPanel {
 
         correlationData.clear();
 
-        for (TraceList tl : getTraceLists()) {
+        TraceList[] traceLists = getTraceLists();
+        for (int i = 0; i < traceLists.length; i++) {
+            TraceList tl = traceLists[i];
+
             for (String traceName : getTraceNames()) {
 
                 int traceIndex = tl.getTraceIndex(traceName);
@@ -185,9 +187,8 @@ public class GridJointDensityPanel extends TraceChartPanel {
 
                 if (trace != null) {
                     String name = tl.getTraceName(traceIndex);
-                    if (getTraceLists().length > 1) {
-                        name = tl.getName() + " - " + name;
-                    }
+                    if (traceLists.length > 1)
+                        name = i + "-" + name;
 
                     List values = tl.getValues(traceIndex);
 

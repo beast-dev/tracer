@@ -109,13 +109,14 @@ public class JTraceChart extends JChart {
     public double[] addTrace(String name, long stateStart, long stateStep, List<Double> values, List<Double> burninValues, Paint paint) {
         double[] minMax = new double[4];
 
-        Variate.D yd = new Variate.D(values);
+//        Variate.D yd = new Variate.D(values);
+        Variate.D yData = new Variate.D(values);
 
         // minX, maxX, minY, maxY
         minMax[0] = 0;
         minMax[1] = stateStart + (values.size() * stateStep) - stateStep;
-        minMax[2] = yd.getMin();
-        minMax[3] = yd.getMax();
+        minMax[2] = yData.getMin();
+        minMax[3] = yData.getMax();
         getXAxis().addRange(minMax[0], minMax[1]);
         getYAxis().addRange(minMax[2], minMax[3]);
 
@@ -126,7 +127,6 @@ public class JTraceChart extends JChart {
         }
 
         Variate.D xData = new Variate.D(trace.states);
-        Variate.D yData = new Variate.D(values);
         // must setData(xData, yData), otherwise ChartSetupDialog will crash,
         // because applySettings(JChart chart) need xData and yData to avoid
         // to reset minData and maxData to INF.
