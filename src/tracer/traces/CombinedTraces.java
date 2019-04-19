@@ -43,9 +43,10 @@ public class CombinedTraces extends FilteredTraceList { //implements TraceList {
 
     public CombinedTraces(String name, LogFileTraces[] traceLists) throws TraceException {
 
-        if (traceLists == null || traceLists.length < 1) {
+        if (traceLists == null || traceLists.length < 1)
             throw new TraceException("Must have at least 1 Traces object in a CombinedTraces");
-        }
+        if (name.equals(traceLists[0].getName()))
+            throw new TraceException("Name is used by other traces : " + name);
 
         this.name = name;
         this.traceLists = new LogFileTraces[traceLists.length];

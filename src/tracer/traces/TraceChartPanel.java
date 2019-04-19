@@ -28,7 +28,6 @@ package tracer.traces;
 import dr.app.gui.chart.ChartSetupDialog;
 import dr.app.gui.chart.JChart;
 import dr.app.gui.chart.JChartPanel;
-import dr.inference.trace.Trace;
 import dr.inference.trace.TraceList;
 import dr.inference.trace.TraceType;
 import jam.framework.Exportable;
@@ -381,6 +380,20 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         repaint();
     }
 
+    protected abstract void setupTraces();
+
+    protected int getTraceCount() {
+        return getTraceLists().length * getTraceNames().size();
+    }
+
+//    protected Trace getTrace(int index) {
+//        int i = index / getTraceNames().size();
+//        int j = index % getTraceNames().size();
+//
+//        TraceList traceList = getTraceLists()[i];
+//        return traceList.getTrace(traceList.getTraceIndex(getTraceNames().get(j)));
+//    }
+
     protected abstract JChartPanel getChartPanel();
 
     protected abstract ChartSetupDialog getChartSetupDialog();
@@ -548,21 +561,6 @@ public abstract class TraceChartPanel extends JPanel implements Exportable {
         );
         return label;
     }
-
-    protected abstract void setupTraces();
-
-    protected int getTraceCount() {
-        return getTraceLists().length * getTraceNames().size();
-    }
-
-    protected Trace getTrace(int index) {
-        int i = index / getTraceNames().size();
-        int j = index % getTraceNames().size();
-
-        TraceList traceList = getTraceLists()[i];
-        return traceList.getTrace(traceList.getTraceIndex(getTraceNames().get(j)));
-    }
-
 
     /**
      * set legend given <code>Settings</code> which includes legend position and colours.

@@ -171,8 +171,8 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
 
         traceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
-//                if(!evt.getValueIsAdjusting())
-                traceTableSelectionChanged();
+                if(!evt.getValueIsAdjusting())
+                    traceTableSelectionChanged();
             }
         });
 
@@ -823,15 +823,15 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 isIncomplete = true;
         }
 
-        List<String> selectedTraces = getSelectedTraces();
+        List<String> selectedTraceNames = getSelectedTraces();
 
         if (currentTraceLists.size() == 0 || isIncomplete) {
-            tracePanel.setTraces(null, selectedTraces);
+            tracePanel.setTraces(null, selectedTraceNames);
         } else {
             TraceList[] tl = new TraceList[currentTraceLists.size()];
             currentTraceLists.toArray(tl);
             try {
-                tracePanel.setTraces(tl, selectedTraces);
+                tracePanel.setTraces(tl, selectedTraceNames);
             } catch (ChartRuntimeException cre) {
                 JOptionPane.showMessageDialog(this, "One or more traces contain invalid values and \rare not able to be displayed.",
                         "Problem reading trace file",
@@ -844,6 +844,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         categoricalButton.setEnabled(selRows.length > 0);
     }
 
+    // get names of selected traces
     public List<String> getSelectedTraces() {
 
         int[] selRows = statisticTable.getSelectedRows();

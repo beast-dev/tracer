@@ -220,17 +220,23 @@ public class RawTracePanel extends TraceChartPanel {
         List valuesX = new ArrayList();
         List valuesY = new ArrayList();
 
-        for (TraceList tl : getTraceLists()) {
+        // traceLists in TraceChartPanel is set in setTraces(...) TracePanel
+        TraceList[] traceLists = getTraceLists();
+        for (int i = 0; i < traceLists.length; i++) {
+            TraceList tl = traceLists[i];
             long stateStart = tl.getBurnIn();
             long stateStep = tl.getStepSize();
+//            System.out.println(traceLists.length + " : " + stateStart + "  " + stateStep);
 
+            // get traces from a log or combined trace
             for (String traceName : getTraceNames()) {
                 int traceIndex = tl.getTraceIndex(traceName);
+//                System.out.println(traceIndex + " : " + traceName);
 
                 String name = tl.getTraceName(traceIndex);
-                if (getTraceLists().length > 1) {
-                    name = tl.getName() + " - " + name;
-                }
+                // this name has to be unique
+                if (traceLists.length > 1)
+                    name = i + "-" + name;
 
                 Trace trace = tl.getTrace(traceIndex);
 
@@ -278,14 +284,16 @@ public class RawTracePanel extends TraceChartPanel {
                         getChart().setYAxis(new LinearAxis(Axis.AT_DATA, Axis.AT_DATA));
                     }
                     int selectedColour = currentSettings.cm.addTraceColour(tl.getFullName(), name, currentSettings.colourBy);
-                    //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
+//                    System.out.println(tl.getName() + " : " + name + " : " + values.size() + "  " + stateStart + "  " + stateStep);
                     minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
-                } else if (trace.getTraceType() == TraceType.CATEGORICAL) {
+
+                } else if (trace.getTraceType().isCategorical()) {
                     //change Y axis to discrete
                     getChart().setYAxis(new DiscreteAxis(trace.getCategoryLabelMap(), true, true));
                     int selectedColour = currentSettings.cm.addTraceColour(tl.getFullName(), name, currentSettings.colourBy);
                     //System.out.println(tl.getName() + " ; " + name + " : " + selectedColour);
                     minMax = getChart().addTrace(name, stateStart, stateStep, values, burninValues, currentSettings.palette[selectedColour]);
+
                 } else {
                     throw new RuntimeException("Trace type is not recognized: " + trace.getTraceType());
                 }
@@ -296,7 +304,7 @@ public class RawTracePanel extends TraceChartPanel {
 
             }
         }
-        if (getTraceLists().length > 1 || getTraceNames().size() > 1) {
+        if (traceLists.length > 1 || getTraceNames().size() > 1) {
             Variate.D xV = new Variate.D(valuesX);
             Variate.D yV = new Variate.D(valuesY);
             getChart().setRange(xV.getMin(), xV.getMax(), yV.getMin(), yV.getMax());

@@ -78,11 +78,11 @@ public class TracePanel extends javax.swing.JPanel implements Exportable {
     /**
      * This function takes a multiple statistics in a single log files
      */
-    public void setTraces(TraceList[] traceLists, java.util.List<String> traces) {
-        summaryPanel.setTraces(traceLists, traces);
-        densityPanel.setTraces(traceLists, traces);
-        jointDensityPanel.setTraces(traceLists, traces);
-        tracePanel.setTraces(traceLists, traces);
+    public void setTraces(TraceList[] traceLists, java.util.List<String> traceNames) {
+        summaryPanel.setTraces(traceLists, traceNames);
+        densityPanel.setTraces(traceLists, traceNames);
+        jointDensityPanel.setTraces(traceLists, traceNames);
+        tracePanel.setTraces(traceLists, traceNames);
     }
 
     public void traceRemoved() {
