@@ -29,6 +29,7 @@ import dr.app.gui.components.RealNumberField;
 import dr.app.gui.components.WholeNumberField;
 import dr.app.gui.util.LongTask;
 import dr.evolution.coalescent.ConstExpConst;
+import dr.evolution.coalescent.ExponentialExponential;
 import dr.evolution.coalescent.TwoEpochDemographic;
 import dr.evolution.util.Units;
 import dr.inference.trace.TraceDistribution;
@@ -66,6 +67,7 @@ public class DemographicDialog {
             "Constant-Logistic",
             "Constant-Exponential-Constant (Ancestral Size)",
             "Constant-Exponential-Constant (Growth Rate)",
+            "Exponential-Exponential",
             "Exponential-Logistic",
             "Boom-Bust",
             "Two Epoch"
@@ -84,7 +86,8 @@ public class DemographicDialog {
             {".*populationsize2", ".*population2", ".*popsize2", ".*n02", ".*n2", ".*size2", ".*pop2"},
             {".*exponentialgrowthrate2", ".*exponentialrate2", ".*growthrate2", ".*expgrowth2", ".*growth2", ".*rate2", ".*r2"},
             {".*ancestralsize", ".*ancestralproportion", ".*ancpopsize", ".*proportion.*", ".*ancestral.*", ".*n1"},
-            {".*growthepoch", ".*growthtime", ".*epoch.*", ".*dt"}
+            {".*growthepoch", ".*growthtime", ".*epoch.*", ".*dt"},
+            {".*ancestralgrowthrate", ".*ancestralgrowth", ".*ancestralrate", ".*exponentialgrowthrate2", ".*exponentialrate2", ".*growthrate2", ".*expgrowth2", ".*growth2", ".*rate2", ".*r2"}
     };
 
     private String[] argumentNames = new String[]{
@@ -100,24 +103,26 @@ public class DemographicDialog {
             "Population Size 2",       // 9
             "Growth Rate 2",           // 10
             "Ancestral Size",          // 11
-            "Growth Time"              // 12
+            "Growth Time",             // 12
+            "Ancestral Growth Rate",   // 13
     };
 
     private int[][] argumentIndices = {
-            {0},            // const
-            {0, 2},         // exp
-            {0, 3},         // exp doubling time
-            {0, 2, 4},      // logistic
-            {0, 3, 4},      // logistic doubling time
-            {0, 1, 2},      // expansion
-            {0, 1, 3},      // expansion doubling time
-            {0, 7, 2},      // const-exp
-            {0, 1, 2, 4},   // const-log
-            {0, 11, 7, 12}, // const-exp-const ancestral size
-            {0, 2, 7, 12},  // const-exp-const growth rate
-            {0, 2, 4, 7, 8},// exp-logistic
-            {0, 2, 5, 6},   // boom bust
-            {0, 2, 9, 10, 7}// Two Epoch
+            {0},                // const
+            {0, 2},             // exp
+            {0, 3},             // exp doubling time
+            {0, 2, 4},          // logistic
+            {0, 3, 4},          // logistic doubling time
+            {0, 1, 2},          // expansion
+            {0, 1, 3},          // expansion doubling time
+            {0, 7, 2},          // const-exp
+            {0, 1, 2, 4},       // const-log
+            {0, 11, 7, 12},     // const-exp-const ancestral size
+            {0, 2, 7, 12},      // const-exp-const growth rate
+            {0, 2, 7, 13},      // exp-exp
+            {0, 2, 4, 7, 8},    // exp-logistic
+            {0, 2, 5, 6},       // boom bust
+            {0, 2, 9, 10, 7},   // Two Epoch
     };
 
     private String[] argumentTraces = new String[argumentNames.length];
@@ -648,7 +653,20 @@ public class DemographicDialog {
                     current++;
                 }
 
-            } else if (demographicCombo.getSelectedIndex() == 11) { // ExpLogistic Growth
+            } else if (demographicCombo.getSelectedIndex() == 11) { // ExpExp Growth
+                title = "Exponential-Exponential Growth";
+                ExponentialExponential demo = new ExponentialExponential(Units.Type.YEARS);
+                for (int i = 0; i < values.get(0).size(); i++) {
+                    demo.setN0((Double) values.get(0).get(i));
+                    demo.setGrowthRate((Double) values.get(1).get(i));
+                    demo.setTransitionTime((Double) values.get(2).get(i));
+                    demo.setAncestralGrowthRate((Double) values.get(3).get(i));
+
+                    addDemographic(bins, binCount, maxHeight, delta, demo);
+                    current++;
+                }
+
+            } else if (demographicCombo.getSelectedIndex() == 12) { // ExpLogistic Growth
                 title = "Exponential-Logistic Growth";
                 ExponentialLogistic demo = new ExponentialLogistic();
                 for (int i = 0; i < values.get(0).size(); i++) {
@@ -662,7 +680,7 @@ public class DemographicDialog {
                     current++;
                 }
 
-            } else if (demographicCombo.getSelectedIndex() == 12) { // Cataclysm
+            } else if (demographicCombo.getSelectedIndex() == 13) { // Cataclysm
                 title = "Boom-Bust";
                 CataclysmicDemographic demo = new CataclysmicDemographic();
                 for (int i = 0; i < values.get(0).size(); i++) {
@@ -675,7 +693,7 @@ public class DemographicDialog {
                     current++;
                 }
 
-            } else if (demographicCombo.getSelectedIndex() == 13) { // Two Epoch
+            } else if (demographicCombo.getSelectedIndex() == 14) { // Two Epoch
                 title = "Two Epoch";
                 dr.evolution.coalescent.ExponentialGrowth demo1 = new dr.evolution.coalescent.ExponentialGrowth(Units.Type.SUBSTITUTIONS);
                 dr.evolution.coalescent.ExponentialGrowth demo2 = new dr.evolution.coalescent.ExponentialGrowth(Units.Type.SUBSTITUTIONS);

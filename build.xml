@@ -29,8 +29,8 @@
         $Id: build_release.xml,v 1.6 2017/02/28 18:16:17 rambaut Exp $
     </description>
 
-    <property name="version" value="1.7.1" />
-    <property name="version_number" value="1.7.1" />
+    <property name="version" value="1.7.2" />
+    <property name="version_number" value="1.7.2" />
     <property name="release_dir" value="release" />
     <property name="name" value="Tracer" />
     <property name="copyright" value="Copyright 2002-2018"/>
@@ -183,7 +183,7 @@
                         stubfile="${packaging_tools}/mac/universalJavaApplicationStub"
 						useJavaXKey="true"
                         icon="${Mac_dir}/icons/Tracer.icns"
-                        jvmversion="1.6+"
+                        jvmversion="1.8+"
                         vmoptions="-Xmx10000M"
                         highresolutioncapable="true"
                         arguments=""
