@@ -128,8 +128,11 @@ public class DemographicDialog {
     private String[] argumentTraces = new String[argumentNames.length];
     private JComboBox[] argumentCombos = new JComboBox[argumentNames.length];
     private JComboBox maxHeightCombo = new JComboBox(new String[]{
-            "Lower 95% HPD", "Median", "Mean", "Upper 95% HPD"});
+            "Lower 95% HPD", "Median", "Mean", "Upper 95% HPD", "Fixed value"});
+    private RealNumberField maxHeightField;
+    private JLabel maxHeightFieldLabel;
     private JComboBox rootHeightCombo;
+    private JLabel rootHeightComboLabel;
     private JCheckBox manualRangeCheckBox;
     private RealNumberField minTimeField;
     private RealNumberField maxTimeField;
@@ -150,6 +153,8 @@ public class DemographicDialog {
         }
 
         rootHeightCombo = new JComboBox();
+        maxHeightField = new RealNumberField(0.0, Double.MAX_VALUE);
+        maxHeightField.setColumns(12);
 
         binCountField = new WholeNumberField(2, 2000);
         binCountField.setValue(100);
@@ -282,7 +287,21 @@ public class DemographicDialog {
 
         optionPanel.addComponentWithLabel("Maximum time is the root height's:", maxHeightCombo);
 
-        optionPanel.addComponentWithLabel("Select the trace of the root height:", rootHeightCombo);
+        rootHeightComboLabel = optionPanel.addComponentWithLabel("Select the trace of the root height:", rootHeightCombo);
+        maxHeightFieldLabel = optionPanel.addComponentWithLabel("Maximum height value:", maxHeightField);
+
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean fixedHeight = maxHeightCombo.getSelectedIndex() == 4;
+                rootHeightCombo.setEnabled(!fixedHeight);
+                rootHeightComboLabel.setEnabled(!fixedHeight);
+                maxHeightFieldLabel.setEnabled(fixedHeight);
+                maxHeightField.setEnabled(fixedHeight);
+            }
+        };
+        maxHeightCombo.addActionListener(listener);
+        listener.actionPerformed(null);
 
         if (temporalAnalysisFrame == null) {
             optionPanel.addSeparator();
@@ -445,6 +464,7 @@ public class DemographicDialog {
             double timeMedian = distribution.getMedian();
             double timeUpper = distribution.getUpperHPD();
             double timeLower = distribution.getLowerHPD();
+            double timeFixed = maxHeightField.getValue();
 
             double maxHeight = 0.0;
             switch (maxHeightCombo.getSelectedIndex()) {
@@ -460,6 +480,13 @@ public class DemographicDialog {
                     break;
                 case 3:
                     maxHeight = timeUpper;
+                    break;
+                case 4:
+                    timeMean = -1;
+                    timeMedian = -1;
+                    timeUpper = -1;
+                    timeLower = -1;
+                    maxHeight = timeFixed;
                     break;
             }
 
