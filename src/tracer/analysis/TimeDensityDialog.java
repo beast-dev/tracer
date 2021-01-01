@@ -212,6 +212,13 @@ public class TimeDensityDialog {
             Variate.D xData = new Variate.D();
             Variate.D yData = new Variate.D();
 
+            // todo - allow for a ageOfYoungest timescale
+//            if (ageOfYoungest > 0.0) {
+//                t = maxTime;
+//            } else {
+//                t = minTime;
+//            }
+
             double x = frequency.getLowerBound() - frequency.getBinSize();
             xData.add(x + (frequency.getBinSize() / 2.0));
             yData.add(0.0);
@@ -227,7 +234,7 @@ public class TimeDensityDialog {
             xData.add(x + (frequency.getBinSize() / 2.0));
             yData.add(0.0);
 
-            frame.addDensity("Density: " + traceList.getName(), xData, yData);
+            frame.addDensity("Density: " + traceList.getName(), xData, yData, ageOfYoungest > 0.0);
 
             return null;
         }

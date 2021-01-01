@@ -41,6 +41,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 
 public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMenuHandler {
     private int binCount;
@@ -94,7 +100,8 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
                                Variate.D yDataMean, Variate.D yDataMedian,
                                Variate.D yDataUpper, Variate.D yDataLower,
                                double timeMean, double timeMedian,
-                               double timeUpper, double timeLower) {
+                               double timeUpper, double timeLower,
+                               boolean isCalendarTime) {
 
         if (!rangeSet) {
             throw new RuntimeException("Range not set");
@@ -105,7 +112,7 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
         }
 
         temporalAnalysisPlotPanel.addDemographicPlot(title, xData, yDataMean, yDataMedian, yDataUpper, yDataLower,
-                timeMean, timeMedian, timeUpper, timeLower);
+                timeMean, timeMedian, timeUpper, timeLower, isCalendarTime);
 
         // unless there was a meaningful data table to write
         exportRawDataAction.setEnabled(false);
@@ -114,13 +121,13 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
         setVisible(true);
     }
 
-    public void addDensity(String title, Variate.D xData, Variate.D yData) {
+    public void addDensity(String title, Variate.D xData, Variate.D yData, boolean isCalendarTime) {
 
         if (!rangeSet) {
             throw new RuntimeException("Range not set");
         }
 
-        temporalAnalysisPlotPanel.addDensityPlot(title, xData, yData);
+        temporalAnalysisPlotPanel.addDensityPlot(title, xData, yData, isCalendarTime);
         setVisible(true);
     }
 
@@ -245,6 +252,8 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
 
         java.util.List<TemporalAnalysisPlotPanel.AnalysisData> analyses = temporalAnalysisPlotPanel.getAnalysisData();
 
+        boolean isCalendarTime = false;
+
         // Sources line
         for (TemporalAnalysisPlotPanel.AnalysisData analysis : analyses) {
             // first \t is for the time
@@ -253,22 +262,49 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
                 // demographic generate 4 values
                 buffer.append("\t\t\t");
             }
-        }
-        buffer.append("\n");
 
-        buffer.append("Time");
+            if (analysis.isCalendarTime) {
+                isCalendarTime = true;
+            } else if (isCalendarTime) {
+                throw new UnsupportedOperationException("Some temporal analyses are not in calendar time");
+            }
+        }
+
+        buffer.append("\n");
+        buffer.append("time");
+
+        if (isCalendarTime) {
+            buffer.append("\t");
+            buffer.append("date");
+            buffer.append("\t");
+            buffer.append("datetime");
+            buffer.append("\t");
+            buffer.append("milliseconds");
+        }
+
         for (TemporalAnalysisPlotPanel.AnalysisData analysis : analyses) {
             if (analysis.isDemographic) {
-                buffer.append("\tMean\tMedian\tUpper\tLower");
+                buffer.append("\tmean\tmedian\tupper\tlower");
             } else {
                 buffer.append("\t");
             }
         }
         buffer.append("\n");
 
-        Variate timeScale = temporalAnalysisPlotPanel.getTimeScale();
+        Variate<Double> timeScale = temporalAnalysisPlotPanel.getTimeScale();
         for (int i = 0; i < timeScale.getCount(); i++) {
-            buffer.append(String.valueOf(timeScale.get(i)));
+            double time = timeScale.get(i);
+            buffer.append(time);
+
+            if (isCalendarTime) {
+                LocalDateTime date = convertToDate(time);
+                buffer.append("\t");
+                buffer.append(date.format(DateTimeFormatter.ISO_LOCAL_DATE));
+                buffer.append("\t");
+                buffer.append(date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                buffer.append("\t");
+                buffer.append(convertToEpochMilliseconds(time));
+            }
 
             for (TemporalAnalysisPlotPanel.AnalysisData analysis : analyses) {
                 if (analysis.isDemographic) {
@@ -289,6 +325,22 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
         }
 
         return buffer.toString();
+    }
+
+    private LocalDateTime convertToDate(double decimalYear) {
+        return LocalDateTime.ofEpochSecond(convertToEpochSeconds(decimalYear), 0, ZoneOffset.UTC);
+    }
+
+    private long convertToEpochSeconds(double decimalYear) {
+        return convertToEpochMilliseconds(decimalYear) / 1000;
+    }
+
+    private long convertToEpochMilliseconds(double decimalYear) {
+        int year = (int)Math.floor(decimalYear);
+        long ms = (long)((decimalYear - Math.floor(decimalYear)) * 365 * 24 * 3600 * 1000);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, 0, 0, 0, 0, 0);
+        return (calendar.getTimeInMillis()) + ms;
     }
 
     @Override

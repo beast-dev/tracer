@@ -838,7 +838,8 @@ public class ExtendedBayesianSkylineDialog {
                         yDataMean, yDataMedian,
                         yDataUpper, yDataLower,
                         timeMean, timeMedian,
-                        timeUpper, timeLower);
+                        timeUpper, timeLower,
+                        ageOfYoungest > 0.0);
 
             } catch (java.io.IOException ioe) {
                 JOptionPane.showMessageDialog(frame, "Error reading file: " + ioe.getMessage(),

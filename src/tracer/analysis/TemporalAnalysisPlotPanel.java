@@ -51,7 +51,7 @@ public class TemporalAnalysisPlotPanel extends JPanel {
     private JCheckBox solidIntervalCheckBox = new JCheckBox("Solid interval");
 
     private ChartSetupDialog chartSetupDialog = null;
-    private Variate timeScale = null;
+    private Variate<Double> timeScale = null;
 
 
     /**
@@ -129,21 +129,22 @@ public class TemporalAnalysisPlotPanel extends JPanel {
                                    Variate.D yDataMean, Variate.D yDataMedian,
                                    Variate.D yDataUpper, Variate.D yDataLower,
                                    double timeMean, double timeMedian,
-                                   double timeUpper, double timeLower) {
+                                   double timeUpper, double timeLower,
+                                   boolean isCalendarTime) {
 
         if (timeScale == null) {
             timeScale = xData;
         }
         analysisData.add(new AnalysisData(title, xData, yDataMean, yDataMedian, yDataUpper, yDataLower,
-                timeMean, timeMedian, timeUpper, timeLower));
+                timeMean, timeMedian, timeUpper, timeLower, isCalendarTime));
         updatePlots();
 
         setVisible(true);
     }
 
-    public void addDensityPlot(String title, Variate.D xData, Variate.D yData) {
+    public void addDensityPlot(String title, Variate.D xData, Variate.D yData, boolean isCalendarTime) {
 
-        analysisData.add(new AnalysisData(title, xData, yData));
+        analysisData.add(new AnalysisData(title, xData, yData, isCalendarTime));
 
         updatePlots();
 
@@ -161,7 +162,7 @@ public class TemporalAnalysisPlotPanel extends JPanel {
         repaint();
     }
 
-    public Variate getTimeScale() {
+    public Variate<Double> getTimeScale() {
         return timeScale;
     }
 
@@ -252,7 +253,8 @@ public class TemporalAnalysisPlotPanel extends JPanel {
 
     class AnalysisData {
         public AnalysisData(String title, Variate.D xData, Variate.D yDataMean, Variate.D yDataMedian, Variate.D yDataUpper, Variate.D yDataLower,
-                            double timeMedian, double timeMean, double timeUpper, double timeLower) {
+                            double timeMedian, double timeMean, double timeUpper, double timeLower,
+                            boolean isCalendarTime) {
 
             this.title = title;
             this.isDemographic = true;
@@ -266,13 +268,17 @@ public class TemporalAnalysisPlotPanel extends JPanel {
             this.timeMean = timeMean;
             this.timeUpper = timeUpper;
             this.timeLower = timeLower;
+
+            this.isCalendarTime = isCalendarTime;
         }
 
-        public AnalysisData(String title, Variate.D xData, Variate.D yData) {
+        public AnalysisData(String title, Variate.D xData, Variate.D yData, boolean isCalendarTime) {
             this.title = title;
             this.isDemographic = false;
             this.xData = xData;
             this.yDataMean = yData;
+
+            this.isCalendarTime = isCalendarTime;
         }
 
         String title;
@@ -288,5 +294,7 @@ public class TemporalAnalysisPlotPanel extends JPanel {
         double timeMean = -1;
         double timeUpper = -1;
         double timeLower = -1;
+
+        boolean isCalendarTime;
     }
 }

@@ -30,6 +30,7 @@ import dr.app.gui.components.WholeNumberField;
 import dr.app.gui.util.LongTask;
 import dr.evolution.coalescent.ConstExpConst;
 import dr.evolution.coalescent.ExponentialExponential;
+import dr.evolution.coalescent.MultiEpochExponential;
 import dr.evolution.coalescent.TwoEpochDemographic;
 import dr.evolution.util.Units;
 import dr.inference.trace.TraceDistribution;
@@ -70,7 +71,8 @@ public class DemographicDialog {
             "Exponential-Exponential",
             "Exponential-Logistic",
             "Boom-Bust",
-            "Two Epoch"
+            "Two Epoch Exponential",
+            "Three Epoch Exponential"
     };
 
     private String[][] argumentGuesses = {
@@ -87,7 +89,9 @@ public class DemographicDialog {
             {".*exponentialgrowthrate2", ".*exponentialrate2", ".*growthrate2", ".*expgrowth2", ".*growth2", ".*rate2", ".*r2"},
             {".*ancestralsize", ".*ancestralproportion", ".*ancpopsize", ".*proportion.*", ".*ancestral.*", ".*n1"},
             {".*growthepoch", ".*growthtime", ".*epoch.*", ".*dt"},
-            {".*ancestralgrowthrate", ".*ancestralgrowth", ".*ancestralrate", ".*exponentialgrowthrate2", ".*exponentialrate2", ".*growthrate2", ".*expgrowth2", ".*growth2", ".*rate2", ".*r2"}
+            {".*ancestralgrowthrate", ".*ancestralgrowth", ".*ancestralrate", ".*exponentialgrowthrate2", ".*exponentialrate2", ".*growthrate2", ".*expgrowth2", ".*growth2", ".*rate2", ".*r2"},
+            {".*exponentialgrowthrate3", ".*exponentialrate3", ".*growthrate3", ".*expgrowth3", ".*growth3", ".*rate3", ".*r3"},
+            {".*transitiontime2", ".*time2", ".*time2", ".*t2", "\\.t$"},
     };
 
     private String[] argumentNames = new String[]{
@@ -105,6 +109,8 @@ public class DemographicDialog {
             "Ancestral Size",          // 11
             "Growth Time",             // 12
             "Ancestral Growth Rate",   // 13
+            "Growth Rate 3",           // 14
+            "Transition Time 2"        // 15
     };
 
     private int[][] argumentIndices = {
@@ -123,6 +129,7 @@ public class DemographicDialog {
             {0, 2, 4, 7, 8},    // exp-logistic
             {0, 2, 5, 6},       // boom bust
             {0, 2, 9, 10, 7},   // Two Epoch
+            {0, 2, 10, 14, 7, 15},     // Three Epoch
     };
 
     private String[] argumentTraces = new String[argumentNames.length];
@@ -464,7 +471,6 @@ public class DemographicDialog {
             double timeMedian = distribution.getMedian();
             double timeUpper = distribution.getUpperHPD();
             double timeLower = distribution.getLowerHPD();
-            double timeFixed = maxHeightField.getValue();
 
             double maxHeight = 0.0;
             switch (maxHeightCombo.getSelectedIndex()) {
@@ -486,7 +492,7 @@ public class DemographicDialog {
                     timeMedian = -1;
                     timeUpper = -1;
                     timeLower = -1;
-                    maxHeight = timeFixed;
+                    maxHeight = maxHeightField.getValue();
                     break;
             }
 
@@ -722,15 +728,27 @@ public class DemographicDialog {
 
             } else if (demographicCombo.getSelectedIndex() == 14) { // Two Epoch
                 title = "Two Epoch";
-                dr.evolution.coalescent.ExponentialGrowth demo1 = new dr.evolution.coalescent.ExponentialGrowth(Units.Type.SUBSTITUTIONS);
-                dr.evolution.coalescent.ExponentialGrowth demo2 = new dr.evolution.coalescent.ExponentialGrowth(Units.Type.SUBSTITUTIONS);
-                TwoEpochDemographic demo = new TwoEpochDemographic(demo1, demo2, Units.Type.SUBSTITUTIONS);
+                MultiEpochExponential demo = new MultiEpochExponential(Units.Type.YEARS, 2);
                 for (int i = 0; i < values.get(0).size(); i++) {
-                    demo1.setN0((Double) values.get(0).get(i));
-                    demo1.setGrowthRate((Double) values.get(1).get(i));
-                    demo2.setN0((Double) values.get(2).get(i));
-                    demo2.setGrowthRate((Double) values.get(3).get(i));
-                    demo.setTransitionTime((Double) values.get(4).get(i));
+                    demo.setN0((Double) values.get(0).get(i));
+                    demo.setGrowthRate(0, (Double) values.get(1).get(i));
+                    demo.setGrowthRate(1, (Double) values.get(2).get(i));
+                    demo.setTransitionTime(0, (Double) values.get(3).get(i));
+
+                    addDemographic(bins, binCount, maxHeight, delta, demo);
+
+                    current++;
+                }
+            } else if (demographicCombo.getSelectedIndex() == 15) { // Three Epoch
+                title = "Three Epoch";
+                MultiEpochExponential demo = new MultiEpochExponential(Units.Type.YEARS, 3);
+                for (int i = 0; i < values.get(0).size(); i++) {
+                    demo.setN0((Double) values.get(0).get(i));
+                    demo.setGrowthRate(0, (Double) values.get(1).get(i));
+                    demo.setGrowthRate(1, (Double) values.get(2).get(i));
+                    demo.setGrowthRate(2, (Double) values.get(3).get(i));
+                    demo.setTransitionTime(0, (Double) values.get(4).get(i));
+                    demo.setTransitionTime(1, (Double) values.get(5).get(i));
 
                     addDemographic(bins, binCount, maxHeight, delta, demo);
 
@@ -773,7 +791,8 @@ public class DemographicDialog {
                     yDataMean, yDataMedian,
                     yDataUpper, yDataLower,
                     timeMean, timeMedian,
-                    timeUpper, timeLower);
+                    timeUpper, timeLower,
+                    ageOfYoungest > 0.0);
 
             return null;
         }

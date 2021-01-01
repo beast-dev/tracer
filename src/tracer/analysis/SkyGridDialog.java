@@ -619,7 +619,8 @@ public class SkyGridDialog {
                         yDataMean, yDataMedian,
                         yDataUpper, yDataLower,
                         timeMean, timeMedian,
-                        timeUpper, timeLower);
+                        timeUpper, timeLower,
+                        ageOfYoungest > 0.0);
 
             } catch (IllegalArgumentException ile) {
                 JOptionPane.showMessageDialog(frame, ile.getMessage(),
