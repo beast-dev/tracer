@@ -96,6 +96,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
     private JButton realButton;
     private JButton integerButton;
     private JButton categoricalButton;
+    private JButton temporalButton;
 
 //    private final List<FilterListPanel> filterListPanelList = new ArrayList<FilterListPanel>();
 
@@ -266,6 +267,12 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         categoricalButton.setFont(UIManager.getFont("SmallSystemFont"));
         categoricalButton.setEnabled(false);
 
+        temporalButton = new JButton("(T)ime");
+        PanelUtils.setupComponent(temporalButton);
+        temporalButton.setToolTipText(TraceType.TEMPORAL.toString());
+        temporalButton.setFont(UIManager.getFont("SmallSystemFont"));
+        temporalButton.setEnabled(false);
+
         JLabel constantLabel = new JLabel("* constant");
         PanelUtils.setupComponent(constantLabel);
         constantLabel.setFont(UIManager.getFont("SmallSystemFont"));
@@ -285,10 +292,16 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
                 changeTraceType(TraceType.CATEGORICAL);
             }
         });
+        temporalButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                changeTraceType(TraceType.TEMPORAL);
+            }
+        });
 
         changeTraceTypePanel.add(realButton);
         changeTraceTypePanel.add(integerButton);
         changeTraceTypePanel.add(categoricalButton);
+        changeTraceTypePanel.add(temporalButton);
         changeTraceTypePanel.add(constantLabel);
         changeTraceTypePanel.setToolTipText("<html> Change the data type of a selected parameter here. <br>" +
                 "Alternatively use key word real, ordinal, binary, categorical " +
@@ -842,6 +855,7 @@ public class TracerFrame extends DocumentFrame implements TracerFileMenuHandler,
         realButton.setEnabled(selRows.length > 0);
         integerButton.setEnabled(selRows.length > 0);
         categoricalButton.setEnabled(selRows.length > 0);
+        temporalButton.setEnabled(selRows.length > 0);
     }
 
     // get names of selected traces

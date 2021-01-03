@@ -144,6 +144,9 @@ public class TemporalAnalysisPlotPanel extends JPanel {
 
     public void addDensityPlot(String title, Variate.D xData, Variate.D yData, boolean isCalendarTime) {
 
+        if (timeScale == null) {
+            timeScale = xData;
+        }
         analysisData.add(new AnalysisData(title, xData, yData, isCalendarTime));
 
         updatePlots();

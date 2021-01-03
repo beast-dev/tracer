@@ -74,7 +74,7 @@ public class DensityPanel extends JPanel implements Exportable {
             traceType = traceList.getTrace(traceList.getTraceIndex(traceName)).getTraceType();
         }
 
-        if (traceType == TraceType.REAL) {
+        if (traceType.isContinuous()) {
             setDensityPanel(continuousDensityPanel);
             continuousDensityPanel.setTraces(traceLists, traceNames);
         } else {

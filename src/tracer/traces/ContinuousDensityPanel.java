@@ -34,6 +34,10 @@ import dr.stats.Variate;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -81,6 +85,8 @@ public class ContinuousDensityPanel extends TraceChartPanel {
     private final ChartSetupDialog violinChartSetupDialog;
 
     private final JComboBox displayCombo = new JComboBox( Type.values() );
+
+    private TraceType traceType = null;
 
     private class Settings extends TraceChartPanel.Settings {
         //        ChartSetupDialog chartSetupDialog = null;
@@ -250,7 +256,7 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
     protected void setupTraces() {
 
-        TraceType traceType = null;
+        traceType = null;
 
         displayCombo.setSelectedItem(currentSettings.type);
 
@@ -378,6 +384,10 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         Variate xData = plot.getXData();
 
         buffer.append(getChartPanel().getXAxisTitle());
+        if (traceType == TraceType.TEMPORAL) {
+            buffer.append("\t");
+            buffer.append("date");
+        }
         for (int i = 0; i < chart.getPlotCount(); i++) {
             plot = chart.getPlot(i);
             buffer.append("\t");
@@ -386,7 +396,12 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         buffer.append("\n");
 
         for (int i = 0; i < xData.getCount(); i++) {
-            buffer.append(String.valueOf(xData.get(i)));
+            double value = (Double)xData.get(i);
+            buffer.append(value);
+            if (traceType == TraceType.TEMPORAL) {
+                buffer.append("\t");
+                buffer.append(convertToDate(value).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            }
             for (int j = 0; j < chart.getPlotCount(); j++) {
                 plot = chart.getPlot(j);
                 Variate yData = plot.getYData();
@@ -398,5 +413,22 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
         return buffer.toString();
     }
+
+    private LocalDateTime convertToDate(double decimalYear) {
+        return LocalDateTime.ofEpochSecond(convertToEpochSeconds(decimalYear), 0, ZoneOffset.UTC);
+    }
+
+    private long convertToEpochSeconds(double decimalYear) {
+        return convertToEpochMilliseconds(decimalYear) / 1000;
+    }
+
+    private long convertToEpochMilliseconds(double decimalYear) {
+        int year = (int)Math.floor(decimalYear);
+        long ms = (long)((decimalYear - Math.floor(decimalYear)) * 365 * 24 * 3600 * 1000);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, 0, 0, 0, 0, 0);
+        return (calendar.getTimeInMillis()) + ms;
+    }
+
 
 }
