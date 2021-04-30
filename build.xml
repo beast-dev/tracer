@@ -149,7 +149,7 @@
 
         <copy file="${Linux_dir}/icons/Tracer.png" todir="${Linux_package_dir}/images"/>
         <copy file="${dist}/tracer.jar" todir="${Linux_package_dir}/lib"/>
-        <!--TODO I cannot release/Linux/lib, I think the commented lines should be removed.-->
+        <!--TODO there is no release/Linux/lib/ -->
         <!--<copy todir="${Linux_package_dir}/lib">-->
             <!--<fileset dir="${Linux_dir}/lib"/>-->
         <!--</copy>-->
