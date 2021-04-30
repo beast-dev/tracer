@@ -63,6 +63,7 @@
         </javac>
     </target>
 
+    <!--TODO trig BEAST1 build.xml copy_trace_jar, before dist -->
     <target name="dist" depends="compile"
             description="generate the distribution">
         <!-- Create the distribution directory -->
