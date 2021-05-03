@@ -31,7 +31,7 @@ echo '
            set background picture of theViewOptions to file "'${backgroundPictureName}'"
            set label position of theViewOptions to bottom
            set icon size of theViewOptions to 96
-           make new alias file at container window to POSIX file "/Applications" with properties {name:"Applications"}
+           make new alias file at container window to (POSIX file "/Applications") with properties {name:"Applications"}
            set position of item "'${applicationName}'" of container window to {100, 120}
            set position of item "'${backgroundPictureName}'" of container window to {800, 120}
            set position of item "Applications" of container window to {375, 120}
