@@ -47,7 +47,7 @@
         <delete dir="${build}"/>
     </target>
 
-    <target name="init">
+    <target name="init" depends="clean">
         <!-- Create the time stamp -->
         <tstamp/>
         <!-- Create the build directory structure used by compile -->
@@ -91,8 +91,18 @@
             <zipgroupfileset dir="${lib}" includes="commons-math-2.2.jar"/>
         </jar>
 
+        <echo>
+            Application: ${name} v${version}
+            Built by   : ${ant.file}
+            Run by     : ${user.name}
+            Build Dir  : ${build}
+            Dist Dir   : ${dist}
+            JDK version: ${java.version}
+            Java Home  : ${java.home}
+        </echo>
     </target>
 
+    <!-- release folders -->
     <property name="packaging_tools" value="packaging_tools" />
     <property name="common_dir" value="${release_dir}/common" />
 
@@ -100,15 +110,20 @@
     <property name="Linux_dir" value="${release_dir}/Linux" />
     <property name="Windows_dir" value="${release_dir}/Windows" />
 
-    <property name="Mac_package_dir" value="${Mac_dir}/${name} v${version}" />
-    <property name="Linux_package_dir" value="${Linux_dir}/${name}_v${version}" />
-    <property name="Windows_package_dir" value="${Windows_dir}/${name} v${version}" />
+    <property name="package_name" value="${name} v${version}" />
+    <property name="linux_package_name" value="${name}_v${version}" />
+
+    <property name="Mac_package_dir" value="${Mac_dir}/${package_name}" />
+    <property name="Linux_package_dir" value="${Linux_dir}/${linux_package_name}" />
+    <property name="Windows_package_dir" value="${Windows_dir}/${package_name}" />
+
 
     <!-- Need to either install Launch4j under {BEAST workspace}/${release}
                  or install it in the default directory and change the location of launch4j.dir -->
     <target name="windows" depends="dist" description="release Windows version of Tracer">
-
-        <delete dir="${Windows_package_dir}" />
+        <!-- clean windows release-->
+        <delete failonerror="false" file="${release_dir}/${package_name}.zip"/>
+        <delete failonerror="false" dir="${Windows_package_dir}" />
         <!-- Create the release directory -->
         <mkdir dir="${Windows_package_dir}" />
 
@@ -124,21 +139,23 @@
 
         <launch4j configFile="${Windows_dir}/tracer_launch4j.xml"
                   jar="${dist}/tracer.jar"
-                  outfile="${Windows_package_dir}/${name} v${version}.exe"
+                  outfile="${Windows_package_dir}/${package_name}.exe"
                   fileVersion="${version_number}.0"
                   txtFileVersion="${version}"
                   productVersion="${version_number}.0"
                   txtProductVersion="${version}"/>
 
-        <zip destfile="${release_dir}/${name} v${version}.zip">
-            <zipfileset dir="${Windows_package_dir}" prefix="${name} v${version}"/>
+        <zip destfile="${release_dir}/${package_name}.zip">
+            <zipfileset dir="${Windows_package_dir}" prefix="${package_name}"/>
         </zip>
 
         <echo message="Windows version release is finished." />
     </target>
 
     <target name="linux" depends="dist" description="release Linux/Unix version of Tracer">
-        <delete dir="${Linux_package_dir}" />
+        <!-- clean linux release-->
+        <delete failonerror="false" file="${release_dir}/${package_name}.tgz"/>
+        <delete failonerror="false" dir="${Linux_package_dir}" />
         <!-- Create the release directory -->
         <mkdir dir="${Linux_package_dir}" />
 
@@ -156,18 +173,22 @@
         <!--</copy>-->
         <copy file="${common_dir}/README.txt" todir="${Linux_package_dir}"/>
 
-        <tar destfile="${release_dir}/${name}_v${version}.tgz" compression="gzip">
-            <tarfileset dir="${Linux_package_dir}" prefix="${name}_v${version}"/>
+        <tar destfile="${release_dir}/${linux_package_name}.tgz" compression="gzip">
+            <tarfileset dir="${Linux_package_dir}" prefix="${linux_package_name}"/>
         </tar>
 
         <echo message="Linux/Unix version release is finished." />
     </target>
 
     <!-- this will only work on Andrew's computer -->
-    <property name="AppleSigner" value="Developer ID Application: Andrew Rambaut (9E4WXAQ6SE)" />
+<!--    <property name="AppleSigner" value="Developer ID Application: Andrew Rambaut (9E4WXAQ6SE)" />-->
+    <property name="AppleSigner" value="Developer ID Application: Walter Xie (27V5YMX65C)" />
 
     <target name="mac" depends="dist" description="release Mac version of Tracer">
-        <delete dir="${Mac_package_dir}" />
+        <!-- clean mac release-->
+        <delete failonerror="false" file="${release_dir}/${package_name}.dmg"/>
+        <delete failonerror="false" dir="${Mac_package_dir}"/>
+
         <!-- Create the release directory -->
         <mkdir dir="${Mac_package_dir}" />
 
@@ -175,11 +196,12 @@
 
         <copy file="${packaging_tools}/mac/install.png" todir="${Mac_package_dir}"/>
 
-        <taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="${packaging_tools}/mac/jarbundler-core-3.3.0.jar"/>
+        <taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler"
+                 classpath="${packaging_tools}/mac/jarbundler-core-3.3.0.jar"/>
 
         <!-- create a jar bundle for the mac -->
         <jarbundler dir="${Mac_package_dir}"
-                        name="${name} v${version}"
+                        name="${package_name}"
                         mainclass="tracer.application.TracerApp"
                         stubfile="${packaging_tools}/mac/universalJavaApplicationStub"
 						useJavaXKey="true"
@@ -189,7 +211,7 @@
                         highresolutioncapable="true"
                         arguments=""
                         version="${version}"
-                        copyright="${name} v${version}, ${copyright}, Andrew Rambaut, Marc Suchard &amp; Alexei J. Drummond"
+                        copyright="${package_name}, ${copyright}, Andrew Rambaut, Marc Suchard &amp; Alexei J. Drummond"
                         bundleid="tracer" >
             <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
             <jarfileset dir="${dist}">
@@ -200,13 +222,15 @@
             </jarfileset>
         </jarbundler>
 
+        <echo message="codesign ${package_name}.app ..." />
+
         <!-- code signing -->
         <exec executable="codesign">
             <arg value="--deep"/>
             <arg value="-s"/>
             <arg value="${AppleSigner}"/>
             <arg value="-v"/>
-            <arg value="${Mac_package_dir}/${name} v${version}.app"/>
+            <arg value="${Mac_package_dir}/${package_name}.app"/>
         </exec>
 
         <echo message="Building disk image." />
@@ -221,10 +245,10 @@
             <arg value="-srcfolder"/>
             <arg value="${Mac_package_dir}"/>
             <arg value="-volname"/>
-            <arg value="${name} v${version}"/>
+            <arg value="${package_name}"/>
             <arg value="-imagekey"/>
             <arg value="zlib-level=6"/>
-            <arg value="${release_dir}/${name} v${version}.dmg"/>
+            <arg value="${release_dir}/${package_name}.dmg"/>
         </exec>
         -->
 
@@ -232,11 +256,19 @@
             <arg value="-s"/>
             <arg value="${AppleSigner}"/>
             <arg value="-v"/>
-            <arg value="${release_dir}/${name} v${version}.dmg"/>
+            <arg value="${release_dir}/${package_name}.dmg"/>
         </exec>
 
+        <echo message="Mac version release is not finished yet. Please upload ${package_name}.dmg to be notarized ! " />
 
-        <echo message="Mac version release is finished." />
+        <!-- example CMD, note -\- is 2 hyphens because of XML sepc :
+        cp Tracer\ v1.7.2.dmg ~/tmp
+        # notarizition
+        xcrun altool -\-notarize-app -f Tracer\ v1.7.2.dmg -\-primary-bundle-id Tracer -u Apple_Username -p Apple_Password
+        # check error or info
+        xcrun altool -\-notarization-info RequestUUID -u Apple_Username -p Apple_Password
+        -->
+
     </target>
 
     <target name="build" depends="mac, windows, linux" description="build all the executables" />
