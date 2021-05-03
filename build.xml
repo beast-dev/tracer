@@ -174,7 +174,9 @@
         <copy file="${common_dir}/README.txt" todir="${Linux_package_dir}"/>
 
         <tar destfile="${release_dir}/${linux_package_name}.tgz" compression="gzip">
-            <tarfileset dir="${Linux_package_dir}" prefix="${linux_package_name}"/>
+            <tarfileset dir="${Linux_package_dir}" filemode="755" includes="**/**">
+                <include name="bin/tracer"/>
+            </tarfileset>
         </tar>
 
         <echo message="Linux/Unix version release is finished." />
