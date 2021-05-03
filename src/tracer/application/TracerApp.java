@@ -66,34 +66,20 @@ public class TracerApp extends MultiDocApplication {
             System.setProperty("apple.awt.showGrowBox", "true");
 
             try {
-                // set the Quaqua Look and Feel in the UIManager
+                // set the VAqua Look and Feel in the UIManager
+                // This is a more modern L&F than the default Mac one
                 javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
                         try {
-                            // We need to do this using dynamic class loading to avoid other platforms
-                            // having to link to this class. If the Quaqua library is not on the classpath
-                            // it simply won't be used.
-                            Class<?> qm = Class.forName("ch.randelshofer.quaqua.QuaquaManager");
-                            Method method = qm.getMethod("setIncludedUIs", Set.class);
-
-                            Set includes = new HashSet();
-                            includes.add("ColorChooser");
-                            includes.add("FileChooser");
-                            includes.add("SplitPane");
-                            method.invoke(null, includes);
-
-                        } catch (Exception e) {
-                        }
-
-                        try {
-                            UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
+                            UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
                             lafLoaded = true;
                         } catch (Exception e) {
-                            System.err.println("Failed to load ch.randelshofer.quaqua.QuaquaLookAndFeel");
+                            System.err.println("Failed to load AquaLookAndFeel");
                         }
                     }
                 });
-            } catch (Exception e) {
+
+            } catch (Exception ignored) {
             }
 
             UIManager.put("SystemFont", new Font("Lucida Grande", Font.PLAIN, 13));
@@ -126,9 +112,9 @@ public class TracerApp extends MultiDocApplication {
             }
 
             final String nameString = "Tracer";
-            final String versionString = "v1.7.3";
+            final String versionString = "v1.7.2";
             String aboutString = "<html><font face=\"helvetica,san-serif\"><center><p>MCMC Trace Analysis Tool<br>" +
-                    "Version " + versionString + ", 2003-2020</p>" +
+                    "Version " + versionString + ", 2003-2021</p>" +
                     "<p>by<br>" +
 
                     "Andrew Rambaut, Alexei J. Drummond, Walter Xie, Guy Baele, and Marc A. Suchard</p>" +
