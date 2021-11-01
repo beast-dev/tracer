@@ -40,6 +40,7 @@ import jebl.evolution.io.NewickImporter;
 import jebl.evolution.io.NexusImporter;
 import jebl.evolution.io.TreeImporter;
 import jebl.evolution.trees.RootedTree;
+import tracer.exceptions.StateNotMatchException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -683,11 +684,9 @@ public class BayesianSkylineDialog {
 
                 try {
                     while (importer.hasTree()) {
-                        if (state >= traceList.getStateCount()) {
-                            JOptionPane.showMessageDialog(frame, "The number of states in the log file and tree file not match",
-                                    "Number of states don't match", JOptionPane.ERROR_MESSAGE);
-                            return false;
-                        }
+                        // this validates trees > log samples
+                        if (state >= traceList.getStateCount())
+                            throw new StateNotMatchException();
 
                         RootedTree tree = (RootedTree) importer.importNextTree();
 
@@ -737,10 +736,17 @@ public class BayesianSkylineDialog {
                         current += 1;
                     }
 
+                    // this validates trees < log samples
+                    if (state < traceList.getStateCount())
+                        throw new StateNotMatchException();
+
                 } catch (ImportException ie) {
                     JOptionPane.showMessageDialog(frame, "Error parsing file: " + ie.getMessage(),
                             "Error parsing file",
                             JOptionPane.ERROR_MESSAGE);
+                } catch (StateNotMatchException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), StateNotMatchException.TITLE, JOptionPane.ERROR_MESSAGE);
+                    return false;
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(frame, "Fatal exception during initializing group size:" + ex.getMessage(),
                             "Fatal exception",
