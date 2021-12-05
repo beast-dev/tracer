@@ -5,7 +5,7 @@ and is dependent on a library in https://github.com/beast-dev/beast-mcmc.
 
 ## System requirement
 
-- Java 1.8
+- Java 1.8 or higher
 
 ## Citation
 
