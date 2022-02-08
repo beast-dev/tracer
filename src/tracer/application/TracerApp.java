@@ -32,10 +32,7 @@ import jam.framework.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 public class TracerApp extends MultiDocApplication {
 
@@ -71,8 +68,16 @@ public class TracerApp extends MultiDocApplication {
                 javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
                         try {
-                            UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
-                            lafLoaded = true;
+                            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                                System.out.println(info.getName() + " - " + info.getClassName());
+                                // Tracer Issue #172 Mac OS X - com.apple.laf.AquaLookAndFeel
+                                if (info.getName().startsWith("Mac")) {
+                                    UIManager.setLookAndFeel(info.getClassName());
+                                    lafLoaded = true;
+                                }
+                            }
+//                            UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
+//                            lafLoaded = true;
                         } catch (Exception e) {
                             System.err.println("Failed to load AquaLookAndFeel");
                         }
