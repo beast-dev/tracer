@@ -71,7 +71,7 @@ public class RawTracePanel extends TraceChartPanel {
      */
     public RawTracePanel(final JFrame frame) {
         super(frame);
-        // LinearAxis2 can handle small ranged values (range < 1E-30) correctly, but LinearAxis cannot
+        // LinearAxis2 can handle small range (range < 1E-30) correctly, but LinearAxis cannot
         traceChart = new JTraceChart(new LinearAxis(Axis.AT_ZERO, Axis.AT_DATA), new LinearAxis2());
         chartPanel = new JChartPanel(traceChart, "", "", ""); // xAxisTitle, yAxisTitle
         toolBar = createToolBar(currentSettings);
