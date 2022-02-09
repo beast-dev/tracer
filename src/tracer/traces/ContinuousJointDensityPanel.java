@@ -26,7 +26,8 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.inference.trace.*;
+import dr.inference.trace.TraceCorrelation;
+import dr.inference.trace.TraceList;
 import dr.stats.Variate;
 
 import javax.swing.*;
@@ -68,7 +69,7 @@ public class ContinuousJointDensityPanel extends TraceChartPanel {
     public ContinuousJointDensityPanel(final JFrame frame) {
         super(frame);
 
-        chart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        chart = new JChart(new LinearAxis2(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis2(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(chart, "", "", ""); // xAxisTitle, yAxisTitle
 
         toolBar = createSinglePairToolBar(frame);
@@ -235,8 +236,8 @@ public class ContinuousJointDensityPanel extends TraceChartPanel {
             k += minCount / sampleSize;
         }
 
-        getChart().setXAxis(new LinearAxis());
-        getChart().setYAxis(new LinearAxis());
+        getChart().setXAxis(new LinearAxis2());
+        getChart().setYAxis(new LinearAxis2());
 
         // add plot
         ScatterPlot plot = new ScatterPlot(samples1, samples2);

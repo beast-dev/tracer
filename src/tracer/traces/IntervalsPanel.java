@@ -65,7 +65,7 @@ public class IntervalsPanel extends TraceChartPanel {
      */
     public IntervalsPanel(final JFrame frame) {
         super(frame);
-        intervalsChart = new JParallelChart(false, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        intervalsChart = new JParallelChart(false, new LinearAxis2(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(intervalsChart, "", "", ""); // xAxisTitle, yAxisTitle
 
         toolBar = createToolBar();

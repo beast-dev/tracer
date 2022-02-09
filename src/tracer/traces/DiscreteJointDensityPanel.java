@@ -27,17 +27,12 @@ package tracer.traces;
 
 import dr.app.gui.chart.*;
 import dr.inference.trace.TraceCorrelation;
-import dr.inference.trace.TraceDistribution;
 import dr.inference.trace.TraceList;
-import dr.inference.trace.TraceType;
 import dr.stats.Variate;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A panel that displays correlation plots of 2 discrete traces
@@ -66,7 +61,7 @@ public class DiscreteJointDensityPanel extends TraceChartPanel {
     public DiscreteJointDensityPanel(final JFrame frame) {
         super(frame);
 
-        chart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        chart = new JChart(new LinearAxis2(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis2(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(chart, "", "", ""); // xAxisTitle, yAxisTitle
 
         toolBar = createSinglePairToolBar(frame);

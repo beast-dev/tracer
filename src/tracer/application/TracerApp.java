@@ -69,11 +69,12 @@ public class TracerApp extends MultiDocApplication {
                     public void run() {
                         try {
                             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                                System.out.println(info.getName() + " - " + info.getClassName());
+//                                System.out.println(info.getName() + " - " + info.getClassName());
                                 // Tracer Issue #172 Mac OS X - com.apple.laf.AquaLookAndFeel
                                 if (info.getName().startsWith("Mac")) {
                                     UIManager.setLookAndFeel(info.getClassName());
                                     lafLoaded = true;
+                                    System.out.println("Set look & feel to : " + info.getName() + " - " + info.getClassName());
                                 }
                             }
 //                            UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");

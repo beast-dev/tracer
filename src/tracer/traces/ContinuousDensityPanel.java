@@ -111,17 +111,17 @@ public class ContinuousDensityPanel extends TraceChartPanel {
 
         setOpaque(false);
 
-        kdeChart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
+        kdeChart = new JChart(new LinearAxis2(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis2());
         kdeChartPanel = new JChartPanel(kdeChart, "","","");
         kdeToolBar = createToolBar(Type.KDE, currentSettings);
         densityChartSetupDialog = new ChartSetupDialog(frame, true, false, true, false,
                 Axis.AT_MAJOR_TICK, Axis.AT_MAJOR_TICK, Axis.AT_ZERO, Axis.AT_MAJOR_TICK);
 
-        histogramChart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
+        histogramChart = new JChart(new LinearAxis2(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis2());
         histogramChartPanel = new JChartPanel(histogramChart, "","","");
         histogramToolBar = createToolBar(Type.HISTOGRAM, currentSettings);
 
-        violinChart = new JParallelChart(false, new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS));
+        violinChart = new JParallelChart(false, new LinearAxis2(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS));
         violinChartPanel = new JChartPanel(violinChart, "","","");
         violinToolBar = createToolBar(Type.VIOLIN, currentSettings);
         violinChartSetupDialog = new ChartSetupDialog(frame, false, true, false, true,

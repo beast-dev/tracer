@@ -26,7 +26,9 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.inference.trace.*;
+import dr.inference.trace.Trace;
+import dr.inference.trace.TraceList;
+import dr.inference.trace.TraceType;
 import dr.stats.Variate;
 
 import javax.swing.*;
@@ -63,7 +65,7 @@ public class DiscreteDensityPanel extends TraceChartPanel {
      */
     public DiscreteDensityPanel(final JFrame frame) {
         super(frame);
-        densityChart = new JChart(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis(Axis.AT_ZERO, Axis.AT_MAJOR_TICK_PLUS));
+        densityChart = new JChart(new LinearAxis2(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis2(Axis.AT_ZERO, Axis.AT_MAJOR_TICK_PLUS));
         densityChartPanel = new JChartPanel(densityChart, "","","");
         toolBar = createToolBar(currentSettings);
     }

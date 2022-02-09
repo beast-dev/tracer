@@ -26,12 +26,15 @@
 package tracer.traces;
 
 import dr.app.gui.chart.*;
-import dr.inference.trace.*;
+import dr.inference.trace.Trace;
+import dr.inference.trace.TraceCorrelation;
+import dr.inference.trace.TraceList;
+import dr.inference.trace.TraceType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.*;
+import java.util.Set;
 
 
 /**
@@ -60,8 +63,9 @@ public class FrequencyPanel extends TraceChartPanel {
      */
     public FrequencyPanel(final JFrame frame) {
         super(frame);
+        // LinearAxis2 can handle small ranged values (range < 1E-30) correctly, but LinearAxis cannot
         traceChart = new JChart(
-                new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
+                new LinearAxis2(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS), new LinearAxis());
         traceChartPanel = new JChartPanel(traceChart, "","", "Frequency"); // xAxisTitle, yAxisTitle
         toolBar = createToolBar(currentSettings);
     }
@@ -146,7 +150,7 @@ public class FrequencyPanel extends TraceChartPanel {
                 if (td != null) {
                     histogramPlot.setIntervals(td.getUpperHPD(), td.getLowerHPD());
                 }
-                getChartPanel().getChart().setXAxis(new LinearAxis(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS));
+                getChartPanel().getChart().setXAxis(new LinearAxis2(Axis.AT_MAJOR_TICK_PLUS, Axis.AT_MAJOR_TICK_PLUS));
 
                 plot = histogramPlot;
             } else if (traceType.isDiscrete()) {

@@ -63,7 +63,7 @@ public class DiscreteContinuousJointDensityPanel extends TraceChartPanel {
     public DiscreteContinuousJointDensityPanel(final JFrame frame) {
         super(frame);
 
-        parallelChart = new JParallelChart(false, new LinearAxis(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
+        parallelChart = new JParallelChart(false, new LinearAxis2(Axis.AT_MAJOR_TICK_MINUS, Axis.AT_MAJOR_TICK_PLUS));
         chartPanel = new JChartPanel(parallelChart, "", "", ""); // xAxisTitle, yAxisTitle
 
         toolBar = createToolBar(frame);
