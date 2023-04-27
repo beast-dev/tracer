@@ -234,10 +234,13 @@ public class RawTracePanel extends TraceChartPanel {
                 int traceIndex = tl.getTraceIndex(traceName);
 //                System.out.println(traceIndex + " : " + traceName);
 
-                String name = tl.getTraceName(traceIndex);
-                // this name has to be unique
-                if (traceLists.length > 1)
-                    name = i + "-" + name;
+                String name = "";
+                if (traceLists.length > 1) {
+                    name = tl.getName();
+                }
+                if (getTraceNames().size() > 1) {
+                    name = name + (traceLists.length > 1 ? " | " : "") + tl.getTraceName(traceIndex);
+                }
 
                 Trace trace = tl.getTrace(traceIndex);
 

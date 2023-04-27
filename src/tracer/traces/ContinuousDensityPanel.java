@@ -272,9 +272,13 @@ public class ContinuousDensityPanel extends TraceChartPanel {
                 Plot plot = null;
 
                 if (trace != null) {
-                    String name = tl.getTraceName(traceIndex);
-                    if (traceLists.length > 1)
-                        name = i + "-" + name;
+                    String name = "";
+                    if (traceLists.length > 1) {
+                        name = tl.getName();
+                    }
+                    if (getTraceNames().size() > 1) {
+                        name = name + (traceLists.length > 1 ? " | " : "") + tl.getTraceName(traceIndex);
+                    }
 
                     List values = tl.getValues(traceIndex);
 
