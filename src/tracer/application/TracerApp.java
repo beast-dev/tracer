@@ -118,9 +118,9 @@ public class TracerApp extends MultiDocApplication {
             }
 
             final String nameString = "Tracer";
-            final String versionString = "v1.7.2";
+            final String versionString = "v1.7.3";
             String aboutString = "<html><font face=\"helvetica,san-serif\"><center><p>MCMC Trace Analysis Tool<br>" +
-                    "Version " + versionString + ", 2003-2021</p>" +
+                    "Version " + versionString + ", 2003-2023</p>" +
                     "<p>by<br>" +
 
                     "Andrew Rambaut, Alexei J. Drummond, Walter Xie, Guy Baele, and Marc A. Suchard</p>" +
