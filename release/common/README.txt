@@ -1,9 +1,9 @@
-                     Tracer v1.7 2003-2018
+                     Tracer v1.7.3 2003-2023
         		  MCMC Trace Analysis Package
                               by
-        Andrew Rambaut, Alexei J. Drummond & Marc Suchard
+Andrew Rambaut, Alexei J. Drummond, Walter Xie, Guy Baele, and Marc A. Suchard
 
-              Institute of Evolutionary Biology
+              Institute of Ecology and Evolution
                     University of Edinburgh
                       a.rambaut@ed.ac.uk
                       
@@ -17,7 +17,7 @@
 
 
 UNIX / Mac OS X / Linux / Windows README 
-a.rambaut@ed.ac.uk - 05 January 2018
+a.rambaut@ed.ac.uk - 27 April 2023
 
 Contents:
 1) INTRODUCTION
@@ -46,7 +46,7 @@ Mac OS X: To install Tracer, simply drag the program file to where you normally 
 
 Windows: To install Tracer, simply drag the folder to where you normally put applications. Then double click to run.
 
-Linux / UNIX: Copy or move the folder to where you normally put applications and then double click the "lib/tracer.jar" file to run. You can either add the Tracer.v1.4 directory to your path or perhaps create symbolic links to the shell file 'tracer' within it in your '/usr/local/bin' or '~/bin' directories
+Linux / UNIX: Copy or move the folder to where you normally put applications and then double click the "lib/tracer.jar" file to run. You can either add the Tracer.v1.7.3 directory to your path or perhaps create symbolic links to the shell file 'tracer' within it in your '/usr/local/bin' or '~/bin' directories
 
 ___________________________________________________________________________
 3) LOADING TRACE FILES

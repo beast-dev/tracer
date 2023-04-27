@@ -183,8 +183,8 @@
     </target>
 
     <!-- this will only work on Andrew's computer -->
-<!--    <property name="AppleSigner" value="Developer ID Application: Andrew Rambaut (9E4WXAQ6SE)" />-->
-    <property name="AppleSigner" value="Developer ID Application: Walter Xie (27V5YMX65C)" />
+    <property name="AppleSigner" value="Developer ID Application: Andrew Rambaut (9E4WXAQ6SE)" />
+    <!--<property name="AppleSigner" value="Developer ID Application: Walter Xie (27V5YMX65C)" />-->
 
     <target name="mac" depends="dist" description="release Mac version of Tracer">
         <!-- clean mac release-->
@@ -213,7 +213,7 @@
                         highresolutioncapable="true"
                         arguments=""
                         version="${version}"
-                        copyright="${package_name}, ${copyright}, Andrew Rambaut, Marc Suchard &amp; Alexei J. Drummond"
+                        copyright="${package_name}, ${copyright}, Andrew Rambaut, Alexei J. Drummond, Walter Xie, Guy Baele, &amp; Marc A. Suchard"
                         bundleid="tracer" >
             <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
             <jarfileset dir="${dist}">
