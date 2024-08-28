@@ -25,6 +25,7 @@
 
 package tracer.traces;
 
+import dr.app.gui.chart.CalendarAxis;
 import dr.inference.trace.*;
 import jam.framework.Exportable;
 import jam.table.TableRenderer;
@@ -288,6 +289,9 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                     switch (row) {
                         case 0:
                             value = tc.getMean();
+                            if (frequencyPanel.getChartSetupDialog().displayCalendarDates()) {
+                                return TraceAnalysis.formattedNumber(value) + " (" + new CalendarAxis().format(value) + ")";
+                            }
                             break;
                         case 1:
                             value = tc.getStdErrorOfMean();
@@ -300,16 +304,34 @@ public class SummaryStatisticsPanel extends JPanel implements Exportable {
                             break;
                         case 4:
                             value = tc.getMedian();
+                            if (frequencyPanel.getChartSetupDialog().displayCalendarDates()) {
+                                return TraceAnalysis.formattedNumber(value) + " (" + new CalendarAxis().format(value) + ")";
+                            }
                             break;
                         case 5:
-                            return "[" + TraceAnalysis.formattedNumber(tc.getMinimum()) + ", " + TraceAnalysis.formattedNumber(tc.getMaximum()) + "]";
+                            double min = tc.getMinimum();
+                            double max = tc.getMaximum();
+                            String result1 = "[" + TraceAnalysis.formattedNumber(max) + ", " + TraceAnalysis.formattedNumber(max) + "]";
+                            if (frequencyPanel.getChartSetupDialog().displayCalendarDates()) {
+                                result1 = result1 + " ([" + new CalendarAxis().format(min) + ", " + new CalendarAxis().format(min) + "])";
+                            }
+                            return result1;
                         case 6:
                             if (!tc.hasGeometricMean()) return "n/a";
                             value = tc.getGeometricMean();
+                            if (frequencyPanel.getChartSetupDialog().displayCalendarDates()) {
+                                return new CalendarAxis().format(value);
+                            }
                             break;
                         case 7:
                             if (tc.isConstant()) return "n/a";
-                            return "[" + TraceAnalysis.formattedNumber(tc.getLowerHPD()) + ", " + TraceAnalysis.formattedNumber(tc.getUpperHPD()) + "]";
+                            double lb = tc.getLowerHPD();
+                            double ub = tc.getUpperHPD();
+                            String result2 = "[" + TraceAnalysis.formattedNumber(lb) + ", " + TraceAnalysis.formattedNumber(ub) + "]";
+                            if (frequencyPanel.getChartSetupDialog().displayCalendarDates()) {
+                                result2 = result2 +  " ([" + new CalendarAxis().format(lb) + ", " + new CalendarAxis().format(ub) + "])";
+                            }
+                            return result2;
                         case 8:
                             if (tc.isConstant()) return "n/a";
                             value = tc.getACT();
