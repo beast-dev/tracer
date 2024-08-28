@@ -40,6 +40,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 
+import static dr.evolution.util.TimeScale.DAYS_PER_YEAR;
+
 /**
  * A panel that displays density plots of traces
  *
@@ -418,17 +420,17 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         return buffer.toString();
     }
 
-    private LocalDateTime convertToDate(double decimalYear) {
+    public static LocalDateTime convertToDate(double decimalYear) {
         return LocalDateTime.ofEpochSecond(convertToEpochSeconds(decimalYear), 0, ZoneOffset.UTC);
     }
 
-    private long convertToEpochSeconds(double decimalYear) {
+    private static long convertToEpochSeconds(double decimalYear) {
         return convertToEpochMilliseconds(decimalYear) / 1000;
     }
 
-    private long convertToEpochMilliseconds(double decimalYear) {
+    private static long convertToEpochMilliseconds(double decimalYear) {
         int year = (int)Math.floor(decimalYear);
-        long ms = (long)((decimalYear - Math.floor(decimalYear)) * 365 * 24 * 3600 * 1000);
+        long ms = (long)((decimalYear - Math.floor(decimalYear)) * DAYS_PER_YEAR * 24 * 3600 * 1000);
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, 0, 0, 0, 0, 0);
         return (calendar.getTimeInMillis()) + ms;

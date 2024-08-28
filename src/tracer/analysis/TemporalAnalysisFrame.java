@@ -48,6 +48,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
+import static dr.evolution.util.TimeScale.DAYS_PER_YEAR;
+
 public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMenuHandler {
     private int binCount;
     private double minTime;
@@ -337,7 +339,7 @@ public class TemporalAnalysisFrame extends AuxilaryFrame implements TracerFileMe
 
     private long convertToEpochMilliseconds(double decimalYear) {
         int year = (int)Math.floor(decimalYear);
-        long ms = (long)((decimalYear - Math.floor(decimalYear)) * 365 * 24 * 3600 * 1000);
+        long ms = (long)((decimalYear - Math.floor(decimalYear)) * DAYS_PER_YEAR * 24 * 3600 * 1000);
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, 0, 0, 0, 0, 0);
         return (calendar.getTimeInMillis()) + ms;
