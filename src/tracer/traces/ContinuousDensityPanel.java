@@ -435,6 +435,4 @@ public class ContinuousDensityPanel extends TraceChartPanel {
         calendar.set(year, 0, 0, 0, 0, 0);
         return (calendar.getTimeInMillis()) + ms;
     }
-
-
 }

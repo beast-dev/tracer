@@ -29,11 +29,11 @@
         $Id: build_release.xml,v 1.6 2017/02/28 18:16:17 rambaut Exp $
     </description>
 
-    <property name="version" value="1.7.3" />
-    <property name="version_number" value="1.7.3" />
+    <property name="version" value="1.7.4" />
+    <property name="version_number" value="1.7.4" />
     <property name="release_dir" value="release" />
     <property name="name" value="Tracer" />
-    <property name="copyright" value="Copyright 2002-2023"/>
+    <property name="copyright" value="Copyright 2002-2024"/>
 
     <!-- source & lib from beast1 but build in tracer -->
     <property name="src" location="src"/>
@@ -57,9 +57,9 @@
 
     <target name="compile" depends="init">
         <!-- Compile the java code from ${src} into ${build} -->
-        <javac source="1.8" target="1.8" srcdir="${src}" destdir="${build}"
-               classpath="${lib}/trace.jar:${lib}/jam.jar:${lib}/jebl.jar:${lib}/commons-math-2.2.jar:${lib}/itext-1.4.5.jar">
-            <include name="tracer/**"/>
+        <javac source="1.8" target="1.8" srcdir="${src}" destdir="${build}"        		
+		classpath="${lib}/trace.jar:${lib}/jam.jar:${lib}/jebl.jar:${lib}/commons-math-2.2.jar:${lib}/itext-1.4.5.jar">	
+            <include name="tracer/**"/>			
         </javac>
     </target>
 
@@ -183,8 +183,17 @@
     </target>
 
     <!-- this will only work on Andrew's computer -->
-    <property name="AppleSigner" value="Developer ID Application: Andrew Rambaut (9E4WXAQ6SE)" />
+<!--     <property name="AppleSigner" value="Developer ID Application: Andrew Rambaut (9E4WXAQ6SE)" /> -->
     <!--<property name="AppleSigner" value="Developer ID Application: Walter Xie (27V5YMX65C)" />-->
+    
+<!-- 
+    <property name="AppleSignerApplication" value="Developer ID Application: Andrew Rambaut (9E4WXAQ6SE)" />
+    <property name="AppleSignerInstaller" value="Developer ID Installer: Andrew Rambaut (9E4WXAQ6SE)" />
+ -->
+
+    <property name="AppleSignerApplication" value="Developer ID Application: Marc Suchard (LC992Z5R7E)"/>
+    <property name="AppleSignerInstaller" value="Developer ID Application: Marc Suchard (LC992Z5R7E)"/>    
+    
 
     <target name="mac" depends="dist" description="release Mac version of Tracer">
         <!-- clean mac release-->
@@ -225,12 +234,19 @@
         </jarbundler>
 
         <echo message="codesign ${package_name}.app ..." />
+        
+        <!-- OLD -->
+
+
+
+
+        <!-- END OLD -->
 
         <!-- code signing -->
         <exec executable="codesign">
             <arg value="--deep"/>
             <arg value="-s"/>
-            <arg value="${AppleSigner}"/>
+            <arg value="${AppleSignerApplication}"/>
             <arg value="-v"/>
             <arg value="${Mac_package_dir}/${package_name}.app"/>
         </exec>
@@ -256,11 +272,11 @@
 
         <exec executable="codesign">
             <arg value="-s"/>
-            <arg value="${AppleSigner}"/>
+            <arg value="${AppleSignerInstaller}"/>
             <arg value="-v"/>
             <arg value="${release_dir}/${package_name}.dmg"/>
         </exec>
-
+        
         <echo message="Mac version release is not finished yet. Please upload ${package_name}.dmg to be notarized ! " />
 
         <!-- example CMD, note -\- is 2 hyphens because of XML sepc :
